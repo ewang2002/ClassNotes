@@ -1,0 +1,16 @@
+\documentclass[letterpaper]{article}
+\input{../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Overleaf}
+\chead{Yay}
+\lhead{Guides and tutorials}
+\rfoot{Page \thepage}
+
+\begin{document}
+
+\end{document}

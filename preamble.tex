@@ -1,0 +1,38 @@
+\usepackage[margin=1in]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage{textcomp}
+\usepackage{amssymb}
+\usepackage{natbib}
+\usepackage{graphicx}
+\usepackage{gensymb}
+\usepackage{amsthm, amsmath, mathtools}
+\usepackage{xcolor}
+\usepackage{enumerate}
+\usepackage{framed}
+\usepackage{tcolorbox}
+\tcbuselibrary{theorems}
+
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\mdiamond}{$\diamondsuit$}
+
+%\newtheorem*{theorem}{Theorem}
+%\newtheorem*{definition}{Definition}
+\newtheorem*{proposition}{Proposition}
+%\newtheorem*{corollary}{Corollary}
+%\newtheorem*{lemma}{Lemma}
+
+\newtcbtheorem[number within=section]{theorem}{Theorem}
+{colback=green!5,colframe=green!35!black,fonttitle=\bfseries}{def}
+
+\newtcbtheorem[number within=section]{definition}{Definition}
+{colback=blue!5,colframe=blue!35!black,fonttitle=\bfseries}{def}
+
+\newtcbtheorem[number within=section]{corollary}{Corollary}
+{colback=yellow!5,colframe=yellow!35!black,fonttitle=\bfseries}{def}
+
+\newtcbtheorem[number within=section]{lemma}{Lemma}
+{colback=red!5,colframe=red!35!black,fonttitle=\bfseries}{def}
