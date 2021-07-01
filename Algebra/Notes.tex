@@ -31,7 +31,7 @@
             
         \vfill
             
-        Spring 2021\\
+        Summer Session 1 2021\\
         Taught by Professor Kyle Meyer
     \end{center}
 \end{titlepage}
@@ -48,6 +48,316 @@
 \newpage
 \pagenumbering{arabic}
 
-\section{Test}
+\section{Review}
+We will go over topics covered in other courses that will be used in this course. 
+
+\subsection{Equivalence Relations}
+Let $X$ be a non-empty set. Then, a \textbf{relation} over $X$ is a subset $R$ of $X \times X$. If $(x, y) \in R$, we say that $x$ is $R$-related to $y$ and write $x R y$. 
+
+\bigskip 
+
+So, for these relations, we should think about inequalities equalities, or congruences between integers. 
+
+\bigskip 
+
+Suppose $R$ is a relation over $X$. Then:
+\begin{itemize}
+    \item $R$ is called \textbf{reflexive} if $\forall x \in X$, $x R x$. That is, every $x \in X$ is related to itself. 
+    \item $R$ is called \textbf{symmetric} if $\forall x, y \in X$, $x R y \implies y R x$. In other words, if $x$ is related to $y$, is $y$ related to $x$? 
+    \item $R$ is called \textbf{transitive} if $\forall x, y, z \in X$, $x R y$ and $y R z$ implies that $x R z$. 
+\end{itemize}
+
+\begin{definition}{Equivalence Relation}{}
+    $R$ is called an \textbf{equivalence relation} if $R$ is reflexive, symmetric, and transitive. 
+\end{definition}
+
+\textbf{Remark:} An equivalence relation is essentially an equality with respect to a certain measurement. In life, we often measure things or people with respect to properties (for example, scores or ratings). So, when we want to compare things, we pick a certain property and then, \emph{from that point of view}, determine whether these things are equal. In this regard, equivalence relations are exactly equalities. 
+
+\subsubsection{Example: Relations}
+Suppose $X$ and $Y$ are two non-empty sets and $f: X \to Y$ is a function. Let $\sim$ be the following relation over $X$:
+\[\forall x_1, x_2 \in X \quad x_1 \sim x_2 \iff f(x_1) = f(x_2)\]
+Then, $\sim$ is an equivalence relation\footnote{Another way of interpreting this statement is as follows: $x_1$ is in relation to $x_2$ precisely when $f(x_1) = f(x_2)$. The claim here, then, is that this is an equivalence relation.}.
+
+\begin{proof}
+    We determine if an relation is an equivalence relation if it satisfies the three properties mentioned above.
+    \begin{itemize}
+        \item \underline{Reflexivity:}
+        \[\forall x \in X, f(x) = f(x) \implies x \sim x\]
+
+        \item \underline{Symmetric:}
+        \[x_1 \sim x_2 \implies f(x_1) = f(x_2) \implies f(x_2) = f(x_1) \implies x_2 \sim x_1\]
+
+        \item \underline{Transitive:}
+        We know that:
+        \[\forall x_1, x_2 \in X \qquad x_1 \sim x_2 \implies f(x_1) = f(x_2)\]
+        We also know that:
+        \[\forall x_2, x_3 \in X \qquad x_2 \sim x_3 \implies f(x_2) = f(x_3)\]
+        It follows that if $f(x_1) = f(x_2)$ and $f(x_2) = f(x_3)$, then $f(x_1) = f(x_3)$ and thus, $x_1 = x_3$. Namely, $x_1 \sim x_2$ and $x_2 \sim x_3$, then $x_1 \sim x_3$. 
+    \end{itemize}
+    It follows that this is an equivalence relation. 
+\end{proof}
+
+\subsection{Equivalence Relation Partitions}
+Recall that $P$ is called a \textbf{partition} of a non-empty set $X$ if:
+\begin{itemize}
+    \item $P$ consists of non-empty subsets of $X$. 
+    \item $A, B \in P$ and $A \neq B \implies A \cap B = \emptyset$. In other words, the subsets are disjoint. 
+    \item $\forall x \in X$, $\exists A \in P$ such that $x \in A$. In other words, every element in $X$ will be in one of the subsets. 
+\end{itemize}
+Suppose $P$ is a partition of $X$. Then, we can get a classification function from $X$ to $P$:
+\[X \to P\]
+\[x \to [x]_P\]
+Here, $[x]_P$ is the unique element of $P$ which contains $x$. Notice that, because of the \textbf{covering} condition, $x$ is contained in some element of $P$; additionally, because of the \textbf{disjointness} condition, $x$ is in an unique element of $P$. 
+
+\bigskip 
+
+By the previous example, $x \sim_P y \iff [x]_P = [y]_P$ is an equivalence relation. 
+
+\bigskip 
+
+We obtain the following lemma. 
+\begin{lemma}{}{}
+    Suppose $P$ is a partition of a non-empty set $X$. For $x, y \in X$, $x \sim y$ if $x$ and $y$ are in the same element of $P$. Then, $\sim$ is an equivalence relation.
+\end{lemma}
+
+\begin{proof}
+    For $x \in X$, let $[x]_P$ to be the unique element of $P$ which contains $x$. So, $x \to [x]_P$ is a function from $X \to P$. By the previous example, $x \sim y \iff [x]_p = [y]_p$ is an equivalence relation over $X$. Notice that this means $x \sim y$ exactly when $x$ and $y$ are in the same element of $P$. 
+\end{proof}
+
+
+\newpage 
+\section{Binary Operations and Group Theory}
+We want to explore the idea behind \emph{algebraic structures}. In particular, we want to explore these structures in more detail compared to earlier courses (either in past college or high school algebra classes).
+
+\bigskip 
+
+To do this, we need to think about \emph{what} algebra really is. We might think about solving equations like $x^2 + 3x + 5 = 0$ for $x$. In particular, what is really happening here?
+
+\bigskip 
+
+Well, there are a couple of operations going on. Specifically, we have \emph{addition} and \emph{multiplication}. 
+\[x \cdot x + 3 \cdot x + 5 = 0\]
+We now want to examine these operations. Both of these operations $(+, \cdot)$ take in \underline{two numbers} and output \underline{one number}. The question we might have, then, is: how can we can generalize these operations?
+
+\subsection{Binary Operations}
+A \textbf{binary operation} is a way of taking in two values and outputting one value. Of course, we might now ask: what can these values be? These values can come from any specific set. 
+
+\bigskip 
+
+For example, we can consider addition over the integers ($\Z$). The sum of two integers is an integer. Similarly, we could consider multiplication over the integers. Again, the product of two integers is an integer. We could also consider multiplication or addition over the real, rational, or complex numbers. 
+
+\bigskip 
+
+The idea is that whatever ``type'' we give our binary operation, we will get that same ``type'' for our output. To formalize this, we have the following definition:  
+\begin{definition}{Binary Operation}{}
+    A binary operation $*$ over a set $S$ is a function mapping $f: S \times S \to S$. For each $(a, b) \in S \times S$, we will denote the element $*((a, b))$ of $S$ by $a * b$.\footnote{As a side note, in this class, $a * b$ is equivalent to $f(a, b)$ and $b * a$ is equivalent to $f(b, a)$.}
+\end{definition}
+%Recall that the Cartesian Product of two sets $S_1$ and $S_2$ is denoted by $S_1 \times S_2$ and is defined by:
+%\[S_1 \times S_2 = \{(s_1, s_2) \mid s_1 \in S_1, s_2 \in S_2\}\]
+%Here, we note that $(a, b) \neq (b, a)$ unless $a = b$. 
+%\bigskip 
+
+We also introduce the notion of closure, which will be used later. 
+\begin{definition}{Closure}{}
+    Let $*$ be a binary operation on $S$ and let $H$ be a subset of $S$. The subset $H$ is \textbf{closed under} $*$ if for all $a, b \in H$ we also have $a * b \in H$. In this case, the binary operation on $H$ given by restricting $*$ to $H$ is the \textbf{induced operation} of $*$ on $H$.
+\end{definition}
+
+Anything that is ``like'' addition or multiplication is probably a binary operation. For example, let's consider \textbf{matrices}.
+\begin{itemize}
+    \item Addition of matrices of a fixed dimension. More specifically, the set of $n \times m$ matrices (here, $n$ and $m$ are fixed positive integers) over the integers, rationals, reals, or complex numbers under matrix addition is a binary operation.
+    \[
+        \begin{bmatrix}
+            a_{11} & a_{12} & a_{13} \\ 
+            a_{21} & a_{22} & a_{23}
+        \end{bmatrix} + \begin{bmatrix}
+            b_{11} & b_{12} & b_{13} \\ 
+            b_{21} & b_{22} & b_{23}
+        \end{bmatrix} = \begin{bmatrix}
+            a_{11} + b_{11} & a_{12} + b_{12} & a_{13} + b_{13} \\ 
+            a_{21} + b_{21} & a_{22} + b_{22} & a_{23} + b_{23}
+        \end{bmatrix}
+    \]
+
+    \item Multiplication of matrices of a fixed dimension. More specifically, the set of $n \times n$ matrices (square matrices). We could also just multiply a $(n \times m)$ matrix by a $(k \times l)$ matrix assuming $m = k$ (otherwise, multiplying these two matrices will result in undefined behavior). 
+\end{itemize}
+
+So far, we considered binary operations on infinite sets in which we need some sort of formula to describe (e.g. $f_{\cup}(A, B) = A \cup B$). Now, if we have a finite set, we could define a binary operation exhaustively by just saying what the binary operation does on every pair of entries.
+
+\bigskip 
+
+For example, given the set $S = \{a, b, c, d, e\}$. We can define a binary operation on $S$ with the below (random) table (first entry on left side, second entry on top side). 
+\begin{center}
+    \begin{tabular}{c|c|c|c|c|c}
+            & $a$ & $b$ & $c$ & $d$ & $e$ \\ 
+        \hline 
+        $a$ & $a$ & $c$ & $d$ & $d$ & $e$ \\ 
+        $b$ & $b$ & $c$ & $c$ & $b$ & $a$ \\ 
+        $c$ & $d$ & $e$ & $e$ & $b$ & $b$ \\ 
+        $d$ & $a$ & $a$ & $a$ & $c$ & $a$ \\ 
+        $e$ & $b$ & $b$ & $c$ & $c$ & $d$
+    \end{tabular}
+\end{center}
+Denote the binary operation to be $\#$.
+\begin{itemize}
+    \item What is $c \# d$? The answer is $b$. 
+    \item What is $e \# ((a \# b) \# c)$? The answer is $d$.
+    \item Suppose we have $X \# a = a$. What is $X$? The answer is $X = a, d$.
+\end{itemize}
+
+\subsection{Properties of Binary Operations}
+What properties could binary operations have?\footnote{In this course, we will consider binary operations with all the properties excluding commutativity.}
+
+\begin{itemize}
+    \item \textbf{Commutativity:} A binary operation is commutative if the order of the two inputs does not matter. For example, if $f$ is a function corresponding to a binary operation, then:
+    \[f(a, b) = f(b, a) \quad \forall a, b \in S\] 
+    More commonly:
+    \[a * b = b * a \quad \forall a, b \in S\]
+
+    For example, addition or multiplication of numbers is commutative. Unions and intersections of sets is also commutative. \emph{However}, matrix multiplication is \emph{not} commutative. Our example above is also not commutative. 
+
+    \item \textbf{Associativity:} A binary operation is associative if the order of applying the operation (in a string) does not matter. Specifically:
+    \[(a * b) * c = a * (b * c) \quad \forall a, b, c \in S\]
+    Which means that we can write $a * b * c$ without ambiguity.
+    
+    \bigskip 
+
+    For example, addition or multiplication of numbers is associative. Addition or multiplication of matrices is also associative. Our example above is not associative. 
+
+    \item \textbf{Identity:} A binary operation has a two-sided identity element and a two-sided inverse for every element. 
+    
+    \bigskip 
+    
+    More specifically, we say that $\epsilon$ is a left identity if $f(\epsilon, s) = s$ for all $s \in S$. $\epsilon$ is a right identity if $f(s, \epsilon) = s$ for all $s \in S$. Then, $\epsilon$ is a two-sided identity if it is both a left identity and right identity.  
+    
+    \bigskip 
+
+    For example, 0 is a two-sided identity for addition and 1 is a two-sided identity for multiplication. For matrix addition, the zero-matrix is a two-sided identity. For matrix multiplication, the matrix with ones on the diagonal and zeros everywhere else is the identity element. In our example above, $\#$ does not have a left or right identity. 
+
+    \bigskip 
+
+    Given a two-sided identity, we can also consider the idea of an inverse. In addition, this is the negative/negation. In multiplication, this is the reciprocal. The additive inverse of $x$ is $-x$. The multiplicative inverse of $x$ is $\frac{1}{x}$ (for all $x \neq 0$). 
+    
+    \bigskip 
+    
+    For a general binary operation $f: S \times S \to S$ with a two-sided identity $\epsilon$, an element $s \in S$ has a two-sided inverse if there exists an element $t \in S$ such that:
+    \[\underbrace{f(s, t)}_{\text{Right Inverse}} = \overbrace{f(t, s)}^{\text{Left Inverse}} = \epsilon\] 
+
+    So, a property for binary operations would be for every element to have a \underline{two-sided inverse}, which requires a \underline{two-sided identity element}.
+\end{itemize}
+
+\textbf{Remark:} Commutativity does not imply associativity.
+
+\subsection{Groups}
+Of course, the properties of binary operations that were discussed just now are very much applicable in something called \textbf{groups}. 
+
+\begin{definition}{Group}{}
+    A group is a set $G$, closed under a binary operation $*$, satisfying the three properties:
+    \begin{enumerate}
+        \item \underline{Associativity}: For all $a, b, c \in G$, we have:
+        \[(a * b) * c = a * (b * c)\]
+
+        \item \underline{Identity Element:} There is an element $\epsilon \in G$ such that for all $x \in G$:
+        \[\epsilon * x = x * e = x\]
+
+        \item \underline{Inverse:} Corresponding to each $a \in G$, there is an element $a' \in G$ such that:
+        \[a * a' = a' * a = \epsilon\]
+    \end{enumerate}
+\end{definition}
+\textbf{Remark:} Notationally, this can be represented by $(G, *)$ or $\langle G, * \rangle$. This is saying that we are pairing a set with a binary operation. 
+
+\subsubsection{Example: Addition}
+For example, the integers under addition are a group. Notationally, this is represented by $(\Z, +)$. 
+\begin{itemize}
+    \item It's obvious that addition is associative. That is:
+    \[(a + b) + c = a + (b + c) = a + b + c\]
+
+    \item The identity element is 0. This is because:
+    \[0 + x = x + 0 = x\]
+
+    \item The inverse is $-x$. This is because:
+    \[x + (-x) = (-x) + x = 0\]
+\end{itemize}
+We also know that the reals, rationals, or complex numbers under addition are also groups. Notationally, this is represented by $(\R, +)$, $(\Q, +)$, or $(\C, +)$, respectively. 
+
+\subsubsection{Example: Multiplication}
+Let's now consider multiplication. In particular, multiplication does give a binary operation over $\Z$, $\Q$, $\R$, and $\C$. It's obvious that this is associative and 1 is the two-sided identity element. However, what about the inverse? 
+\begin{itemize}
+    \item If we try to take the integers under multiplication as a group, then we'll run into problems. This is because the multiplicative inverse of every \underline{integer} except $\pm 1$ is not an integer. For example, if we tried 2, then the multiplicative inverse of 2 is $\frac{1}{2}$. However, $\frac{1}{2} \notin \Z$. 
+    
+    \item Rational numbers are closer. For instance, $\left(\frac{a}{b}\right)^{-1} = \frac{b}{a}$. However, this is only defined if $a \neq 0$. The solution is to remove 0. Define $\Q^*$ to be the non-zero rational numbers (i.e. $\Q^* = \Q - \{0\}$). Then, $(\Q^*, \cdot)$ is a group. Similarly, we can make $\R$ and $\C$ groups under multiplication by removing 0. 
+    
+    \bigskip 
+
+    We note that this change does not affect the closure property because we can only achieve $a \cdot b = 0$ if and only if $a = 0$ or $b = 0$. Since $a \notin \R - \{0\}$ and $b \notin \R - \{0\}$ (or $\Q$ or $\C$), then we are still closed and our binary operation is still well-defined. 
+\end{itemize}
+
+\subsubsection{Example: Addition and Modular Arithmetic}
+More examples of groups come from modular arithmetic. For instance, consider addition modulo $n$ for some integer $n$. The set that we're going to be working with is \emph{equivalence classes} modulo $n$. Recall that\footnote{In general, $[a]_n = \overline{a} = \{x \in \Z \mid x \equiv a \mod{n}\}$}:
+\begin{center}
+    \[[0]_n = \overline{0} = \{\dots, -3n, -2n, -n, 0, n, 2n, 3n, \dots\}\]
+    \[[1]_n = \overline{1} = \{\dots, 1 - 3n, 1 - 2n, 1 - n, 1, 1 + n, 1 + 2n, 1 + 3n, \dots\}\]
+    \[[2]_n = \overline{2} = \{\dots, 2 - 3n, 2 - 2n, 2 - n, 2, 2 + n, 2 + 2n, 2 + 3n, \dots\}\]
+    \vdots 
+    \[[n - 1]_n = \overline{n - 1} = \{\dots, -n - 1, -1, n - 1, 2n - 1, \dots\}\]
+\end{center}
+We define our binary operation on the set of equivalence classes $\{\overline{0}, \overline{1}, \overline{2}, \dots, \overline{n - 1}\}$. What properties does this have? We know that modulo $n$ addition on these equivalence classes is:
+\begin{itemize}
+    \item Associative (and commutative).
+    \item It has identity $\overline{0}$. If you have equivalence class $\overline{k}$ (for $k \geq 1$), then the inverse if $\overline{n - k}$ for $1 \leq k \leq n - 1$ so that $1 \leq n - k \leq n - 1$. We note that:
+    \[\overline{k} + \overline{n - k} = \overline{0} \Mod{n}\]
+    \[k + (n - k) = n \in \overline{0}\]
+    \item $\overline{0}$ is the inverse of $\overline{0}$. 
+\end{itemize}
+We denote this group as $(\Z_n, + \Mod{n})$, where $\Z_n = \{\overline{0}, \overline{1}, \dots, \overline{n - 1}\}$. When it is clear, we can drop the lines. 
+
+\subsubsection{Example: Multiplication and Modular Arithmetic}
+Could we do multiplication modulo $n$ as a group? Well, multiplication modulo $n$ on the set $\Z_n$ is an associative, commutative, binary operation with identity $\overline{1}$. However, inverses are potentially an issue ($\overline{0}$ specifically will be an issue). Can we fix this by removing all uninvertible elements? 
+\begin{itemize}
+    \item Yes, but can we characterize uninvertible elements? Well, the greatest common divisor of two integers is a linear combination. This is useful because we can think about $\gcd(k, n)$ where $k \in \{1, \dots, n - 1\}$. Specifically, if $\gcd(k, n) = 1$, then $ak + bn = 1$ implies that $\overline{a} \cdot \overline{k} = \overline{1} \Mod{n}$. In other words, $k$ is invertible if $\gcd(n, k) = 1$. 
+    \item What if $\gcd(k, n) > 1$? If $k$ was invertible under multiplication modulo $n$, then $\overline{a} \overline{k} = \overline{1} \Mod{n}$. But, that would mean that there is a linear combinations of $a$ and $k$ that is equal to 1. Thus, $k$ is invertible under multiplication modulo $n$ if and only if $\gcd(k, n) = 1$. 
+\end{itemize}
+Let's now consider only taking equivalence classes $\overline{k}$ where $\overline{k}$ is relatively prime for $n$. We will now make the claim that $(U(n), \cdot \Mod{n})$ is a group. We know that this is associative and commutative, we justified that it has an inverse and an identity element. However, is this still closed? 
+
+\bigskip 
+
+More formally, why do we have closure of the binary operations? We could think about this in several ways. We could give a proof that the product two integers that are relatively prime to $n$ is still relatively prime to $n$, or we can think about this more algebraically: namely, we can justify that the product of two invertible equivalence classes is also invertible. 
+
+\bigskip 
+
+If $k_1, k_2$ are both invertible, then $k_1 k_2$ is also invertible. Why is this the case? Well, $k_1$ and $k_2$ being invertible means that there is some value $k_1^{-1}$ and $k_2^{-1}$. So, let's consider $k_2^{-1} k_1^{-1}$. We know that:
+\begin{equation*}
+    \begin{aligned}
+        (k_1 k_2) \left[k_2^{-1} k_1^{-1}\right] &= k_1 \left[k_2 k_2^{-1}\right] k_1^{-1} \\ 
+            &= k_1 \epsilon k_1^{-1} \\ 
+            &= k_1 k_1^{-1} \\ 
+            &= \epsilon
+    \end{aligned}
+\end{equation*}
+
+\subsection{Basic Properties of Groups}
+\begin{itemize}
+    \item \underline{Uniqueness of the Identity.} 
+
+    Could we have two unique two-sided identities in a group $G$? No. If we assume by contradiction that we had $\epsilon_1$ and $\epsilon_2$, both of which are unique two-sided identity elements. Then, we know that $\epsilon_1 \epsilon_2 = \epsilon_2$ since $\epsilon_1$ is an identity. But, since $\epsilon_2$ is also an identity, then $\epsilon_1 \epsilon_2 = \epsilon1$. So, it follows that $\epsilon_1$ and $\epsilon_2$ are not unique. 
+
+    \item \underline{Uniqueness of Inverses.}
+    
+    If $g_1$, $g_2$ are both inverses of some element $h$, then:
+    \[g_1 h = \epsilon = g_2 h\]
+    Additionally, we know that:
+    \[g_1 (h g_2) = g_1 \epsilon = g_1\]
+    \[(g_1 h) g_2 = g_2 \epsilon = g_2\]
+    So, it follows that $g_1 = g_2$. Thus, an element $h$ will have a unique inverse. 
+
+    \item \underline{Cancellation.}
+    
+    Suppose we have the expression $ga = gb$. This implies that $a = b$. 
+
+    \begin{proof}
+        We know that $gag^{-1} = gbg^{-1} \iff \epsilon a = \epsilon b \iff a = b$. 
+    \end{proof}
+
+    \textbf{Remark:} Although $ga = gb$, $ga \neq bg$ ($ga$ is not necessarily equal to $bg$). 
+\end{itemize}
 
 \end{document}

@@ -10,20 +10,27 @@
 \usepackage{enumerate}
 \usepackage{framed}
 \usepackage{tcolorbox}
+\usepackage{csquotes}
+
 \tcbuselibrary{theorems}
 
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\Z}{\mathbb{Z}}
 \newcommand{\N}{\mathbb{N}}
 \newcommand{\Q}{\mathbb{Q}}
+\newcommand{\C}{\mathbb{C}}
 \newcommand{\code}[1]{\texttt{#1}}
 \newcommand{\mdiamond}{$\diamondsuit$}
+\newcommand{\PowerSet}{\mathcal{P}}
+\newcommand{\Mod}[1]{\ (\mathrm{mod}\ #1)}
+\DeclareMathOperator{\lcm}{lcm}
 
 %\newtheorem*{theorem}{Theorem}
 %\newtheorem*{definition}{Definition}
-\newtheorem*{proposition}{Proposition}
 %\newtheorem*{corollary}{Corollary}
 %\newtheorem*{lemma}{Lemma}
+\newtheorem*{proposition}{Proposition}
+
 
 \newtcbtheorem[number within=section]{theorem}{Theorem}
 {colback=green!5,colframe=green!35!black,fonttitle=\bfseries}{def}
@@ -36,3 +43,6 @@
 
 \newtcbtheorem[number within=section]{lemma}{Lemma}
 {colback=red!5,colframe=red!35!black,fonttitle=\bfseries}{def}
+
+\newtcbtheorem[number within=section]{example}{Example}
+{colback=white!5,colframe=white!35!black,fonttitle=\bfseries}{def}

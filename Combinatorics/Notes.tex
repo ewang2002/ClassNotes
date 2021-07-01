@@ -104,7 +104,7 @@ Together, you can get $S_1$, which implies $S_2$, which implies $S_3$, and so on
     \item Induction is usually helpful in situations where statements for $n$ and $n + 1$ is easy to relate. 
 \end{itemize}
 
-\subsubsection{Example}
+\subsubsection{Example: Weak Induction}
 Prove $1 + 2 + 3 + \dots + n = \frac{n(n + 1)}{2}$. 
 
 \begin{proof}
@@ -1276,7 +1276,7 @@ These $k$ values are fixed, and we can use any permutation on the other $n - k$ 
             &= n! \left(1 - \sum_{k = 1}^{n} (-1)^{k - 1} \frac{1}{k!}\right)
     \end{aligned}
 \end{equation*}
-This gives us the following theorem: 
+This gives us the following definition: 
 \begin{definition}{Derangements}{}
     A derangement is a permutation with no 1-cycles. This is denoted by $D_n$, or the number of derangements of $[n]$ with no 1-cycles, and can be found using the formula:
     \[D_n = n! - \sum_{k = 1}^n (-1)^{k - 1} \frac{n!}{k!}\]
@@ -1771,10 +1771,75 @@ A \textbf{stack} is an object that stores numbers. You can push more numbers ont
     A permutation $\pi$ of $[n]$ is stack-sortable if there is a series of operations that involve $1, 2, \dots, n$ being pushed into a stack in $\pi$ order and popped off the stack in sorted order. 
 \end{definition}
 
+For example, \code{312} is stack-sortable:
+\begin{verbatim}
+    Operation           Stack           Popped 
+    ---------------------------------------------
+    push(3)             [3]             []
+    push(1)             [3, 1]          []
+    pop()               [3]             [1]
+    push(2)             [3, 2]          [1]
+    pop()               [3]             [1, 2]
+    pop()               []              [1, 2, 3]
+\end{verbatim}
+
+Another example we can look at is \code{632154}, which is stack-sortable:
+\begin{verbatim}
+    Operation           Stack           Popped 
+    ---------------------------------------------
+    push(6)             [6]             []
+    push(3)             [6, 3]          []
+    push(2)             [6, 3, 2]       []
+    push(1)             [6, 3, 2, 1]    []
+    pop()               [6, 3, 2]       [1]
+    pop()               [6, 3]          [1, 2]
+    pop()               [6]             [1, 2, 3]
+    push(5)             [6, 5]          [1, 2, 3]
+    push(4)             [6, 5, 4]       [1, 2, 3]
+    pop()               [6, 5]          [1, 2, 3, 4]
+    pop()               [6]             [1, 2, 3, 4, 5]
+    pop()               []              [1, 2, 3, 4, 5, 6]
+\end{verbatim}
+
+Yet another example we can look at is \code{231}, which is \textbf{not} stack-sortable:
+\begin{verbatim}
+    Operation           Stack           Popped 
+    ---------------------------------------------
+    push(2)             [2]             []
+    push(3)             [2, 3]          []
+    push(1)             [2, 3, 1]       []
+    pop()               [2, 3]          [1]
+    pop()               [2]             [1, 3]
+\end{verbatim}
+
+\subsubsection{Sortability}
+Which permutations are stack-sortable?
+\begin{itemize}
+    \item We can never stack larger values on top of smaller values.
+    \item Must pop $i$ before any $j > i$ shows up.
+    \item This is a problem if some $k < i$ shows up after $j$. 
+\end{itemize}
+
 \subsubsection{Classification}
 \begin{theorem}{}{}
     A permutation is stack-sortable unless there are entries $k < i < j$ so that $i$ occurs before $j$ which occurs before $k$. 
 \end{theorem}
+
+\begin{proof}
+    If such $i, j, k$ exists, it is not stack-sortable. But, if no such $i, j, k$ exist, we can use the following algorithm.
+    \begin{itemize}
+        \item Pop the stack when the next element to be added is bigger than the one on top or if there are no more elements. 
+    \end{itemize}
+    Here, we note that the elements in the stack are always in decreasing sorted order. This is because we only add elements smaller than the current top element.
+    \begin{itemize}
+        \item Pop $i$ when $j > i$ is about to be pushed. 
+        \item No $k < i$ remains to be pushed. 
+        \item No $k < i$ is below $i$ on the stack.
+    \end{itemize}
+    Therefore, the elements are popped in sorted order.
+\end{proof}
+
+So, $\pi$ is stack-sortable unless there are three entries $i$ that comes before $j$ that comes before $k$ with $k < i < j$. Equivalently, unless there are $x < y < z$ with $\pi(z) < \pi(x) < \pi(y)$. Or, three entries where the second smallest comes before the biggest comes before the smallest. 
 
 \subsection{Patterns}
 \begin{definition}{}{}
