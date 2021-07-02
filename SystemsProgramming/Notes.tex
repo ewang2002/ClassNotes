@@ -9,7 +9,7 @@
 \fancyhf{}
 \rhead{CSE 30}
 \chead{June 5th, 2021}
-\lhead{Final Review}
+\lhead{Course Notes}
 \rfoot{\thepage}
 
 \setlength{\parindent}{0pt}
@@ -1168,11 +1168,11 @@ The difference between \code{ASR} and \code{LSR} are as follows:
 \end{itemize}
 A visual diagram\footnote{Note that we are using 8-bits for illustration purposes.} is shown below (courtesy of Professor Chin from his review video):
 \begin{center}
-    \includegraphics[scale=0.3]{lsr_asr.PNG}
+    \includegraphics[scale=0.3]{img/lsr_asr.PNG}
 \end{center}
 Another visual diagram is shown below:
 \begin{center}
-    \includegraphics[scale=0.7]{lsr_asr_ex.PNG}
+    \includegraphics[scale=0.7]{img/lsr_asr_ex.PNG}
 \end{center}
 
 \subsection{Assignment Instructions}
@@ -1550,7 +1550,7 @@ In general, if you have a parameter value (\code{r0} through \code{r3}) that you
 \subsubsection{Storing Local Variables on the Stack}
 When saving things, we need to save it to the stack. Recall that the stack looks something like:
 \begin{center}
-    \includegraphics[scale=0.6]{i2.PNG}
+    \includegraphics[scale=0.6]{img/i2.PNG}
 \end{center}
 There are a few things to note here.
 \begin{itemize}
@@ -1609,7 +1609,7 @@ A few things to consider. Here, \code{fp} means frame pointer and \code{sp} mean
         \item \code{Local Variable} \code{i} is at offset \code{-16} and \code{j} is at \code{-20}.
     \end{itemize}
     \begin{center}
-        \includegraphics[scale=0.8]{i3.PNG}
+        \includegraphics[scale=0.8]{img/i3.PNG}
     \end{center}
     \item \code{PARAM\_SPACE} refers to the number of formal parameter bytes to allocate. This is where you can store the incoming parameters. This refers to \code{r0-r3}. 
     \item \code{PARAM1\_OFFSET0} and \code{PARAM2\_OFFSET1} both follow from the local variable offsets. You use these if you want to save the parameters. 
@@ -1704,7 +1704,7 @@ There are a few logic gates to remember.
 \subsubsection{AND Gates}
 An AND Gate is a basic logic gate which provides \code{1} once all of the inputs to the AND Gate are \code{1}. If any of the input is \code{0}, than its output is \code{0}. It is also referred to as arithmetic multiply operation. It can be represented like so:
 \begin{center}
-    \includegraphics[scale=0.9]{l4.PNG}
+    \includegraphics[scale=0.9]{img/l4.PNG}
 \end{center}
 Here are some common representations of \code{AND}.
 \begin{itemize}
@@ -1727,7 +1727,7 @@ And the truth table is as follows:
 \subsubsection{OR Gates}
 A logical gate which gives \code{0} if only and only when all of the inputs are low state \code{0}. Otherwise, it will give \code{1} as the output. It can be represented like so: 
 \begin{center}
-    \includegraphics[scale=0.7]{l5.PNG}
+    \includegraphics[scale=0.7]{img/l5.PNG}
 \end{center}
 Some ways to represent \code{OR}: 
 \begin{itemize}
@@ -1749,7 +1749,7 @@ And the truth table:
 \subsubsection{NOT Gates}
 A logical NOT gate takes \code{0} or \code{1}, and produces \code{1} and \code{0} respectively as an output. It can be represented like so: 
 \begin{center}
-    \includegraphics[scale=0.7]{l6.PNG}
+    \includegraphics[scale=0.7]{img/l6.PNG}
 \end{center}
 Some ways to represent \code{NOT}:
 \begin{itemize}
@@ -1769,7 +1769,7 @@ And the truth table:
 \subsubsection{NAND Gate}
 A logical NAND operates as an AND gate followed by a NOT gate. It can be represented like so (notice the circle at the tip):
 \begin{center}
-    \includegraphics[scale=0.9]{l7.PNG}
+    \includegraphics[scale=0.9]{img/l7.PNG}
 \end{center}
 Some ways to represent \code{NAND}:
 \begin{itemize}
@@ -1792,7 +1792,7 @@ And the truth table is as follows:
 \subsubsection{NOR Gate}
 A logical NOR operates as an OR gate followed by a NOT gate. It can be represented like so:
 \begin{center}
-    \includegraphics[scale=0.9]{l8.PNG}
+    \includegraphics[scale=0.9]{img/l8.PNG}
 \end{center}
 Some ways to represent \code{NOR}:
 \begin{itemize}
@@ -1815,7 +1815,7 @@ And the truth table is as follows:
 \subsubsection{XOR Gate}
 A logical gate which gives \code{1} if \underline{one of two} inputs is \code{1} and \code{0} otherwise. It can be represented like so:
 \begin{center}
-    \includegraphics[scale=0.6]{l10.PNG}
+    \includegraphics[scale=0.6]{img/l10.PNG}
 \end{center}
 Some ways to represent \code{XOR}:
 \begin{itemize}
@@ -1837,7 +1837,7 @@ And the truth table is as follows:
 \subsubsection{XNOR Gate}
 A logical gate operates as a XOR gate followed by a NOT gate. It can be represented like so:
 \begin{center}
-    \includegraphics[scale=0.6]{l11.PNG}
+    \includegraphics[scale=0.6]{img/l11.PNG}
 \end{center}
 Some ways to represent \code{XOR}:
 \begin{itemize}
@@ -1889,7 +1889,7 @@ You can use these to help in simplifying boolean expressions.
 \end{itemize}
 Consider this timing diagram:
 \begin{center}
-    \includegraphics[scale=0.6]{timing_diagram.PNG}
+    \includegraphics[scale=0.6]{img/timing_diagram.PNG}
 \end{center}
 \begin{itemize}
     \item The bottom-most line represents \code{0} and the top-most line represents \code{1}.
@@ -1901,7 +1901,7 @@ Consider this timing diagram:
 \subsection{Multiplexer (Mux)}
 A simple 2-1 mux, like the one shown below, takes in two bits and produces one bit, depending on the way the third input is set.
 \begin{center}
-    \includegraphics[scale=0.4]{mux.PNG}
+    \includegraphics[scale=0.4]{img/mux.PNG}
 \end{center}
 The truth table for a 2-1 mux is:
 \begin{center}
@@ -1943,14 +1943,14 @@ The expression and its corresponding truth table is:
 \subsection{Arithmetic Logic Unit (ALU)}
 A one-bit ALU looks like this:
 \begin{center}
-    \includegraphics[scale=0.5]{1b_alu.PNG}
+    \includegraphics[scale=0.5]{img/1b_alu.PNG}
 \end{center}
 This ALU can perform \code{ADD}, \code{OR}, and the \code{ADD} operations. 
 
 \subsubsection{32-Bit ALU}
 Suppose we wanted a 32-bit ALU. Then, we only need to chain the above one-bit ALU 32 times. That is:
 \begin{center}
-    \includegraphics[scale=0.5]{32b_alu.PNG}
+    \includegraphics[scale=0.5]{img/32b_alu.PNG}
 \end{center}
 The carry-out of bit 0 goes to the carry-in of bit 1, the carry-out of bit 1 goes to the carry-in of bit 2, and so on.
 
@@ -1968,7 +1968,7 @@ The carry-out of bit 0 goes to the carry-in of bit 1, the carry-out of bit 1 goe
 
 \emph{Given the full ALU below, what signals accomplish \code{ADD}?}
 \begin{center}
-    \includegraphics[scale=0.7]{full_alu_ex.PNG}
+    \includegraphics[scale=0.7]{img/full_alu_ex.PNG}
 \end{center}
 
 \begin{center}
@@ -2027,11 +2027,11 @@ With combinational logic, we generate a bunch of inputs and generate an output. 
 
 We're going to add a \textbf{state element}, which allows us to save some values so we can use them later. This looks something like the diagram below\footnote{\code{clk} is the clock.}. We will use a clock to distinguish between the different phases of the logic. 
 \begin{center}
-    \includegraphics[scale=0.5]{state_element.PNG}
+    \includegraphics[scale=0.5]{img/state_element.PNG}
 \end{center}
 One main thing we talked about was the idea of the \textbf{sequential network}. A sequential network looks something like: 
 \begin{center}
-    \includegraphics[scale=0.3]{sequential_network.PNG}
+    \includegraphics[scale=0.3]{img/sequential_network.PNG}
 \end{center}
 
 It has combinational logic (which computes something and then saves it) and state elements (which will save the state).
@@ -2050,13 +2050,13 @@ For every clock cycle:
 \subsubsection{Set/Reset Latch (S-R Latch)}
 The SR latch has two inputs \underline{S}et and \underline{R}eset, and another two inputs $Q$ and $\overline{Q}$ (the inverse of $Q$) and can be constructed from a pair of \code{NOR} gates. It looks like:
 \begin{center}
-    \includegraphics[scale=0.5]{SR_latch.png}
+    \includegraphics[scale=0.5]{img/SR_latch.png}
 \end{center}
 
 \subsubsection{Example Questions}
 \emph{Consider the following diagram:}
 \begin{center}
-    \includegraphics[scale=0.5]{SR_latch.png}
+    \includegraphics[scale=0.5]{img/SR_latch.png}
 \end{center}
 \emph{Recall that $\overline{Q} = Q' = \sim Q$. Suppose $S = 1$ and $R = 0$. What will $Q$ be?}
 \begin{center}
@@ -2092,18 +2092,18 @@ The SR latch has two inputs \underline{S}et and \underline{R}eset, and another t
 \subsubsection{Issues with the Set/Reset Latch}
 What if $S = R = 1$? Then, $Q = \overline{Q} = 0$, which violates the idea that $\overline{Q}$ is the inverse of $Q$.
 \begin{center}
-    \includegraphics[scale=0.5]{sr_bad_1.PNG}
+    \includegraphics[scale=0.5]{img/sr_bad_1.PNG}
 \end{center}
 
 This also creates another issue. That is, once we set $S = R = 0$ at the same time, both \code{NOR} gates will try to output a \code{1} at the same time, which will cause both \code{NOR} gates to output \code{0}s. In this sense, the S-R latch will keep oscillating back and forth until one \code{NOR} gate ``wins'' due to physical differences. This leaves the S-R latch in an unknown issue. 
 \begin{center}
-    \includegraphics[scale=0.5]{sr_bad_2.PNG}
+    \includegraphics[scale=0.5]{img/sr_bad_2.PNG}
 \end{center}
 
 \subsubsection{Clock Signals}
 One way to resolve this issue is through the idea of a \underline{clock}. In a computer, a clock is a thing that provides a synchronization point so that as a computer is changing from one state to another, it is done based on a \emph{clock cycle}. So, really, a clock is just a periodic signal that oscillates. 
 \begin{center}
-    \includegraphics[scale=0.5]{clock.PNG}
+    \includegraphics[scale=0.5]{img/clock.PNG}
 \end{center}
 The clock cycle time, also known as the \emph{period}, is the time between positive edges of a clock signal. This is defined by:
 \[\text{Frequency} = \frac{1}{\text{Period}}\]
@@ -2111,7 +2111,7 @@ The clock cycle time, also known as the \emph{period}, is the time between posit
 \subsubsection{Back to the S-R Latch}
 We now need to synchronize our S-R latch. To do this, we'll add a clock. 
 \begin{center}
-    \includegraphics[scale=0.5]{new_sr.PNG}
+    \includegraphics[scale=0.5]{img/new_sr.PNG}
 \end{center}
 Where our inputs are:
 \begin{itemize}

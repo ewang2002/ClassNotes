@@ -66,6 +66,10 @@ Most, if not all, images and diagrams used in these notes are screenshots taken 
 \newpage
 \pagenumbering{arabic}
 
+
+% --------------------------------------------------------- %
+%                   NEW SECTION                             %
+% --------------------------------------------------------- %
 \section{Mathematical Induction}
 There are two types of mathematical induction: weak induction (also simply known as \emph{induction}) and strong induction. 
 
@@ -167,6 +171,14 @@ Prove that $a_n = 2^{n - 1}$ by strong induction on $n \geq 1$.
     \end{itemize}
 \end{proof}
 
+
+
+
+
+
+% --------------------------------------------------------- %
+%                   NEW SECTION                             %
+% --------------------------------------------------------- %
 \newpage
 \section{Pigeonhole Principle}
 \emph{There is some pair of people in San Diego with exactly the same number of hairs on their heads.}
@@ -208,6 +220,15 @@ Suppose you placed 1000 points in the unit cube. Show that some 4 of them form a
 \end{proof}
 
 
+
+
+
+
+
+
+% --------------------------------------------------------- %
+%                   NEW SECTION                             %
+% --------------------------------------------------------- %
 \newpage 
 \section{Counting Principles}
 We will now briefly talk about the different counting principles along with their applications. Counting is a major part of combinatorics with a number of applications. For example:
@@ -472,6 +493,13 @@ Consider the question: \emph{How many possible 5-letter words are there with exa
 
 
 
+
+
+
+
+% --------------------------------------------------------- %
+%                   NEW SECTION                             %
+% --------------------------------------------------------- %
 \newpage 
 \section{Balls and Bins}
 When talking about balls and bins, there are four situations that we need to consider.
@@ -520,7 +548,7 @@ Each ball $b_1$, $b_2$, \dots, $b_n$ can go into any of the $k$ bins (possibly e
 \subsection{Indistinguishable Balls into Distinguishable Bins: Compositions}
 With indistinguishable balls, you can no longer tell where the ``first'' or ``second'' ball went. What can you tell, though? 
 \begin{center}
-    \includegraphics[scale=0.4]{ind_ball_i_bin.PNG}
+    \includegraphics[scale=0.4]{img/ind_ball_i_bin.PNG}
 \end{center}
 In this example, you are able to count the number of balls in each bin, though. For example, there are 5 balls in bin 1, 2 balls in bin 2, and 4 balls in bin 3.
 
@@ -711,7 +739,7 @@ So, the recurrence relation is:
 \subsection{Indistinguishable Balls into Indistinguishable Bins: Integer Partitions}
 Consider unlabeled balls into unlabeled boxes, like so:
 \begin{center}
-    \includegraphics[scale=0.8]{i_ball_i_bin.PNG}
+    \includegraphics[scale=0.8]{img/i_ball_i_bin.PNG}
 \end{center}
 
 The question, then, is: \emph{what can we keep track of?}
@@ -757,7 +785,7 @@ There is no clean formula. However, we can come up with a definition.
 \subsubsection{Ferrers Diagram}
 A Ferrers Diagram is a way to visualize partitions. In particular, we note that the $i$th row has $a_i$ squares. For instance, consider the Ferrers Diagram:
 \begin{center}
-    \includegraphics[scale=0.3]{ferrer.PNG}
+    \includegraphics[scale=0.3]{img/ferrer.PNG}
 \end{center}
 This corresponds to the partition $3 + 3 + 2 + 1 + 1 = 10$. 
 
@@ -777,7 +805,7 @@ Given a Ferrers diagram, we can come up with what is known as a \textbf{conjugat
 
 Consider the example that we used above. Then:
 \begin{center}
-    \includegraphics[scale=0.3]{conj.PNG}
+    \includegraphics[scale=0.3]{img/conj.PNG}
 \end{center}
 So, the conjugate of $3 + 3 + 2 + 1 + 1$ is $5 + 3 + 2$. 
 
@@ -796,11 +824,11 @@ There are some properties of conjugates to keep in mind.
 \end{definition}
 Here is an example of a self-conjugate partition:
 \begin{center}
-    \includegraphics[scale=0.3]{self_c.PNG}
+    \includegraphics[scale=0.3]{img/self_c.PNG}
 \end{center}
 The squares in the Ferrers diagram for any self-conjugate partition can be decomposed into Ls. In the example shown below, we have $9 + 3 + 1$. 
 \begin{center}
-    \includegraphics[scale=0.8]{self_c_L.PNG}
+    \includegraphics[scale=0.8]{img/self_c_L.PNG}
 \end{center}
  
 \begin{itemize}
@@ -814,9 +842,17 @@ As a result, we have the following theorem:
 
 \subsection{Summary}
 \begin{center}
-    \includegraphics[scale=0.6]{summary_ballbin.PNG}
+    \includegraphics[scale=0.6]{img/summary_ballbin.PNG}
 \end{center}
 
+
+
+
+
+
+% --------------------------------------------------------- %
+%                   NEW SECTION                             %
+% --------------------------------------------------------- %
 \newpage 
 \section{Binomial Theorem and Related Identities}
 Recall the identities that we have found already to be useful:
@@ -926,6 +962,15 @@ There are some important theorems from the textbook.
 \end{theorem}
 
 
+
+
+
+
+
+
+% --------------------------------------------------------- %
+%                   NEW SECTION                             %
+% --------------------------------------------------------- %
 \newpage 
 \section{Permutations and Cycle Structures}
 Now, we will talk more about permutations and, in particular, cycle structures.
@@ -960,14 +1005,14 @@ From there, the sequence repeats itself. This sequence $m$, $\pi(m)$, $\pi^{2}(m
 
 For instance, consider \code{7146352}. This permutation has two cycles.
 \begin{center}
-    \includegraphics[scale=0.5]{ex_cycle.PNG}
+    \includegraphics[scale=0.5]{img/ex_cycle.PNG}
 \end{center}
 
 \bigskip 
 
 We can also look at the permutation \code{14253}. This permutation also has two cycles:
 \begin{center}
-    \includegraphics[scale=0.5]{ex_cycle_2.PNG}
+    \includegraphics[scale=0.5]{img/ex_cycle_2.PNG}
 \end{center}
 
 \subsection{Cycle Representation}
@@ -1124,6 +1169,16 @@ For the above lemma, there is a nice bijection that you can use to prove this. I
     \[EVEN(2m + 1) = 0\]
 \end{theorem}
 
+
+
+
+
+
+
+
+% --------------------------------------------------------- %
+%                   NEW SECTION                             %
+% --------------------------------------------------------- %
 \newpage 
 \section{Inclusion-Exclusion}
 Now, we will briefly discuss inclusion-exclusion.
@@ -1284,6 +1339,15 @@ This gives us the following definition:
 
 
 
+
+
+
+
+
+
+% --------------------------------------------------------- %
+%                   NEW SECTION                             %
+% --------------------------------------------------------- %
 \newpage 
 \section{Generating Functions}
 In order to study some interesting sequence of numbers, $a_0, a_1, a_2, \dots$, we can turn these numbers into a single function $f(x) = a_0 + a_{1}x + a_{2}x^2 + \dots$ and study $f(x)$. 
@@ -1578,7 +1642,7 @@ The idea is that we cannot, at any point, have more closing parentheses than ope
 
 One way to count this is to image an $n \times n$ graph, something like:
 \begin{center}
-    \includegraphics[scale=0.6]{graph_cat.PNG}
+    \includegraphics[scale=0.6]{img/graph_cat.PNG}
 \end{center}
 Here, we can make steps of either $(0, 1)$ or $(1, 0)$, and the graph starts at $(0, 0)$ and ends at $(n, n)$. So, for a parenthesis pattern, we can create a path where we can keep track of the number of left parentheses and the number of right parentheses:
 \[(\text{Num. Left Paren.}, \text{Num. Right Paren.})\]
@@ -1603,6 +1667,16 @@ Using generating functions, we arrive at the following conclusion:
     \[C_n = \frac{1}{n + 1} \binom{2n}{n}\]
 \end{definition}
 
+
+
+
+
+
+
+
+% --------------------------------------------------------- %
+%                   NEW SECTION                             %
+% --------------------------------------------------------- %
 \newpage 
 \section{Exponential Generating Functions}
 Like ordinary generating functions, this is a way to associate sequence of numbers that we're interested in studying to some power series.
@@ -1754,8 +1828,16 @@ Thus, the generating function for permutations with odd length cycles is:
     \[\sum_{n = 0}^{\infty} D_n \frac{x^n}{n!} = \frac{e^{-x}}{1 - x}\]
 \end{itemize}
 
-\newpage 
 
+
+
+
+
+
+% --------------------------------------------------------- %
+%                   NEW SECTION                             %
+% --------------------------------------------------------- %
+\newpage 
 \section{Pattern Avoidance in Permutations}
 \begin{itemize}
     \item Patterns in Permutations 
@@ -1868,7 +1950,7 @@ Consider \code{231}. This is saying that the ``next biggest'' element is first, 
 \subsubsection{Visualization}
 It is often useful to consider graphs of the permutations involved. 
 \begin{center}
-    \includegraphics[scale=0.40]{main_permutation.PNG}
+    \includegraphics[scale=0.40]{img/main_permutation.PNG}
 \end{center}
 This graph represents the permutation \code{423615}:
 \begin{itemize}
@@ -1881,11 +1963,11 @@ This graph represents the permutation \code{423615}:
 \end{itemize}
 Suppose I selected three elements from the above graph (call this graph \code{1}):
 \begin{center}
-    \includegraphics[scale=0.3]{main_permutation_s.PNG}
+    \includegraphics[scale=0.3]{img/main_permutation_s.PNG}
 \end{center}
 And now suppose that we have the following graph (call this graph \code{2}):
 \begin{center}
-    \includegraphics[scale=0.45]{pattern_perm.PNG}
+    \includegraphics[scale=0.45]{img/pattern_perm.PNG}
 \end{center}
 Then, if we see the relative positions of the selected elements in graph \code{1}, we notice that they have the same relative positions as the three elements in graph \code{2}. In this sense, we can say that \code{261} has the same relative order as \code{231}, so \code{261} is a copy of the pattern \code{231} showing up within this larger permutation. 
 
@@ -1909,7 +1991,7 @@ How many stack-sortable permutations are there? In other words, what is $|S_{n}(
     \end{itemize}
     Consider $n$ in the $k$th location. We're going to assume that the biggest element $n$ shows up in the $k$th spot. That is:
     \begin{center}
-        \includegraphics[scale=0.3]{layout_perm.PNG}
+        \includegraphics[scale=0.3]{img/layout_perm.PNG}
     \end{center}
     Because we don't have any copies of \code{231} (in particular, we don't have any copies where $n$ fills in this \code{3} position), the entries on the left must be smaller than entries on the right.
     \begin{itemize}
@@ -1926,7 +2008,7 @@ How many stack-sortable permutations are there? In other words, what is $|S_{n}(
 \begin{proof}
     Note that the diagrams for these permutations are simply rotations of each other.
     \begin{center}
-        \includegraphics[scale=0.4]{perm_rotation.PNG}
+        \includegraphics[scale=0.4]{img/perm_rotation.PNG}
     \end{center}
     For a permutation $\pi$, let $R\pi$ be its 90 degree permutation ($\pi$ contains a copy of $\rho$ if and only if $R\pi$ contains $R\rho$). Therefore, for any $\rho$, $|S_{n}(\rho)| = |S_{n}(R\rho)|$. The permutations that avoid $R\rho$ are just the rotations of those that avoid $\rho$, so there's a natural bijection. Then, applying this to $\rho = 231$ gives our theorem. 
 \end{proof}
@@ -1946,7 +2028,7 @@ We will use the following definition:
 
 An example of the left-to-right minima is:
 \begin{center}
-    \includegraphics[scale=0.4]{selected_perm.PNG}
+    \includegraphics[scale=0.4]{img/selected_perm.PNG}
 \end{center}
 
 \subsubsection{Validity}
@@ -2081,7 +2163,7 @@ The only way to avoid $123\dots k$ is to have few levels. These levels must be d
 \begin{definition}{}{}
     Given two permutations, $p$ and $q$, define their sum $p \oplus q$ to be the permutation whose graphs are given as follows:
     \begin{center}
-        \includegraphics[scale=0.5]{p_sum.PNG}
+        \includegraphics[scale=0.5]{img/p_sum.PNG}
     \end{center}
 \end{definition}
 
@@ -2095,8 +2177,15 @@ The only way to avoid $123\dots k$ is to have few levels. These levels must be d
 \end{theorem}
 
 
-\newpage 
 
+
+
+
+
+% --------------------------------------------------------- %
+%                   NEW SECTION                             %
+% --------------------------------------------------------- %
+\newpage 
 \section{Partial Orders}
 \begin{itemize}
     \item Basic Definitions. 
@@ -2230,7 +2319,7 @@ The lemma implies that you can specify the partial order by specifying which ele
 \subsubsection{Example: Hasse Diagram for Refinement}
 Consider the Hasse Diagram for $\sqcap_3$:
 \begin{center}
-    \includegraphics[scale=0.5]{ex_hasse.PNG}
+    \includegraphics[scale=0.5]{img/ex_hasse.PNG}
 \end{center}
 Where the bottom-most element is the minimum element and the top-most element is the maximum element. 
 
@@ -2258,7 +2347,7 @@ Where the bottom-most element is the minimum element and the top-most element is
 \subsubsection{Example: Covers of \texorpdfstring{$\sqcap_3$}{Set of Set Partitions of [3] Ordered by Refinement}}
 What is the smallest number of chains needed to cover $\sqcap_3$?
 \begin{center}
-    \includegraphics[scale=0.3]{ex_hasse.PNG}
+    \includegraphics[scale=0.3]{img/ex_hasse.PNG}
 \end{center}
 
 \begin{itemize}
@@ -2270,13 +2359,13 @@ What is the smallest number of chains needed to cover $\sqcap_3$?
     \end{itemize}
     Diagrammatically, this looks like:
     \begin{center}
-        \includegraphics[scale=0.25]{hasse_1.PNG}
-        \includegraphics[scale=0.25]{hasse_2.PNG}
-        \includegraphics[scale=0.25]{hasse_3.PNG}
+        \includegraphics[scale=0.25]{img/hasse_1.PNG}
+        \includegraphics[scale=0.25]{img/hasse_2.PNG}
+        \includegraphics[scale=0.25]{img/hasse_3.PNG}
     \end{center}
     Combining these together gives:
     \begin{center}
-        \includegraphics[scale=0.5]{hasse_4.PNG}
+        \includegraphics[scale=0.5]{img/hasse_4.PNG}
     \end{center}
 \end{itemize}
 
@@ -2287,7 +2376,7 @@ What is the smallest number of chains needed to cover $\sqcap_3$?
 
 With regards to the previous question, Dilworth's Theorem answers the question: \emph{How do we know we cannot use fewer than 3 chains? }
 \begin{center}
-    \includegraphics[scale=0.25]{hasse_dil.PNG}
+    \includegraphics[scale=0.25]{img/hasse_dil.PNG}
 \end{center}
 
 The proof is a bit on the tedious side.
@@ -2313,7 +2402,7 @@ The proof is a bit on the tedious side.
         \end{itemize}
         This looks like:
         \begin{center}
-            \includegraphics[scale=0.5]{dil_pic_proof.PNG}
+            \includegraphics[scale=0.5]{img/dil_pic_proof.PNG}
         \end{center}
 
         Now, consider these cases.
@@ -2538,7 +2627,7 @@ Here are some random practice problems.
 \subsubsection{Example: Hasse Diagram}
 Consider the following Hasse Diagram\footnote{Thanks to TA Jesse Kim for this drawing.}:
 \begin{center}
-    \includegraphics[scale=0.6]{mobius.PNG}
+    \includegraphics[scale=0.6]{img/mobius.PNG}
 \end{center}
 \begin{itemize}
     \item Is this a lattice? 
@@ -2594,6 +2683,11 @@ The solutions are as follows:
 
 
 
+
+
+% --------------------------------------------------------- %
+%                   NEW SECTION                             %
+% --------------------------------------------------------- %
 \newpage 
 \section{Appendix}
 Here are some more information that may be helpful.

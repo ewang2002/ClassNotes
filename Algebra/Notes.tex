@@ -48,8 +48,8 @@
 \newpage
 \pagenumbering{arabic}
 
-\section{Review}
-We will go over topics covered in other courses that will be used in this course. 
+\section{Review: Equivalence Relations}
+We will go over topics covered in other courses that will be used in this course. We begin with the topic of equivalence relations. 
 
 \subsection{Equivalence Relations}
 Let $X$ be a non-empty set. Then, a \textbf{relation} over $X$ is a subset $R$ of $X \times X$. If $(x, y) \in R$, we say that $x$ is $R$-related to $y$ and write $x R y$. 
@@ -67,7 +67,7 @@ Suppose $R$ is a relation over $X$. Then:
     \item $R$ is called \textbf{transitive} if $\forall x, y, z \in X$, $x R y$ and $y R z$ implies that $x R z$. 
 \end{itemize}
 
-\begin{definition}{Equivalence Relation}{}
+\begin{definition}{Equivalence Relation}{equivRel}
     $R$ is called an \textbf{equivalence relation} if $R$ is reflexive, symmetric, and transitive. 
 \end{definition}
 
@@ -100,31 +100,184 @@ Then, $\sim$ is an equivalence relation\footnote{Another way of interpreting thi
 \subsection{Equivalence Relation Partitions}
 Recall that $P$ is called a \textbf{partition} of a non-empty set $X$ if:
 \begin{itemize}
-    \item $P$ consists of non-empty subsets of $X$. 
-    \item $A, B \in P$ and $A \neq B \implies A \cap B = \emptyset$. In other words, the subsets are disjoint. 
-    \item $\forall x \in X$, $\exists A \in P$ such that $x \in A$. In other words, every element in $X$ will be in one of the subsets. 
+    \item \underline{Subsets:} $P$ consists of non-empty subsets of $X$. 
+    \item \underline{Disjointness:} $A, B \in P$ and $A \neq B \implies A \cap B = \emptyset$. In other words, the subsets are disjoint. 
+    \item \underline{Covering:} $\forall x \in X$, $\exists A \in P$ such that $x \in A$. In other words, every element in $X$ will be in one of the subsets. Alternatively, $\bigcup_{A \in P} A = X$. 
 \end{itemize}
+
+\textbf{Remark:}
+\begin{itemize}
+    \item As mentioned, $P$ is a set of sets. For instance, if we have $X = \{1, 2, 3\}$, one possible $P$ is $P = \{\{1\}, \{2, 3\}\}$.
+    \item Below is a visual diagram of what a partition may look like.
+\end{itemize}
+\begin{center}
+    \includegraphics[scale=0.4]{img/partition.PNG}
+\end{center}
+
 Suppose $P$ is a partition of $X$. Then, we can get a classification function from $X$ to $P$:
 \[X \to P\]
-\[x \to [x]_P\]
-Here, $[x]_P$ is the unique element of $P$ which contains $x$. Notice that, because of the \textbf{covering} condition, $x$ is contained in some element of $P$; additionally, because of the \textbf{disjointness} condition, $x$ is in an unique element of $P$. 
+\[x \mapsto [x]_P\]
+Here, $[x]_P$ is the unique element of $P$ which contains $x$. In other words, if we refer to the above diagram, we can think of $[x]_P$, a set, as one of the sets $A_1$, $A_2$, $A_3$, $A_4$, or $A_5$ which contains $x$. So, we can think of this function as saying that every $x \in X$ belongs to one of the sets $[x]_P$. 
 
 \bigskip 
 
-By the previous example, $x \sim_P y \iff [x]_P = [y]_P$ is an equivalence relation. 
+Notice that, because of the \textbf{covering} condition, $x$ is contained in some element of $P$; additionally, because of the \textbf{disjointness} condition, $x$ is in an unique element of $P$ (i.e. it is in \underline{one} of the sets which is in $P$). So, it follows that the function is well-defined. 
 
 \bigskip 
 
-We obtain the following lemma. 
+By the previous example, $x \sim_P y \iff [x]_P = [y]_P$ is an equivalence relation. So, we obtain the following lemma. 
 \begin{lemma}{}{}
     Suppose $P$ is a partition of a non-empty set $X$. For $x, y \in X$, $x \sim y$ if $x$ and $y$ are in the same element of $P$. Then, $\sim$ is an equivalence relation.
 \end{lemma}
+\textbf{Remark:} Essentially, what this lemma is saying is that if $x \sim y$, then both $x$ and $y$ are in the same set which is in $P$. In other words, if we refer to the above diagram again, we can think of this situation as saying that both $x$ and $y$ are in \underline{one} of $A_1$, $A_2$, $A_3$, $A_4$, or $A_5$. The diagram below complements the proof.
+
+\begin{center}
+    \includegraphics[scale=0.30]{img/partition_x.PNG}
+\end{center}
 
 \begin{proof}
-    For $x \in X$, let $[x]_P$ to be the unique element of $P$ which contains $x$. So, $x \to [x]_P$ is a function from $X \to P$. By the previous example, $x \sim y \iff [x]_p = [y]_p$ is an equivalence relation over $X$. Notice that this means $x \sim y$ exactly when $x$ and $y$ are in the same element of $P$. 
+    For $x \in X$, let $[x]_P$ to be the unique element of $P$ which contains $x$. So, $x \mapsto [x]_P$ is a function from $X \to P$. By the previous example, $x \sim y \iff [x]_p = [y]_p$ is an equivalence relation over $X$. Notice that this means $x \sim y$ exactly when $x$ and $y$ are in the same element of $P$. 
 \end{proof}
 
+\subsection{Equivalence Relation Classes}
+Now, suppose that $\sim$ is the equivalence relation over a non-empty set $X$, we can partition $X$ with respect to $\sim$. 
 
+\bigskip 
+
+For $x \in X$, we let $[x] = \{y \in X \mid y \sim x\}$ (all the elements that are $\sim$-related to $x$).\footnote{So, it's obvious that $[x] \subseteq X$.} We call $[x]$ the \textbf{equivalence class of $x$ with respect to $\sim$}. When $x \sim y$, we can say that $x$ is equivalent to $y$ with respect to $\sim$. 
+
+\begin{proposition}
+    Suppose $\sim$ is an equivalence relation over a non-empty set $X$. Then, $\{[x] \mid x \in X\}$ is a partition of $X$. 
+\end{proposition}
+This proposition is essentially asking us to show the following properties: 
+\begin{itemize}
+    \item Covering: Every element of this set belongs to one of these equivalence classes. 
+    \item Disjointness: If we pick two equivalence classes, they do not intersect.
+\end{itemize}
+The following lemma follows from this proposition.
+\begin{lemma}{}{}
+    \[x \sim y \iff [x] = [y]\]
+\end{lemma}
+\begin{proof}
+    We want to show that $[x] = [y] \implies x \sim y$. Recall that the equivalence class of $x$ ($[x]$) and the equivalence class of $y$ ($[y]$) are \emph{sets} and, in particular, we know that $[x]$ consists of all elements that are related to $x$, including $x$. Since $\sim$ is reflexive, we know that:
+    \[x \sim x \implies x \in [x]\]
+    But, since $[x] = [y]$, then it follows that $x \in [y] \implies x \sim y$. Thus, $[x] = [y] \implies x \sim y$. 
+    
+    \bigskip 
+
+    To show that $x \sim y \implies [x] = [y]$, we need to show equality of sets $[x] = [y]$. This means that it is necessary and sufficient to prove $[x] \subseteq [y]$ and $[y] \subseteq [x]$.
+    \begin{itemize}
+        \item To prove $[x] \subseteq [y]$, we let $z \in [x]$. This means that $z \sim x$. However, since $x \sim y$, by transitivity, it follows that $y \sim z$, which implies that $z \in [y]$. Hence, $[x] \subseteq [y]$. 
+        \item We note that $x \sim y \implies y \sim x$ by symmetry. Therefore, by the first bullet point, $[y] \subseteq [x]$.
+    \end{itemize} 
+    So, it follows that $x \sim y \implies [x] = [y]$. 
+\end{proof}
+
+Now that we proved the lemma, we can now prove the proposition. 
+\begin{proof}
+    As mentioned, we need to show that the covering and disjointness properties exist in this partition.
+    \begin{itemize}
+        \item \underline{Covering:} $\forall x \in X$, we know that $x \sim x$ by the reflexive property (since $\sim$ is an equivalence relation). Thus, it follows that $x \in [x]$. This means that $x$ is related to $x$ and $x$ is an equivalence class of $x$, so every element in $X$ belongs to one of the equivalence classes. This implies that the $[x]$ sets are non-empty subsets and cover $X$.
+        \item \underline{Disjointness:} Suppose $z \in [x] \cap [y]$ (both equivalence classes are not disjoint). We need to show that they are equal. We know that:
+        \[z \in [x] \cap [y] \implies z \in [x] \implies z \sim x \implies [z] = [x]\]
+        \[z \in [x] \cap [y] \implies z \in [y] \implies z \sim y \implies [z] = [y]\]
+        Where the last two steps came from the lemma. Then, putting these two together, we have:
+        \[[z] = [x] \text{ and } [z] = [y] \implies [x] = [y]\]
+        We showed that $[x] \cap [y] \neq \emptyset \implies [x] = [y]$, the contrapositive of the disjointness property. 
+    \end{itemize}
+    Thus, the proof is complete. 
+\end{proof}
+
+\subsection{Summary}
+The following diagram provides a brief summary of what we've learned\footnote{This diagram was taken from Professor Alireza Salehi Golsefidy's notes.}
+\begin{center}
+    \includegraphics[scale=0.9]{img/equiv_relation.PNG}
+\end{center}
+
+
+
+
+
+
+
+
+% --------------------------------------------------------- %
+%                   NEW SECTION                             %
+% --------------------------------------------------------- %
+\newpage 
+\section{Review: Congruences, Long Division, Modulo}
+In this section, we discuss congruences, long division, and modulo. 
+
+\subsection{Congruence}
+The set of integers is denoted by $\Z$. For $a, b \in \Z$, we say that $a$ divides $b$ and write $a | b$ if $b = ak$ for some $k \in \Z$. Suppose $n$ is a non-zero integer. Then, we say that $a$ is \textbf{congruent} to $b$ modulo $n$ and write one of the following if $n | (a - b)$:
+\[a \equiv b \Mod{n}\]
+\[a \overset{n}{\equiv} b\]
+One way to think of this is through a clock. A clock has $n$ numbers (usually 12 numbers). Then, $a$ and $b$ will be on the same spot. For instance, suppose we have 9PM (denoted by the 21st hour). Then, we know that:
+\[21 \equiv \boxed{9} \Mod{12}\]
+In other words, the hour hand for 9PM will be in the same position as 9AM. 
+
+\subsection{Congruence and Equivalence Relations}
+\begin{lemma}{}{}
+    $\overset{n}{\equiv}$ is an equivalence relation over $\Z$. 
+\end{lemma}
+\begin{proof}
+    Recall that something is an equivalence relation if it satisfies the three properties mentioned in definition \ref{def:equivRel}. So, we need to show that $\overset{n}{\equiv}$ satisfies these. 
+    \begin{itemize}
+        \item \underline{Reflexive}: For every $a \in \Z$, we know that $a - a = 0$ is a multiple of $n$ as $n \cdot 0 = 0$. Hence, $a \overset{n}{\equiv} a$. 
+        \item \underline{Symmetric}: We have that: 
+        \begin{equation*}
+            \begin{aligned}
+                a \overset{n}{\equiv} b &\implies n | (a - b) \\ 
+                    &\implies \exists k \in \Z, a - b = nk \\ 
+                    &\implies b - a = n\underbrace{(-k)}_{\text{In } \Z} \\ 
+                    &\implies b \overset{n}{\equiv} a
+            \end{aligned}
+        \end{equation*}
+
+        \item \underline{Transitive:} We know that:
+        \[a \overset{n}{\equiv} b \implies n | (a - b) \implies \exists k \in Z, a - b = nk\]
+        We also know that:
+        \[b \overset{n}{\equiv} c \implies n | (b - c) \implies \exists l \in \Z, b - c = nl\]
+        Combining the statements, we now have:
+        \[(a - b) + (b - c) = nk + nl \implies a - c = n\underbrace{(k + l)}_{\text{In } \Z} \implies a \overset{n}{\equiv} c\]
+    \end{itemize}
+    Thus, $\overset{n}{\equiv}$ is an equivalence class. 
+\end{proof}
+
+\subsection{Congruence and Partitions}
+As we have seen earlier, every equivalent relation gives us a \textbf{partition} and an \textbf{equality function}. For $a \in \Z$, the equivalent class of $a$ with respect to $\overset{n}{\equiv}$ is called the \textbf{mod-$n$ residue class of $a$} and is denoted by $[a]_n$. By the results that we proved for equivalence relations, we have that:
+\begin{itemize}
+    \item $\{[a]_n \mid a \in \Z\}$ is a partition of $\Z$; and 
+    \item $a \overset{n}{\equiv} b \iff [a]_n = [b]_n$ 
+\end{itemize}
+The partition $\{[a]_n \mid a \in \Z\}$ is denoted by $\Z_n$ and it is called \textbf{the set of integers modulo $n$}. Notice that:
+\begin{equation*}
+    \begin{aligned}
+        b \in [a]_n &\iff b \overset{n}{\equiv} a \\ 
+            &\iff n | (b - a) \\ 
+            &\iff \exists k \in \Z, b - a = nk \\ 
+            &\iff \exists k \in \Z, b = a + nk \\ 
+            &\iff b \in \{a + nk \mid k \in \Z\} & \text{Arithmetic Progression}
+    \end{aligned}
+\end{equation*} 
+
+To understand the set $\Z_n$ better, we recall the well-ordering principle and the long division property of integers. One of the important properties of positive integers is the \textbf{well-ordering principle}. This principle can be viewed as an axiom that we assume $\Z$ has. 
+
+\subsubsection{Well-Ordering Principle}
+Every non-empty subset of the set $\Z_{\geq 0}$ of non-negative integers has a minimum. Using the well-ordering principle, we can prove the division algorithm. 
+
+\subsubsection{The Division Algorithm}
+For every $a \in \Z$, $b \in \Z - \{0\}$, there is a unique pair $(q, r)$ of integers such that:
+\[a = bq + r \qquad 0 \leq r \leq |b|\]
+
+% \overset{n}{\equiv}
+
+
+
+
+% --------------------------------------------------------- %
+%                   NEW SECTION                             %
+% --------------------------------------------------------- %
 \newpage 
 \section{Binary Operations and Group Theory}
 We want to explore the idea behind \emph{algebraic structures}. In particular, we want to explore these structures in more detail compared to earlier courses (either in past college or high school algebra classes).
