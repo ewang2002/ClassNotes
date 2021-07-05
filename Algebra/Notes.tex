@@ -245,11 +245,12 @@ In other words, the hour hand for 9PM will be in the same position as 9AM.
 \end{proof}
 
 \subsection{Congruence and Partitions}
-As we have seen earlier, every equivalent relation gives us a \textbf{partition} and an \textbf{equality function}. For $a \in \Z$, the equivalent class of $a$ with respect to $\overset{n}{\equiv}$ is called the \textbf{mod-$n$ residue class of $a$} and is denoted by $[a]_n$. By the results that we proved for equivalence relations, we have that:
+As we have seen earlier, every equivalence relation gives us a \textbf{partition} and an \textbf{equality function}. For $a \in \Z$, the equivalence class of $a$ with respect to $\overset{n}{\equiv}$ is called the \textbf{mod-$n$ residue class of $a$} and is denoted by $[a]_n$. By the results that we proved for equivalence relations, we have that:
 \begin{itemize}
     \item $\{[a]_n \mid a \in \Z\}$ is a partition of $\Z$; and 
     \item $a \overset{n}{\equiv} b \iff [a]_n = [b]_n$ 
 \end{itemize}
+
 The partition $\{[a]_n \mid a \in \Z\}$ is denoted by $\Z_n$ and it is called \textbf{the set of integers modulo $n$}. Notice that:
 \begin{equation*}
     \begin{aligned}
@@ -269,6 +270,69 @@ Every non-empty subset of the set $\Z_{\geq 0}$ of non-negative integers has a m
 \subsubsection{The Division Algorithm}
 For every $a \in \Z$, $b \in \Z - \{0\}$, there is a unique pair $(q, r)$ of integers such that:
 \[a = bq + r \qquad 0 \leq r \leq |b|\]
+To show that this is the case, consider the following diagram:
+\begin{center}
+    \includegraphics[scale=0.4]{img/mod_div.PNG}
+\end{center}
+For positive integers $a$ and $b$, we can keep ``cutting off'' the $b \times b$ squares until we are left with either a rectangle smaller than $b \times b$ (i.e. if $r > 0$), or nothing at all (i.e. $r = 0$). In this sense, the number of $b \times b$ squares that we cut off is denoted by $q$ (or $k$ soon). Then, it follows that $r$ is the smallest non-negative integer in the arithmetic progression $a - bk$.
+
+\bigskip 
+
+Now, we want to formalize this argument. We begin by defining: 
+\[\Sigma := [a]_b \cap \Z_{\geq 0} = \{a + bk \mid k \in \Z, a + bk \geq 0\}\]
+Here, we denote $\Sigma$ as a variable, not a summation. We want to use the well-ordering principle on the set $\Sigma$ to show that it has a minimium (more specifically, that $\Sigma$ is not empty). Our first claim is:
+\[\Sigma \text{ is not empty.}\]
+\begin{proof}
+    Since $b \neq 0$, we know that $|b| \geq 1$. Hence, $|b||a| \geq |a|$. Therefore:
+    \[\underbrace{|b|(|a| + 1) + a}_{a \pm b(|a| + 1)} \geq |a| + |b| + a \geq |b| > 0\]
+    It follows that $[a]_b$ has a positive integer. 
+\end{proof}
+By the above claim and the well-ordering principle, $\Sigma$ has a minimum. Now, suppose $r$ is the minimum of $\Sigma$. Then, $r = a - bq$ for some $q \in \Z$. Our second claim is:
+\[r < |b|\]
+\begin{proof}
+    Suppose to the contrary that $r \geq |b|$. Then, $r - |b| \geq 0$ and:
+    \[r - |b| = a - bq - |b| = a - b(q \pm 1)\]
+    In the above statement, we know that $r = a - bq$, which is in the arithmetic progression. When we subtract $|b|$, we are still in this arithmetic progression since all we're doing is adding or subtracting $b$; in either case, we're not leaving the arithmetic progression. So, it follows that $r - |b|$ is still in this arithmetic progression.
+
+    \bigskip 
+
+    Hence, $r - |b| \in \Sigma$ (recall that $\Sigma$ consists of non-negative integers). This is a contradiction as $r - |b|$ is smaller than the minimum $r$ of $\Sigma$. 
+\end{proof}
+By this claim, we obtain the existence of the pair $(q, r)$ with:
+\begin{itemize}
+    \item $a = bq + r$
+    \item $0 \leq r < |b|$
+\end{itemize}
+Now, we want to prove the uniqueness.
+\begin{proof}
+    Suppose the pairs $(q, r)$ and $(q', r')$ satisfy the desired properties; that means:
+    \begin{enumerate}[(a)]
+        \item $a = bq + r = bq' + r'$
+        \item $0 \leq r, r' \leq |b|$
+    \end{enumerate}
+    Then, $b(q - q') = (r' - r)$. Notice that:
+    \[0 \leq r \implies r' - r \leq r' < |b|\]
+    \[0 \leq r' \implies r' - r \geq -r > -|b|\]
+    Then, we have that:
+    \[|r' - r| < |b|\]
+    And we obtain that:
+    \[|r' - r| = |b|(q - q') = |b| |q - q'|\]
+    And, thus:
+    \[|b||q - q'| < |b|\]
+    This implies that $|q - q'| < 1$. Since $|q - q'|$ is a non-negative integer less than 1, it is 0. Thus, $q = q'$. It follows that:
+    \[r' - r = b(q - q') = 0\]
+    This implies that $r = r'$. Thus, this shows the uniqueness. 
+\end{proof}
+Suppose the pair $(q, r)$ is given in the long division algorithm. Then, $q$ is called the \textbf{quotient} of $a$ divided by $b$ and $r$ is called the remainder of $a$ divided by $b$. Using the long division algorithm, we obtain that $\Z_n$ has $n$ elements. 
+
+\begin{proposition}
+    Suppose $n$ is an integer more than 1. Then:
+    \[\Z_n = \{[0]_n, [1]_n, \dots, [n - 1]_n\} \quad |\Z_n| = n\]
+\end{proposition}
+\begin{proof}
+    For every $a \in \Z$, by the long division algorithm, there are integers $q$ and $r$ such that $a = nq + r$ and $0 \leq r < n$. 
+\end{proof}
+
 
 % \overset{n}{\equiv}
 
