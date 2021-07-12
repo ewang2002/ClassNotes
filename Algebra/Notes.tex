@@ -78,24 +78,26 @@ Suppose $X$ and $Y$ are two non-empty sets and $f: X \to Y$ is a function. Let $
 \[\forall x_1, x_2 \in X \quad x_1 \sim x_2 \iff f(x_1) = f(x_2)\]
 Then, $\sim$ is an equivalence relation\footnote{Another way of interpreting this statement is as follows: $x_1$ is in relation to $x_2$ precisely when $f(x_1) = f(x_2)$. The claim here, then, is that this is an equivalence relation.}.
 
-\begin{proof}
-    We determine if an relation is an equivalence relation if it satisfies the three properties mentioned above.
-    \begin{itemize}
-        \item \underline{Reflexivity:}
-        \[\forall x \in X, f(x) = f(x) \implies x \sim x\]
-
-        \item \underline{Symmetric:}
-        \[x_1 \sim x_2 \implies f(x_1) = f(x_2) \implies f(x_2) = f(x_1) \implies x_2 \sim x_1\]
-
-        \item \underline{Transitive:}
-        We know that:
-        \[\forall x_1, x_2 \in X \qquad x_1 \sim x_2 \implies f(x_1) = f(x_2)\]
-        We also know that:
-        \[\forall x_2, x_3 \in X \qquad x_2 \sim x_3 \implies f(x_2) = f(x_3)\]
-        It follows that if $f(x_1) = f(x_2)$ and $f(x_2) = f(x_3)$, then $f(x_1) = f(x_3)$ and thus, $x_1 = x_3$. Namely, $x_1 \sim x_2$ and $x_2 \sim x_3$, then $x_1 \sim x_3$. 
-    \end{itemize}
-    It follows that this is an equivalence relation. 
-\end{proof}
+\begin{framed}
+    \begin{proof}
+        We determine if an relation is an equivalence relation if it satisfies the three properties mentioned above.
+        \begin{itemize}
+            \item \underline{Reflexivity:}
+            \[\forall x \in X, f(x) = f(x) \implies x \sim x\]
+    
+            \item \underline{Symmetric:}
+            \[x_1 \sim x_2 \implies f(x_1) = f(x_2) \implies f(x_2) = f(x_1) \implies x_2 \sim x_1\]
+    
+            \item \underline{Transitive:}
+            We know that:
+            \[\forall x_1, x_2 \in X \qquad x_1 \sim x_2 \implies f(x_1) = f(x_2)\]
+            We also know that:
+            \[\forall x_2, x_3 \in X \qquad x_2 \sim x_3 \implies f(x_2) = f(x_3)\]
+            It follows that if $f(x_1) = f(x_2)$ and $f(x_2) = f(x_3)$, then $f(x_1) = f(x_3)$ and thus, $x_1 = x_3$. Namely, $x_1 \sim x_2$ and $x_2 \sim x_3$, then $x_1 \sim x_3$. 
+        \end{itemize}
+        It follows that this is an equivalence relation. 
+    \end{proof}
+\end{framed}
 
 \subsection{Equivalence Relation Partitions}
 Recall that $P$ is called a \textbf{partition} of a non-empty set $X$ if:
@@ -135,9 +137,11 @@ By the previous example, $x \sim_P y \iff [x]_P = [y]_P$ is an equivalence relat
     \includegraphics[scale=0.30]{img/partition_x.PNG}
 \end{center}
 
-\begin{proof}
-    For $x \in X$, let $[x]_P$ to be the unique element of $P$ which contains $x$. So, $x \mapsto [x]_P$ is a function from $X \to P$. By the previous example, $x \sim y \iff [x]_p = [y]_p$ is an equivalence relation over $X$. Notice that this means $x \sim y$ exactly when $x$ and $y$ are in the same element of $P$. 
-\end{proof}
+\begin{framed}
+    \begin{proof}
+        For $x \in X$, let $[x]_P$ to be the unique element of $P$ which contains $x$. So, $x \mapsto [x]_P$ is a function from $X \to P$. By the previous example, $x \sim y \iff [x]_p = [y]_p$ is an equivalence relation over $X$. Notice that this means $x \sim y$ exactly when $x$ and $y$ are in the same element of $P$. 
+    \end{proof}
+\end{framed}
 
 \subsection{Equivalence Relation Classes}
 Now, suppose that $\sim$ is the equivalence relation over a non-empty set $X$, we can partition $X$ with respect to $\sim$. 
@@ -158,35 +162,39 @@ The following lemma follows from this proposition.
 \begin{lemma}{}{}
     \[x \sim y \iff [x] = [y]\]
 \end{lemma}
-\begin{proof}
-    We want to show that $[x] = [y] \implies x \sim y$. Recall that the equivalence class of $x$ ($[x]$) and the equivalence class of $y$ ($[y]$) are \emph{sets} and, in particular, we know that $[x]$ consists of all elements that are related to $x$, including $x$. Since $\sim$ is reflexive, we know that:
-    \[x \sim x \implies x \in [x]\]
-    But, since $[x] = [y]$, then it follows that $x \in [y] \implies x \sim y$. Thus, $[x] = [y] \implies x \sim y$. 
+\begin{framed}
+    \begin{proof}
+        We want to show that $[x] = [y] \implies x \sim y$. Recall that the equivalence class of $x$ ($[x]$) and the equivalence class of $y$ ($[y]$) are \emph{sets} and, in particular, we know that $[x]$ consists of all elements that are related to $x$, including $x$. Since $\sim$ is reflexive, we know that:
+        \[x \sim x \implies x \in [x]\]
+        But, since $[x] = [y]$, then it follows that $x \in [y] \implies x \sim y$. Thus, $[x] = [y] \implies x \sim y$. 
+        
+        \bigskip 
     
-    \bigskip 
-
-    To show that $x \sim y \implies [x] = [y]$, we need to show equality of sets $[x] = [y]$. This means that it is necessary and sufficient to prove $[x] \subseteq [y]$ and $[y] \subseteq [x]$.
-    \begin{itemize}
-        \item To prove $[x] \subseteq [y]$, we let $z \in [x]$. This means that $z \sim x$. However, since $x \sim y$, by transitivity, it follows that $y \sim z$, which implies that $z \in [y]$. Hence, $[x] \subseteq [y]$. 
-        \item We note that $x \sim y \implies y \sim x$ by symmetry. Therefore, by the first bullet point, $[y] \subseteq [x]$.
-    \end{itemize} 
-    So, it follows that $x \sim y \implies [x] = [y]$. 
-\end{proof}
+        To show that $x \sim y \implies [x] = [y]$, we need to show equality of sets $[x] = [y]$. This means that it is necessary and sufficient to prove $[x] \subseteq [y]$ and $[y] \subseteq [x]$.
+        \begin{itemize}
+            \item To prove $[x] \subseteq [y]$, we let $z \in [x]$. This means that $z \sim x$. However, since $x \sim y$, by transitivity, it follows that $y \sim z$, which implies that $z \in [y]$. Hence, $[x] \subseteq [y]$. 
+            \item We note that $x \sim y \implies y \sim x$ by symmetry. Therefore, by the first bullet point, $[y] \subseteq [x]$.
+        \end{itemize} 
+        So, it follows that $x \sim y \implies [x] = [y]$. 
+    \end{proof}
+\end{framed}
 
 Now that we proved the lemma, we can now prove the proposition. 
-\begin{proof}
-    As mentioned, we need to show that the covering and disjointness properties exist in this partition.
-    \begin{itemize}
-        \item \underline{Covering:} $\forall x \in X$, we know that $x \sim x$ by the reflexive property (since $\sim$ is an equivalence relation). Thus, it follows that $x \in [x]$. This means that $x$ is related to $x$ and $x$ is an equivalence class of $x$, so every element in $X$ belongs to one of the equivalence classes. This implies that the $[x]$ sets are non-empty subsets and cover $X$.
-        \item \underline{Disjointness:} Suppose $z \in [x] \cap [y]$ (both equivalence classes are not disjoint). We need to show that they are equal. We know that:
-        \[z \in [x] \cap [y] \implies z \in [x] \implies z \sim x \implies [z] = [x]\]
-        \[z \in [x] \cap [y] \implies z \in [y] \implies z \sim y \implies [z] = [y]\]
-        Where the last two steps came from the lemma. Then, putting these two together, we have:
-        \[[z] = [x] \text{ and } [z] = [y] \implies [x] = [y]\]
-        We showed that $[x] \cap [y] \neq \emptyset \implies [x] = [y]$, the contrapositive of the disjointness property. 
-    \end{itemize}
-    Thus, the proof is complete. 
-\end{proof}
+\begin{framed}
+    \begin{proof}
+        As mentioned, we need to show that the covering and disjointness properties exist in this partition.
+        \begin{itemize}
+            \item \underline{Covering:} $\forall x \in X$, we know that $x \sim x$ by the reflexive property (since $\sim$ is an equivalence relation). Thus, it follows that $x \in [x]$. This means that $x$ is related to $x$ and $x$ is an equivalence class of $x$, so every element in $X$ belongs to one of the equivalence classes. This implies that the $[x]$ sets are non-empty subsets and cover $X$.
+            \item \underline{Disjointness:} Suppose $z \in [x] \cap [y]$ (both equivalence classes are not disjoint). We need to show that they are equal. We know that:
+            \[z \in [x] \cap [y] \implies z \in [x] \implies z \sim x \implies [z] = [x]\]
+            \[z \in [x] \cap [y] \implies z \in [y] \implies z \sim y \implies [z] = [y]\]
+            Where the last two steps came from the lemma. Then, putting these two together, we have:
+            \[[z] = [x] \text{ and } [z] = [y] \implies [x] = [y]\]
+            We showed that $[x] \cap [y] \neq \emptyset \implies [x] = [y]$, the contrapositive of the disjointness property. 
+        \end{itemize}
+        Thus, the proof is complete. 
+    \end{proof}
+\end{framed}
 
 \subsection{Summary}
 The following diagram provides a brief summary of what we've learned\footnote{This diagram was taken from Professor Alireza Salehi Golsefidy's notes.}
@@ -220,29 +228,31 @@ In other words, the hour hand for 9PM will be in the same position as 9AM.
 \begin{lemma}{}{}
     $\overset{n}{\equiv}$ is an equivalence relation over $\Z$. 
 \end{lemma}
-\begin{proof}
-    Recall that something is an equivalence relation if it satisfies the three properties mentioned in definition \ref{def:equivRel}. So, we need to show that $\overset{n}{\equiv}$ satisfies these. 
-    \begin{itemize}
-        \item \underline{Reflexive}: For every $a \in \Z$, we know that $a - a = 0$ is a multiple of $n$ as $n \cdot 0 = 0$. Hence, $a \overset{n}{\equiv} a$. 
-        \item \underline{Symmetric}: We have that: 
-        \begin{equation*}
-            \begin{aligned}
-                a \overset{n}{\equiv} b &\implies n | (a - b) \\ 
-                    &\implies \exists k \in \Z, a - b = nk \\ 
-                    &\implies b - a = n\underbrace{(-k)}_{\text{In } \Z} \\ 
-                    &\implies b \overset{n}{\equiv} a
-            \end{aligned}
-        \end{equation*}
-
-        \item \underline{Transitive:} We know that:
-        \[a \overset{n}{\equiv} b \implies n | (a - b) \implies \exists k \in Z, a - b = nk\]
-        We also know that:
-        \[b \overset{n}{\equiv} c \implies n | (b - c) \implies \exists l \in \Z, b - c = nl\]
-        Combining the statements, we now have:
-        \[(a - b) + (b - c) = nk + nl \implies a - c = n\underbrace{(k + l)}_{\text{In } \Z} \implies a \overset{n}{\equiv} c\]
-    \end{itemize}
-    Thus, $\overset{n}{\equiv}$ is an equivalence class. 
-\end{proof}
+\begin{framed}
+    \begin{proof}
+        Recall that something is an equivalence relation if it satisfies the three properties mentioned in definition \ref{def:equivRel}. So, we need to show that $\overset{n}{\equiv}$ satisfies these. 
+        \begin{itemize}
+            \item \underline{Reflexive}: For every $a \in \Z$, we know that $a - a = 0$ is a multiple of $n$ as $n \cdot 0 = 0$. Hence, $a \overset{n}{\equiv} a$. 
+            \item \underline{Symmetric}: We have that: 
+            \begin{equation*}
+                \begin{aligned}
+                    a \overset{n}{\equiv} b &\implies n | (a - b) \\ 
+                        &\implies \exists k \in \Z, a - b = nk \\ 
+                        &\implies b - a = n\underbrace{(-k)}_{\text{In } \Z} \\ 
+                        &\implies b \overset{n}{\equiv} a
+                \end{aligned}
+            \end{equation*}
+    
+            \item \underline{Transitive:} We know that:
+            \[a \overset{n}{\equiv} b \implies n | (a - b) \implies \exists k \in Z, a - b = nk\]
+            We also know that:
+            \[b \overset{n}{\equiv} c \implies n | (b - c) \implies \exists l \in \Z, b - c = nl\]
+            Combining the statements, we now have:
+            \[(a - b) + (b - c) = nk + nl \implies a - c = n\underbrace{(k + l)}_{\text{In } \Z} \implies a \overset{n}{\equiv} c\]
+        \end{itemize}
+        Thus, $\overset{n}{\equiv}$ is an equivalence class. 
+    \end{proof}
+\end{framed}
 
 \subsection{Congruence and Partitions}
 As we have seen earlier, every equivalence relation gives us a \textbf{partition} and an \textbf{equality function}. For $a \in \Z$, the equivalence class of $a$ with respect to $\overset{n}{\equiv}$ is called the \textbf{mod-$n$ residue class of $a$} and is denoted by $[a]_n$. By the results that we proved for equivalence relations, we have that:
@@ -282,56 +292,66 @@ Now, we want to formalize this argument. We begin by defining:
 \[\Sigma := [a]_b \cap \Z_{\geq 0} = \{a + bk \mid k \in \Z, a + bk \geq 0\}\]
 Here, we denote $\Sigma$ as a variable, not a summation. We want to use the well-ordering principle on the set $\Sigma$ to show that it has a minimium (more specifically, that $\Sigma$ is not empty). Our first claim is:
 \[\Sigma \text{ is not empty.}\]
-\begin{proof}
-    Since $b \neq 0$, we know that $|b| \geq 1$. Hence, $|b||a| \geq |a|$. Therefore:
-    \[\underbrace{|b|(|a| + 1) + a}_{a \pm b(|a| + 1)} \geq |a| + |b| + a \geq |b| > 0\]
-    It follows that $[a]_b$ has a positive integer. 
-\end{proof}
+\begin{framed}
+    \begin{proof}
+        Since $b \neq 0$, we know that $|b| \geq 1$. Hence, $|b||a| \geq |a|$. Therefore:
+        \[\underbrace{|b|(|a| + 1) + a}_{a \pm b(|a| + 1)} \geq |a| + |b| + a \geq |b| > 0\]
+        It follows that $[a]_b$ has a positive integer. 
+    \end{proof}
+\end{framed}
 By the above claim and the well-ordering principle, $\Sigma$ has a minimum. Now, suppose $r$ is the minimum of $\Sigma$. Then, $r = a - bq$ for some $q \in \Z$. Our second claim is:
 \[r < |b|\]
-\begin{proof}
-    Suppose to the contrary that $r \geq |b|$. Then, $r - |b| \geq 0$ and:
-    \[r - |b| = a - bq - |b| = a - b(q \pm 1)\]
-    In the above statement, we know that $r = a - bq$, which is in the arithmetic progression. When we subtract $|b|$, we are still in this arithmetic progression since all we're doing is adding or subtracting $b$; in either case, we're not leaving the arithmetic progression. So, it follows that $r - |b|$ is still in this arithmetic progression.
+\begin{framed}
+    \begin{proof}
+        Suppose to the contrary that $r \geq |b|$. Then, $r - |b| \geq 0$ and:
+        \[r - |b| = a - bq - |b| = a - b(q \pm 1)\]
+        In the above statement, we know that $r = a - bq$, which is in the arithmetic progression. When we subtract $|b|$, we are still in this arithmetic progression since all we're doing is adding or subtracting $b$; in either case, we're not leaving the arithmetic progression. So, it follows that $r - |b|$ is still in this arithmetic progression.
+    
+        \bigskip 
+    
+        Hence, $r - |b| \in \Sigma$ (recall that $\Sigma$ consists of non-negative integers). This is a contradiction as $r - |b|$ is smaller than the minimum $r$ of $\Sigma$. 
+    \end{proof}
+\end{framed}
 
-    \bigskip 
-
-    Hence, $r - |b| \in \Sigma$ (recall that $\Sigma$ consists of non-negative integers). This is a contradiction as $r - |b|$ is smaller than the minimum $r$ of $\Sigma$. 
-\end{proof}
 By this claim, we obtain the existence of the pair $(q, r)$ with:
 \begin{itemize}
     \item $a = bq + r$
     \item $0 \leq r < |b|$
 \end{itemize}
 Now, we want to prove the uniqueness.
-\begin{proof}
-    Suppose the pairs $(q, r)$ and $(q', r')$ satisfy the desired properties; that means:
-    \begin{enumerate}[(a)]
-        \item $a = bq + r = bq' + r'$
-        \item $0 \leq r, r' \leq |b|$
-    \end{enumerate}
-    Then, $b(q - q') = (r' - r)$. Notice that:
-    \[0 \leq r \implies r' - r \leq r' < |b|\]
-    \[0 \leq r' \implies r' - r \geq -r > -|b|\]
-    Then, we have that:
-    \[|r' - r| < |b|\]
-    And we obtain that:
-    \[|r' - r| = |b|(q - q') = |b| |q - q'|\]
-    And, thus:
-    \[|b||q - q'| < |b|\]
-    This implies that $|q - q'| < 1$. Since $|q - q'|$ is a non-negative integer less than 1, it is 0. Thus, $q = q'$. It follows that:
-    \[r' - r = b(q - q') = 0\]
-    This implies that $r = r'$. Thus, this shows the uniqueness. 
-\end{proof}
+\begin{framed}
+    \begin{proof}
+        Suppose the pairs $(q, r)$ and $(q', r')$ satisfy the desired properties; that means:
+        \begin{enumerate}[(a)]
+            \item $a = bq + r = bq' + r'$
+            \item $0 \leq r, r' \leq |b|$
+        \end{enumerate}
+        Then, $b(q - q') = (r' - r)$. Notice that:
+        \[0 \leq r \implies r' - r \leq r' < |b|\]
+        \[0 \leq r' \implies r' - r \geq -r > -|b|\]
+        Then, we have that:
+        \[|r' - r| < |b|\]
+        And we obtain that:
+        \[|r' - r| = |b|(q - q') = |b| |q - q'|\]
+        And, thus:
+        \[|b||q - q'| < |b|\]
+        This implies that $|q - q'| < 1$. Since $|q - q'|$ is a non-negative integer less than 1, it is 0. Thus, $q = q'$. It follows that:
+        \[r' - r = b(q - q') = 0\]
+        This implies that $r = r'$. Thus, this shows the uniqueness. 
+    \end{proof}
+\end{framed}
+
 Suppose the pair $(q, r)$ is given in the long division algorithm. Then, $q$ is called the \textbf{quotient} of $a$ divided by $b$ and $r$ is called the remainder of $a$ divided by $b$. Using the long division algorithm, we obtain that $\Z_n$ has $n$ elements. 
 
 \begin{proposition}
     Suppose $n$ is an integer more than 1. Then:
     \[\Z_n = \{[0]_n, [1]_n, \dots, [n - 1]_n\} \quad |\Z_n| = n\]
 \end{proposition}
-\begin{proof}
-    For every $a \in \Z$, by the long division algorithm, there are integers $q$ and $r$ such that $a = nq + r$ and $0 \leq r < n$. 
-\end{proof}
+\begin{framed}
+    \begin{proof}
+        For every $a \in \Z$, by the long division algorithm, there are integers $q$ and $r$ such that $a = nq + r$ and $0 \leq r < n$. 
+    \end{proof}
+\end{framed}
 
 
 % \overset{n}{\equiv}
@@ -343,8 +363,8 @@ Suppose the pair $(q, r)$ is given in the long division algorithm. Then, $q$ is 
 %                   NEW SECTION                             %
 % --------------------------------------------------------- %
 \newpage 
-\section{Binary Operations and Group Theory}
-We want to explore the idea behind \emph{algebraic structures}. In particular, we want to explore these structures in more detail compared to earlier courses (either in past college or high school algebra classes).
+\section{Introduction to Binary Operations and Group Theory}
+We want to explore the idea behind \emph{algebraic structures}. In particular, we want to explore these structures in more detail compared to earlier courses (either in past college or high school algebra classes). 
 
 \bigskip 
 
@@ -404,7 +424,7 @@ So far, we considered binary operations on infinite sets in which we need some s
 
 For example, given the set $S = \{a, b, c, d, e\}$. We can define a binary operation on $S$ with the below (random) table (first entry on left side, second entry on top side). 
 \begin{center}
-    \begin{tabular}{c|c|c|c|c|c}
+    \begin{tabular}{c c c c c c}
             & $a$ & $b$ & $c$ & $d$ & $e$ \\ 
         \hline 
         $a$ & $a$ & $c$ & $d$ & $d$ & $e$ \\ 
@@ -465,7 +485,7 @@ What properties could binary operations have?\footnote{In this course, we will c
 \textbf{Remark:} Commutativity does not imply associativity.
 
 \subsection{Groups}
-Of course, the properties of binary operations that were discussed just now are very much applicable in something called \textbf{groups}. 
+Of course, the properties of binary operations that were discussed just now are very much applicable in something called \textbf{groups}.
 
 \begin{definition}{Group}{}
     A group is a set $G$, closed under a binary operation $*$, satisfying the three properties:
@@ -473,7 +493,7 @@ Of course, the properties of binary operations that were discussed just now are 
         \item \underline{Associativity}: For all $a, b, c \in G$, we have:
         \[(a * b) * c = a * (b * c)\]
 
-        \item \underline{Identity Element:} There is an element $\epsilon \in G$ such that for all $x \in G$:
+        \item \underline{Identity/Neutral Element:} There is an element $\epsilon \in G$ such that for all $x \in G$:
         \[\epsilon * x = x * e = x\]
 
         \item \underline{Inverse:} Corresponding to each $a \in G$, there is an element $a' \in G$ such that:
@@ -488,7 +508,7 @@ For example, the integers under addition are a group. Notationally, this is repr
     \item It's obvious that addition is associative. That is:
     \[(a + b) + c = a + (b + c) = a + b + c\]
 
-    \item The identity element is 0. This is because:
+    \item The identity element is 0 (we note that $0 \in \Z$). This is because:
     \[0 + x = x + 0 = x\]
 
     \item The inverse is $-x$. This is because:
@@ -506,6 +526,26 @@ Let's now consider multiplication. In particular, multiplication does give a bin
     \bigskip 
 
     We note that this change does not affect the closure property because we can only achieve $a \cdot b = 0$ if and only if $a = 0$ or $b = 0$. Since $a \notin \R - \{0\}$ and $b \notin \R - \{0\}$ (or $\Q$ or $\C$), then we are still closed and our binary operation is still well-defined. 
+\end{itemize}
+
+\subsubsection{Non-Example: Addition and Multiplication}
+We mentioned that $(\Q - \{0\}, \cdot)$, $(\R - \{0\}, \cdot)$, and $(\C - \{0\}, \cdot)$ are groups. However, we note that $(\Z - \{0\}, \cdot)$ and $(\Z_{\geq 0}, +)$ are \emph{not} groups. 
+\begin{itemize}
+    \item We already briefly explained why $\Z$ is not a group. The same idea applies even if we do not include 0; that is, $\Z - \{0\}$ is not a group. We know that $\Z - \{0\}$ has a unique identity element under $\cdot$; this element is 1. This is the case because, if $\epsilon$ is the identity element of $\Z - \{0\}$ under $\cdot$, then by definition: 
+    \[\epsilon \cdot x = x \cdot \epsilon = x\]
+    Which implies that $\epsilon = 1$. We also know that $2 \in \Z - \{0\}$. However, 2 does not have an inverse in $\Z - \{0\}$. To show this, we prove by contradition. If 2 has an inverse in $\Z - \{0\}$, then by definition it follows that for some $a' \in \Z - \{0\}$:
+    \[2 \cdot a' = a' \cdot 2 = \epsilon\]
+    But, since we know that $\epsilon = 1$, it follows that:
+    \[2 \cdot a'= 1\]
+    But, as the only solution to this is $\frac{1}{2}$, we know that $\frac{1}{2} \notin \Z - \{0\}$. Thus, this is a contradiction. Thus, $\Z - \{0\}$ under multiplication is not a group. 
+
+    \item We know that $\Z_{\geq 0}$ has a unique identity element under addition and that is 0. This is because if $\epsilon$ is a unique element of $(\Z_{\geq 0}, +)$, then by definition, we know that: 
+    \[\epsilon + x = x + \epsilon = x\]
+    It is obvious that $\epsilon = 0$. Now, we want to show that 1 does not have an inverse with respect to addition in $\Z_{\geq 0}$. We'll prove this by contradiction. Suppose 1 does have an inverse. Recall that if 1 does have an inverse, then there is an $x \in \Z_{\geq 0}$ such that for some $a' \in \Z_{\geq 0}$:
+    \[a' + 1 = 1 + a' = \epsilon\]
+    But, as $\epsilon = 0$, it follows that: 
+    \[a' + 1 = 0 \iff a' = -1\]
+    However, we note that $-1 \notin \Z_{\geq 0}$ so this is a contradiction. Thus, $\Z_{\geq 0}$ under addition is not a group.
 \end{itemize}
 
 \subsubsection{Example: Addition and Modular Arithmetic}
@@ -552,29 +592,222 @@ If $k_1, k_2$ are both invertible, then $k_1 k_2$ is also invertible. Why is thi
 \end{equation*}
 
 \subsection{Basic Properties of Groups}
-\begin{itemize}
-    \item \underline{Uniqueness of the Identity.} 
+Suppose $(G, *)$ is a group. Recall that $\epsilon$ is the identity element. Then, we note the following properties of groups. 
 
-    Could we have two unique two-sided identities in a group $G$? No. If we assume by contradiction that we had $\epsilon_1$ and $\epsilon_2$, both of which are unique two-sided identity elements. Then, we know that $\epsilon_1 \epsilon_2 = \epsilon_2$ since $\epsilon_1$ is an identity. But, since $\epsilon_2$ is also an identity, then $\epsilon_1 \epsilon_2 = \epsilon1$. So, it follows that $\epsilon_1$ and $\epsilon_2$ are not unique. 
+\subsubsection{Uniqueness of the Identity.} 
+Could we have two unique two-sided identities in $G$? The answer is \underline{no}. The proof is as follows. 
 
-    \item \underline{Uniqueness of Inverses.}
-    
-    If $g_1$, $g_2$ are both inverses of some element $h$, then:
-    \[g_1 h = \epsilon = g_2 h\]
-    Additionally, we know that:
-    \[g_1 (h g_2) = g_1 \epsilon = g_1\]
-    \[(g_1 h) g_2 = g_2 \epsilon = g_2\]
-    So, it follows that $g_1 = g_2$. Thus, an element $h$ will have a unique inverse. 
-
-    \item \underline{Cancellation.}
-    
-    Suppose we have the expression $ga = gb$. This implies that $a = b$. 
-
+\begin{framed}
     \begin{proof}
-        We know that $gag^{-1} = gbg^{-1} \iff \epsilon a = \epsilon b \iff a = b$. 
+        Assume by contradiction that we had $\epsilon_1$ and $\epsilon_2$, both of which are unique two-sided identity elements. Then, we know that $\epsilon_1 * \epsilon_2 = \epsilon_2$ since $\epsilon_1$ is an identity. But, since $\epsilon_2$ is also an identity, then $\epsilon_1 * \epsilon_2 = \epsilon1$. So, it follows that $\epsilon_1$ and $\epsilon_2$ are not unique; in other words, $\epsilon_1 = \epsilon_2$. 
     \end{proof}
+\end{framed}
 
-    \textbf{Remark:} Although $ga = gb$, $ga \neq bg$ ($ga$ is not necessarily equal to $bg$). 
-\end{itemize}
+\subsubsection{Uniqueness of Inverses.}
+
+If $g_1$, $g_2$ are both inverses of some element $h$, then\footnote{We denote $g_1$ as the left-inverse and $g_2$ is the right-inverse.}:
+\[g_1 * h = h * g_2 = \epsilon\]
+Additionally, we know that:
+\[g_1 * (h * g_2) = g_1 * \epsilon = g_1\]
+\[(g_1 * h) * g_2 = \epsilon * g_2 = g_2\]
+And so it follows that $g_1 = g_2$, thus $h$ will have a unique inverse. 
+
+\bigskip 
+
+To be more concrete, we have the proof. 
+\begin{framed}
+    \begin{proof}
+        We note that $g_1 * h = \epsilon$ and $h * g_2 = \epsilon$. Then:
+        \begin{equation*}
+            \begin{aligned}
+                g_1 &= g_1 * \epsilon && \epsilon \text{ is the identity element.} \\ 
+                    &= g_1 * (h * g_2) \\ 
+                    &= (g_1 * h) * g_2 && \text{Associativity} \\ 
+                    &= \epsilon * g_2 \\ 
+                    &= g_2 && \epsilon \text{ is the identity element.}
+            \end{aligned}
+        \end{equation*}
+        So, it follows that $g_1 = g_2$. Thus, an element $h$ will have a unique inverse. 
+    \end{proof}
+\end{framed}
+
+\textbf{Remark:} The inverse of $h \in G$ in a \textbf{multiplicative notation} is denoted by $h^{-1}$. When we are working with an \textbf{additive notation} $(G, +)$, the neutral element is denoted by 0 and the inverse of $h \in G$ is denoted by $-h$.   
+
+\subsubsection{Cancellation.}
+
+Suppose we have the expression $g * a = g * b$. This implies that $a = b$. Similarly, the expression $a * g = b * g$ can be simplified to $a = b$. 
+
+\begin{framed}
+    \begin{proof}
+        From the definition of a group, we know that an inverse exists for every element in $G$. Let $g'$ be the inverse of $g$. Then:
+        \begin{equation*}
+            \begin{aligned}
+                g * a = g * b &\implies g' * (g * a) = g' * (g * b) \\
+                    &\implies (g' * g) * a = (g' * g) * b && \text{Associativity (Prop. 1)} \\
+                    &\implies \epsilon * a = \epsilon * b && \text{Definition of Inverse (Prop. 3)} \\  
+                    &\implies a = b && \text{Definition of Identity (Prop. 2)}
+            \end{aligned}
+        \end{equation*}
+        The other way is similar. 
+    \end{proof}
+\end{framed}
+
+\textbf{Remark:} Although $g * a = g * b$, $g * a \neq b * g$ ($g * a$ is not necessarily equal to $b * g$). 
+
+\subsubsection{Inverse of Operation of Two Elements.}
+
+\begin{lemma}{}{}
+    Suppose $(G, *)$ is a group. Then, for every $g, h \in G$, we have: 
+    \[(g * h)' = h' * g'\]
+    Here, $h'$ and $g'$ are inverses of $h$ and $g$, respectively. Also, $(g * h)'$ is the inverse of $g * h$.  
+\end{lemma}
+
+\begin{framed}
+    \begin{proof}
+        Since the inverse of an element is unique, it is enough to check that: 
+        \[(g * h) * (h' * g') = (h' * g') * (g * h) = \epsilon\]
+        So: 
+        \begin{equation*}
+            \begin{aligned}
+                (g * h) * (h' * g') &= g * (h * h') * g' && \text{Associativity (Prop. 1)} \\ 
+                    &= g * \epsilon * g' && \text{Definition of Inverse (Prop. 3)} \\ 
+                    &= (g * \epsilon) * g' && \text{Associativity (Prop. 1)} \\ 
+                    &= g * g' && \text{Definition of Identity (Prop. 2)} \\ 
+                    &= \epsilon && \text{Identity Element}
+            \end{aligned}
+        \end{equation*}
+        Similarly: 
+        \begin{equation*}
+            \begin{aligned}
+                (h' * g') * (g * h) &= h' * (g' * g) * h && \text{Associativity (Prop. 1)} \\ 
+                    &= h' * \epsilon * h && \text{Definition of Inverse (Prop. 3)} \\ 
+                    &= (h' * \epsilon) * h && \text{Associativity (Prop. 1)} \\ 
+                    &= h' * h && \text{Definition of Identity (Prop. 2)} \\ 
+                    &= \epsilon && \text{Identity Element}
+            \end{aligned}
+        \end{equation*}
+        So, the proof is complete. 
+    \end{proof}
+\end{framed}
+
+\subsubsection{Inverse of an Inverse.}
+We should note that, despite using the $-1$ superscript to denote a multiplicative inverse, this applies to any valid binary operation under a group. 
+
+\begin{lemma}{}{}
+    For every $g \in G$, $(g^{-1})^{-1} = g$. 
+\end{lemma}
+
+\begin{framed}
+    \begin{proof}
+        We have that $g^{-1} * g = \epsilon$. Multiplying both sides by $(g^{-1})^{-1}$ from the left, we now have: 
+        \[((g^{-1})^{-1} * g^{-1}) * g = (g^{-1})^{-1} * \epsilon = (g^{-1})^{-1}\]
+        Hence, $\epsilon * g = (g^{-1})^{-1}$ and so $g = (g^{-1})^{-1}$.     
+    \end{proof}
+\end{framed}
+
+\subsection{Exponents of Elements}
+Suppose $(G, *)$ is a group and $g \in G$. For a positive integer $n$, we let: 
+\[g^n = \underbrace{g * \dots * g}_{n \text{ times}}\]
+For a negative integer $n$, we let: 
+\[g^n = \underbrace{(g^{-1}) * \dots * (g^{-1})}_{-n \text{ times}}\]
+
+\begin{lemma}{}{}
+    For $n, m \in \Z$, $(g^n)^m = g^{nm}$. 
+\end{lemma}
+
+\begin{framed}
+    \begin{proof}
+        We will consider various cases depending on the signs of $m$ and $n$. 
+        \begin{itemize}
+            \item \underline{Case 1:} Suppose $m$ and $n$ are positive. Then: 
+            \[(g^n)^m = \underbrace{g^n * \dots * g^n}_{m \text{ times}} = \underbrace{\overbrace{(g * \dots * g)}^{n \text{ times}} * \dots * \overbrace{(g * \dots * g)}^{n \text{ times}}}_{m \text{ times}} = g^{mn}\]
+        \end{itemize}
+    \end{proof}
+\end{framed}
+
+\newpage 
+\section{More on Groups}
+Now, we will look into the structure of groups. Specifically, we will consider how groups can be \emph{the same}. We'll also consider subgroups and generating groups and subgroups from elements and the order of elements. 
+
+\subsection{Groups and Sizes}
+A question we might consider is, for a given finite size, what different types of groups can we have?
+
+\bigskip 
+
+For instance, what can groups of size 2 look like? Well, we need to have a set of size 2. Denote this set $\{a, b\}$. We also need a binary operation for this set. We'll make use of a table to better demonstrate this.
+\begin{center}
+    \begin{tabular}{c|c c}
+            & $a$ & $b$ \\ 
+        \hline 
+        $a$ &     &     \\ 
+        $b$ &     &     
+    \end{tabular}
+\end{center}
+Because we want a group, one of $a$ or $b$ needs to be an identity. Let's choose $a$ to be the identity. Then:
+\begin{center}
+    \begin{tabular}{c|c c}
+            & $a$ & $b$ \\ 
+        \hline 
+        $a$ & $a$ & $b$ \\ 
+        $b$ & $b$ & $a$ 
+    \end{tabular}
+\end{center}
+At this point, $b$ has to be its own inverse ($a$ cannot be the inverse). Now, if $b$ is the identity element, then our table would look like\footnote{These aren't really meaningfully different since we just swapped $a$ and $b$.}:
+\begin{center}
+    \begin{tabular}{c|c c}
+            & $a$ & $b$ \\ 
+        \hline 
+        $a$ & $b$ & $a$ \\ 
+        $b$ & $a$ & $b$ 
+    \end{tabular}
+\end{center}
+
+\subsection{Group Isomorphism}
+Even if groups are not literally the same, they can be isomorphic (essentially the same as relabelling the elements of the set). Formally, the relabelling will be an invertible (or bijective) map between the sets of the groups that preserves the group structure. 
+
+\bigskip 
+
+Specifically, if we have a group $G_1$ with operation $*_1$ and a group $G_2$ with operation $*_2$, an isomorphism from $G_1$ to $G_2$ is a function $f: G_1 \to G_2$ such that $f$ is a bijection and:
+\[f(g *_1 h) = f(g) *_2 f(h) \quad \forall g, h \in G_1\]
+Formally: 
+\begin{definition}{Isomorphism}{}
+    Let $(S, *)$ and $(S', *')$ be binary algebraic structures. An \textbf{isomorphic of} $S$ with $S'$ is a one-to-one function $\Phi$ mapping $S$ onto $S'$ such that:
+    \[\Phi(x * y) = \Phi(y) *' \Phi(y) \quad \forall x, y \in S\]
+    If two groups have an isomorphism, then we say that they are isomorphic (essentially the same group). 
+\end{definition}
+
+\begin{corollary}{}{}
+    It follows that:
+    \[f^{-1}(k *_2 l) = f^{-1}(k) *_1 f^{-1}(l) \quad \forall k, l \in G_2\]
+\end{corollary}
+
+\begin{proof}
+    We begin by noting 
+\end{proof}
+
+\subsubsection{Example: Isomorphism}
+Consider the set $G = \{a, b\}$ with the corresponding table: 
+\begin{center}
+    \begin{tabular}{c|c c}
+        $G$ & $a$ & $b$ \\ 
+        \hline 
+        $a$ & $a$ & $b$ \\ 
+        $b$ & $b$ & $a$ 
+    \end{tabular}
+\end{center} 
+This group $G$ is isomorphic to $\Z_2 = \{0, 1\}$ (where the operation is addition modulo 2). Our isomorphism is: 
+\[f(a) = 0\]
+\[f(b) = 1\]
+The table corresponding to $\Z_2$ is:
+\begin{center}
+    \begin{tabular}{c|c c}
+        $\Z_2$ & $0$ & $1$ \\ 
+        \hline 
+        $0$ & $0$ & $1$ \\ 
+        $1$ & $1$ & $0$ 
+    \end{tabular}
+\end{center}
+It follows that $f$ is isomorphic. 
+
 
 \end{document}
