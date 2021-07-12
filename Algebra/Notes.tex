@@ -78,7 +78,7 @@ Suppose $X$ and $Y$ are two non-empty sets and $f: X \to Y$ is a function. Let $
 \[\forall x_1, x_2 \in X \quad x_1 \sim x_2 \iff f(x_1) = f(x_2)\]
 Then, $\sim$ is an equivalence relation\footnote{Another way of interpreting this statement is as follows: $x_1$ is in relation to $x_2$ precisely when $f(x_1) = f(x_2)$. The claim here, then, is that this is an equivalence relation.}.
 
-\begin{framed}
+\begin{mdframed}
     \begin{proof}
         We determine if an relation is an equivalence relation if it satisfies the three properties mentioned above.
         \begin{itemize}
@@ -97,7 +97,7 @@ Then, $\sim$ is an equivalence relation\footnote{Another way of interpreting thi
         \end{itemize}
         It follows that this is an equivalence relation. 
     \end{proof}
-\end{framed}
+\end{mdframed}
 
 \subsection{Equivalence Relation Partitions}
 Recall that $P$ is called a \textbf{partition} of a non-empty set $X$ if:
@@ -137,11 +137,11 @@ By the previous example, $x \sim_P y \iff [x]_P = [y]_P$ is an equivalence relat
     \includegraphics[scale=0.30]{img/partition_x.PNG}
 \end{center}
 
-\begin{framed}
+\begin{mdframed}
     \begin{proof}
         For $x \in X$, let $[x]_P$ to be the unique element of $P$ which contains $x$. So, $x \mapsto [x]_P$ is a function from $X \to P$. By the previous example, $x \sim y \iff [x]_p = [y]_p$ is an equivalence relation over $X$. Notice that this means $x \sim y$ exactly when $x$ and $y$ are in the same element of $P$. 
     \end{proof}
-\end{framed}
+\end{mdframed}
 
 \subsection{Equivalence Relation Classes}
 Now, suppose that $\sim$ is the equivalence relation over a non-empty set $X$, we can partition $X$ with respect to $\sim$. 
@@ -162,7 +162,7 @@ The following lemma follows from this proposition.
 \begin{lemma}{}{}
     \[x \sim y \iff [x] = [y]\]
 \end{lemma}
-\begin{framed}
+\begin{mdframed}
     \begin{proof}
         We want to show that $[x] = [y] \implies x \sim y$. Recall that the equivalence class of $x$ ($[x]$) and the equivalence class of $y$ ($[y]$) are \emph{sets} and, in particular, we know that $[x]$ consists of all elements that are related to $x$, including $x$. Since $\sim$ is reflexive, we know that:
         \[x \sim x \implies x \in [x]\]
@@ -177,10 +177,10 @@ The following lemma follows from this proposition.
         \end{itemize} 
         So, it follows that $x \sim y \implies [x] = [y]$. 
     \end{proof}
-\end{framed}
+\end{mdframed}
 
 Now that we proved the lemma, we can now prove the proposition. 
-\begin{framed}
+\begin{mdframed}
     \begin{proof}
         As mentioned, we need to show that the covering and disjointness properties exist in this partition.
         \begin{itemize}
@@ -194,7 +194,7 @@ Now that we proved the lemma, we can now prove the proposition.
         \end{itemize}
         Thus, the proof is complete. 
     \end{proof}
-\end{framed}
+\end{mdframed}
 
 \subsection{Summary}
 The following diagram provides a brief summary of what we've learned\footnote{This diagram was taken from Professor Alireza Salehi Golsefidy's notes.}
@@ -228,11 +228,11 @@ In other words, the hour hand for 9PM will be in the same position as 9AM.
 \begin{lemma}{}{}
     $\overset{n}{\equiv}$ is an equivalence relation over $\Z$. 
 \end{lemma}
-\begin{framed}
+\begin{mdframed}
     \begin{proof}
         Recall that something is an equivalence relation if it satisfies the three properties mentioned in definition \ref{def:equivRel}. So, we need to show that $\overset{n}{\equiv}$ satisfies these. 
         \begin{itemize}
-            \item \underline{Reflexive}: For every $a \in \Z$, we know that $a - a = 0$ is a multiple of $n$ as $n \cdot 0 = 0$. Hence, $a \overset{n}{\equiv} a$. 
+            \item \underline{Reflexive}: For every $a \in \Z$, we know that $a - a = 0$ is a multiple of $n$ as $n \times 0 = 0$. Hence, $a \overset{n}{\equiv} a$. 
             \item \underline{Symmetric}: We have that: 
             \begin{equation*}
                 \begin{aligned}
@@ -252,7 +252,7 @@ In other words, the hour hand for 9PM will be in the same position as 9AM.
         \end{itemize}
         Thus, $\overset{n}{\equiv}$ is an equivalence class. 
     \end{proof}
-\end{framed}
+\end{mdframed}
 
 \subsection{Congruence and Partitions}
 As we have seen earlier, every equivalence relation gives us a \textbf{partition} and an \textbf{equality function}. For $a \in \Z$, the equivalence class of $a$ with respect to $\overset{n}{\equiv}$ is called the \textbf{mod-$n$ residue class of $a$} and is denoted by $[a]_n$. By the results that we proved for equivalence relations, we have that:
@@ -292,16 +292,15 @@ Now, we want to formalize this argument. We begin by defining:
 \[\Sigma := [a]_b \cap \Z_{\geq 0} = \{a + bk \mid k \in \Z, a + bk \geq 0\}\]
 Here, we denote $\Sigma$ as a variable, not a summation. We want to use the well-ordering principle on the set $\Sigma$ to show that it has a minimium (more specifically, that $\Sigma$ is not empty). Our first claim is:
 \[\Sigma \text{ is not empty.}\]
-\begin{framed}
+\begin{mdframed}
     \begin{proof}
         Since $b \neq 0$, we know that $|b| \geq 1$. Hence, $|b||a| \geq |a|$. Therefore:
         \[\underbrace{|b|(|a| + 1) + a}_{a \pm b(|a| + 1)} \geq |a| + |b| + a \geq |b| > 0\]
         It follows that $[a]_b$ has a positive integer. 
     \end{proof}
-\end{framed}
-By the above claim and the well-ordering principle, $\Sigma$ has a minimum. Now, suppose $r$ is the minimum of $\Sigma$. Then, $r = a - bq$ for some $q \in \Z$. Our second claim is:
-\[r < |b|\]
-\begin{framed}
+\end{mdframed}
+By the above claim and the well-ordering principle, $\Sigma$ has a minimum. Now, suppose $r$ is the minimum of $\Sigma$. Then, $r = a - bq$ for some $q \in \Z$. Our second claim is that $r < |b|$. 
+\begin{mdframed}
     \begin{proof}
         Suppose to the contrary that $r \geq |b|$. Then, $r - |b| \geq 0$ and:
         \[r - |b| = a - bq - |b| = a - b(q \pm 1)\]
@@ -311,7 +310,7 @@ By the above claim and the well-ordering principle, $\Sigma$ has a minimum. Now,
     
         Hence, $r - |b| \in \Sigma$ (recall that $\Sigma$ consists of non-negative integers). This is a contradiction as $r - |b|$ is smaller than the minimum $r$ of $\Sigma$. 
     \end{proof}
-\end{framed}
+\end{mdframed}
 
 By this claim, we obtain the existence of the pair $(q, r)$ with:
 \begin{itemize}
@@ -319,7 +318,7 @@ By this claim, we obtain the existence of the pair $(q, r)$ with:
     \item $0 \leq r < |b|$
 \end{itemize}
 Now, we want to prove the uniqueness.
-\begin{framed}
+\begin{mdframed}
     \begin{proof}
         Suppose the pairs $(q, r)$ and $(q', r')$ satisfy the desired properties; that means:
         \begin{enumerate}[(a)]
@@ -339,7 +338,7 @@ Now, we want to prove the uniqueness.
         \[r' - r = b(q - q') = 0\]
         This implies that $r = r'$. Thus, this shows the uniqueness. 
     \end{proof}
-\end{framed}
+\end{mdframed}
 
 Suppose the pair $(q, r)$ is given in the long division algorithm. Then, $q$ is called the \textbf{quotient} of $a$ divided by $b$ and $r$ is called the remainder of $a$ divided by $b$. Using the long division algorithm, we obtain that $\Z_n$ has $n$ elements. 
 
@@ -347,11 +346,11 @@ Suppose the pair $(q, r)$ is given in the long division algorithm. Then, $q$ is 
     Suppose $n$ is an integer more than 1. Then:
     \[\Z_n = \{[0]_n, [1]_n, \dots, [n - 1]_n\} \quad |\Z_n| = n\]
 \end{proposition}
-\begin{framed}
+\begin{mdframed}
     \begin{proof}
         For every $a \in \Z$, by the long division algorithm, there are integers $q$ and $r$ such that $a = nq + r$ and $0 \leq r < n$. 
     \end{proof}
-\end{framed}
+\end{mdframed}
 
 
 % \overset{n}{\equiv}
@@ -373,8 +372,8 @@ To do this, we need to think about \emph{what} algebra really is. We might think
 \bigskip 
 
 Well, there are a couple of operations going on. Specifically, we have \emph{addition} and \emph{multiplication}. 
-\[x \cdot x + 3 \cdot x + 5 = 0\]
-We now want to examine these operations. Both of these operations $(+, \cdot)$ take in \underline{two numbers} and output \underline{one number}. The question we might have, then, is: how can we can generalize these operations?
+\[x \times x + 3 \times x + 5 = 0\]
+We now want to examine these operations. Both of these operations $(+, \times)$ take in \underline{two numbers} and output \underline{one number}. The question we might have, then, is: how can we can generalize these operations?
 
 \subsection{Binary Operations}
 A \textbf{binary operation} is a way of taking in two values and outputting one value. Of course, we might now ask: what can these values be? These values can come from any specific set. 
@@ -497,10 +496,142 @@ Of course, the properties of binary operations that were discussed just now are 
 
         \item \underline{Inverse:} Corresponding to each $a \in G$, there is an element $a' \in G$ such that:
         \[a * a' = a' * a = \epsilon\]
+        It is also common to denote the inverse of $a$ as $a^{-1}$ instead of $a'$.
     \end{enumerate}
 \end{definition}
-\textbf{Remark:} Notationally, this can be represented by $(G, *)$ or $\langle G, * \rangle$. This is saying that we are pairing a set with a binary operation. 
+\textbf{Remark:}
+\begin{itemize}
+    \item Notationally, this can be represented by $(G, *)$ or $\langle G, * \rangle$. This is saying that we are pairing a set with a binary operation. 
+    \item With regards to how we write the inverse, unless otherwise mentioned, I will use $a'$ and $a^{-1}$ interchangeably.
+\end{itemize}
 
+\begin{note*}{}{}
+    The two most common groups are additive and multiplicative groups. Thus, for some $h \in G$, where $(G, *)$ is a group, it is important to mention what their inverses and identity elements are. As mentioned in the previous section:
+    \begin{center}
+        \begin{tabular}{|c|c|c|}
+            \hline 
+            \textbf{Group} & \textbf{Inverse} & \textbf{Identity} \\ 
+            \hline 
+            Multiplicative $(G, \times)$ & $h^{-1} = h' = \frac{1}{h}$ & $\epsilon = 1$ \\ 
+            Addition $(G, +)$ & $h^{-1} = h' = -h$ & $\epsilon = 0$ \\ 
+            \hline 
+        \end{tabular}
+    \end{center}
+    We will discuss these more in the examples. 
+
+    \bigskip 
+
+    For any other group, the inverse and identity element depends on how the group and its binary operation is defined. Refer to the definition of a group.
+\end{note*}
+
+\subsection{Basic Properties of Groups}
+Suppose $(G, *)$ is a group. Then, we note the following properties of groups. 
+
+\subsubsection{Uniqueness of the Identity.} 
+Could we have two unique two-sided identities in $G$? The answer is \underline{no}. The proof is as follows. 
+
+\begin{mdframed}
+    \begin{proof}
+        Assume by contradiction that we had $\epsilon_1$ and $\epsilon_2$, both of which are unique two-sided identity elements. Then, we know that $\epsilon_1 * \epsilon_2 = \epsilon_2$ since $\epsilon_1$ is an identity. But, since $\epsilon_2$ is also an identity, then $\epsilon_1 * \epsilon_2 = \epsilon1$. So, it follows that $\epsilon_1$ and $\epsilon_2$ are not unique; in other words, $\epsilon_1 = \epsilon_2$. 
+    \end{proof}
+\end{mdframed}
+
+\subsubsection{Uniqueness of Inverses.}
+
+If $g_1$, $g_2$ are both inverses of some element $h$, then\footnote{Here, we denote $g_1$ as the left-inverse and $g_2$ is the right-inverse.}:
+\[g_1 * h = h * g_2 = \epsilon\]
+Additionally, we know that:
+\[g_1 * (h * g_2) = g_1 * \epsilon = g_1\]
+\[(g_1 * h) * g_2 = \epsilon * g_2 = g_2\]
+And so it follows that $g_1 = g_2$, thus $h$ will have a unique inverse. To be more concrete, we have the proof. 
+\begin{mdframed}
+    \begin{proof}
+        We note that $g_1 * h = \epsilon$ and $h * g_2 = \epsilon$. Then:
+        \begin{equation*}
+            \begin{aligned}
+                g_1 &= g_1 * \epsilon && \epsilon \text{ is the identity element.} \\ 
+                    &= g_1 * (h * g_2) \\ 
+                    &= (g_1 * h) * g_2 && \text{Associativity} \\ 
+                    &= \epsilon * g_2 \\ 
+                    &= g_2 && \epsilon \text{ is the identity element.}
+            \end{aligned}
+        \end{equation*}
+        So, it follows that $g_1 = g_2$. Thus, an element $h$ will have a unique inverse. 
+    \end{proof}
+\end{mdframed}
+
+\subsubsection{Cancellation.}
+Suppose we have the expression $g * a = g * b$. This implies that $a = b$. Similarly, the expression $a * g = b * g$ can be simplified to $a = b$. 
+
+\begin{mdframed}
+    \begin{proof}
+        From the definition of a group, we know that an inverse exists for every element in $G$. Let $g^{-1}$ be the inverse of $g$. Then:
+        \begin{equation*}
+            \begin{aligned}
+                g * a = g * b &\implies g^{-1} * (g * a) = g^{-1} * (g * b) \\
+                    &\implies (g^{-1} * g) * a = (g^{-1} * g) * b && \text{Associativity (Prop. 1)} \\
+                    &\implies \epsilon * a = \epsilon * b && \text{Definition of Inverse (Prop. 3)} \\  
+                    &\implies a = b && \text{Definition of Identity (Prop. 2)}
+            \end{aligned}
+        \end{equation*}
+        The other way is similar. 
+    \end{proof}
+\end{mdframed}
+
+\textbf{Remark:} Although $g * a = g * b$, $g * a \neq b * g$ ($g * a$ is not necessarily equal to $b * g$). 
+
+\subsubsection{Inverse of Operation of Two Elements.}
+
+\begin{lemma}{}{}
+    Suppose $(G, *)$ is a group. Then, for every $g, h \in G$, we have: 
+    \[(g * h)^{-1} = h^{-1} * g^{-1}\]
+\end{lemma}
+
+\begin{mdframed}
+    \begin{proof}
+        Since the inverse of an element is unique, it is enough to check that: 
+        \[(g * h) * (h^{-1} * g^{-1}) = (h^{-1} * g^{-1}) * (g * h) = \epsilon\]
+        So: 
+        \begin{equation*}
+            \begin{aligned}
+                (g * h) * (h^{-1} * g^{-1}) &= g * (h * h^{-1}) * g^{-1} && \text{Associativity (Prop. 1)} \\ 
+                    &= g * \epsilon * g^{-1} && \text{Definition of Inverse (Prop. 3)} \\ 
+                    &= (g * \epsilon) * g^{-1} && \text{Associativity (Prop. 1)} \\ 
+                    &= g * g^{-1} && \text{Definition of Identity (Prop. 2)} \\ 
+                    &= \epsilon && \text{Identity Element}
+            \end{aligned}
+        \end{equation*}
+        Similarly: 
+        \begin{equation*}
+            \begin{aligned}
+                (h^{-1} * g^{-1}) * (g * h) &= h^{-1} * (g^{-1} * g) * h && \text{Associativity (Prop. 1)} \\ 
+                    &= h^{-1} * \epsilon * h && \text{Definition of Inverse (Prop. 3)} \\ 
+                    &= (h^{-1} * \epsilon) * h && \text{Associativity (Prop. 1)} \\ 
+                    &= h^{-1} * h && \text{Definition of Identity (Prop. 2)} \\ 
+                    &= \epsilon && \text{Identity Element}
+            \end{aligned}
+        \end{equation*}
+        So, the proof is complete. 
+    \end{proof}
+\end{mdframed}
+
+\subsubsection{Inverse of an Inverse.}
+We should note that, despite using the $-1$ superscript to denote a multiplicative inverse, this applies to any valid binary operation under a group. 
+
+\begin{lemma}{}{}
+    For every $g \in G$, $(g^{-1})^{-1} = g$. 
+\end{lemma}
+
+\begin{mdframed}
+    \begin{proof}
+        We have that $g^{-1} * g = \epsilon$. Multiplying both sides by $(g^{-1})^{-1}$ from the left, we now have: 
+        \[((g^{-1})^{-1} * g^{-1}) * g = (g^{-1})^{-1} * \epsilon = (g^{-1})^{-1}\]
+        Hence, $\epsilon * g = (g^{-1})^{-1}$ and so $g = (g^{-1})^{-1}$.     
+    \end{proof}
+\end{mdframed}
+
+\subsection{Examples and Non-Examples}
+Here, we briefly talk about some examples and non-examples of groups. 
 \subsubsection{Example: Addition}
 For example, the integers under addition are a group. Notationally, this is represented by $(\Z, +)$. 
 \begin{itemize}
@@ -520,22 +651,22 @@ Let's now consider multiplication. In particular, multiplication does give a bin
 \begin{itemize}
     \item If we try to take the integers under multiplication as a group, then we'll run into problems. This is because the multiplicative inverse of every \underline{integer} except $\pm 1$ is not an integer. For example, if we tried 2, then the multiplicative inverse of 2 is $\frac{1}{2}$. However, $\frac{1}{2} \notin \Z$. 
     
-    \item Rational numbers are closer. For instance, $\left(\frac{a}{b}\right)^{-1} = \frac{b}{a}$. However, this is only defined if $a \neq 0$. The solution is to remove 0. Define $\Q^*$ to be the non-zero rational numbers (i.e. $\Q^* = \Q - \{0\}$). Then, $(\Q^*, \cdot)$ is a group. Similarly, we can make $\R$ and $\C$ groups under multiplication by removing 0. 
+    \item Rational numbers are closer. For instance, $\left(\frac{a}{b}\right)^{-1} = \frac{b}{a}$. However, this is only defined if $a \neq 0$. The solution is to remove 0. Define $\Q^*$ to be the non-zero rational numbers (i.e. $\Q^* = \Q - \{0\}$). Then, $(\Q^*, \times)$ is a group. Similarly, we can make $\R$ and $\C$ groups under multiplication by removing 0. 
     
     \bigskip 
 
-    We note that this change does not affect the closure property because we can only achieve $a \cdot b = 0$ if and only if $a = 0$ or $b = 0$. Since $a \notin \R - \{0\}$ and $b \notin \R - \{0\}$ (or $\Q$ or $\C$), then we are still closed and our binary operation is still well-defined. 
+    We note that this change does not affect the closure property because we can only achieve $a \times b = 0$ if and only if $a = 0$ or $b = 0$. Since $a \notin \R - \{0\}$ and $b \notin \R - \{0\}$ (or $\Q$ or $\C$), then we are still closed and our binary operation is still well-defined. 
 \end{itemize}
 
 \subsubsection{Non-Example: Addition and Multiplication}
-We mentioned that $(\Q - \{0\}, \cdot)$, $(\R - \{0\}, \cdot)$, and $(\C - \{0\}, \cdot)$ are groups. However, we note that $(\Z - \{0\}, \cdot)$ and $(\Z_{\geq 0}, +)$ are \emph{not} groups. 
+We mentioned that $(\Q - \{0\}, \times)$, $(\R - \{0\}, \times)$, and $(\C - \{0\}, \times)$ are groups. However, we note that $(\Z - \{0\}, \times)$ and $(\Z_{\geq 0}, +)$ are \emph{not} groups. 
 \begin{itemize}
-    \item We already briefly explained why $\Z$ is not a group. The same idea applies even if we do not include 0; that is, $\Z - \{0\}$ is not a group. We know that $\Z - \{0\}$ has a unique identity element under $\cdot$; this element is 1. This is the case because, if $\epsilon$ is the identity element of $\Z - \{0\}$ under $\cdot$, then by definition: 
-    \[\epsilon \cdot x = x \cdot \epsilon = x\]
+    \item We already briefly explained why $\Z$ under multiplication is not a group. The same idea applies even if we do not include 0; that is, $\Z - \{0\}$ is not a group. We know that $\Z - \{0\}$ has a unique identity element under $\times$; this element is 1. This is the case because, if $\epsilon$ is the identity element of $\Z - \{0\}$ under $\times$, then by definition: 
+    \[\epsilon \times x = x \times \epsilon = x\]
     Which implies that $\epsilon = 1$. We also know that $2 \in \Z - \{0\}$. However, 2 does not have an inverse in $\Z - \{0\}$. To show this, we prove by contradition. If 2 has an inverse in $\Z - \{0\}$, then by definition it follows that for some $a' \in \Z - \{0\}$:
-    \[2 \cdot a' = a' \cdot 2 = \epsilon\]
+    \[2 \times a' = a' \times 2 = \epsilon\]
     But, since we know that $\epsilon = 1$, it follows that:
-    \[2 \cdot a'= 1\]
+    \[2 \times a'= 1\]
     But, as the only solution to this is $\frac{1}{2}$, we know that $\frac{1}{2} \notin \Z - \{0\}$. Thus, this is a contradiction. Thus, $\Z - \{0\}$ under multiplication is not a group. 
 
     \item We know that $\Z_{\geq 0}$ has a unique identity element under addition and that is 0. This is because if $\epsilon$ is a unique element of $(\Z_{\geq 0}, +)$, then by definition, we know that: 
@@ -569,10 +700,10 @@ We denote this group as $(\Z_n, + \Mod{n})$, where $\Z_n = \{\overline{0}, \over
 \subsubsection{Example: Multiplication and Modular Arithmetic}
 Could we do multiplication modulo $n$ as a group? Well, multiplication modulo $n$ on the set $\Z_n$ is an associative, commutative, binary operation with identity $\overline{1}$. However, inverses are potentially an issue ($\overline{0}$ specifically will be an issue). Can we fix this by removing all uninvertible elements? 
 \begin{itemize}
-    \item Yes, but can we characterize uninvertible elements? Well, the greatest common divisor of two integers is a linear combination. This is useful because we can think about $\gcd(k, n)$ where $k \in \{1, \dots, n - 1\}$. Specifically, if $\gcd(k, n) = 1$, then $ak + bn = 1$ implies that $\overline{a} \cdot \overline{k} = \overline{1} \Mod{n}$. In other words, $k$ is invertible if $\gcd(n, k) = 1$. 
+    \item Yes, but can we characterize uninvertible elements? Well, the greatest common divisor of two integers is a linear combination. This is useful because we can think about $\gcd(k, n)$ where $k \in \{1, \dots, n - 1\}$. Specifically, if $\gcd(k, n) = 1$, then $ak + bn = 1$ implies that $\overline{a} \times \overline{k} = \overline{1} \Mod{n}$. In other words, $k$ is invertible if $\gcd(n, k) = 1$. 
     \item What if $\gcd(k, n) > 1$? If $k$ was invertible under multiplication modulo $n$, then $\overline{a} \overline{k} = \overline{1} \Mod{n}$. But, that would mean that there is a linear combinations of $a$ and $k$ that is equal to 1. Thus, $k$ is invertible under multiplication modulo $n$ if and only if $\gcd(k, n) = 1$. 
 \end{itemize}
-Let's now consider only taking equivalence classes $\overline{k}$ where $\overline{k}$ is relatively prime for $n$. We will now make the claim that $(U(n), \cdot \Mod{n})$ is a group. We know that this is associative and commutative, we justified that it has an inverse and an identity element. However, is this still closed? 
+Let's now consider only taking equivalence classes $\overline{k}$ where $\overline{k}$ is relatively prime for $n$. We will now make the claim that $(U(n), \times \Mod{n})$ is a group. We know that this is associative and commutative, we justified that it has an inverse and an identity element. However, is this still closed? 
 
 \bigskip 
 
@@ -590,120 +721,6 @@ If $k_1, k_2$ are both invertible, then $k_1 k_2$ is also invertible. Why is thi
     \end{aligned}
 \end{equation*}
 
-\subsection{Basic Properties of Groups}
-Suppose $(G, *)$ is a group. Recall that $\epsilon$ is the identity element. Then, we note the following properties of groups. 
-
-\subsubsection{Uniqueness of the Identity.} 
-Could we have two unique two-sided identities in $G$? The answer is \underline{no}. The proof is as follows. 
-
-\begin{framed}
-    \begin{proof}
-        Assume by contradiction that we had $\epsilon_1$ and $\epsilon_2$, both of which are unique two-sided identity elements. Then, we know that $\epsilon_1 * \epsilon_2 = \epsilon_2$ since $\epsilon_1$ is an identity. But, since $\epsilon_2$ is also an identity, then $\epsilon_1 * \epsilon_2 = \epsilon1$. So, it follows that $\epsilon_1$ and $\epsilon_2$ are not unique; in other words, $\epsilon_1 = \epsilon_2$. 
-    \end{proof}
-\end{framed}
-
-\subsubsection{Uniqueness of Inverses.}
-
-If $g_1$, $g_2$ are both inverses of some element $h$, then\footnote{We denote $g_1$ as the left-inverse and $g_2$ is the right-inverse.}:
-\[g_1 * h = h * g_2 = \epsilon\]
-Additionally, we know that:
-\[g_1 * (h * g_2) = g_1 * \epsilon = g_1\]
-\[(g_1 * h) * g_2 = \epsilon * g_2 = g_2\]
-And so it follows that $g_1 = g_2$, thus $h$ will have a unique inverse. 
-
-\bigskip 
-
-To be more concrete, we have the proof. 
-\begin{framed}
-    \begin{proof}
-        We note that $g_1 * h = \epsilon$ and $h * g_2 = \epsilon$. Then:
-        \begin{equation*}
-            \begin{aligned}
-                g_1 &= g_1 * \epsilon && \epsilon \text{ is the identity element.} \\ 
-                    &= g_1 * (h * g_2) \\ 
-                    &= (g_1 * h) * g_2 && \text{Associativity} \\ 
-                    &= \epsilon * g_2 \\ 
-                    &= g_2 && \epsilon \text{ is the identity element.}
-            \end{aligned}
-        \end{equation*}
-        So, it follows that $g_1 = g_2$. Thus, an element $h$ will have a unique inverse. 
-    \end{proof}
-\end{framed}
-
-\textbf{Remark:} The inverse of $h \in G$ in a \textbf{multiplicative notation} is denoted by $h^{-1}$. When we are working with an \textbf{additive notation} $(G, +)$, the neutral element is denoted by 0 and the inverse of $h \in G$ is denoted by $-h$. \underline{In either case}, for an element $a$, we will denote the inverse of $a$ to be $a^{-1}$. 
-
-\subsubsection{Cancellation.}
-
-Suppose we have the expression $g * a = g * b$. This implies that $a = b$. Similarly, the expression $a * g = b * g$ can be simplified to $a = b$. 
-
-\begin{framed}
-    \begin{proof}
-        From the definition of a group, we know that an inverse exists for every element in $G$. Let $g^{-1}$ be the inverse of $g$. Then:
-        \begin{equation*}
-            \begin{aligned}
-                g * a = g * b &\implies g^{-1} * (g * a) = g^{-1} * (g * b) \\
-                    &\implies (g^{-1} * g) * a = (g^{-1} * g) * b && \text{Associativity (Prop. 1)} \\
-                    &\implies \epsilon * a = \epsilon * b && \text{Definition of Inverse (Prop. 3)} \\  
-                    &\implies a = b && \text{Definition of Identity (Prop. 2)}
-            \end{aligned}
-        \end{equation*}
-        The other way is similar. 
-    \end{proof}
-\end{framed}
-
-\textbf{Remark:} Although $g * a = g * b$, $g * a \neq b * g$ ($g * a$ is not necessarily equal to $b * g$). 
-
-\subsubsection{Inverse of Operation of Two Elements.}
-
-\begin{lemma}{}{}
-    Suppose $(G, *)$ is a group. Then, for every $g, h \in G$, we have: 
-    \[(g * h)^{-1} = h^{-1} * g^{-1}\]
-    Here, $h^{-1}$ and $g^{-1}$ are inverses of $h$ and $g$, respectively. Also, $(g * h)^{-1}$ is the inverse of $g * h$.  
-\end{lemma}
-
-\begin{framed}
-    \begin{proof}
-        Since the inverse of an element is unique, it is enough to check that: 
-        \[(g * h) * (h^{-1} * g^{-1}) = (h^{-1} * g^{-1}) * (g * h) = \epsilon\]
-        So: 
-        \begin{equation*}
-            \begin{aligned}
-                (g * h) * (h^{-1} * g^{-1}) &= g * (h * h^{-1}) * g^{-1} && \text{Associativity (Prop. 1)} \\ 
-                    &= g * \epsilon * g^{-1} && \text{Definition of Inverse (Prop. 3)} \\ 
-                    &= (g * \epsilon) * g^{-1} && \text{Associativity (Prop. 1)} \\ 
-                    &= g * g^{-1} && \text{Definition of Identity (Prop. 2)} \\ 
-                    &= \epsilon && \text{Identity Element}
-            \end{aligned}
-        \end{equation*}
-        Similarly: 
-        \begin{equation*}
-            \begin{aligned}
-                (h^{-1} * g^{-1}) * (g * h) &= h^{-1} * (g^{-1} * g) * h && \text{Associativity (Prop. 1)} \\ 
-                    &= h^{-1} * \epsilon * h && \text{Definition of Inverse (Prop. 3)} \\ 
-                    &= (h^{-1} * \epsilon) * h && \text{Associativity (Prop. 1)} \\ 
-                    &= h^{-1} * h && \text{Definition of Identity (Prop. 2)} \\ 
-                    &= \epsilon && \text{Identity Element}
-            \end{aligned}
-        \end{equation*}
-        So, the proof is complete. 
-    \end{proof}
-\end{framed}
-
-\subsubsection{Inverse of an Inverse.}
-We should note that, despite using the $-1$ superscript to denote a multiplicative inverse, this applies to any valid binary operation under a group. 
-
-\begin{lemma}{}{}
-    For every $g \in G$, $(g^{-1})^{-1} = g$. 
-\end{lemma}
-
-\begin{framed}
-    \begin{proof}
-        We have that $g^{-1} * g = \epsilon$. Multiplying both sides by $(g^{-1})^{-1}$ from the left, we now have: 
-        \[((g^{-1})^{-1} * g^{-1}) * g = (g^{-1})^{-1} * \epsilon = (g^{-1})^{-1}\]
-        Hence, $\epsilon * g = (g^{-1})^{-1}$ and so $g = (g^{-1})^{-1}$.     
-    \end{proof}
-\end{framed}
-
 \subsection{Exponents of Elements}
 Suppose $(G, *)$ is a group and $g \in G$. For a positive integer $n$, we let: 
 \[g^n = \underbrace{g * \dots * g}_{n \text{ times}}\]
@@ -714,18 +731,102 @@ For a negative integer $n$, we let:
     For $n, m \in \Z$, $(g^n)^m = g^{nm}$. 
 \end{lemma}
 
-\begin{framed}
+\begin{mdframed}
     \begin{proof}
         We will consider various cases depending on the signs of $m$ and $n$. 
         \begin{itemize}
             \item \underline{Case 1:} Suppose $m$ and $n$ are positive. Then: 
-            \[(g^n)^m = \underbrace{g^n * \dots * g^n}_{m \text{ times}} = \underbrace{\overbrace{(g * \dots * g)}^{n \text{ times}} * \dots * \overbrace{(g * \dots * g)}^{n \text{ times}}}_{m \text{ times}} = g^{mn}\]
-        \end{itemize}
-    \end{proof}
-\end{framed}
+            \[(g^n)^m = \underbrace{g^n * \dots * g^n}_{m \text{ times}} = \underbrace{\overbrace{(g * \dots * g)}^{n \text{ times}} * \dots * \overbrace{(g * \dots * g)}^{n \text{ times}}}_{m \text{ times}} = \underbrace{g * \dots * g}_{mn \text{ times}} = g^{mn}\]
+            Here, $g^n$ means we need to multiply $g$ $n$ times. But, since we need to multiply $g^n$ $m$ times, it follows that this is simply $g^{nm}$.  
 
-% 41:49 
-% https://www.youtube.com/watch?v=2XX-4W-r-Jg
+            \item \underline{Case 2:} Suppose $m$ is positive and $n$ is negative. Then: 
+            \[(g^n)^m = \underbrace{g^n * \dots * g^n}_{m \text{ times}} = \underbrace{\overbrace{(g^{-1} * \dots * g^{-1})}^{-n \text{ times}} * \dots * \overbrace{(g^{-1} * \dots * g^{-1})}^{-n \text{ times}}}_{m \text{ times}} = \underbrace{g^{-1} * \dots * g^{-1}}_{-mn \text{ times}} = g^{mn}\]
+            Here, we note that $mn < 0$. 
+
+            \item \underline{Case 3:} Suppose $m$ is negative and $n$ is positive. Then: 
+            \[(g^n)^m = \underbrace{(g^n)^{-1} * \dots * (g^n)^{-1}}_{-m \text{ times}} = \underbrace{(\overbrace{g * \dots * g}^{n \text{ times}})^{-1} * \dots * (\overbrace{g * \dots * g}^{n \text{ times}})^{-1}}_{-m \text{ times}}\]
+
+            We note that, by the previous lemma, $(\underbrace{g * \dots * g}_{n \text{ times}})^{-1} = \underbrace{g^{-1} * \dots * g^{-1}}_{n \text{ times}}$. Hence: 
+            \[(g^n)^m = \underbrace{(\overbrace{g^{-1} * \dots * g^{-1}}^{n \text{ times}}) * \dots * (\overbrace{g^{-1} * \dots * g^{-1}}^{n \text{ times}})}_{-m \text{ times}} = \underbrace{g^{-1} * \dots * g^{-1}}_{-mn \text{ times}} = g^{mn}\]
+            Here, we note that $mn < 0$.  
+
+            \item \underline{Case 4:} Suppose $m$ and $n$ are negative. Since it is easier to work with positive numbers, let $m = -r$ and $n = -s$ where $r, s > 0$. Then, we have to show that $(g^{-r})^{-s} = g^{rs}$. By definition, we know that $g^{-r} = \underbrace{g^{-1} * \dots * g^{-1}}_{r \text{ times}}$. Hence, $(g^{-r})^{-s} = [(g^{-1})^r]^{-s}$. By the case where $n > 0$ and $m < 0$, we deduce that $(x^r)^{-s} = x^{-rs}$. Therefore: 
+            \[(g^{-r})^{-s} = (g^{-1})^{-rs} = \underbrace{(g^{-1})^{-1} * \dots * (g^{-1})^{-1}}_{rs \text{ times}} = \underbrace{g * \dots * g}_{rs \text{ times}} = g^{rs}\]
+
+            \item \underline{Case 5:} Suppose $m = 0$. Since $m = mn = 0$, it follows that: 
+            \[(g^n)^m = \epsilon\]
+            \[g^{nm} = \epsilon\]
+
+            \item \underline{Case 6:} Suppose $n = 0$. By the same reasoning as case 5, we have that $n = mn = 0$. So: 
+            \[(g^n)^m = \epsilon^m = \epsilon\]
+            \[g^{mn} = \epsilon\]
+        \end{itemize}
+
+        Here, we notice that $\epsilon * \dots * \epsilon = \epsilon$ and $\epsilon^{-1} = \epsilon$, and so $\epsilon^m = \epsilon$. So, we showed that $(g^n)^m = g^{mn}$ for every $m, n \in \Z$. 
+    \end{proof}
+\end{mdframed}
+
+\begin{note*}{}{}
+    \begin{itemize}
+        \item When we are working with an \underline{multiplicative group} $(G, \times)$, then $g^n$ means:
+        \[g^n = \begin{cases}
+            \underbrace{g \times \dots \times g}_{n \text{ times}} & n > 0 \\ 
+            1 & n = 0 \\ 
+            \underbrace{\frac{1}{g} \times \dots \times \frac{1}{g}}_{-n \text{ times}} & n < 0
+        \end{cases}\]
+
+        \item When we are working with an \underline{additive group} $(G, +)$, instead of writing $g^n$, we write $ng$. So, in $(G, +)$: 
+        \[ng = \begin{cases}
+            \underbrace{g + \dots + g}_{n \text{ times}} & n > 0 \\ 
+            0 & n = 0 \\ 
+            \underbrace{(-g) + \dots + (-g)}_{-n \text{ times}} & n < 0
+        \end{cases}\]
+        So, instead of writing $(g^{n})^m = g^{mn}$, we write $m(ng) = (mn)g$.
+
+        \item For other valid groups, it depends on how you define the operation for the group. 
+    \end{itemize}
+\end{note*}
+
+\begin{lemma}{}{}
+    For every $m, n \in \Z$: 
+    \[g^m * g^n = g^{m + n}\]
+\end{lemma}
+
+\begin{mdframed}
+    \begin{proof}
+        Like the previous proof, we will consider various cases depending on the signs of $m$ and $n$. Since it is easier to work with positive numbers, we will write $m = \text{sign}(m) r$ and $n = \text{sign}(n) s$ where $r = |m|$ and $s = |n|$, where: 
+        \[\text{sign}: \R \to \{-1, 1\}\]
+        \begin{itemize}
+            \item \underline{Case 1:} Suppose $m$ and $n$ are positive. Then: 
+            \[g^m * g^n = (\underbrace{g * \dots * g}_{m \text{ times}}) * (\underbrace{g * \dots * g}_{n \text{ times}}) = \underbrace{g * \dots * g}_{m + n \text{ times}} = g^{m + n}\]
+    
+            \item \underline{Case 2:} Suppose $m = -r$ ($m$ is negative), $n = s$ ($n$ is positive), $r < s$ ($m + n$ is positive). Then, by the previous case:
+            \[g^r * g^{s - r} = g^s \implies g^{s - r} = (g^r)^{-1} * g^s = g^{-r} * g^s\]  
+    
+            \item \underline{Case 3:} Suppose $m = -r$, $n = s$, $r > s$ ($m + n$ is negative). Then, by the first case: 
+            \begin{equation*}
+                \begin{aligned}
+                    g^s * g^{r - s} = g^r &\implies g^{r - s} = (g^s)^{-1} * g^r \\ 
+                        &\implies (g^{r - s})^{-1} = ((g^s)^{-1} * g^r)^{-1} \\ 
+                        &\implies g^{-(r - s)} = (g^r)^{-1} * ((g^s)^{-1})^{-1} \\ 
+                        &\implies g^{-r + s} = g^{-r} * g^s
+                \end{aligned}
+            \end{equation*}
+    
+            \item \underline{Case 4:} Suppose $m = 0$. Then: 
+            \[g^m * g^n  = \epsilon * g^n = g^n = g^{m + n}\]
+    
+            \item \underline{Case 5:} Suppose $n = 0$. Then: 
+            \[g^m * g^n = g^m * \epsilon = g^m = g^{m + n}\]
+        \end{itemize}
+        By the above cases, we obtain the claim when $n \geq 0$ and $m \in \Z$. So: 
+        \begin{itemize}
+            \item \underline{Case 6:} Suppose $n = -s$ ($n$ is negative) and $s > 0$. Then: 
+            \[g^{m - s} * g^s = g^m \implies g^{m - s} = g^m * (g^s)^{-1} \implies g^{m - s} = g^m * g^{-s}\]
+        \end{itemize}
+        This concludes the proof. 
+    \end{proof}
+\end{mdframed}
 
 \newpage 
 \section{More on Groups}

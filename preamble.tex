@@ -6,11 +6,12 @@
 \usepackage{graphicx}
 \usepackage{gensymb}
 \usepackage{amsthm, amsmath, mathtools}
-\usepackage{xcolor}
+\usepackage[dvipsnames]{xcolor}
 \usepackage{enumerate}
-\usepackage{framed}
-\usepackage{tcolorbox}
+\usepackage{mdframed}
+\usepackage[most]{tcolorbox}
 \usepackage{csquotes}
+% https://tex.stackexchange.com/questions/13506/how-to-continue-the-framed-text-box-on-multiple-pages
 
 \tcbuselibrary{theorems}
 
@@ -46,3 +47,23 @@
 
 \newtcbtheorem[number within=section]{example}{Example}
 {colback=white!5,colframe=white!35!black,fonttitle=\bfseries}{def}
+
+\newtcbtheorem[number within=section]{note}{Important Note}{
+        enhanced,
+        sharp corners,
+        attach boxed title to top left={
+            xshift=-1mm,
+            yshift=-5mm,
+            yshifttext=-1mm
+        },
+        top=1.5em,
+        colback=white,
+        colframe=black,
+        fonttitle=\bfseries,
+        boxed title style={
+            sharp corners,
+            size=small,
+            colback=red!75!black,
+            colframe=red!75!black,
+        } 
+    }{impnote}
