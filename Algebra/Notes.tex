@@ -485,8 +485,7 @@ What properties could binary operations have?\footnote{In this course, we will c
 \textbf{Remark:} Commutativity does not imply associativity.
 
 \subsection{Groups}
-Of course, the properties of binary operations that were discussed just now are very much applicable in something called \textbf{groups}.
-
+Of course, the properties of binary operations that were discussed just now are very much applicable in something called \textbf{groups}. Simply put, we can say that a group is a set combined with an operation. However, it's a little more complicated than that. The following definition will make that clearer:
 \begin{definition}{Group}{}
     A group is a set $G$, closed under a binary operation $*$, satisfying the three properties:
     \begin{enumerate}
@@ -631,7 +630,7 @@ To be more concrete, we have the proof.
     \end{proof}
 \end{framed}
 
-\textbf{Remark:} The inverse of $h \in G$ in a \textbf{multiplicative notation} is denoted by $h^{-1}$. When we are working with an \textbf{additive notation} $(G, +)$, the neutral element is denoted by 0 and the inverse of $h \in G$ is denoted by $-h$.   
+\textbf{Remark:} The inverse of $h \in G$ in a \textbf{multiplicative notation} is denoted by $h^{-1}$. When we are working with an \textbf{additive notation} $(G, +)$, the neutral element is denoted by 0 and the inverse of $h \in G$ is denoted by $-h$. \underline{In either case}, for an element $a$, we will denote the inverse of $a$ to be $a^{-1}$. 
 
 \subsubsection{Cancellation.}
 
@@ -639,11 +638,11 @@ Suppose we have the expression $g * a = g * b$. This implies that $a = b$. Simil
 
 \begin{framed}
     \begin{proof}
-        From the definition of a group, we know that an inverse exists for every element in $G$. Let $g'$ be the inverse of $g$. Then:
+        From the definition of a group, we know that an inverse exists for every element in $G$. Let $g^{-1}$ be the inverse of $g$. Then:
         \begin{equation*}
             \begin{aligned}
-                g * a = g * b &\implies g' * (g * a) = g' * (g * b) \\
-                    &\implies (g' * g) * a = (g' * g) * b && \text{Associativity (Prop. 1)} \\
+                g * a = g * b &\implies g^{-1} * (g * a) = g^{-1} * (g * b) \\
+                    &\implies (g^{-1} * g) * a = (g^{-1} * g) * b && \text{Associativity (Prop. 1)} \\
                     &\implies \epsilon * a = \epsilon * b && \text{Definition of Inverse (Prop. 3)} \\  
                     &\implies a = b && \text{Definition of Identity (Prop. 2)}
             \end{aligned}
@@ -658,31 +657,31 @@ Suppose we have the expression $g * a = g * b$. This implies that $a = b$. Simil
 
 \begin{lemma}{}{}
     Suppose $(G, *)$ is a group. Then, for every $g, h \in G$, we have: 
-    \[(g * h)' = h' * g'\]
-    Here, $h'$ and $g'$ are inverses of $h$ and $g$, respectively. Also, $(g * h)'$ is the inverse of $g * h$.  
+    \[(g * h)^{-1} = h^{-1} * g^{-1}\]
+    Here, $h^{-1}$ and $g^{-1}$ are inverses of $h$ and $g$, respectively. Also, $(g * h)^{-1}$ is the inverse of $g * h$.  
 \end{lemma}
 
 \begin{framed}
     \begin{proof}
         Since the inverse of an element is unique, it is enough to check that: 
-        \[(g * h) * (h' * g') = (h' * g') * (g * h) = \epsilon\]
+        \[(g * h) * (h^{-1} * g^{-1}) = (h^{-1} * g^{-1}) * (g * h) = \epsilon\]
         So: 
         \begin{equation*}
             \begin{aligned}
-                (g * h) * (h' * g') &= g * (h * h') * g' && \text{Associativity (Prop. 1)} \\ 
-                    &= g * \epsilon * g' && \text{Definition of Inverse (Prop. 3)} \\ 
-                    &= (g * \epsilon) * g' && \text{Associativity (Prop. 1)} \\ 
-                    &= g * g' && \text{Definition of Identity (Prop. 2)} \\ 
+                (g * h) * (h^{-1} * g^{-1}) &= g * (h * h^{-1}) * g^{-1} && \text{Associativity (Prop. 1)} \\ 
+                    &= g * \epsilon * g^{-1} && \text{Definition of Inverse (Prop. 3)} \\ 
+                    &= (g * \epsilon) * g^{-1} && \text{Associativity (Prop. 1)} \\ 
+                    &= g * g^{-1} && \text{Definition of Identity (Prop. 2)} \\ 
                     &= \epsilon && \text{Identity Element}
             \end{aligned}
         \end{equation*}
         Similarly: 
         \begin{equation*}
             \begin{aligned}
-                (h' * g') * (g * h) &= h' * (g' * g) * h && \text{Associativity (Prop. 1)} \\ 
-                    &= h' * \epsilon * h && \text{Definition of Inverse (Prop. 3)} \\ 
-                    &= (h' * \epsilon) * h && \text{Associativity (Prop. 1)} \\ 
-                    &= h' * h && \text{Definition of Identity (Prop. 2)} \\ 
+                (h^{-1} * g^{-1}) * (g * h) &= h^{-1} * (g^{-1} * g) * h && \text{Associativity (Prop. 1)} \\ 
+                    &= h^{-1} * \epsilon * h && \text{Definition of Inverse (Prop. 3)} \\ 
+                    &= (h^{-1} * \epsilon) * h && \text{Associativity (Prop. 1)} \\ 
+                    &= h^{-1} * h && \text{Definition of Identity (Prop. 2)} \\ 
                     &= \epsilon && \text{Identity Element}
             \end{aligned}
         \end{equation*}
@@ -724,6 +723,9 @@ For a negative integer $n$, we let:
         \end{itemize}
     \end{proof}
 \end{framed}
+
+% 41:49 
+% https://www.youtube.com/watch?v=2XX-4W-r-Jg
 
 \newpage 
 \section{More on Groups}
