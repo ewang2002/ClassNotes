@@ -1,0 +1,153 @@
+\documentclass[letterpaper]{article}
+\input{../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{CSE 100}
+\chead{September 14th, 2021}
+\lhead{Course Notes}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\begin{titlepage}
+    \begin{center}
+        \vspace*{1cm}
+            
+        \Huge
+        \textbf{CSE 100 Notes}
+            
+        \vspace{0.5cm}
+        \LARGE
+        Advanced Data Structures
+            
+        \vspace{1.5cm}
+            
+        \vfill
+            
+        Fall 2021\\
+        Taught by Professor Niema Moshiri
+    \end{center}
+\end{titlepage}
+
+\pagenumbering{gobble}
+
+\newpage 
+
+\pagenumbering{gobble}
+\begingroup
+    \renewcommand\contentsname{Table of Contents}
+    \tableofcontents
+\endgroup
+
+\newpage
+\pagenumbering{arabic}
+
+\section{A Brief Introduction}
+In this course, we will primarily be building off of our prior knowledge of data structures (CSE 12). In particular, we will: 
+\begin{itemize}
+    \item Analyze data structures for both time and space complexity. 
+    \item Describe the strengths and weaknesses of a data structure. 
+    \item Implement complex data structures correctly and efficiently. 
+\end{itemize}
+
+
+% https://www.youtube.com/watch?v=_vpy1Flh__4&list=PLM_KIlU0WoXmkV4QB1Dg8PtJaHTdWHwRS&index=2
+\subsection{Data Structures vs. Abstract Data Types}
+When talking about data, we often hear about data structures and abstract data types. 
+
+\begin{center}
+    \begin{tabular}{|p{7cm}|p{7cm}|}
+        \hline 
+        \textbf{Data Structures} (DS) & \textbf{Abstract Data Type} (ADT) \\
+        \hline 
+        Data structures are collections that contain: 
+        \begin{itemize}
+            \item Data values. 
+            \item Relationships among the data. 
+            \item Operations applied to the data. 
+        \end{itemize}
+        It also describes how the data are organized and how tasks are performed. So, a data structure defines every single detail about anything relating to the data. 
+        &
+        Abstract data types are defined primarily by its \underline{behavior} from the view of the \underline{user}. So, not necessarily how the operations are done, but rather what operations it must have from a completely abstract point of view.  
+    
+        \bigskip 
+    
+        Specifically, it describes only what needs to be done, not how it's done. \\
+        \hline 
+    \end{tabular}
+\end{center}
+
+Consider the \code{ArrayList} (DS) vs. the \code{List} (ADT).
+\begin{itemize}
+    \item A \code{List} will most likely have the following operations: 
+    \begin{itemize}
+        \item \code{add}: Adds an element to the list.
+        \item \code{find}: Does an element exist in the list? 
+        \item \code{remove}: Remove an element from the list. 
+        \item \code{size}: How many elements are in this list? 
+        \item \code{ordered}: Each element should be ordered in the way we added it. For example, if we added \code{5}, and \emph{then} added \code{3}, and \emph{then} added \code{10}, our list should look like: \code{[5, 3, 10]}.   
+    \end{itemize}
+
+    Of course, as an abstract data type, \code{List} isn't going to define how these operations work. It just lists all operations that any implementing data structure must have. In other words, we can think of \code{List}, or any abstract data type, as a \emph{blueprint} for future data structures. 
+
+    \item An \code{ArrayList} is simply an array that is expandable. It is internally backed by an \underline{array}. So, we can perform the following operations: 
+    \begin{itemize}
+        \item We can \code{add} an element to the \code{ArrayList}. In this case, we add the element to the next available slot in the array, expanding the array if necessary. 
+        \item We can \code{find} an element in the \code{ArrayList}. In this case, we can search through each slot of the array until we find the array or we reach the end of the array.
+        \item We can \code{remove} an element from the \code{ArrayList}. In this case, we can simply move every element after the specified element back one slot. 
+        \item We can get the \code{size} of the \code{ArrayList}. In this case, this is as simple as seeing how many elements are in this \code{ArrayList}.
+        \item And, we know that the \code{ArrayList} is \code{ordered}. In this case, this is already done via the \code{add} and \code{remove} methods.  
+    \end{itemize}
+    Notice how \code{ArrayList} specifies how each operation defined by \code{List} works. In this sense, we say that \code{ArrayList} essentially implements \code{List} because we need to define \emph{how} the tasks defined by \code{List} are performed. 
+\end{itemize}
+So, the key takeaways are: 
+\begin{itemize}
+    \item An abstract data type (in our case, \code{List}) specifies what needs to be done without specifying how it's done. 
+    \item A data structure (in our case, \code{ArrayList}) actually defines \textbf{how} the data is organized, how the different operations are performed, and how exactly everything is represented.
+\end{itemize}
+
+
+
+\newpage 
+\section{Introduction to C++}
+Here, we will talk about C++, the programming language that we will use in this course. 
+
+% https://www.youtube.com/watch?v=8FGvlugzS5A&list=PLM_KIlU0WoXmkV4QB1Dg8PtJaHTdWHwRS&index=4
+\subsection{Data Types}
+First, we'll compare the data types in Java and C++. 
+\begin{center}
+    \begin{tabular}{|c|c|c|}
+        \hline 
+        \textbf{Data Type} & \textbf{Java} & \textbf{C++} \\ 
+        \hline 
+        \code{byte} & 1 byte & 1 byte \\ 
+        \code{short} & 2 bytes & 2 bytes \\ 
+        \code{int} & 4 bytes & 4 bytes \\ 
+        \code{long} & 8 bytes & 8 bytes \\ 
+        \code{long long} & & 16 bytes \\ 
+        \hline 
+        \code{float} & 4 bytes & \code{4 bytes} \\ 
+        \code{double} & 8 bytes & \code{8 bytes} \\ 
+        \hline 
+        \code{boolean} & Usually 1 byte & \\ 
+        \code{bool} &  & Usually 1 byte \\ 
+        \code{char} & 2 bytes & 1 byte \\ 
+        \hline 
+    \end{tabular}
+\end{center}
+It should be mentioned that: 
+\begin{itemize}
+    \item In Java, you can only have signed data types. 
+    \item In C++, you can have both signed and unsigned data types. 
+    \item \code{boolean} (Java) and \code{bool} (C++) are effectively the same thing: they represent either \code{true} or \code{false}. 
+\end{itemize}
+
+
+\end{document}
