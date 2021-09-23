@@ -49,6 +49,10 @@
 \newpage
 \pagenumbering{arabic}
 
+
+% ======================================================== %
+%                   NEW SECTION                            %
+% ======================================================== %
 \section{A Brief Introduction}
 In this course, we will primarily be building off of our prior knowledge of data structures (CSE 12). In particular, we will: 
 \begin{itemize}
@@ -115,6 +119,17 @@ So, the key takeaways are:
 
 
 
+
+
+
+
+
+
+
+
+% ======================================================== %
+%                   NEW SECTION                            %
+% ======================================================== %
 \newpage 
 \section{Introduction to C++}
 Here, we will talk about C++, the programming language that we will use in this course. 
@@ -148,6 +163,139 @@ It should be mentioned that:
     \item In C++, you can have both signed and unsigned data types. 
     \item \code{boolean} (Java) and \code{bool} (C++) are effectively the same thing: they represent either \code{true} or \code{false}. 
 \end{itemize}
+
+\subsection{Strings}
+There are some major differences between strings in Java and C++, which we will discuss below.
+
+\subsubsection{Representation}
+In Java, strings are represented by the \code{String} class. In C++, strings are represented by the \code{string} type.
+
+\subsubsection{Mutability}
+Strings in Java are \underline{immutable}. The moment you create a string, you won't be able to modify them. The only way to change a string variable is by creating a new string and reassigning them. 
+
+\bigskip 
+
+In C++, strings are actually \underline{mutable}. You can modify strings in-place. 
+
+\subsubsection{Concatenation}
+In Java, you can concatenate any type to a string. For example, the following is valid:
+\begin{verbatim}
+    String a = "this is a string" + 123;\end{verbatim}
+
+In C++, you can only concatenate strings with other strings. So, if you wanted to convert an integer (or any other type) to a string, you would have to \emph{first} convert that integer to a string (or use a string stream).
+
+\subsubsection{Substring Method}
+In Java, we can take the substring of a string using the \code{substring} method. The method signature is:
+\begin{verbatim}
+    String#substring(beginIndex, endIndex);\end{verbatim}
+
+In C++, we can take the substring using the \code{substr} method. The method signature is:
+\begin{verbatim}
+    string#substr(beginIndex, length);\end{verbatim}
+
+An important distinction to make here is that Java's \code{substring} method takes in an \textbf{end index} for the second parameter, whereas C++'s \code{substr} method takes in a \textbf{length} for the second parameter.
+
+
+
+\subsection{Comparing Non-Primitive Objects}
+Suppose \code{a} and \code{b} are two non-primitive objects.
+
+\bigskip 
+
+In Java, if we want to compare these two objects, we have to make use of the methods: 
+\begin{verbatim}
+    a.equals(b)
+    a.compareTo(b)
+\end{verbatim}
+If we tried using the relational operators like \code{==} or \code{!=}, Java would compare the memory addresses of the two objects, which is often something that we aren't looking for.
+
+\bigskip 
+
+In C++, even if \code{a} and \code{b} are objects, we can make use of the relational operators:
+\begin{verbatim}
+    a == b      a != b
+    a < b       a <= b
+    a > b       a >= b
+\end{verbatim}
+This is done through something called \textbf{operator overloading}, where we write a custom class and define how these operators should function.
+
+
+\subsection{Variables}
+Now, we will briefly discuss how variables function in both C++ and Java. 
+
+\subsubsection{Initialization}
+In Java, variable initialization is \textbf{checked}. Consider the following code: 
+\begin{verbatim}
+    int fast;
+    int furious; 
+    int fastFurious = fast + furious;
+\end{verbatim}
+Because \code{fast} and \code{furious} aren't initialized, the Java compiler will throw a compilation error. 
+
+\bigskip 
+
+In C++, variable initialization is \textbf{not checked}. Consider the same code, which will compile:
+\begin{verbatim}
+    int fast;
+    int furious; 
+    int fastFurious = fast + furious;
+\end{verbatim}
+Here, this would result in \textbf{undefined} behavior.
+
+\subsubsection{Narrowing}
+In Java, if we have a higher variable type and then try to cast this type to a smaller type, we would get a compilation error. Consider the following code:
+\begin{verbatim}
+    int x = 40_000;
+    short y = x;
+\end{verbatim}
+This code would result in a compilation error. If we didn't want a compilation error, we would have to explicitly \emph{cast} the bigger variable type to the smaller type. The following Java code would compile just fine: 
+\begin{verbatim}
+    int x = 40_000;
+    short y = (short) x;
+\end{verbatim}
+
+\bigskip 
+
+In C++, no compilation error would occur; that is, the following code would compile:
+\begin{verbatim}
+    int x = 40_000;
+    short y = x;
+\end{verbatim}
+What would actually happen is that \code{x} would get \textbf{truncated} when it is assigned to \code{y}, resulting in integer overflow. 
+
+
+\subsubsection{Variable Declaration}
+In Java, variables \textbf{cannot} be declared outside of a class. The following Java code would result in a compile error:
+\begin{verbatim}
+    // MyClass.java 
+
+    int meaningOfLife = 42;
+    class MyClass {
+        // some code 
+    }
+\end{verbatim}
+In order for this to compile, you have to put variable declarations inside the class space (as an instance variable) or in a method inside a class (as a local variable). 
+
+\bigskip 
+
+In C++, variables \textbf{can} be declared outside of a class. The following C++ code would compile completely fine: 
+\begin{verbatim}
+    // MyClass.cpp
+
+    int meaningOfLife = 42;
+    class MyClass {
+        // some code 
+    }
+\end{verbatim}
+Here, \code{meaningOfLife} is a \textbf{global variable}. Anything in this file can access this variable. In general, it is considered poor practice to use global variables except in cases of constants. 
+
+\subsection{Classes, Source Code, and Headers}
+Another thing that is important is the concept of classes (which leads to the topic of object-oriented programming). That being said, Java and C++ has some differences with regards to how classes function. 
+
+\subsubsection{Class Declaration}
+There are some key differences in how methods and instance variables are laid out in Java and C++. 
+
+
 
 
 \end{document}
