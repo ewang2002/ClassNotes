@@ -49,8 +49,27 @@
 \newpage
 \pagenumbering{arabic}
 
-Coming soon. 
+\section{Introduction to Differential Equations}
+To motivate our definition of a differential equation, we first begin by talking about what an algebraic equation is. When we are given an algebraic equation like: 
+\[x^2 + 5x - 6 = 0\]
+Our goal is to find the value of $x$. Here, $x$ is the unknown. We need to find a solution (i.e. a number) for $x$ such that the equation is satisfied. 
 
+\bigskip 
+
+In a differential equation, we are essentially doing the same thing. Given a differential equation, we need to find the unknown function that satisfies it. For instance, if we are given: 
+\[f'(x) - x = 0\]
+It follows that $f'(x)$ is the unknown; that is, we need to find the function that satisfies this.
+
+\subsection{Why Study Differential Equations?}
+To answer this question, suppose we have a radioactive substance. Now, suppose the decay rate is 0.2 (in other words, the probability of decay at every instance is 0.2, or 20\%). It follows that every atom could decay together or by themselves (depends on the chance). 
+
+\bigskip 
+
+Let $A$ be the number of original atoms left. Let $A(t)$ be a function of $t$ and let $A(0) = 10^{10}$ atoms. Then, we let: 
+\[\frac{dA}{dt} = -20\% \cdot A = \boxed{-0.2A}\]
+Which is the same as saying: 
+\[A'(t) = -0.2A(t)\]
+Which our goal is to find $A$. 
 
 
 \end{document}
