@@ -49,8 +49,470 @@
 \newpage
 \pagenumbering{arabic}
 
-Coming soon. 
+\section{Introduction to Binary Operations and Group Theory}
+We want to explore the idea behind \emph{algebraic structures}. In particular, we want to explore these structures in more detail compared to earlier courses (either in past college or high school algebra classes). 
 
 
+\bigskip 
+
+To do this, we need to think about \emph{what} algebra really is. We might think about solving equations like $x^2 + 3x + 5 = 0$ for $x$. In particular, what is really happening here?
+
+\bigskip 
+
+Well, there are a couple of operations going on. Specifically, we have \emph{addition} and \emph{multiplication}. 
+\[x \times x + 3 \times x + 5 = 0\]
+We now want to examine these operations. Both of these operations $(+, \times)$ take in \underline{two numbers} and output \underline{one number}. The question we might have, then, is: how can we can generalize these operations?
+
+
+\subsection{Binary Operations}
+A \textbf{binary operation} is a way of taking in two values and outputting one value. Of course, we might now ask: what can these values be? These values can come from any specific set. 
+
+\bigskip 
+
+For example, we can consider addition over the integers ($\Z$). The sum of two integers is an integer. Similarly, we could consider multiplication over the integers. Again, the product of two integers is an integer. We could also consider multiplication or addition over the real, rational, or complex numbers. 
+
+\bigskip 
+
+The idea is that whatever ``type'' we give our binary operation, we will get that same ``type'' for our output. To formalize this, we have the following definition:  
+\begin{definition}{Binary Operation}{}
+    A binary operation (also known as the law of composition) consists of: 
+    \begin{itemize}
+        \item A set $S$. 
+        \item An operation; more concretely, a function $S \times S \to S$.
+    \end{itemize}
+
+    More formally, a binary operation $*$ over a set $S$ is a function mapping $f: S \times S \to S$. For each $(a, b) \in S \times S$, we can denote the element $f(a, b)$ of $S$ by $a * b$.
+
+    \bigskip 
+
+    In this class, for $a, b \in S$, we will represent binary operations in one of several ways: 
+    \begin{itemize}
+        \item $ab$
+        \item $f(a, b)$
+        \item $a * b$
+    \end{itemize}
+\end{definition}
+
+\subsubsection{Examples of Binary Operations}
+Some common examples of binary operations are: 
+\begin{itemize}
+    \item $\Z$ under addition. 
+    \item $\Z$ under subtraction. 
+    \item $\Z$ under multiplication. 
+    \item $\R$ under addition. 
+    \item $\R$ under subtraction. 
+    \item $\R$ under multiplication.
+    \item $M_{2}$ ($\R$) under multiplication (here, $M_{2}$ denotes a $2 \times 2$ square matrix). 
+    \item String concatenation.
+\end{itemize}
+
+\subsubsection{Non-Examples of Binary Operations}
+One common non-example of a binary operation is $\R$ under division. This is because: 
+\begin{itemize}
+    \item Dividing a non-zero number by 0 (for example, $\frac{5}{0}$) produces undefined behavior. In other words, what is the result of this? 
+    \item Dividing 0 by 0 is ambiguous. For example, this could be infinity, or it could be undefined. 
+\end{itemize}
+If we were to assume some value for a division-by-zero operation, then the operation would \textbf{not be closed}. That is, while we know that $0 \in \R$ and $n \in \R$ (denote $n$ to be any number in $\R$), we could say that $\frac{n}{0} = \infty$, but we know that $\infty \notin \R$, so the operation is not closed.  
+
+\subsection{More on Binary Operations}
+Anything that is ``like'' addition or multiplication is probably a binary operation. For example, let's consider \textbf{matrices}.
+\begin{itemize}
+    \item Addition of matrices of a fixed dimension. More specifically, the set of $n \times m$ matrices (here, $n$ and $m$ are fixed positive integers) over the integers, rationals, reals, or complex numbers under matrix addition is a binary operation.
+    \[
+        \begin{bmatrix}
+            a_{11} & a_{12} & a_{13} \\ 
+            a_{21} & a_{22} & a_{23}
+        \end{bmatrix} + \begin{bmatrix}
+            b_{11} & b_{12} & b_{13} \\ 
+            b_{21} & b_{22} & b_{23}
+        \end{bmatrix} = \begin{bmatrix}
+            a_{11} + b_{11} & a_{12} + b_{12} & a_{13} + b_{13} \\ 
+            a_{21} + b_{21} & a_{22} + b_{22} & a_{23} + b_{23}
+        \end{bmatrix}
+    \]
+
+    \item Multiplication of matrices of a fixed dimension. More specifically, the set of $n \times n$ matrices (square matrices). We could also just multiply a $n \times m$ matrix by a $k \times l$ matrix assuming $m = k$ (otherwise, multiplying these two matrices will result in undefined behavior). 
+\end{itemize}
+
+So far, we considered binary operations on infinite sets in which we need some sort of formula to describe (e.g. $f_{\cup}(A, B) = A \cup B$). Now, if we have a finite set, we could define a binary operation exhaustively by just saying what the binary operation does on every pair of entries.
+
+\bigskip 
+
+For example, given the set $S = \{a, b, c, d, e\}$. We can define a binary operation on $S$ with the below \textbf{function table}: 
+\begin{center}
+    \begin{tabular}{c | c c c c c}
+            & $a$ & $b$ & $c$ & $d$ & $e$ \\ 
+        \hline 
+        $a$ & $a$ & $c$ & $d$ & $d$ & $e$ \\ 
+        $b$ & $b$ & $c$ & $c$ & $b$ & $a$ \\ 
+        $c$ & $d$ & $e$ & $e$ & $b$ & $b$ \\ 
+        $d$ & $a$ & $a$ & $a$ & $c$ & $a$ \\ 
+        $e$ & $b$ & $b$ & $c$ & $c$ & $d$
+    \end{tabular}
+\end{center}
+Denote the binary operation to be $\#$.
+\begin{itemize}
+    \item What is $c \# d$? The answer is $b$. 
+    \item What is $e \# ((a \# b) \# c)$? The answer is $d$.
+    \item Suppose we have $X \# a = a$. What is $X$? The answer is $X = a, d$.
+\end{itemize}
+
+\subsection{Properties of Binary Operations}
+What properties could binary operations have?
+
+\begin{itemize}
+    \item \textbf{Commutativity:} A binary operation is commutative if the order of the two inputs does not matter. For example, if $f$ is a function corresponding to a binary operation, then:
+    \[f(a, b) = f(b, a) \quad \forall a, b \in S\] 
+    More commonly:
+    \[a * b = b * a \quad \forall a, b \in S\]
+
+    For example, addition or multiplication of numbers is commutative. Unions and intersections of sets is also commutative. \emph{However}, matrix multiplication is \emph{not} commutative. Our example above is also not commutative. 
+
+    \item \textbf{Associativity:} A binary operation is associative if the order of applying the operation (in a string) does not matter. Specifically:
+    \[(a * b) * c = a * (b * c) \quad \forall a, b, c \in S\]
+    Which means that we can write $a * b * c$ without ambiguity.
+    
+    \bigskip 
+
+    For example, addition or multiplication of numbers is associative. Addition or multiplication of matrices is also associative. Our example above is not associative. 
+
+    \item \textbf{Identity:} A binary operation has a two-sided identity element and a two-sided inverse for every element. 
+    
+    \bigskip 
+    
+    More specifically, we say that $e$ is a left identity if $f(e, s) = s$ for all $s \in S$. $e$ is a right identity if $f(s, e) = s$ for all $s \in S$. Then, $e$ is a two-sided identity if it is both a left identity and right identity.  
+    
+    \bigskip 
+
+    For example, 0 is a two-sided identity for addition and 1 is a two-sided identity for multiplication. For matrix addition, the zero-matrix is a two-sided identity. For matrix multiplication, the matrix with ones on the diagonal and zeros everywhere else is the identity element. In our example above, $\#$ does not have a left or right identity. 
+
+    \bigskip 
+
+    As a fact, there can be \textbf{at most} one identity element for any given binary operation. The proof is discussed later. 
+
+    \item \textbf{Inverse:} For a general binary operation $f: S \times S \to S$ with a two-sided identity $e$, an element $s \in S$ has a two-sided inverse if there exists an element $t \in S$ such that:
+    \[\underbrace{f(s, t)}_{\text{Right Inverse}} = \overbrace{f(t, s)}^{\text{Left Inverse}} = e\]  
+    
+    It follows that an identity element is required. 
+    
+    \bigskip 
+
+    There are several common examples. In addition, this is the negative/negation. In other words, the additive inverse of $x$ is $-x$. In multiplication, this is the reciprocal. The multiplicative inverse of $x$ is $\frac{1}{x}$ (for all $x \neq 0$). 
+    
+    \bigskip 
+    
+    Several facts to keep in mind: 
+    \begin{itemize}
+        \item Any element has at most one inverse. 
+        \item An element with a left inverse and a right inverse also has an inverse (this was shown above). 
+        \item If every element has an inverse and the binary operation (or composition) is associative, then the cancellation property holds: 
+        \[ab = ac \implies b = c\]
+        \[ba = ca \implies b = c\]
+    \end{itemize}
+\end{itemize}
+
+\textbf{Remark:} Commutativity does not imply associativity.
+
+\subsection{Groups}
+Of course, the properties of binary operations that were discussed just now are very much applicable in something called \textbf{groups}. Simply put, we can say that a group is a set combined with an operation. However, it's a little more complicated than that. The following definition will make that clearer:
+\begin{definition}{Group}{}
+    A group is a set $G$, closed under a binary operation $*$, satisfying the three properties:
+    \begin{enumerate}
+        \item \underline{Associativity}: For all $a, b, c \in G$, we have:
+        \[(a * b) * c = a * (b * c)\]
+
+        \item \underline{Identity/Neutral Element:} There is an element $e \in G$ such that for all $x \in G$:
+        \[e * x = x * e = x\]
+
+        \item \underline{Inverse:} Corresponding to each $a \in G$, there is an element $a' \in G$ such that:
+        \[a * a' = a' * a = e\]
+        It is also common to denote the inverse of $a$ as $a^{-1}$ instead of $a'$.
+    \end{enumerate}
+\end{definition}
+\textbf{Remark:}
+\begin{itemize}
+    \item Notationally, this can be represented by $(G, *)$ or $\langle G, * \rangle$. This is saying that we are pairing a set with a binary operation. 
+    \item With regards to how we write the inverse, unless otherwise mentioned, I will use $a'$ and $a^{-1}$ interchangeably.
+\end{itemize}
+
+\begin{note*}{}{}
+    The two most common groups are additive and multiplicative groups. Thus, for some $h \in G$, where $(G, *)$ is a group, it is important to mention what their inverses and identity elements are. As mentioned in the previous section:
+    \begin{center}
+        \begin{tabular}{|c|c|c|}
+            \hline 
+            \textbf{Group} & \textbf{Inverse} & \textbf{Identity} \\ 
+            \hline 
+            Multiplicative $(G, \times)$ & $h^{-1} = h' = \frac{1}{h}$ & $e = 1$ \\ 
+            Addition $(G, +)$ & $h^{-1} = h' = -h$ & $e = 0$ \\ 
+            \hline 
+        \end{tabular}
+    \end{center}
+    We will discuss these more in the examples. 
+
+    \bigskip 
+
+    For any other group, the inverse and identity element depends on how the group and its binary operation is defined. Refer to the definition of a group.
+\end{note*}
+
+\subsection{Basic Properties of Groups}
+Suppose $(G, *)$ is a group. Then, we note the following properties of groups. 
+
+\subsubsection{Uniqueness of the Identity.} 
+Could we have two unique two-sided identities in $G$? The answer is \underline{no}. The proof is as follows. 
+
+\begin{mdframed}
+    \begin{proof}
+        Assume by contradiction that we had $e_1$ and $e_2$, both of which are unique two-sided identity elements. Then, we know that $e_1 * e_2 = e_2$ since $e_1$ is an identity. But, since $e_2$ is also an identity, then $e_1 * e_2 = e1$. So, it follows that $e_1$ and $e_2$ are not unique; in other words, $e_1 = e_2$. 
+    \end{proof}
+\end{mdframed}
+
+\subsubsection{Uniqueness of Inverses.}
+
+If $g_1$, $g_2$ are both inverses of some element $h$, then\footnote{Here, we denote $g_1$ as the left-inverse and $g_2$ is the right-inverse.}:
+\[g_1 * h = h * g_2 = e\]
+Additionally, we know that:
+\[g_1 * (h * g_2) = g_1 * e = g_1\]
+\[(g_1 * h) * g_2 = e * g_2 = g_2\]
+And so it follows that $g_1 = g_2$, thus $h$ will have a unique inverse. To be more concrete, we have the proof. 
+\begin{mdframed}
+    \begin{proof}
+        We note that $g_1 * h = e$ and $h * g_2 = e$. Then:
+        \begin{equation*}
+            \begin{aligned}
+                g_1 &= g_1 * e && e \text{ is the identity element.} \\ 
+                    &= g_1 * (h * g_2) \\ 
+                    &= (g_1 * h) * g_2 && \text{Associativity} \\ 
+                    &= e * g_2 \\ 
+                    &= g_2 && e \text{ is the identity element.}
+            \end{aligned}
+        \end{equation*}
+        So, it follows that $g_1 = g_2$. Thus, an element $h$ will have a unique inverse. 
+    \end{proof}
+\end{mdframed}
+
+\subsubsection{Cancellation.}
+Suppose we have the expression $g * a = g * b$. This implies that $a = b$. Similarly, the expression $a * g = b * g$ can be simplified to $a = b$. 
+
+\begin{mdframed}
+    \begin{proof}
+        From the definition of a group, we know that an inverse exists for every element in $G$. Let $g^{-1}$ be the inverse of $g$. Then:
+        \begin{equation*}
+            \begin{aligned}
+                g * a = g * b &\implies g^{-1} * (g * a) = g^{-1} * (g * b) \\
+                    &\implies (g^{-1} * g) * a = (g^{-1} * g) * b && \text{Associativity (Prop. 1)} \\
+                    &\implies e * a = e * b && \text{Definition of Inverse (Prop. 3)} \\  
+                    &\implies a = b && \text{Definition of Identity (Prop. 2)}
+            \end{aligned}
+        \end{equation*}
+        The other way is similar. 
+    \end{proof}
+\end{mdframed}
+
+\textbf{Remark:} Although $g * a = g * b$, $g * a \neq b * g$ ($g * a$ is not necessarily equal to $b * g$). 
+
+\subsubsection{Inverse of Operation of Two Elements.}
+
+\begin{lemma}{}{}
+    Suppose $(G, *)$ is a group. Then, for every $g, h \in G$, we have: 
+    \[(g * h)^{-1} = h^{-1} * g^{-1}\]
+\end{lemma}
+
+\begin{mdframed}
+    \begin{proof}
+        Since the inverse of an element is unique, it is enough to check that: 
+        \[(g * h) * (h^{-1} * g^{-1}) = (h^{-1} * g^{-1}) * (g * h) = e\]
+        So: 
+        \begin{equation*}
+            \begin{aligned}
+                (g * h) * (h^{-1} * g^{-1}) &= g * (h * h^{-1}) * g^{-1} && \text{Associativity (Prop. 1)} \\ 
+                    &= g * e * g^{-1} && \text{Definition of Inverse (Prop. 3)} \\ 
+                    &= (g * e) * g^{-1} && \text{Associativity (Prop. 1)} \\ 
+                    &= g * g^{-1} && \text{Definition of Identity (Prop. 2)} \\ 
+                    &= e && \text{Identity Element}
+            \end{aligned}
+        \end{equation*}
+        Similarly: 
+        \begin{equation*}
+            \begin{aligned}
+                (h^{-1} * g^{-1}) * (g * h) &= h^{-1} * (g^{-1} * g) * h && \text{Associativity (Prop. 1)} \\ 
+                    &= h^{-1} * e * h && \text{Definition of Inverse (Prop. 3)} \\ 
+                    &= (h^{-1} * e) * h && \text{Associativity (Prop. 1)} \\ 
+                    &= h^{-1} * h && \text{Definition of Identity (Prop. 2)} \\ 
+                    &= e && \text{Identity Element}
+            \end{aligned}
+        \end{equation*}
+        So, the proof is complete. 
+    \end{proof}
+\end{mdframed}
+
+\subsubsection{Inverse of an Inverse.}
+We should note that, despite using the $-1$ superscript to denote a multiplicative inverse, this applies to any valid binary operation under a group. 
+
+\begin{lemma}{}{}
+    For every $g \in G$, $(g^{-1})^{-1} = g$. 
+\end{lemma}
+
+\begin{mdframed}
+    \begin{proof}
+        We have that $g^{-1} * g = e$. Multiplying both sides by $(g^{-1})^{-1}$ from the left, we now have: 
+        \[((g^{-1})^{-1} * g^{-1}) * g = (g^{-1})^{-1} * e = (g^{-1})^{-1}\]
+        Hence, $e * g = (g^{-1})^{-1}$ and so $g = (g^{-1})^{-1}$.     
+    \end{proof}
+\end{mdframed}
+
+\subsection{Examples and Non-Examples}
+Here, we briefly talk about some examples and non-examples of groups. 
+\subsubsection{Example: Addition}
+For example, the integers under addition are a group. Notationally, this is represented by $(\Z, +)$. 
+\begin{itemize}
+    \item It's obvious that addition is associative. That is:
+    \[(a + b) + c = a + (b + c) = a + b + c\]
+
+    \item The identity element is 0 (we note that $0 \in \Z$). This is because:
+    \[0 + x = x + 0 = x\]
+
+    \item The inverse is $-x$. This is because:
+    \[x + (-x) = (-x) + x = 0\]
+\end{itemize}
+We also know that the reals, rationals, or complex numbers under addition are also groups. Notationally, this is represented by $(\R, +)$, $(\Q, +)$, or $(\C, +)$, respectively. 
+
+\subsubsection{Example: Multiplication}
+Let's now consider multiplication. In particular, multiplication does give a binary operation over $\Z$, $\Q$, $\R$, and $\C$. It's obvious that this is associative and 1 is the two-sided identity element. However, what about the inverse? 
+\begin{itemize}
+    \item If we try to take the integers under multiplication as a group, then we'll run into problems. This is because the multiplicative inverse of every \underline{integer} except $\pm 1$ is not an integer. For example, if we tried 2, then the multiplicative inverse of 2 is $\frac{1}{2}$. However, $\frac{1}{2} \notin \Z$. 
+    
+    \item Rational numbers are closer. For instance, $\left(\frac{a}{b}\right)^{-1} = \frac{b}{a}$. However, this is only defined if $a \neq 0$. The solution is to remove 0. Define $\Q^*$ to be the non-zero rational numbers (i.e. $\Q^* = \Q - \{0\}$). Then, $(\Q^*, \times)$ is a group. Similarly, we can make $\R$ and $\C$ groups under multiplication by removing 0. 
+    
+    \bigskip 
+
+    We note that this change does not affect the closure property because we can only achieve $a \times b = 0$ if and only if $a = 0$ or $b = 0$. Since $a \notin \R - \{0\}$ and $b \notin \R - \{0\}$ (or $\Q$ or $\C$), then we are still closed and our binary operation is still well-defined. 
+\end{itemize}
+
+\subsubsection{Non-Example: Addition and Multiplication}
+We mentioned that $(\Q - \{0\}, \times)$, $(\R - \{0\}, \times)$, and $(\C - \{0\}, \times)$ are groups. However, we note that $(\Z - \{0\}, \times)$ and $(\Z_{\geq 0}, +)$ are \emph{not} groups. 
+\begin{itemize}
+    \item We already briefly explained why $\Z$ under multiplication is not a group. The same idea applies even if we do not include 0; that is, $\Z - \{0\}$ is not a group. We know that $\Z - \{0\}$ has a unique identity element under $\times$; this element is 1. This is the case because, if $e$ is the identity element of $\Z - \{0\}$ under $\times$, then by definition: 
+    \[e \times x = x \times e = x\]
+    Which implies that $e = 1$. We also know that $2 \in \Z - \{0\}$. However, 2 does not have an inverse in $\Z - \{0\}$. To show this, we prove by contradition. If 2 has an inverse in $\Z - \{0\}$, then by definition it follows that for some $a' \in \Z - \{0\}$:
+    \[2 \times a' = a' \times 2 = e\]
+    But, since we know that $e = 1$, it follows that:
+    \[2 \times a'= 1\]
+    But, as the only solution to this is $\frac{1}{2}$, we know that $\frac{1}{2} \notin \Z - \{0\}$. Thus, this is a contradiction. Thus, $\Z - \{0\}$ under multiplication is not a group. 
+
+    \item We know that $\Z_{\geq 0}$ has a unique identity element under addition and that is 0. This is because if $e$ is a unique element of $(\Z_{\geq 0}, +)$, then by definition, we know that: 
+    \[e + x = x + e = x\]
+    It is obvious that $e = 0$. Now, we want to show that 1 does not have an inverse with respect to addition in $\Z_{\geq 0}$. We'll prove this by contradiction. Suppose 1 does have an inverse. Recall that if 1 does have an inverse, then there is an $x \in \Z_{\geq 0}$ such that for some $a' \in \Z_{\geq 0}$:
+    \[a' + 1 = 1 + a' = e\]
+    But, as $e = 0$, it follows that: 
+    \[a' + 1 = 0 \iff a' = -1\]
+    However, we note that $-1 \notin \Z_{\geq 0}$ so this is a contradiction. Thus, $\Z_{\geq 0}$ under addition is not a group.
+\end{itemize}
+
+\subsection{Exponents of Elements}
+Suppose $(G, *)$ is a group and $g \in G$. For a positive integer $n$, we let: 
+\[g^n = \underbrace{g * \dots * g}_{n \text{ times}}\]
+For a negative integer $n$, we let: 
+\[g^n = \underbrace{(g^{-1}) * \dots * (g^{-1})}_{-n \text{ times}}\]
+
+\begin{lemma}{}{}
+    For $n, m \in \Z$, $(g^n)^m = g^{nm}$. 
+\end{lemma}
+
+\begin{mdframed}
+    \begin{proof}
+        We will consider various cases depending on the signs of $m$ and $n$. 
+        \begin{itemize}
+            \item \underline{Case 1:} Suppose $m$ and $n$ are positive. Then: 
+            \[(g^n)^m = \underbrace{g^n * \dots * g^n}_{m \text{ times}} = \underbrace{\overbrace{(g * \dots * g)}^{n \text{ times}} * \dots * \overbrace{(g * \dots * g)}^{n \text{ times}}}_{m \text{ times}} = \underbrace{g * \dots * g}_{mn \text{ times}} = g^{mn}\]
+            Here, $g^n$ means we need to multiply $g$ $n$ times. But, since we need to multiply $g^n$ $m$ times, it follows that this is simply $g^{nm}$.  
+
+            \item \underline{Case 2:} Suppose $m$ is positive and $n$ is negative. Then: 
+            \[(g^n)^m = \underbrace{g^n * \dots * g^n}_{m \text{ times}} = \underbrace{\overbrace{(g^{-1} * \dots * g^{-1})}^{-n \text{ times}} * \dots * \overbrace{(g^{-1} * \dots * g^{-1})}^{-n \text{ times}}}_{m \text{ times}} = \underbrace{g^{-1} * \dots * g^{-1}}_{-mn \text{ times}} = g^{mn}\]
+            Here, we note that $mn < 0$. 
+
+            \item \underline{Case 3:} Suppose $m$ is negative and $n$ is positive. Then: 
+            \[(g^n)^m = \underbrace{(g^n)^{-1} * \dots * (g^n)^{-1}}_{-m \text{ times}} = \underbrace{(\overbrace{g * \dots * g}^{n \text{ times}})^{-1} * \dots * (\overbrace{g * \dots * g}^{n \text{ times}})^{-1}}_{-m \text{ times}}\]
+
+            We note that, by the previous lemma, $(\underbrace{g * \dots * g}_{n \text{ times}})^{-1} = \underbrace{g^{-1} * \dots * g^{-1}}_{n \text{ times}}$. Hence: 
+            \[(g^n)^m = \underbrace{(\overbrace{g^{-1} * \dots * g^{-1}}^{n \text{ times}}) * \dots * (\overbrace{g^{-1} * \dots * g^{-1}}^{n \text{ times}})}_{-m \text{ times}} = \underbrace{g^{-1} * \dots * g^{-1}}_{-mn \text{ times}} = g^{mn}\]
+            Here, we note that $mn < 0$.  
+
+            \item \underline{Case 4:} Suppose $m$ and $n$ are negative. Since it is easier to work with positive numbers, let $m = -r$ and $n = -s$ where $r, s > 0$. Then, we have to show that $(g^{-r})^{-s} = g^{rs}$. By definition, we know that $g^{-r} = \underbrace{g^{-1} * \dots * g^{-1}}_{r \text{ times}}$. Hence, $(g^{-r})^{-s} = [(g^{-1})^r]^{-s}$. By the case where $n > 0$ and $m < 0$, we deduce that $(x^r)^{-s} = x^{-rs}$. Therefore: 
+            \[(g^{-r})^{-s} = (g^{-1})^{-rs} = \underbrace{(g^{-1})^{-1} * \dots * (g^{-1})^{-1}}_{rs \text{ times}} = \underbrace{g * \dots * g}_{rs \text{ times}} = g^{rs}\]
+
+            \item \underline{Case 5:} Suppose $m = 0$. Since $m = mn = 0$, it follows that: 
+            \[(g^n)^m = e\]
+            \[g^{nm} = e\]
+
+            \item \underline{Case 6:} Suppose $n = 0$. By the same reasoning as case 5, we have that $n = mn = 0$. So: 
+            \[(g^n)^m = e^m = e\]
+            \[g^{mn} = e\]
+        \end{itemize}
+
+        Here, we notice that $e * \dots * e = e$ and $e^{-1} = e$, and so $e^m = e$. So, we showed that $(g^n)^m = g^{mn}$ for every $m, n \in \Z$. 
+    \end{proof}
+\end{mdframed}
+
+\begin{note*}{}{}
+    \begin{itemize}
+        \item When we are working with an \underline{multiplicative group} $(G, \times)$, then $g^n$ means:
+        \[g^n = \begin{cases}
+            \underbrace{g \times \dots \times g}_{n \text{ times}} & n > 0 \\ 
+            1 & n = 0 \\ 
+            \underbrace{\frac{1}{g} \times \dots \times \frac{1}{g}}_{-n \text{ times}} & n < 0
+        \end{cases}\]
+
+        \item When we are working with an \underline{additive group} $(G, +)$, instead of writing $g^n$, we write $ng$. So, in $(G, +)$: 
+        \[ng = \begin{cases}
+            \underbrace{g + \dots + g}_{n \text{ times}} & n > 0 \\ 
+            0 & n = 0 \\ 
+            \underbrace{(-g) + \dots + (-g)}_{-n \text{ times}} & n < 0
+        \end{cases}\]
+        So, instead of writing $(g^{n})^m = g^{mn}$, we write $m(ng) = (mn)g$.
+
+        \item For other valid groups, it depends on how you define the operation for the group. 
+    \end{itemize}
+\end{note*}
+
+\begin{lemma}{}{}
+    For every $m, n \in \Z$: 
+    \[g^m * g^n = g^{m + n}\]
+\end{lemma}
+
+\begin{mdframed}
+    \begin{proof}
+        Like the previous proof, we will consider various cases depending on the signs of $m$ and $n$. Since it is easier to work with positive numbers, we will write $m = \text{sign}(m) r$ and $n = \text{sign}(n) s$ where $r = |m|$ and $s = |n|$, where: 
+        \[\text{sign}: \R \to \{-1, 1\}\]
+        \begin{itemize}
+            \item \underline{Case 1:} Suppose $m$ and $n$ are positive. Then: 
+            \[g^m * g^n = (\underbrace{g * \dots * g}_{m \text{ times}}) * (\underbrace{g * \dots * g}_{n \text{ times}}) = \underbrace{g * \dots * g}_{m + n \text{ times}} = g^{m + n}\]
+    
+            \item \underline{Case 2:} Suppose $m = -r$ ($m$ is negative), $n = s$ ($n$ is positive), $r < s$ ($m + n$ is positive). Then, by the previous case:
+            \[g^r * g^{s - r} = g^s \implies g^{s - r} = (g^r)^{-1} * g^s = g^{-r} * g^s\]  
+    
+            \item \underline{Case 3:} Suppose $m = -r$, $n = s$, $r > s$ ($m + n$ is negative). Then, by the first case: 
+            \begin{equation*}
+                \begin{aligned}
+                    g^s * g^{r - s} = g^r &\implies g^{r - s} = (g^s)^{-1} * g^r \\ 
+                        &\implies (g^{r - s})^{-1} = ((g^s)^{-1} * g^r)^{-1} \\ 
+                        &\implies g^{-(r - s)} = (g^r)^{-1} * ((g^s)^{-1})^{-1} \\ 
+                        &\implies g^{-r + s} = g^{-r} * g^s
+                \end{aligned}
+            \end{equation*}
+    
+            \item \underline{Case 4:} Suppose $m = 0$. Then: 
+            \[g^m * g^n  = e * g^n = g^n = g^{m + n}\]
+    
+            \item \underline{Case 5:} Suppose $n = 0$. Then: 
+            \[g^m * g^n = g^m * e = g^m = g^{m + n}\]
+        \end{itemize}
+        By the above cases, we obtain the claim when $n \geq 0$ and $m \in \Z$. So: 
+        \begin{itemize}
+            \item \underline{Case 6:} Suppose $n = -s$ ($n$ is negative) and $s > 0$. Then: 
+            \[g^{m - s} * g^s = g^m \implies g^{m - s} = g^m * (g^s)^{-1} \implies g^{m - s} = g^m * g^{-s}\]
+        \end{itemize}
+        This concludes the proof. 
+    \end{proof}
+\end{mdframed}
 
 \end{document}
