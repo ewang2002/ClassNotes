@@ -93,6 +93,7 @@ The idea is that whatever ``type'' we give our binary operation, we will get tha
     \end{itemize}
 \end{definition}
 
+
 \subsubsection{Examples of Binary Operations}
 Some common examples of binary operations are: 
 \begin{itemize}
@@ -170,7 +171,7 @@ What properties could binary operations have?
 
     \item \textbf{Associativity:} A binary operation is associative if the order of applying the operation (in a string) does not matter. Specifically:
     \[(a * b) * c = a * (b * c) \quad \forall a, b, c \in S\]
-    Which means that we can write $a * b * c$ without ambiguity.
+    Which means that we can write $a * b * c$ (or even $abc$) without ambiguity.
     
     \bigskip 
 
@@ -190,11 +191,15 @@ What properties could binary operations have?
 
     As a fact, there can be \textbf{at most} one identity element for any given binary operation. The proof is discussed later. 
 
-    \item \textbf{Inverse:} For a general binary operation $f: S \times S \to S$ with a two-sided identity $e$, an element $s \in S$ has a two-sided inverse if there exists an element $t \in S$ such that:
-    \[\underbrace{f(s, t)}_{\text{Right Inverse}} = \overbrace{f(t, s)}^{\text{Left Inverse}} = e\]  
-    
-    It follows that an identity element is required. 
-    
+    \item \textbf{Inverse:} For a general \underline{associative} binary operation $f: S \times S \to S$ with a two-sided identity $e$, an element $s \in S$ has a two-sided inverse if it has a left inverse (denote this $l \in S$) and a right inverse (denote this $r \in S$); that is: 
+    \[\overbrace{f(l, s)}^{\text{Left Inverse}} = \underbrace{f(s, r)}_{\text{Right Inverse}} = e\]
+
+    \bigskip 
+
+    We often write $s^{-1}$ to mean an inverse of $s$ when it exists. So, for instance (both ways are the same thing): 
+    \[f(s^{-1}, s) = f(s, s^{-1}) = e\]
+    \[s^{-1} * s = s * s^{-1} = e\]
+
     \bigskip 
 
     There are several common examples. In addition, this is the negative/negation. In other words, the additive inverse of $x$ is $-x$. In multiplication, this is the reciprocal. The multiplicative inverse of $x$ is $\frac{1}{x}$ (for all $x \neq 0$). 
@@ -206,8 +211,8 @@ What properties could binary operations have?
         \item Any element has at most one inverse. 
         \item An element with a left inverse and a right inverse also has an inverse (this was shown above). 
         \item If every element has an inverse and the binary operation (or composition) is associative, then the cancellation property holds: 
-        \[ab = ac \implies b = c\]
-        \[ba = ca \implies b = c\]
+        \[a * b = a * c \implies b = c\]
+        \[b * a = c * a \implies b = c\]
     \end{itemize}
 \end{itemize}
 
