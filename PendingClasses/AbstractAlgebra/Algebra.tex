@@ -196,7 +196,7 @@ What properties could binary operations have?
 
     \bigskip 
 
-    We often write $s^{-1}$ to mean an inverse of $s$ when it exists. So, for instance (both ways are the same thing): 
+    We often write $s^{-1}$ to mean an inverse of $s$ when it exists. So, for instance (both ways are the same thing), we could have written: 
     \[f(s^{-1}, s) = f(s, s^{-1}) = e\]
     \[s^{-1} * s = s * s^{-1} = e\]
 
@@ -239,6 +239,11 @@ Of course, the properties of binary operations that were discussed just now are 
     \item Notationally, this can be represented by $(G, *)$ or $\langle G, * \rangle$. This is saying that we are pairing a set with a binary operation. 
     \item With regards to how we write the inverse, unless otherwise mentioned, I will use $a'$ and $a^{-1}$ interchangeably.
 \end{itemize}
+
+\begin{definition}{Abelian Group}{}
+    A group is \textbf{abelian} if it is commutative.
+\end{definition}
+Recall that a group is commutative if applying the group operation to two group elements does not depend on the order in which they are written. 
 
 \begin{note*}{}{}
     The two most common groups are additive and multiplicative groups. Thus, for some $h \in G$, where $(G, *)$ is a group, it is important to mention what their inverses and identity elements are. As mentioned in the previous section:
@@ -381,12 +386,16 @@ For example, the integers under addition are a group. Notationally, this is repr
 \end{itemize}
 We also know that the reals, rationals, or complex numbers under addition are also groups. Notationally, this is represented by $(\R, +)$, $(\Q, +)$, or $(\C, +)$, respectively. 
 
+\bigskip 
+
+Additionally, these are all considered to be \textbf{abelian groups}. 
+
 \subsubsection{Example: Multiplication}
 Let's now consider multiplication. In particular, multiplication does give a binary operation over $\Z$, $\Q$, $\R$, and $\C$. It's obvious that this is associative and 1 is the two-sided identity element. However, what about the inverse? 
 \begin{itemize}
-    \item If we try to take the integers under multiplication as a group, then we'll run into problems. This is because the multiplicative inverse of every \underline{integer} except $\pm 1$ is not an integer. For example, if we tried 2, then the multiplicative inverse of 2 is $\frac{1}{2}$. However, $\frac{1}{2} \notin \Z$. 
+    \item If we try to take the integers under multiplication as a group, then we'll run into problems. This is because the multiplicative inverse of every \underline{integer} except $\pm 1$ is not an integer. For example, if we tried 2, then the multiplicative inverse of 2 is $\frac{1}{2}$. However, $\frac{1}{2} \notin \Z$.
     
-    \item Rational numbers are closer. For instance, $\left(\frac{a}{b}\right)^{-1} = \frac{b}{a}$. However, this is only defined if $a \neq 0$. The solution is to remove 0. Define $\Q^*$ to be the non-zero rational numbers (i.e. $\Q^* = \Q - \{0\}$). Then, $(\Q^*, \times)$ is a group. Similarly, we can make $\R$ and $\C$ groups under multiplication by removing 0. 
+    \item Rational numbers are closer. For instance, $\left(\frac{a}{b}\right)^{-1} = \frac{b}{a}$. However, this is only defined if $a \neq 0$. The solution is to remove 0. So, $(\Q - \{0\}, \times)$ is a group. Similarly, we can make $\R$ and $\C$ groups under multiplication by removing 0. 
     
     \bigskip 
 
@@ -519,5 +528,58 @@ For a negative integer $n$, we let:
         This concludes the proof. 
     \end{proof}
 \end{mdframed}
+
+
+\subsection{Symmetric Groups}
+Before we introduce symmetric group, we need to discuss what permutations are. 
+\begin{definition}{Permutation}{}
+    A \textbf{permutation} of a set $S$ is a \underline{bijective map} $p$ from a set $S$ to itself: 
+    \[p: S \to S\]
+\end{definition}
+For instance, consider the following table: 
+\begin{center}
+    \begin{tabular}{|c|c c c c c|}
+        \hline 
+        $i$ & 1 & 2 & 3 & 4 & 5 \\ 
+        \hline 
+        $p(i)$ & 3 & 5 & 4 & 1 & 2 \\ 
+        \hline 
+    \end{tabular}
+\end{center}
+This is a permutation $p$ of the set $\{1, 2, 3, 4, 5\}$. It is bijective because every element appears exactly once in the $p(i)$ row (i.e. we're only using each element once). In this particular table, there are two cycles:
+\begin{itemize}
+    \item Cycle 1: 
+    \begin{itemize}
+        \item $p(1) = 3$
+        \item $p(3) = 4$
+        \item $p(4) = 1$
+    \end{itemize}
+    \item Cycle 2: 
+    \begin{itemize}
+        \item $p(2) = 5$
+        \item $p(5) = 2$
+    \end{itemize}
+\end{itemize}
+This can be written in \textbf{cycle notation}:
+\[p = (1 3 4)(2 5)\]
+And can be read off like so: 
+\begin{itemize}
+    \item 1 goes to 3. 
+    \item 3 goes to 4. 
+    \item 4 goes to 1.
+\end{itemize}
+And: 
+\begin{itemize}
+    \item 2 goes to 5. 
+    \item 5 goes to 2.
+\end{itemize}
+The first cycle $(1 3 4)$ is a 3-cycle and the second cycle $(2 5)$ is a 2-cycle\footnote{2-cycles are also known as \textbf{transpositions}.}
+
+\bigskip 
+
+Now, we can introduce the notion of a symmetric group. 
+\begin{definition}{Symmetric Group}{}
+    For some $n \in \Z^+$, a \textbf{symmetric group} is the set of all permutations of the indices $\{1, 2, \dots, n\}$ and is denoted by $S_n$. 
+\end{definition}
 
 \end{document}
