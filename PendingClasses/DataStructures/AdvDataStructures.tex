@@ -8,7 +8,7 @@
 \pagestyle{fancy}
 \fancyhf{}
 \rhead{CSE 100}
-\chead{September 14th, 2021}
+\chead{September 28th, 2021}
 \lhead{Course Notes}
 \rfoot{\thepage}
 
@@ -560,12 +560,197 @@ The second line (\code{int const}) is identical to the first line.
 \subsubsection{\code{const} and Pointers}
 Consider the following C++ code: 
 \begin{verbatim}
+    int a = 42;                     // a 
+    const int* ptr1 = &a;           // b
+    int const* ptr2 = &a;           // c
+    int* const ptr3 = &a;           // d
+    const int* const ptr4 = &a;     // e
+\end{verbatim}
+\begin{itemize}
+    \item For lines (b) and (c), the pointer cannot modify the object that it is pointing to.  But, we can reassign the pointer to point to a different object. 
+    \item For line (d), we cannot reassign the pointer to point to a different object. However, we can modify the object that the pointer is pointing to. 
+    \item For (e), we cannot reassign the pointer to point to a different object \emph{or} modify the object that the pointer is pointing to. 
+\end{itemize}
+In general:
+\begin{verbatim}
+    const type* const varName = ...; 
+    ----------- -------------
+       (a)            (b)
+\end{verbatim}
+\begin{itemize}
+    \item Segment (A): The \code{const} next to \code{type*} means that we cannot modify the object or value behind the pointer. 
+    \item Segment (B): The \code{const} next to \code{varName} (the variable name) means that we cannot reassign the pointer to point to a different object or value. 
+\end{itemize}
+
+\subsubsection{\code{const} and References}
+Suppose we have the following C++ code: 
+\begin{verbatim}
     int a = 42; 
-    const int* ptr1 = &a; 
-    const int* ptr2 = &a; 
+    const int & ref1 = a;       // a
+    int const & ref2 = a;       // b
+\end{verbatim}
+\begin{itemize}
+    \item In (a), the \code{const} means that we cannot modify the variable through the constant reference. So: 
+    \begin{verbatim}
+        a = 21;         // Allowed. 
+        ref1 = 20;      // Compile error!
+    \end{verbatim}
+
+    \item (b) is the same exact thing is (a).
+\end{itemize}
+
+\subsubsection{\code{const} Functions}
+Recall the \code{Student} class from earlier: 
+\begin{verbatim}
+    class Student {
+        public: 
+            Student(string n);
+            string getName() const; 
+            
+        private: 
+            string name; 
+    }
+
+    Student::Student(string n) : name(n) {}
+    string Student::getName() const {
+        return name;
+    }
+\end{verbatim}
+What does the \code{const} in \code{getName()} do? Well, the \code{const} keyword after the function declaration means that the function cannot modify \emph{this} object. So: 
+\begin{itemize}
+    \item You cannot do any assignments to instance variables. 
+    \item You can only call other \code{const} functions.
+\end{itemize} 
+So, effectively, \code{const} after a function name means that we are guaranteeing that we aren't changing the object's state in any way.
+
+\subsection{Functions}
+In C++, we can have global functions (functions that are defined outside of classes). For instance, the main method (shown below) is a global function (and is required to be):
+\begin{verbatim}
+    int main() {
+        /* Do stuff */ 
+    }
+
+    class MyClass {
+        /* Some code */ 
+    }
 \end{verbatim}
 
+\subsubsection{Passing by Value vs. Reference}
+In C++, you can pass parameters either by value or reference. 
 
+\bigskip
 
+When passing by value, the function makes a \textbf{copy} of the values that you passed in. Some example code is shown below:
+\begin{verbatim}
+    void swap(int a, int b) {
+        int tmp = a;
+        a = b;
+        b = tmp;
+    }
+\end{verbatim}
+These copies are destroyed once the function returns (the stack frame is destroyed). 
+
+\bigskip 
+
+When passing by reference, the function takes in \emph{references} to the variables. Some example code is shown below:
+\begin{verbatim}
+    void swap(int & a, int & b) {
+        int tmp = a;
+        a = b;
+        b = tmp;
+    }
+\end{verbatim}
+Effectively, whatever you change with the references will be reflected with the actual variables. So, in the above \code{swap} method, \code{a} and \code{b} will be updated after the function is done. 
+
+\subsection{Vectors}
+A C++ \code{vector} is very similar in nature to Java's \code{ArrayList} class and arrays. Consider the following code, which demonstrates some common operations: 
+\begin{verbatim}
+    // Creates a new vector. 
+    vector<int> a; 
+    // Adds 42 to end of vector. Looks like: [42]
+    a.push_back(42);
+    // Adds 21 to end of vector. Looks like: [42, 21]
+    a.push_back(21);
+    // Removes 21 from vector. Looks like [42] 
+    a.pop_back(); // returns 21 
+    // We can access the first element (0th index).
+    a[0];
+\end{verbatim}
+Like Java arrays or \code{ArrayList}, elements in a C++ vector are stored contiguously; that is, they are stored after the previous element. 
+
+\bigskip 
+
+We know that if we assign an object to another variable, the other variable will get a full copy of that object. The same applies to vectors; we can also create a copy of a vector simply be reassigning it:
+\begin{verbatim}
+    vector<int> a;
+    a.push_back(42);
+    vector<int> b = a;
+    // a: [42]
+    // b: [42]
+\end{verbatim}
+
+\subsection{Input and Output}
+Consider the following code: 
+\begin{verbatim}
+    int n; 
+    cout << "Enter a number: "; 
+    cin >> n; 
+
+    string message; 
+    cout << "Enter a message: "; 
+    getline(cin, message);
+
+    if (cin.fail()) {
+        cerr << "Bad input!" << endl; 
+    }
+\end{verbatim}
+Here: 
+\begin{itemize}
+    \item \code{cin} represents standard input (\code{stdin}). 
+    \item \code{cout} represents standard output (\code{stdout}). 
+    \item \code{cerr} represents standard error (\code{stderr}).
+\end{itemize}
+In C++, we can use \code{istream} to handle input stream and \code{ostream} to handle output stream. \code{cin} is an example of an \code{istream}; \code{cout} is an example of an \code{ostream}. 
+
+\bigskip 
+
+We can make use of the overloaded \code{<<} and \code{>>} operators to write to standard output and read from standard input, respectively. So: 
+\begin{itemize}
+    \item \code{cout << "Enter a number"} effectively means to write this message to standard output. 
+    \item \code{cin >> n} effectively means to read from the standard input and store that input into \code{n}. We aren't necessarily restricted to \code{int}; we could use \code{long}, \code{double}, \code{string}, etc. 
+    \item We can also use \code{getline} to read from standard input and then store the result into a variable. In our example above, we called \code{getline(cin, message)}. \code{cin} is where we are reading the input from and \code{message} is the variable where we store the result of reading from \code{cin}. 
+    \item \code{endl} means \code{end} \code{l}ine and, in our use case here, writes a new line to standard error. In reality, we can use \code{endl} to write a newline to standard output or error.  
+\end{itemize}
+
+\subsection{Templates}
+Templates introduce the notion of \emph{generic programming}. Consider the following code in Java: 
+\begin{verbatim}
+    class Node<Data> {
+        public final Data data; 
+        public Node(Data d) {
+            data = d;
+        }
+    }
+
+    Node<String> a = new Node<String>(s);
+    Node<Integer> a = new Node<Integer>(s);
+\end{verbatim}
+The generic type is \code{Data} (though you can rename it to whatever you want). We can use this type either as a parameter type or a return type. When creating a new object with a generic type, we simply put the type between the \code{<>} (like with the \code{Node} examples).
+
+\bigskip 
+
+Consider the equivalent C++ example: 
+\begin{verbatim}
+    template<typename Data>
+    class Node {
+        public: 
+            Data const data; 
+            Node(const Data & d) : data(d) {}
+    }
+
+    Node<string> a(s);
+    Node<int> b(n);
+\end{verbatim}
+Here, we can use templates to achieve similar results (compared to the Java example). Functionality-wise, this is similar to Java. 
 
 \end{document}
