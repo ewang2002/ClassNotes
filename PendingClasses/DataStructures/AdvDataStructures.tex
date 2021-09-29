@@ -753,4 +753,211 @@ Consider the equivalent C++ example:
 \end{verbatim}
 Here, we can use templates to achieve similar results (compared to the Java example). Functionality-wise, this is similar to Java. 
 
+\subsection{Iterators}
+Consider the following C++ code: 
+\begin{verbatim}
+    for (string name : names) {
+        cout << name << endl; 
+    }
+\end{verbatim}
+What is \code{names}? 
+\begin{itemize}
+    \item Is it a \code{vector}? 
+    \item Is it a \code{set}? 
+    \item Is it an \code{unordered\_set}?
+    \item Is it another collection that C++ has? 
+\end{itemize}
+Well, it doesn't matter! Regardless of what collection we are using, how we use it doesn't matter when it comes to iterating over it. This functionality is made possible by something called \textbf{iterators}.
+
+\subsubsection{Iterating Over Arrays}
+Consider the following code: 
+\begin{verbatim}
+    void printInorder(int* p, int size) {
+        for (int i = 0; i < size; ++i) {
+            cout << *p << endl; 
+            ++p; 
+        }
+    }
+\end{verbatim}
+The \code{*p} deferences the pointer, giving the value at the location that the pointer is pointing to. 
+
+\bigskip
+
+The \code{++p} is an example of pointer arithmetic; this will add whatever the size of the type is to the pointer. In this case, this will make the pointer point to the memory address of the next element in the array. 
+
+\bigskip 
+
+Here, we know that \code{p} is (initially) a pointer to the first element in the array: 
+\begin{verbatim}
+     0   4   8   12  16  20  24  28         Memory Address 
+     ------------------------------         (sizeof(int) = 4)
+    [10, 20, 25, 30, 46, 50, 55, 60]        Array 
+     ^
+     p                                      Pointer 
+\end{verbatim}
+Dereferencing \code{p} (\code{*p}) gives us \code{10}. 
+
+\bigskip 
+
+When we do \code{++p}, we made the pointer point to the next memory address: 
+\begin{verbatim}
+    0   4   8   12  16  20  24  28         Memory Address 
+    ------------------------------
+   [10, 20, 25, 30, 46, 50, 55, 60]        Array 
+        ^
+        p                                  Pointer 
+\end{verbatim}
+Dereferencing \code{p} (\code{*p}) gives us \code{20}. 
+
+
+\subsubsection{Using Iterators}
+Consider the following C++ code: 
+\begin{verbatim}
+    vector<string> names; 
+    // populate with data 
+
+    vector<string>::iterator itr = names.begin(); 
+    vector<string>::iterator end = names.end(); 
+    
+    while (itr != end) {
+        cout << *itr << endl; 
+        ++itr; 
+    }
+\end{verbatim}
+Here, we note a few things. 
+\begin{itemize}
+    \item \code{iterator} is simply a class that handles, well, iteration. So, \code{itr} and \code{end} are instances of the \code{iterator} class that is iterating over \code{names}. 
+    \item The \code{!=} operator (in \code{itr != end}) has been overloaded. This checks the \code{curr} property in the \code{iterator} class to see if it is equal (or, more specifically, not equal) to the \code{curr} property of the other index. In this case, \code{itr != end} is effectively comparing \code{itr.curr} with \code{itr.end}. 
+    \item The \code{*} dereferencing operator (in \code{*itr}) has also been overloaded. This operator has been overloaded to return whatever the value is at the \code{curr} index. So, in our case,\code{*itr} would return whatever value is at the specified \code{curr} index in the array that we are iterating through. 
+    \item The \code{++} operator (in \code{++itr}) is also overloaded. This will increment the \code{curr} property in the \code{iterator} instance. 
+\end{itemize}
+
+Suppose \code{names} has the following: 
+\begin{verbatim}
+        0       1       2           // Index 
+    ["Niema", "Ryan", "Felix"]      // names array 
+\end{verbatim}
+
+Essentially, \code{vector<string>::iterator} will look something like: 
+\begin{verbatim}
+    |-----------------------------| |-----------------------------|
+    |         |----|              | |         |----|              |
+    |   curr: | 0  |              | |   curr: | 3  |              |
+    |         |----|              | |         |----|              |
+    |           int               | |           int               |
+    |-----------------------------| |-----------------------------|
+                itr                             end
+\end{verbatim}
+Calling \code{*itr} will basically give us \code{names[curr]} (or, more specifically, \code{names[0]}). Comparing \code{itr != end} is basically the same as checking \code{0 != 3}. 
+
+\bigskip 
+
+When we call \code{++itr}, we now have: 
+\begin{verbatim}
+    |-----------------------------| |-----------------------------|
+    |         |----|              | |         |----|              |
+    |   curr: | 1  |              | |   curr: | 3  |              |
+    |         |----|              | |         |----|              |
+    |           int               | |           int               |
+    |-----------------------------| |-----------------------------|
+                itr                             end
+\end{verbatim}
+Calling \code{*itr} now will basically give us \code{names[curr]} (or, more specifically, \code{names[1]}). Comparing \code{itr != end} is basically the same as checking \code{1 != 3}. 
+
+\subsubsection{Linked List Iterator}
+Consider the following code, which is essentially the same code as the previous one: 
+\begin{verbatim}
+    LinkedList<string> names; 
+    // populate with data 
+
+    LinkedList<string>::iterator itr = names.begin(); 
+    LinkedList<string>::iterator end = names.end(); 
+    
+    while (itr != end) {
+        cout << *itr << endl; 
+        ++itr; 
+    }
+\end{verbatim}
+The only difference is that we're now using a \code{LinkedList} instead of \code{vector}. However, the way the data is structured is very different. Suppose \code{names} has the following: 
+\begin{verbatim}
+    |---------------|      |---------------|      |---------------|
+    | data: "Niema" |      | data: "Ryan"  |      | data: "Felix" |
+    |     next: [ ] ---->  |     next: [ ] ---->  |     next: [x] |
+    |---------------|      |---------------|      |---------------|
+\end{verbatim}
+
+Here, \code{[x]} (in the \code{next} property of the last node) is a \code{nullptr}. 
+
+\bigskip
+
+How does using nodes change our iterator? Well, \code{LinkedList<string>::iterator} will look something like: 
+\begin{verbatim}
+    |---------------|      |---------------|      |---------------|
+    | data: "Niema" |      | data: "Ryan"  |      | data: "Felix" |
+    |     next: [ ] ---->  |     next: [ ] ---->  |     next: [x] |
+    |---------------|      |---------------|      |---------  /|\ |
+               /|\                                             |
+                |                                              |
+                |                                  ------------/
+                |                                 /  
+                |                                /
+    |-----------|-----------------| |------------|----------------|
+    |         |-|--|              | |         |--|-|              |
+    |   curr: |    |              | |   curr: |    |              |
+    |         |----|              | |         |----|              |
+    |         Node*               | |         Node*               |
+    |-----------------------------| |-----------------------------|
+                itr                             end
+\end{verbatim}
+Going back to the code: 
+\begin{verbatim}
+    while (itr != end) {
+        cout << *itr << endl; 
+        ++itr; 
+    }
+\end{verbatim}
+It should be noted that: 
+\begin{itemize}
+    \item \code{!=} is once again overloaded to compare the values of the node's \code{data}. 
+    \item \code{*itr} is once again overloaded to return \code{data}. It would look like: 
+    \begin{verbatim}
+        return curr->data;
+    \end{verbatim}
+    \item \code{++itr} is once again overloaded to make the iterator move to the next node. This would look like: 
+    \begin{verbatim}
+        curr = curr->next; 
+    \end{verbatim}
+\end{itemize}
+
+\subsubsection{Creating an Iterator Class}
+When creating data structures, we'll often need to create our own Iterator classes. 
+
+\bigskip 
+
+First, we'll talk about the operators associated with the iterator class: 
+\begin{itemize}
+    \item \code{==}: \code{true} if the iterators are pointing to the same item and \code{false} otherwise. 
+    \item \code{!=}: \code{true} if the iterators are pointing to the different item and \code{false} otherwise. 
+    \item \code{*} (dereference): Return a reference to the current data value. 
+    \item \code{++} (pre- and post-increment): Move the iterator to the next item. 
+\end{itemize}
+
+And, we also need to talk about what functions are in the \underline{data structure class} so we can make use of the iterator:
+\begin{itemize}
+    \item \code{begin()}: Returns an iterator to the first element. 
+    \item \code{end()}: Returns an iterator to the element just after the last element (not the last element, but \emph{after} the last element).  
+\end{itemize}
+So, in the Linked List example: 
+\begin{verbatim}
+    [] -> [] -> []
+    ^              ^
+    begin()        end()
+\end{verbatim}
+And in any array-based structures: 
+\begin{verbatim}
+    [a, b, c, d, e]
+     ^              ^
+     begin()        end()
+\end{verbatim}
+
 \end{document}
