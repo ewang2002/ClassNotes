@@ -295,6 +295,276 @@ Another thing that is important is the concept of classes (which leads to the to
 \subsubsection{Class Declaration}
 There are some key differences in how methods and instance variables are laid out in Java and C++. 
 
+In Java, a typical class would look like: 
+\begin{verbatim}
+    class Student {
+        public static int numStudents = 0;
+        private String name; 
+        
+        public Student(String n) { /* Code */ }
+
+        public void setName(String n) { /* Code */ }
+        public String getName() { /* Code */ }
+    }
+\end{verbatim}
+
+And in C++, a typical class would look like: 
+\begin{verbatim}
+    class Student {
+        public: 
+            static int numStudents; 
+
+            Student(string n);
+            
+            void setName(string n);
+            string getName() const; 
+
+        private: 
+            string name; 
+    }
+
+    int Student::numStudents = 0;
+    Student::Student(string n) { /* Code */ }
+    void Student::setName(string n) { /* Code */ }
+    string Student::getName() const { /* Code */ }
+\end{verbatim}
+
+There are several notable differences: 
+\begin{itemize}
+    \item \textbf{Modifiers:} In Java, if you want your method or instance variable to have an access modifier, you explicitly state the access modifier. In C++, you have a region for your access modifier. That is, there is a \code{public} region, \code{private} region, etc. Any methods or instance variables listed under these regions will take on that access modifier. For instance, \code{setName} is in the \code{public} region, so \code{setName} is public.
+    \item \textbf{Implementation:} In Java, directly after declaring a method or constructor in a class, we need to provide the implementation code. In C++, we can ``declare'' the methods and the constructor, and then outside of the class we can implement the methods.
+\end{itemize}
+Now, consider the following C++ code: 
+\begin{verbatim}
+    class Point {
+        private: 
+            int x; 
+            int y;
+        
+        public:
+            Point(int i, int j);
+    }
+
+    Point::Point(int i, int j) {
+        x = i;
+        y = j;
+    }
+\end{verbatim}
+Here, we're initializing the \code{x} and \code{y} instance variables directly from the constructor implementation. However, we can initialize these instance variables directly like so: 
+\begin{verbatim}
+    class Point {
+        private: 
+            int x; 
+            int y;
+        
+        public:
+            Point(int i, int j);
+    }
+
+    Point::Point(int i, int j) : x(i), y(j) {}
+\end{verbatim}
+This is called the \textbf{member initializer list}.
+
+\subsubsection{Source vs. Header Files}
+Consider the following class: 
+\begin{verbatim}
+    class Student {
+        public: 
+            static int numStudents;
+            Student(string n);
+        
+        private: 
+            string name; 
+    }
+
+    int Student::numStudents = 0;
+    Student::Student(string n) : name(n) {
+        numStudents++;
+    }
+\end{verbatim}
+We can choose to break this up into two separate files; a \textbf{source} (usually \code{.cpp}) file and a \textbf{header} (usually \code{.h}) file. The header file contains the class and the method \emph{declaration}; the source file contains the implementations for those methods. So, the above code can be written like so: 
+\begin{verbatim}
+    // The header file 
+    // Student.h
+    class Student {
+        public: 
+            static int numStudents;
+            Student(string n);
+        
+        private: 
+            string name; 
+    }
+
+    // The source file 
+    // Student.cpp 
+    int Student::numStudents = 0;
+    Student::Student(string n) : name(n) {
+        numStudents++;
+    }
+\end{verbatim}
+
+\subsection{Memory Diagrams}
+Consider the following Java code: 
+\begin{verbatim}
+    Student s1 = new Student("Niema");
+    Student s2 = s1;
+\end{verbatim}
+Here, \code{s1} is a \emph{reference} to a \code{Student} object. This \code{Student} object contains a \emph{reference} to a \code{string} object with the content \code{Niema}. That is: 
+\begin{verbatim}
+    Student object
+    |----------|
+    | |----|   |   (Reference)  |-------|
+    | |name|------------------> | Niema |
+    | |----|   |                |-------|
+    |----------|   <------      String object
+       /|\                \
+        |                  \
+        |                   \ (Reference)
+        |                   |
+        | (Reference)       |
+    s1 -/                   s2
+\end{verbatim} 
+It also follows that \code{s2} is a reference to the same object that \code{s1} is referring to. 
+
+\bigskip 
+
+Now, consider the following C++ code: 
+\begin{verbatim}
+    Student s1("Niema");
+    Student s2 = s1;
+\end{verbatim}
+Here, \code{s1} is a \code{Student} \emph{object}. The \code{Student} object contains a \code{string} object with the content \code{Niema}. That is:
+\begin{verbatim}
+    |-----------------|     |-----------------|
+    | |-----------|   |     | |-----------|   |
+    | |name: Niema|   |     | |name: Niema|   |
+    | |-----------|   |     | |-----------|   |
+    |  string object  |     |  string object  |
+    |-----------------|     |-----------------|
+    Student object          Student object
+       s1                       s2
+\end{verbatim} 
+Additionally, when we assign \code{s1} to \code{s2}, we actually make a copy of said object. So, \code{s2} is its own object; it does not share a reference with \code{s1}.
+
+\bigskip 
+
+In other words, in Java, \code{s1} and \code{s2} are both references to the same object; in C++, \code{s1} \emph{is} the object and \code{s2} is \emph{another} object.
+
+\subsubsection{References}
+Consider the following C++ code: 
+\begin{verbatim}
+    Student s1 = Student("Niema");
+    Student & s2 = s1;
+    Student s3 = s2;
+\end{verbatim}
+The memory diagram looks like this: 
+\begin{verbatim}
+    |-----------------|     |-----------------|
+    | |-----------|   |     | |-----------|   |
+    | |name: Niema|   |     | |name: Niema|   |
+    | |-----------|   |     | |-----------|   |
+    |  string object  |     |  string object  |
+    |-----------------|     |-----------------|
+    Student object          Student object 
+       s1      s2               s3
+\end{verbatim} 
+Here, \code{s2} can be seen as \emph{another} way to call \code{s1} (think of \code{s2} as another name for \code{s1}). \code{s3} would be a copy of \code{s1}. 
+
+\subsubsection{Pointers}
+Pointers are similar to Java references. Consider the following C++ code: 
+\begin{verbatim}
+    Student s = Student("Niema");
+    // * in this case means pointer 
+    // & means memory address
+    // So, ptr stores a memory address to some object. In other words, 
+    // it points to the object s. 
+    Student* ptr = &s; 
+    Student** ptrPtr = &ptr; 
+\end{verbatim}
+The memory diagram would look like: 
+\begin{verbatim}
+    Mem. Address: 9500 
+    |-----------------|
+    | |-----------|   |       |-----------|       |-----------|
+    | |name: Niema|   |  <--- |    9500   |  <--- |           |
+    | |-----------|   |       |-----------|       |-----------|
+    |  string object  |       Student* (pointer)   Student** (pointer to pointer) 
+    |-----------------|           ptr                  ptrPtr
+    Student object      
+       s
+\end{verbatim} 
+If we wanted to access an object through a pointer, we can do this in several ways. 
+\begin{enumerate}
+    \item Deferencing a pointer. 
+    \begin{verbatim}
+        // * in this case dereferences the pointer
+        // Think of the * as following the arrow  
+        (*ptr).name; 
+    \end{verbatim}
+
+    \item Arrow dereferencing. 
+    \begin{verbatim}
+        // ptr->x is the same thing as (*ptr).x
+        ptr->name; 
+    \end{verbatim}
+\end{enumerate}
+
+\subsubsection{Memory Management}
+Consider the following C++ code: 
+\begin{verbatim}
+    Student s1 = Student("Niema");
+    Student* s2 = new Student("Ryan");
+\end{verbatim}
+The corresponding memory diagram is: 
+\begin{verbatim}
+    |-----------------|     |-----------------|
+    | |-----------|   |     | |-----------|   |
+    | |name: Niema|   |     | |name: Ryan |   |
+    | |-----------|   |     | |-----------|   |
+    |  string object  |     |  string object  |
+    |-----------------|     |-----------------|
+    Student object          Student object 
+       s1                                 /|\
+                                           |
+                                           |
+                                           |
+                                |------|   |
+                                |      | --/
+                                |------|
+                                Student* (pointer)
+                                s2
+\end{verbatim}
+Here, \code{s1} is allocated on the \emph{stack}; once the method returns, \code{s1} is automatically destroyed. 
+
+\bigskip 
+
+\code{s2} is allocated through the \code{new} keyword. This is known as dynamic memory allocation. So, \code{s2} is a pointer to the newly allocated memory. Because this object was created using the \code{new} keyword, we need to deallocate it ourselves. To do so, we need to explicitly call \code{delete} on this object: 
+\begin{verbatim}
+    delete s2; 
+\end{verbatim}
+\code{delete} takes in a memory address (i.e. pointer). This is very similar to \code{free} (in C). If we don't free this, we run into what is called a \textbf{memory leak}. 
+
+\subsection{Constant Keyword}
+In C++, the \code{const} keyword means that the variable can never be reassigned. Consider the following: 
+\begin{verbatim}
+    const int a = 42; 
+    int const b = 42;
+\end{verbatim}
+If we tried reassigning \code{a} (e.g. \code{a = 41;}), we would get a compiler error. 
+
+\bigskip
+
+The second line (\code{int const}) is identical to the first line. 
+
+
+\subsubsection{\code{const} and Pointers}
+Consider the following C++ code: 
+\begin{verbatim}
+    int a = 42; 
+    const int* ptr1 = &a; 
+    const int* ptr2 = &a; 
+\end{verbatim}
+
 
 
 
