@@ -93,6 +93,12 @@ The idea is that whatever ``type'' we give our binary operation, we will get tha
     \end{itemize}
 \end{definition}
 
+\textbf{Remark:}
+\begin{itemize}
+    \item An element $a \in S$ (where $S$ is a set equipped with a binary operation $*$) is \emph{invertible} if there is another element $b$ such that: 
+    \[a * b = e \qquad b * a = 1\]
+\end{itemize}
+
 
 \subsubsection{Examples of Binary Operations}
 Some common examples of binary operations are: 
@@ -221,7 +227,7 @@ What properties could binary operations have?
 \subsection{Groups}
 Of course, the properties of binary operations that were discussed just now are very much applicable in something called \textbf{groups}. Simply put, we can say that a group is a set combined with an operation. However, it's a little more complicated than that. The following definition will make that clearer:
 \begin{definition}{Group}{}
-    A group is a set $G$, closed under a binary operation $*$, satisfying the three properties:
+    A group is a set $G$, closed under a binary operation $*$, satisfying the following properties:
     \begin{enumerate}
         \item \underline{Associativity}: For all $a, b, c \in G$, we have:
         \[(a * b) * c = a * (b * c)\]
@@ -229,21 +235,26 @@ Of course, the properties of binary operations that were discussed just now are 
         \item \underline{Identity/Neutral Element:} There is an element $e \in G$ such that for all $x \in G$:
         \[e * x = x * e = x\]
 
-        \item \underline{Inverse:} Corresponding to each $a \in G$, there is an element $a' \in G$ such that:
-        \[a * a' = a' * a = e\]
-        It is also common to denote the inverse of $a$ as $a^{-1}$ instead of $a'$.
+        \item \underline{Inverse:} Corresponding to each $a \in G$, there is an element $a^{-1} \in G$ such that:
+        \[a * a^{-1} = a^{-1} * a = e\]
+
+        \item \underline{Closure:} For all $a, b \in G$, we have:
+        \[a * b \in G\]
+        It should be noted that this property is \emph{implied} by the definition of a binary operation (law of composition); namely, that $G \times G \to G$.  
     \end{enumerate}
 \end{definition}
 \textbf{Remark:}
 \begin{itemize}
     \item Notationally, this can be represented by $(G, *)$ or $\langle G, * \rangle$. This is saying that we are pairing a set with a binary operation. 
-    \item With regards to how we write the inverse, unless otherwise mentioned, I will use $a'$ and $a^{-1}$ interchangeably.
 \end{itemize}
 
 \begin{definition}{Abelian Group}{}
     A group is \textbf{abelian} if it is commutative.
 \end{definition}
-Recall that a group is commutative if applying the group operation to two group elements does not depend on the order in which they are written. 
+\textbf{Remark:}
+\begin{itemize}
+    \item Recall that a group is commutative if applying the group operation to two group elements does not depend on the order in which they are written. 
+\end{itemize}
 
 \begin{note*}{}{}
     The two most common groups are additive and multiplicative groups. Thus, for some $h \in G$, where $(G, *)$ is a group, it is important to mention what their inverses and identity elements are. As mentioned in the previous section:
@@ -252,8 +263,8 @@ Recall that a group is commutative if applying the group operation to two group 
             \hline 
             \textbf{Group} & \textbf{Inverse} & \textbf{Identity} \\ 
             \hline 
-            Multiplicative $(G, \times)$ & $h^{-1} = h' = \frac{1}{h}$ & $e = 1$ \\ 
-            Addition $(G, +)$ & $h^{-1} = h' = -h$ & $e = 0$ \\ 
+            Multiplicative $(G, \times)$ & $h^{-1} = \frac{1}{h}$ & $e = 1$ \\ 
+            Addition $(G, +)$ & $h^{-1} = -h$ & $e = 0$ \\ 
             \hline 
         \end{tabular}
     \end{center}
@@ -263,6 +274,70 @@ Recall that a group is commutative if applying the group operation to two group 
 
     For any other group, the inverse and identity element depends on how the group and its binary operation is defined. Refer to the definition of a group.
 \end{note*}
+
+\begin{note*}{}{}
+    In \emph{Algebra, Second Edition} by Michael Artin, groups are denoted by the set followed by the binary operation (or law of composition) as the power. For example: 
+    \begin{itemize}
+        \item $\Z^+$ is the set of integers, with addition as its binary operation.
+        \item $\R^+$ is the set of real numbers, with adition as its binary operation. 
+        \item $\R^{\times}$ is the set of \underline{nonzero} real numbers, with multiplication as its binary operation.
+    \end{itemize} 
+\end{note*}
+
+\subsubsection{Example: Addition}
+For example, the integers under addition are a group. Notationally, this is represented by $(\Z, +)$. 
+\begin{itemize}
+    \item It's obvious that addition is associative. That is:
+    \[(a + b) + c = a + (b + c) = a + b + c\]
+
+    \item The identity element is 0 (we note that $0 \in \Z$). This is because:
+    \[0 + x = x + 0 = x\]
+
+    \item The inverse is $-x$. This is because:
+    \[x + (-x) = (-x) + x = 0\]
+\end{itemize}
+We also know that the reals, rationals, or complex numbers under addition are also groups. Notationally, this is represented by $(\R, +)$, $(\Q, +)$, or $(\C, +)$, respectively. 
+
+\bigskip 
+
+Additionally, these are all considered to be \textbf{abelian groups}. 
+
+\subsubsection{Example: Multiplication}
+Let's now consider multiplication. In particular, multiplication does give a binary operation over $\Z$, $\Q$, $\R$, and $\C$. It's obvious that this is associative and 1 is the two-sided identity element. However, what about the inverse? 
+\begin{itemize}
+    \item If we try to take the integers under multiplication as a group, then we'll run into problems. This is because the multiplicative inverse of every \underline{integer} except $\pm 1$ is not an integer. For example, if we tried 2, then the multiplicative inverse of 2 is $\frac{1}{2}$. However, $\frac{1}{2} \notin \Z$.
+    
+    \item Rational numbers are closer. For instance, $\left(\frac{a}{b}\right)^{-1} = \frac{b}{a}$. However, this is only defined if $a \neq 0$. The solution is to remove 0. So, $(\Q - \{0\}, \times)$ is a group. Similarly, we can make $\R$ and $\C$ groups under multiplication by removing 0. 
+    
+    \bigskip 
+
+    We note that this change does not affect the closure property because we can only achieve $a \times b = 0$ if and only if $a = 0$ or $b = 0$. Since $a \notin \R - \{0\}$ and $b \notin \R - \{0\}$ (or $\Q$ or $\C$), then we are still closed and our binary operation is still well-defined. 
+\end{itemize}
+
+\subsubsection{Example: Matrices}
+Consider the $n \times n$ general linear group, or the group of all invertible\footnote{Here, keep in mind that the determinant of an invertible matrix is not 0 (otherwise, it wouldn't have an inverse.)} $n \times n$ matrices. This is denoted by: 
+\[GL_n = \{n \times n \text{ invertible matrices } A\}\]
+If we wanted to indicate that we are working with real or complex matrices, we write $GL_{n}(\R)$ and $GL_{n}(\C)$, respectively.
+
+\subsubsection{Non-Example: Addition and Multiplication}
+We mentioned that $(\Q - \{0\}, \times)$, $(\R - \{0\}, \times)$, and $(\C - \{0\}, \times)$ are groups. However, we note that $(\Z - \{0\}, \times)$ and $(\Z_{\geq 0}, +)$ are \emph{not} groups. 
+\begin{itemize}
+    \item We already briefly explained why $\Z$ under multiplication is not a group. The same idea applies even if we do not include 0; that is, $\Z - \{0\}$ is not a group. We know that $\Z - \{0\}$ has a unique identity element under $\times$; this element is 1. This is the case because, if $e$ is the identity element of $\Z - \{0\}$ under $\times$, then by definition: 
+    \[e \times x = x \times e = x\]
+    Which implies that $e = 1$. We also know that $2 \in \Z - \{0\}$. However, 2 does not have an inverse in $\Z - \{0\}$. To show this, we prove by contradition. If 2 has an inverse in $\Z - \{0\}$, then by definition it follows that for some $a^{-1} \in \Z - \{0\}$:
+    \[2 \times a^{-1} = a^{-1} \times 2 = e\]
+    But, since we know that $e = 1$, it follows that:
+    \[2 \times a^{-1}= 1\]
+    But, as the only solution to this is $\frac{1}{2}$, we know that $\frac{1}{2} \notin \Z - \{0\}$. Thus, this is a contradiction. Thus, $\Z - \{0\}$ under multiplication is not a group. 
+
+    \item We know that $\Z_{\geq 0}$ has a unique identity element under addition and that is 0. This is because if $e$ is a unique element of $(\Z_{\geq 0}, +)$, then by definition, we know that: 
+    \[e + x = x + e = x\]
+    It is obvious that $e = 0$. Now, we want to show that 1 does not have an inverse with respect to addition in $\Z_{\geq 0}$. We'll prove this by contradiction. Suppose 1 does have an inverse. Recall that if 1 does have an inverse, then there is an $x \in \Z_{\geq 0}$ such that for some $a^{-1} \in \Z_{\geq 0}$:
+    \[a^{-1} + 1 = 1 + a^{-1} = e\]
+    But, as $e = 0$, it follows that: 
+    \[a^{-1} + 1 = 0 \iff a^{-1} = -1\]
+    However, we note that $-1 \notin \Z_{\geq 0}$ so this is a contradiction. Thus, $\Z_{\geq 0}$ under addition is not a group.
+\end{itemize}
 
 \subsection{Basic Properties of Groups}
 Suppose $(G, *)$ is a group. Then, we note the following properties of groups. 
@@ -369,58 +444,6 @@ We should note that, despite using the $-1$ superscript to denote a multiplicati
         Hence, $e * g = (g^{-1})^{-1}$ and so $g = (g^{-1})^{-1}$.     
     \end{proof}
 \end{mdframed}
-
-\subsection{Examples and Non-Examples}
-Here, we briefly talk about some examples and non-examples of groups. 
-\subsubsection{Example: Addition}
-For example, the integers under addition are a group. Notationally, this is represented by $(\Z, +)$. 
-\begin{itemize}
-    \item It's obvious that addition is associative. That is:
-    \[(a + b) + c = a + (b + c) = a + b + c\]
-
-    \item The identity element is 0 (we note that $0 \in \Z$). This is because:
-    \[0 + x = x + 0 = x\]
-
-    \item The inverse is $-x$. This is because:
-    \[x + (-x) = (-x) + x = 0\]
-\end{itemize}
-We also know that the reals, rationals, or complex numbers under addition are also groups. Notationally, this is represented by $(\R, +)$, $(\Q, +)$, or $(\C, +)$, respectively. 
-
-\bigskip 
-
-Additionally, these are all considered to be \textbf{abelian groups}. 
-
-\subsubsection{Example: Multiplication}
-Let's now consider multiplication. In particular, multiplication does give a binary operation over $\Z$, $\Q$, $\R$, and $\C$. It's obvious that this is associative and 1 is the two-sided identity element. However, what about the inverse? 
-\begin{itemize}
-    \item If we try to take the integers under multiplication as a group, then we'll run into problems. This is because the multiplicative inverse of every \underline{integer} except $\pm 1$ is not an integer. For example, if we tried 2, then the multiplicative inverse of 2 is $\frac{1}{2}$. However, $\frac{1}{2} \notin \Z$.
-    
-    \item Rational numbers are closer. For instance, $\left(\frac{a}{b}\right)^{-1} = \frac{b}{a}$. However, this is only defined if $a \neq 0$. The solution is to remove 0. So, $(\Q - \{0\}, \times)$ is a group. Similarly, we can make $\R$ and $\C$ groups under multiplication by removing 0. 
-    
-    \bigskip 
-
-    We note that this change does not affect the closure property because we can only achieve $a \times b = 0$ if and only if $a = 0$ or $b = 0$. Since $a \notin \R - \{0\}$ and $b \notin \R - \{0\}$ (or $\Q$ or $\C$), then we are still closed and our binary operation is still well-defined. 
-\end{itemize}
-
-\subsubsection{Non-Example: Addition and Multiplication}
-We mentioned that $(\Q - \{0\}, \times)$, $(\R - \{0\}, \times)$, and $(\C - \{0\}, \times)$ are groups. However, we note that $(\Z - \{0\}, \times)$ and $(\Z_{\geq 0}, +)$ are \emph{not} groups. 
-\begin{itemize}
-    \item We already briefly explained why $\Z$ under multiplication is not a group. The same idea applies even if we do not include 0; that is, $\Z - \{0\}$ is not a group. We know that $\Z - \{0\}$ has a unique identity element under $\times$; this element is 1. This is the case because, if $e$ is the identity element of $\Z - \{0\}$ under $\times$, then by definition: 
-    \[e \times x = x \times e = x\]
-    Which implies that $e = 1$. We also know that $2 \in \Z - \{0\}$. However, 2 does not have an inverse in $\Z - \{0\}$. To show this, we prove by contradition. If 2 has an inverse in $\Z - \{0\}$, then by definition it follows that for some $a' \in \Z - \{0\}$:
-    \[2 \times a' = a' \times 2 = e\]
-    But, since we know that $e = 1$, it follows that:
-    \[2 \times a'= 1\]
-    But, as the only solution to this is $\frac{1}{2}$, we know that $\frac{1}{2} \notin \Z - \{0\}$. Thus, this is a contradiction. Thus, $\Z - \{0\}$ under multiplication is not a group. 
-
-    \item We know that $\Z_{\geq 0}$ has a unique identity element under addition and that is 0. This is because if $e$ is a unique element of $(\Z_{\geq 0}, +)$, then by definition, we know that: 
-    \[e + x = x + e = x\]
-    It is obvious that $e = 0$. Now, we want to show that 1 does not have an inverse with respect to addition in $\Z_{\geq 0}$. We'll prove this by contradiction. Suppose 1 does have an inverse. Recall that if 1 does have an inverse, then there is an $x \in \Z_{\geq 0}$ such that for some $a' \in \Z_{\geq 0}$:
-    \[a' + 1 = 1 + a' = e\]
-    But, as $e = 0$, it follows that: 
-    \[a' + 1 = 0 \iff a' = -1\]
-    However, we note that $-1 \notin \Z_{\geq 0}$ so this is a contradiction. Thus, $\Z_{\geq 0}$ under addition is not a group.
-\end{itemize}
 
 \subsection{Exponents of Elements}
 Suppose $(G, *)$ is a group and $g \in G$. For a positive integer $n$, we let: 
@@ -581,5 +604,65 @@ Now, we can introduce the notion of a symmetric group.
 \begin{definition}{Symmetric Group}{}
     For some $n \in \Z^+$, a \textbf{symmetric group} is the set of all permutations of the indices $\{1, 2, \dots, n\}$ and is denoted by $S_n$. 
 \end{definition}
+
+
+\subsection{Subgroups}
+The definition of a subgroup is very similar to that of a group. It states the following. 
+\begin{definition}{Subgroup}{}
+    A subset $H$ of a group $G$ is a \textbf{subgroup} if it has the following properties: 
+    \begin{enumerate}
+        \item \underline{Identity/Neutral Element:} There is an element $e \in H$ such that for all $x \in H$:
+        \[e * x = x * e = x\]
+
+        \item \underline{Inverse:} Corresponding to each $a \in H$, there is an element $a^{-1} \in H$ such that:
+        \[a * a^{-1} = a^{-1} * a = e\]
+
+        \item \underline{Closure:} For all $a, b \in H$, we have:
+        \[a * b \in H\]
+        It should be noted that this property is \emph{implied} by the definition of a binary operation (law of composition). This binary operation is inherited from the group $G$.  
+    \end{enumerate}
+\end{definition}
+\textbf{Remark:} Because associativity is a property that is in a group, it is also implicitly a property that is in a subgroup. 
+
+\subsubsection{Example: Addition}
+Consider the group $(\R, +)$. Some possible subgroups are: 
+\begin{itemize}
+    \item $(\Z, +)$. The group of integers under addition. 
+    \item $(\Z a, +)$. Here, we note that:
+    \[(\Z a, +) = \{n \in Z \mid n = ka \text{ for some } k \in \Z\}\]
+    \item $(\{0\}, +)$. The trivial subgroup, consisting of only the identity element.
+    \item $(\R, +)$. The whole group. 
+\end{itemize}
+
+Effectively, a subgroup $H$ of a group $G$ with law of composition written \textbf{additively} is a subgroup if it has the following properties: 
+\begin{itemize}
+    \item \textbf{Closure:} If $a, b \in H$, then $a + b \in H$. 
+    \item \textbf{Identity:} $0 \in H$. 
+    \item \textbf{Inverses:} If $a \in S$, then $-a \in S$. 
+\end{itemize}
+
+\subsection{More on Subgroups}
+Of course, we now need to discuss some theorems and applications of subgroups. 
+\begin{theorem}{}{}
+    Let $S$ be a subgroup of the additive group $(\Z, +)$. Either $S$ is the trivial subgroup $\{0\}$, or else it has the form $\Z a$, where $a$ is the smallest positive integer in $S$. 
+\end{theorem}
+
+\begin{mdframed}
+    \begin{proof}
+        Let $S$ be a subgroup of $(\Z, +)$. Then, $0 \in S$. If 0 is the only element of $S$, then $S$ is the trivial subgroup and we are done. 
+
+        \bigskip 
+
+        Otherwise, $S$ contains an integer $n$ that is different from 0, and either $n$ or $-n$ is positive. We know that $-n \in S$ (inverse property) so, in either case, $S$ has a positive integer. Now, we need to show that $S$ is equal to $\Z a$ when $a$ is the smallest positive integer in $S$. 
+
+        \bigskip 
+
+        First, we show that $\Z a \subseteq S$; in other words, that $ka$ is in $S$ for every integer $k$. If $k$ is a positive integer, then $ka = \underbrace{a + a + \dots + a}_{k \text{ times}}$. Since $a \in S$, closure and induction shows us that $ka \in S$. Since inverses are in $S$, $-ka \in S$. Finally, $0 = 0a \in S$. 
+
+        \bigskip 
+
+        Now, we need to show that $S \subseteq \Z a$; that is, every element $n$ of $S$ is an integer multiple of $a$. We can use division with remainder to write $n = qa + r$, where $q, r \in \Z$ and where the remainder $r$ is in the range $0 \leq r < a$. Since $\Z a$ is contained in $S$, $qa \in S$ and, of course, $n \in S$. Since $S$ is a subgroup, $r = n - qa \in S$. Now, by our choice, $a$ is the smallest positive integer in $S$, while the remainder $r$ is in the range $0 \leq r < a$. The only remainder that can be in $S$ is 0, so $r = 0$ and $n$ is the integer multiple $qa$ of $a$. 
+    \end{proof}
+\end{mdframed}
 
 \end{document}
