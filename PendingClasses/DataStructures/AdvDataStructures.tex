@@ -960,4 +960,73 @@ And in any array-based structures:
      begin()        end()
 \end{verbatim}
 
+
+\newpage
+\section{Time and Space Complexity}
+One of the key things computer scientists try to do is automate competitive tasks, and of course, that requires \emph{performance}. So, that begs the question: how can we measure the performance of our program? 
+\begin{itemize}
+    \item How many hours does it take to run? 
+    \item Minutes? 
+    \item Nanoseconds? 
+\end{itemize}
+These are all metrics of \emph{human time}. However, a program has two aspects: 
+\begin{itemize}
+    \item The implementation. 
+    \item The algorithm behind that program. 
+\end{itemize}
+While these different metrics of human time are good at measuring the actual implementation of a program, they don't do a good job describing how fast the \emph{idea}, the algorithm itself, is. For instance, running the algorithm on two different devices, both which have wildly different hardware, will result in a significant difference in how fast your algorithm runs. 
+
+\bigskip 
+
+That being said, we want to know how fast an algorithm is. The best way to do so is by figuring out the performance in terms of number of operations with respect to the input size $n$ (instead of the amount of time). 
+
+\subsection{Notation of Complexity}
+Consider the following notations: 
+\begin{itemize}
+    \item Big-$O$: Upper bound. 
+    \item Big-$\Omega$: Lower bound. 
+    \item Big-$\theta$: Both upper and lower bound. 
+\end{itemize}
+Consider the following graph: 
+\begin{center}
+    \includegraphics[scale=0.5]{img/graph1.PNG}
+\end{center}
+Where $f(n)$ describes the number of operations of your algorithm for some $n$. 
+\begin{itemize}
+    \item We say that $f(n)$ is $O(g(n))$ if, for some constant $a$, we have $a * g(n) \geq f(n)$ as $n \to \infty$. 
+    
+    \bigskip 
+
+    Consider the following graph: 
+    \begin{center}
+        \includegraphics[scale=0.5]{img/graph2.PNG}
+    \end{center}
+    Here, we see that the intersection of the red and the green line occurs at some point, and that after that point the green line will always be greater than the red line. In other words, at that point, we can say that $f(n)$ will never be bigger than $g(n)$ beyond that point. Therefore, we say that $f(n)$ is $O(2n)$, or simply $O(n)$.
+    
+    \item Big-$\Omega$ works similarly. We say that $f(n)$ is $\Omega(g(n))$ if, for some constant $b$, $b * g(n) \leq f(n)$ as $n \to \infty$.
+    
+    \bigskip 
+
+    Consider the following graph: 
+    \begin{center}
+        \includegraphics[scale=0.5]{img/graph3.PNG}
+    \end{center}
+    Here, we see that the blue line $h$ is strictly lower than the red line. In other words, $f(n)$ will never be smaller than $h(n)$. Therefore, we say that $f(n)$ is $\Omega(0.5n)$, or simply $\Omega(n)$. 
+    
+    \item We say that $f(n)$ is $\Omega(g(n))$ if $f(n)$ is $O(g(n))$ and $f(n)$ is $\Omega(g(n))$. Mathematically: 
+    \[b * g(n) \leq f(n) \leq a g(n)\]
+    
+    In the graphs above, we already found the $b$ and $a$ constants. So:
+    \[0.5n \leq f(n) \leq 2n\]
+    Therefore, we cn say $f(n)$ is $\Omega(n)$.
+\end{itemize}
+
+\textbf{Remarks:} 
+\begin{itemize}
+    \item Your bigger or smaller functions do not need to be strictly (i.e. always) bigger or smaller than your $f(n)$. They just need to be strictly bigger or smaller beyond some $n$.
+    \item We will almost always use Big-$O$. 
+\end{itemize}
+
+
+
 \end{document}
