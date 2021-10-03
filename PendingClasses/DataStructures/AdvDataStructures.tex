@@ -1013,12 +1013,12 @@ Where $f(n)$ describes the number of operations of your algorithm for some $n$.
     \end{center}
     Here, we see that the blue line $h$ is strictly lower than the red line. In other words, $f(n)$ will never be smaller than $h(n)$. Therefore, we say that $f(n)$ is $\Omega(0.5n)$, or simply $\Omega(n)$. 
     
-    \item We say that $f(n)$ is $\Omega(g(n))$ if $f(n)$ is $O(g(n))$ and $f(n)$ is $\Omega(g(n))$. Mathematically: 
-    \[b * g(n) \leq f(n) \leq a g(n)\]
+    \item We say that $f(n)$ is $\theta(g(n))$ if $f(n)$ is $O(g(n))$ and $f(n)$ is $\Omega(g(n))$. Mathematically: 
+    \[b * g(n) \leq f(n) \leq a * g(n)\]
     
     In the graphs above, we already found the $b$ and $a$ constants. So:
     \[0.5n \leq f(n) \leq 2n\]
-    Therefore, we cn say $f(n)$ is $\Omega(n)$.
+    Therefore, we can say $f(n)$ is $\theta(n)$.
 \end{itemize}
 
 \textbf{Remarks:} 
@@ -1027,6 +1027,198 @@ Where $f(n)$ describes the number of operations of your algorithm for some $n$.
     \item We will almost always use Big-$O$. 
 \end{itemize}
 
+\subsection{Finding Big-O Time Complexity}
+Given some algorithm, how do we find the Big-$O$ time complexity of it? 
+\begin{enumerate}[1)]
+    \item Determine $f(n)$, or the number of operations our algorithm performs to solve an input of size $n$.
+    \item Drop all lower terms of $n$. In other words, we're only interested in the highest term of $n$.
+    \item Drop the constant coefficient. 
+\end{enumerate}
+
+\subsubsection{Example: Grades}
+Consider the following easy example. 
+\begin{itemize}
+    \item \underline{Input:} List of $n$ students, like so: 
+    \begin{verbatim}
+        |---------|---------|---------|
+        | Niema   | Ryan    | Felix   |
+        | A+      | A       | A       |
+        |---------|---------|---------|
+    \end{verbatim}
+    \item \underline{Algorithm:}
+    \begin{verbatim}
+        Print length of the list (n)
+        For each student x in the list: 
+            Print x's name 
+            Print x's grade 
+    \end{verbatim}
+    \item \underline{Output:}
+    \begin{verbatim}
+        3 
+        Niema   A+
+        Ryan    A
+        Felix   A
+    \end{verbatim}
+\end{itemize}
+Here, we note a few things: 
+\begin{itemize}
+    \item Regardless of what the length of the list is, printing the length of the list $n$ is a constant time operation. So, this is exactly 1 operation. 
+    \item For one student, we print the student's name and grade. Both of these are 1 operation each, for a total of 2 operations. So, for each student, we need to do 2 operations. Therefore, we need to do $2n$ operations for the loop. 
+    \item So, the number of operations that we need to do is: 
+    \[f(n) = 2n + 1\]
+    \item Of course, we need to drop the lowest terms and the coefficient of the remaining term: 
+    \[\boxed{f(n) = n}\]
+\end{itemize}
+
+\subsubsection{Example: Flight Network}
+Consider the following medium example. 
+\begin{itemize}
+    \item \underline{Input:} Flight network of $n$ cities, like so: 
+    \begin{verbatim}
+                    |---------------|
+                    | San Francisco |
+                    |---------------|
+                        /        \
+                       /          \
+             |-----------|      |-----------|
+             | San Diego |      | Seoul     |
+             |-----------|      |-----------|
+    \end{verbatim}
+    Here, we have a direct flight from San Diego to San Francisco and a direct flight from Seoul to San Francisco. We do not have a direct flight from San Diego to Seoul. 
+
+    \item \underline{Algorithm:}
+    \begin{verbatim}
+        // Header line = sets up some file 
+        Print header line. 
+        For each unique pair of cities: 
+            Print the city names 
+            Print whether or not a direct flight exists 
+    \end{verbatim}
+
+    \item \underline{Output:}
+    \begin{verbatim}
+        city1, city2, direct 
+        San Diego, San Francisco, yes 
+        San Francisco, Seoul, yes 
+        San Diego, Seoul, no
+    \end{verbatim}
+\end{itemize}
+Here, we note a few things again: 
+\begin{itemize}
+    \item When printing the header line, we need to print three things: \code{city 1}, \code{city 2}, and \code{direct}. Thus, there are 3 operations that are involved. 
+
+    \item For one pair of cities, we need to print three things: the first city name in the pair; the second city name in the pair; and whether or not there is a direct flight between the two cities. 
+
+    \bigskip 
+
+    So, for each pair of cities, there are three operations. We also know that there are $\binom{n}{2}$ ways to get every possible pair of cities. Therefore, we need to do $3\binom{n}{2} = 3\frac{n(n - 1)}{2} = 3\left(\frac{n^2}{2} - \frac{n}{2}\right)$ operations for the loop. 
+
+    \item So, the number of operations that we need to do is: 
+    \[f(n) = \frac{3n^2}{2} - \frac{3n}{2} + 3\]
+
+    \item And, finally, we can drop the lower terms and the coefficient of the remaining term. 
+    \[f(n) = n^2\]
+\end{itemize}
+
+\subsubsection{Example: Loops}
+Consider the following hard example. 
+\begin{itemize}
+    \item \underline{Algorithm:}
+    \begin{verbatim}
+        1:  void foo(unsigned int n) {
+        2:      unsigned int count = 0;
+        3:      while (n > 0) {
+        4:          for (int i = 0; i < n; ++i) {
+        5:              cout << ++count << endl; 
+        6:          }
+        7:          n /= 2;
+        8:      }
+        9:  }
+    \end{verbatim}
+\end{itemize}
+And, as usual, the notes: 
+\begin{itemize}
+    \item This is considered a hard example because the inner loop depends on the outer loop. In the previous examples, we only had to consider one loop and whatever was in this loop. 
+    \item As usual, in the \code{count} declaration (line 2), we only have one operation. 
+    \item Before we discuss the two loops, let's first consider the following notes:  
+    \begin{itemize}
+        \item Let's assume that the print statement is one operation.
+        \item Whatever \code{n} is in the while loop, we will iterate from 0 to \code{n} in the inner for-loop. 
+        \item The division operator (line 7) is considered to be one operation.
+    \end{itemize}
+    We now consider the actual loops: 
+    \begin{itemize}
+        \item Whatever $n$ currently is in the while loop, we're going to iterate $n$ times (0 to $n - 1$) in the for loop.
+        \item After the for loop, we do one additional operation for division. 
+    \end{itemize}
+    We just need to figure out how many times the inner loop is iterating overall across all iterations of the while loop, that'll be our answer. So, whatever \code{n} currently is, the inner loop will be iterating \code{n} times. In this sense, we only really need to consider all cases of \code{n} that the inner loop will encounter. 
+
+    \bigskip 
+
+    In our first iteration, the \underline{inner loop} will iterate $n$ times. The next iteration will iterate $\frac{n}{2}$ times. The next iteration will iterate $\frac{n}{4}$ times, and so on. Essentially, for the inner loop: 
+    \[\overbrace{n}^{\text{1st iteration}} + \underbrace{\frac{n}{2}}_{\text{2nd iteration}} + \overbrace{\frac{n}{4}}^{\text{3rd iteration}} + \underbrace{\frac{n}{8}}_{\text{4th iteration}} + \dots + 4 + 2 + 1\] 
+    If we pull out $n$, we have: 
+    \[n\left(1 + \frac{1}{2} + \frac{1}{4} + \frac{1}{8} + \dots\right)\]
+    Now, we need to figure out what the sum of everything in the parenthesis. Effectively, we note that we're working with: 
+    \[n\left(1 + \sum_{n = 1}^{\infty} \left(\frac{1}{2}\right)^n\right) = 2\]
+    Where the summation was evaluated due to the infinite geometric sum formula $S_{\infty} = \frac{a_1}{1 - r}$.
+    
+    \bigskip 
+
+    For a better visualization of the summation, we note that the summation can be represented by\footnote{Taken from Wikipedia}: 
+    \begin{center}
+        \includegraphics[scale=0.4]{img/Eye_of_Horus_square.png}
+    \end{center}
+    
+    \item So, the number of operations is: 
+    \[f(n) = 2n\]
+
+    \item Taking out the constant, we have: 
+    \[f(n) = n\]
+    So, this algorithm runs in $O(n)$ time. 
+\end{itemize}
+
+\textbf{Remark:} It's important to not jump straight to conclusions. Most people (when they saw this algorithm) would have assumed an $O(n^2)$ or $O(n\log(n)$ algorithm.
+
+\newpage 
+\subsection{Common Big-O Time Complexity}
+It's good to know of some Big-$O$ time complexities.
+\begin{center}
+    \begin{tabular}{c|c|p{7cm}}
+        Big-$O$ & Common Name & Notes \\ 
+        \hline 
+        $O(1)$ & Constant & The time complexity does not depend on the input size $n$. \\ 
+        $O(\log n)$ & Logarithmic & If the input size is doubled, the number of operations is increased by a constant. One common example is binary search: if we have 8 elements, it would take 3 operations. Doubling the number of elements would result in 4 operations. Also, it does not matter what base the logarithmic function is. \\ 
+        $O(n)$ & Linear & Your algorithm scales with the number of elements linearly. For example, twice as many elements roughly means twice as slow. \\ 
+        $O(n \log n)$ & & \\ 
+        $O(n^2)$ & Quadratic & If the input size is doubled, we'll have quadruple the amount of elements. \\ 
+        $O(n^3)$ & Cubic & Similarly to quadratic or linear, if the input size is doubled, the number of operations are multiplied by 8. \\ 
+        $O(n^a)$ & Polynomial & For some constant $a$, this is known as polynomial time. All of the Big-$O$ time complexities above are considered polynomial. Anything that is upper-bounded by $O(n^a)$ is called polynomial. \\ 
+        $O(k^n)$ & Exponential & For some constant $k$. \\ 
+        $O(n!)$ & Factorial &  
+    \end{tabular}
+\end{center}
+
+\textbf{Remark:} Anything algorithm that runs in polynomial time is considered ``good.'' Exponential and factorial time complexities are considered ``bad.''
+
+\subsection{Space Complexity}
+We can also describes algorithms by space complexity -- how much space does an algorithm need for some input size $n$? Just like time complexity, we often use Big-$O$ notation.
+
+\bigskip 
+
+Consider a singly linked list: 
+\begin{verbatim}
+    |------|     |------|     |------|     |------| 
+    | Head | --> |      | --> |      | <-- | Tail | 
+    |------|     |------|     |------|     |------|
+\end{verbatim}
+Suppose it takes $k$ bytes to store a node. If we have $n$ nodes, it would take roughly $k \cdot n$ bytes to represent all of these nodes. We will always have one head and one tail nodes (regardless of how many inputs we have), so these remain constant. Thus, the space complexity for a singly linked list is: 
+\[f(n) = kn + 2c\]
+Where: 
+\begin{itemize}
+    \item $c$ is a constant that represents the number of bytes needed to store the head and tail pointer.
+    \item $k$ is a constant that represents the number of bytes needed to store a node. 
+\end{itemize}
 
 
 \end{document}
