@@ -1220,5 +1220,158 @@ Where:
     \item $k$ is a constant that represents the number of bytes needed to store a node. 
 \end{itemize}
 
+\section{Trees}
+Before we can talk about trees, we need to talk about graphs. 
+
+\subsection{Graphs}
+A graph is a collection of nodes and edges. For instance, here is a simple graph: 
+\begin{verbatim}
+           |---|
+           | B |
+           |---|
+          /     \
+         /       \
+    |---|         |---|
+    | A |         | C |
+    |---|         |---|
+\end{verbatim}
+We have nodes $A$, $B$, and $C$, that have some connection to each other. We also have edges, or links, that connect their nodes. 
+
+\bigskip 
+
+There are two types of edges. 
+\begin{itemize}
+    \item A directed edge, where we can go from one node to another node, but not the other way around. In other words, we can think of a directed edge as an \emph{one-way street}. 
+    \begin{verbatim}
+        |---|         |---|
+        | A | ------> | B |
+        |---|         |---|
+    \end{verbatim}
+
+    \item An undirected edge, where we can go from one node to another node and vice versa. In other words, we can think of an undirected edge as a \emph{two-way street}. 
+    \begin{verbatim}
+        |---|         |---|
+        | A | ------- | B |
+        |---|         |---|
+    \end{verbatim}
+\end{itemize}
+
+With that said, we should observe that the simple graph that we drew above (containing nodes $A$, $B$, and $C$) could represent a linked list. In particular: 
+\begin{itemize}
+    \item If the edges were undirected, we would have a doubly linked list. 
+    \item If the edges were directed (directional), we would have a singly linked list. 
+\end{itemize}
+So, a linked list is essentially a chain of nodes in sequence. We have $n$ nodes and $n - 1$ edges. 
+
+\subsection{What are Trees?}
+A tree is a graph with two properties: 
+\begin{itemize}
+    \item \underline{It has no undirected cycles.}
+    
+    \bigskip 
+
+    In graphs, we could theoretically have something like: 
+    \begin{verbatim}
+               |---|
+               | B |
+               |---|
+              /     \
+             /       \
+        |---|         |---|
+        | A |---------| C |
+        |---|         |---|
+    \end{verbatim}
+    This is known as a \textbf{cycle} (specifically, an undirected cycle). Essentially, we can go from $A$ to $B$, $B$ to $C$, and then back to $A$ from $C$.
+    
+    \bigskip 
+
+    We can also have something like this: 
+    \begin{center}
+        \includegraphics[scale=0.5]{img/graph_dir_cycle.PNG}
+    \end{center}
+    This is not a cycle because we cannot start at $A$ and end up back at $A$ (and the same applies with $B$). This is because we'll always end up stuck at $C$. And, if we start at $C$, we're stuck at $C$. That being said, if we converted each of the directed edges of this graph into undirected edges, we get an undirected cycle which is not allowed. 
+
+    \item \underline{The nodes must be connected.} 
+    
+    \bigskip 
+
+    Consider the following graph: 
+    \begin{verbatim}
+                    10 
+                   /  \
+                  /    \
+                 5     15
+                / \    / \
+               3   7  13  20
+    \end{verbatim}
+    This is a graph; it has nodes and it has edges. There are no undirected cycles. Finally, all the nodes are connected (all nodes are connected to the other nodes in this tree in some way). Therefore, this is a tree. 
+
+    \bigskip 
+
+    Consider the following graph:
+    \begin{verbatim}
+        A ---- B
+
+        C ---- D
+    \end{verbatim}
+    This is not a tree because nodes $A$ and $B$ are not connected to $C$ and $D$. 
+\end{itemize}
+
+\subsection{Special Cases of Valid Trees}
+There are a few cases of valid trees that we should discuss. 
+
+\begin{itemize}
+    \item The empty (``null'') tree. This tree has 0 nodes and 0 edges. 
+
+    \item A tree containing a single node. This has 1 node and 0 edges. 
+    \begin{verbatim}
+                |----|
+                | 42 |
+                |----|
+    \end{verbatim}
+\end{itemize}
+
+\subsection{Rooted vs. Unrooted Trees}
+Now, we talk briefly about rooted vs. unrooted trees. 
+
+\begin{itemize}
+    \item A \textbf{rooted} tree is a tree with a hierarchical structure (there is some sense of direction from top to bottom). This looks something like:  
+    \begin{verbatim}
+                    1
+                   /|\
+                  / | \
+                 2  3  4 
+                      / \
+                     /   \ 
+                    5     6
+    \end{verbatim}
+    With a rooted tree, we can consider some definitions. 
+    \begin{itemize}
+        \item For some node, the \textbf{parent} of a node is the node that is directly connected above said node. 
+        \item For some node, the \textbf{child} (or \textbf{children}) of a node is/are the node(s) that are directly connected below said node.
+        \item The \textbf{root} node is the node at the very top (and thus doesn't have a parent node). In the example above, node 1 is the root node.  
+        \item A node is considered to be a \textbf{leaf} node if it doesn't have any children. Nodes 2, 3, 5, 6 are considered leaves.
+        \item A node is considered to be an \textbf{internal} node if it does have children. Nodes 1, 4 are considered internal nodes.  
+    \end{itemize}
+    For example, consider node 4. This node's parent is node 1. This node has two children: node 5 and node 6. 
+
+
+    \item An \textbf{unrooted} tree is one where there is not a top-to-bottom hierarchical structure, but more of an inside-outward structure. This looks something like: 
+    \begin{verbatim}
+        2              6
+         \            /
+          \          /
+           1 ------ 4
+          /          \ 
+         /            \ 
+        3              5
+    \end{verbatim}
+    With an unrooted tree, we now have the following definitions:
+    \begin{itemize}
+        \item The \textbf{neighbors} of a node are nodes that are directly connected to said node. For example, node 1 has three neighbor (2, 3, 4). Node 4 also has three neighbor (1, 5, 6).
+        \item A node is considered to be a \textbf{leaf} node if it has one neighbor. 
+        \item A node is considered to be an \textbf{internal} node if it has more than one neighbor. 
+    \end{itemize}
+\end{itemize}
 
 \end{document}
