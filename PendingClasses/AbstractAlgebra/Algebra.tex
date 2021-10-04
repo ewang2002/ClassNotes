@@ -606,15 +606,23 @@ Now, we can introduce the notion of a symmetric group.
 \end{definition}
 
 
+
+
+
+
+
+
+
+
 \subsection{Subgroups}
 The definition of a subgroup is very similar to that of a group. It states the following. 
 \begin{definition}{Subgroup}{}
     A subset $H$ of a group $G$ is a \textbf{subgroup} if it has the following properties: 
     \begin{enumerate}
-        \item \underline{Identity/Neutral Element:} There is an element $e \in H$ such that for all $x \in H$:
+        \item \underline{Identity/Neutral Element:} The identity element of $G$ belongs in $H$. In other words, there is an element $e \in H$ (where the same $e \in G$) such that for all $x \in H$:
         \[e * x = x * e = x\]
 
-        \item \underline{Inverse:} Corresponding to each $a \in H$, there is an element $a^{-1} \in H$ such that:
+        \item \underline{Inverse:} For some $a \in H$, its inverse in $G$ belongs to $H$. More generally, corresponding to each $a \in H$, there is an element $a^{-1} \in H$ such that:
         \[a * a^{-1} = a^{-1} * a = e\]
 
         \item \underline{Closure:} For all $a, b \in H$, we have:
@@ -622,9 +630,23 @@ The definition of a subgroup is very similar to that of a group. It states the f
         It should be noted that this property is \emph{implied} by the definition of a binary operation (law of composition). This binary operation is inherited from the group $G$.  
     \end{enumerate}
 \end{definition}
-\textbf{Remark:} Because associativity is a property that is in a group, it is also implicitly a property that is in a subgroup. 
+\textbf{Remarks:}
+\begin{itemize}
+    \item Because associativity is a property that is in a group, it is also implicitly a property that is in a subgroup. 
+    \item This also implies that the subgroup $H$ is a group.
+    \item If $G$ is a group, then $G$ is a subgroup of itself. If we want to exclude this property (i.e. we don't want $G$ to be classified as a subgroup of itself), we would want $H$ to be a \emph{proper subgroup} of $G$.
+    \item The identity element $\{e\}$ by itself is known as a \emph{trivial subgroup}. 
+\end{itemize}
 
-\subsubsection{Example: Addition}
+\subsubsection{Example: Complex Numbers Under Multiplication}
+Consider the group $\C^{\times} = (\C - \{0\}, \times)$. $\{z \in \C \mid |Z| = 1\}$ (the set of all elements of the complex plane with absolute value 1) is a subgroup of $(\C - \{0\}, \times)$. 
+
+\subsubsection{Example: Matrices}
+Consider the set $GL_{n}(\R)$, or the set of all $n \times n$ invertible matrices, under matrix multiplication. Then, define: 
+\[SL_{n}(\R) = \{A \in GL_{n}(\R) \mid \det(A) = 1\}\]
+We have that $SL_{n}(\R)$ is a subgroup of $GL_{n}(\R)$. 
+
+\subsubsection{Example: Real Numbers Under Addition}
 Consider the group $(\R, +)$. Some possible subgroups are: 
 \begin{itemize}
     \item $(\Z, +)$. The group of integers under addition. 
@@ -641,6 +663,17 @@ Effectively, a subgroup $H$ of a group $G$ with law of composition written \text
     \item \textbf{Inverses:} If $a \in S$, then $-a \in S$. 
 \end{itemize}
 
+\subsubsection{Example: Integers Under Addition}
+Consider the group $(\Z, +)$. Some subgroups include: 
+\begin{itemize}
+    \item $(\{0\}, +)$: the trivial subgroup.
+    \item $(\Z, +)$: the group itself.
+    \item $(\Z 2, +)$: the group where the set is all even integers. 
+    \item $(\Z a, +)$. The group where the set consists of all elements that is divisible by $a$. That is: 
+    \[(\Z a, +) = \{n \in Z \mid n = ka \text{ for some } k \in \Z\}\] 
+\end{itemize}
+We will discuss the last example right now. 
+
 \subsection{More on Subgroups}
 Of course, we now need to discuss some theorems and applications of subgroups. 
 \begin{theorem}{}{}
@@ -649,7 +682,7 @@ Of course, we now need to discuss some theorems and applications of subgroups.
 
 \begin{mdframed}
     \begin{proof}
-        Let $S$ be a subgroup of $(\Z, +)$. Then, $0 \in S$. If 0 is the only element of $S$, then $S$ is the trivial subgroup and we are done. 
+        Let $S$ be a subgroup of $(\Z, +)$. Then, by definition, $0 \in S$. If 0 is the only element of $S$, then $S$ is the trivial subgroup and we are done. 
 
         \bigskip 
 
@@ -661,11 +694,153 @@ Of course, we now need to discuss some theorems and applications of subgroups.
 
         \bigskip 
 
-        Now, we need to show that $S \subseteq \Z a$; that is, every element $n$ of $S$ is an integer multiple of $a$. We can use division with remainder to write $n = qa + r$, where $q, r \in \Z$ and where the remainder $r$ is in the range $0 \leq r < a$. Since $\Z a$ is contained in $S$, $qa \in S$ and, of course, $n \in S$. Since $S$ is a subgroup, $r = n - qa \in S$. Now, by our choice, $a$ is the smallest positive integer in $S$, while the remainder $r$ is in the range $0 \leq r < a$. The only remainder that can be in $S$ is 0, so $r = 0$ and $n$ is the integer multiple $qa$ of $a$. 
+        To show $\Z a = S$, assume by contradiction that it's not. Pick some $n \in S$ with $n \notin \Z a$. By Euclidean division, $n = qa + r$ for some $q, r \in \Z$, where $0 \leq r < a$. Additionally, we cannot have $r = 0$ because $n \notin \Z a$. Then, $n \in S$ and $qa \in S$, $-qa \in S$, and therefore $n - qa = r \in S$. But, $r$ is positive and $r < a$, which is a contradiction. \qedhere 
+
+        % Now, we need to show that $S \subseteq \Z a$; that is, every element $n$ of $S$ is an integer multiple of $a$. We can use division with remainder to write $n = qa + r$, where $q, r \in \Z$ and where the remainder $r$ is in the range $0 \leq r < a$. Since $\Z a$ is contained in $S$, $qa \in S$ and, of course, $n \in S$. Since $S$ is a subgroup, $r = n - qa \in S$. Now, by our choice, $a$ is the smallest positive integer in $S$, while the remainder $r$ is in the range $0 \leq r < a$. The only remainder that can be in $S$ is 0, so $r = 0$ and $n$ is the integer multiple $qa$ of $a$. 
     \end{proof}
 \end{mdframed}
 
-\subsection{Cyclic Groups}
+% prop 2.3.5
 
+\subsection{Cyclic Groups} 
+\begin{definition}{Cyclic Subgroup}{}
+    Let $G$ be a group. Let $x \in G$ be an element. A \textbf{cyclic subgroup} $H = <x>$ generated by $x$ is the subset: 
+    \[\{\dots, x^{-2}, x^{-1}, x^0, x^1, x^2, \dots\} \subseteq G\]
+\end{definition}
+To check that $H$ is a \underline{commutative} subgroup, we show that it meets the properties of a subgroup. In particular:  
+\begin{itemize}
+    \item \underline{Closure:} We have that (regardless of signs): 
+    \[x^m x^n = x^{m + n}\]
+
+    \item \underline{Identity:} We know that: 
+    \[e = x^0 \in G\]
+
+    \item \underline{Inverse:} We know that (regardless of signs): 
+    \[x^n = x^{-n}\]
+\end{itemize}
+
+\textbf{Remark:} $H$ may or may not be infinite. For example, consider the group $(\Z, +)$. If $x = a$ (some positive integer), then the following is infinite: 
+\[H = \Z a\]
+However, if $x = 0$, then the following is finite: 
+\[H = \{0\}\] 
+Another example we can consider is the group $(\R - \{0\}, \times)$. Then, if $x = -1$, we have a group with two elements: 
+\[H = \{1, -1\}\]
+A final example we can consider for now is the group $(\C - \{0\}, \times)$. Then, if $x = i$, we have: 
+\[H = \{1, i, -1, -i\}\]
+By which it cycles around (hence the name). 
+
+\bigskip 
+
+We now consider the following proposition.
+\begin{proposition}
+    Let $<x>$ be the cyclic subgroup of a group $G$ generated by an element $x$, and let $S \subseteq \Z$ denote the set of integer $k$ such that $x^k = 1 \in G$ (the identity element).
+    \begin{enumerate}[(a)]
+        \item The set $S$ is a subgroup of the additive group $(\Z, +)$ (closed under addition, contains 0, and closed under inverses). 
+        \item Two powers $x^r = x^s$, with $r \geq s$, are equal if and only if $x^{r - s} = 1$; in other words, if and only if $r - s \in S$. 
+        \item Suppose that $S$ is not the trivial subgroup. Then, $S = \Z n$ for some positive integer $n$. The powers $1, x, x^2, \dots, x^{n - 1}$ are the distinct elements of the subgroup $<x>$, and the order of $<x>$ is $n$. 
+    \end{enumerate}
+\end{proposition}
+
+\textbf{Remarks:}
+\begin{itemize}
+    \item The order of $<x>$ is the same thing as saying the cardinality of $<x>$, or the number of elements. 
+    \item An element $x \in G$ (a group) has order $n$ if $<x>$ has order $n$. However, it's not correct to say that $x$ has a cardinality. 
+    \item We can say that $x^n = 1$ and $x^r \neq 1$ for $r \in [1, \dots, n - 1]$. 
+    \item For the third point, we can demonstrate this like so: 
+    \[x^a = x^{qn + r} = (x^{n})^{q} x^r = 1^q x^r = x^r\]
+    Essentially, it wraps around back to the identity element, so in that sense you can think of the exponents as the residue classes modulo $n$. 
+    \item An element might have infinite order if it never cycles. 
+\end{itemize}
+
+\subsubsection{Example: Trivial}
+The identity element, 1, has order 1. It cycles back immediately. 
+
+\subsubsection{Example: Symmetric Group of Size 3}
+Consider $G = S_3$. Then, we have: 
+\begin{itemize}
+    \item $x = (1 2)$: has order 2. 
+    \item $x = (1 2 3)$: has order 3.
+    \begin{itemize}
+        \item $x^2 = (1 3 2)$
+        \item $x^3 = (1)$
+    \end{itemize}
+\end{itemize}
+Which elements of $S_3$ have order 6? 
+\begin{itemize}
+    \item $(1)$
+    \item $(1 2)$
+    \item $(2 3)$
+    \item $(1 3)$
+    \item $(1 2 3)$
+    \item $(1 3 2)$
+\end{itemize}
+None of these elements have order 6, so $S_3$ is not a cyclic group. 
+
+\subsubsection{Example: Matrices}
+Consider $G = GL_{2}(\R)$. The element $x = \begin{bmatrix}
+    1 & 1 \\ 
+    0 & 1
+\end{bmatrix}$ has infinite order. This is because: 
+\[x^2 = \begin{bmatrix}
+    1 & 2 \\ 
+    0 & 1
+\end{bmatrix}\]
+\[x^3 = \begin{bmatrix}
+    1 & 3 \\ 
+    0 & 1
+\end{bmatrix}\]
+\[x^n = \begin{bmatrix}
+    1 & n \\ 
+    0 & 1
+\end{bmatrix}\]
+
+As you can see, we can never get back to the identity element. 
+
+\subsubsection{Example: Matrices}
+The matrix $x = \begin{bmatrix}
+    1 & 1 \\ 
+    -1 & 0
+\end{bmatrix}$ has finite order. This is because: 
+\[x^2 = \begin{bmatrix}
+    0 & 1 \\ 
+    -1 & -1
+\end{bmatrix}\]
+\[x^3 = \begin{bmatrix}
+    -1 & 0 \\ 
+    0 & -1
+\end{bmatrix} = -I_2\]
+\[x^4 = \begin{bmatrix}
+    -1 & -1 \\ 
+    1 & 0
+\end{bmatrix} = -x\]
+\[x^5 = \begin{bmatrix}
+    0 & -1 \\ 
+    1 & 1
+\end{bmatrix} = -x^2\]
+\[x^6 = \begin{bmatrix}
+    1 & 0 \\ 
+    0 & 1
+\end{bmatrix} = I\]
+So, $x$ has order 6. We note that $x^6 = x^0$. 
+
+\subsection{More on Cyclic Groups}
+Consider the following proposition: 
+\begin{proposition}
+    Let $x \in G$ be an element of finite order $n$, and let $k$ be an integer that is written as $k = nq + r$ where $q$ and $r$ are integers and $r$ is in the range $0 \leq r < n$. Then: 
+    \begin{itemize}
+        \item $x^k = x^r$ 
+        \item $x^k = 1$ if and only if $r = 0$
+        \item Let $d$ be the greatest common divisor of $k$ and $n$. The order of $x^k$ is equal to $\frac{n}{d}$. 
+    \end{itemize} 
+\end{proposition}
+
+For example, consider a cyclic group with order $n = 10$ and $k = 4$. Then: 
+\[x^4, x^{2 \cdot 4}, x^{3 \cdot 4}, \dots, x^{m \cdot 4}\]
+Here: 
+\[4m \equiv 0 \Mod{10}\]
+The smallest $m$ possible is: 
+\[\frac{\lcm(n, k)}{k} = \frac{n}{\gcd(n, k)}\]
+
+% 43:16
 
 \end{document}
