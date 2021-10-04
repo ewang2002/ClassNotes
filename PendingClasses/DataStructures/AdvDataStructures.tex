@@ -1374,4 +1374,325 @@ Now, we talk briefly about rooted vs. unrooted trees.
     \end{itemize}
 \end{itemize}
 
+\subsection{Rooted Binary Trees}
+There are a lot of data structures that involve rooted binary trees. So, let's talk about them. 
+
+\bigskip 
+
+First and foremost, it's rooted (hence the name). This means: 
+\begin{itemize}
+    \item There is a root node. 
+    \item All of the edges have a downward hierarchical relationship. 
+\end{itemize}
+Trees, in general, do not need to be binary. Any internal node can have any arbitrary number of children. \emph{However}, for a \textbf{binary tree}, any node must have either \underline{0, 1, or 2 child/children nodes}. 
+
+\bigskip 
+
+To emphasize this point, consider the binary tree: 
+\begin{verbatim}
+                    1
+                   / \  
+                  /   \
+                 2     3 
+                      / \
+                     /   \ 
+                    4     5
+\end{verbatim}
+Here, we see that: 
+\begin{itemize}
+    \item Nodes 2, 4, 5 have 0 children. 
+    \item Node 1 has 2 children. 
+    \item Node 3 has 2 children. 
+\end{itemize}
+This is a perfect binary tree because every node that's internal has exactly 2 children and every leaf node has exactly 0 children. \emph{However}, a binary tree can support single-child relationships. For example, let's consider the same binary tree, with an additional node: 
+\begin{verbatim}
+                1
+               / \  
+              /   \
+             2     3 
+            /     / \
+           /     /   \ 
+          6     4     5
+\end{verbatim}
+Here, we see that: 
+\begin{itemize}
+    \item Nodes 4, 5, 6 have 0 children. 
+    \item Node 1 has 2 children. 
+    \item Node 3 has 2 children. 
+    \item Node 2 has 1 child. 
+\end{itemize}
+And this is still a valid binary tree (even though \code{2} only has one child.)
+
+\subsection{Tree Traversals}
+If we store our data in some tree data structure, we need a tree traversal algorithm in order to iterate through all nodes (and our data). In this class, we'll talk about the following tree traversal algorithms: 
+\begin{itemize}
+    \item \textbf{Preorder:} \underline{V}isit, \underline{L}eft, \underline{R}ight. 
+    \item \textbf{In-Order:} Left, Visit, Right. 
+    \item \textbf{Postorder:} Left, Right, Visit. 
+    \item \textbf{Level-Order:} 1st Level (Left to Right), 2nd Level (Left to Right), \dots
+\end{itemize} 
+We should note that preorder, in-order, and postorder traversals are examples of \textbf{depth first search} (DFS) whereas level-order traversal is an example of \textbf{breadth first search} (BFS). Regardless of the tree traversal algorithm we use, we will always start at the root. 
+
+\subsubsection{Preorder Traversal (V, L, R)}
+Consider the following tree: 
+\begin{verbatim}
+                    0
+                   / \
+                  /   \
+                 /     \
+                1       2 
+               / \     / \ 
+              /   \   5   6
+             3     4   \   \ 
+            /           \   9
+           7             8
+\end{verbatim}
+In a preorder traversal, we are guaranteed that for any given node, its ancestors were visited before the node itself. So, in the tree above, if we visit node 1, then we are guaranteed that node 0, its parent, has already been visited. If we visit node 3, then we are guaranteed that node 1 and node 0 have already been visited.
+
+\bigskip 
+
+Preorder traversal has three steps: 
+\begin{itemize}
+    \item Visit the current node. 
+    \item Recurse to the left node. 
+    \item Recurse to the right node. 
+\end{itemize}
+
+Going back to the example tree, let's run through the preorder traversal algorithm. Note that, in the tree, I'll denote \code{[n]} as saying that we are at node $n$ and \code{(n)} as saying that we have already visited node $n$. 
+
+\begin{itemize}
+    \item We start at the root node (0). 
+    \begin{verbatim}
+                   [0]
+                   / \
+                  /   \
+                 /     \
+                1       2 
+               / \     / \ 
+              /   \   5   6
+             3     4   \   \ 
+            /           \   9
+           7             8
+
+        Result: 0
+    \end{verbatim}
+
+    \item Now, we traverse to the left node (1).
+    \begin{verbatim}
+                   (0)
+                   / \
+                  /   \
+                 /     \
+               [1]      2 
+               / \     / \ 
+              /   \   5   6
+             3     4   \   \ 
+            /           \   9
+           7             8
+
+        Result: 0, 1
+    \end{verbatim}
+
+    \item Now, we traverse to the left node (3).
+    \begin{verbatim}
+                   (0)
+                   / \
+                  /   \
+                 /     \
+               (1)      2 
+               / \     / \ 
+              /   \   5   6
+            [3]    4   \   \ 
+            /           \   9
+           7             8
+
+        Result: 0, 1, 3
+    \end{verbatim}
+
+    \item Now, we traverse to the left node (7).
+    \begin{verbatim}
+                   (0)
+                   / \
+                  /   \
+                 /     \
+               (1)      2 
+               / \     / \ 
+              /   \   5   6
+            (3)    4   \   \ 
+            /           \   9
+          [7]           [8]
+
+        Result: 0, 1, 3, 7
+    \end{verbatim}
+
+    \item Now, we would traverse to the left node. However, there's nothing there! So, we're done traversing left. Here, we can try traversing right. However, once again, there is nothing to traverse to. So, we're done with node 7. Let's move back to node 3. 
+    \begin{verbatim}
+                   (0)
+                   / \
+                  /   \
+                 /     \
+               (1)      2 
+               / \     / \ 
+              /   \   5   6
+           [(3)]   4   \   \ 
+            /           \   9
+          (7)           [8]
+
+        Result: 0, 1, 3, 7
+    \end{verbatim}
+
+    \item Now that we're back at node 3, let's try traversing right. However, there is no right node. So, we're done with 3 and we move back up to node 1.
+    \begin{verbatim}
+                   (0)
+                   / \
+                  /   \
+                 /     \
+              [(1)]     2 
+               / \     / \ 
+              /   \   5   6
+            (3)    4   \   \ 
+            /           \   9
+          (7)           [8]
+
+        Result: 0, 1, 3, 7
+    \end{verbatim}
+
+    \item Now that we're back at node 1, let's try traversing right. In this case, we are able to, so we traverse to the right node (4).
+    \begin{verbatim}
+                   (0)
+                   / \
+                  /   \
+                 /     \
+               (1)      2 
+               / \     / \ 
+              /   \   5   6
+            (3)   [4]  \   \ 
+            /           \   9
+          (7)           [8]
+
+        Result: 0, 1, 3, 7, 4
+    \end{verbatim}
+
+    \item At node 4, there is no left or right node. So, we're done with node 4. and we can move back up to node 1. Since we've already visited node 1 and its children, we can move back up to the root node, node 0. 
+    \begin{verbatim}
+                  [(0)]
+                   / \
+                  /   \
+                 /     \
+               (1)      2 
+               / \     / \ 
+              /   \   5   6
+            (3)   (4)  \   \ 
+            /           \   9
+          (7)           [8]
+
+        Result: 0, 1, 3, 7, 4
+    \end{verbatim}
+
+    \item Now that we're at node 0, we can try to traverse right (since that's the only operation we can do). Since there are right nodes, we traverse to the right node (2). 
+    \begin{verbatim}
+                   (0)
+                   / \
+                  /   \
+                 /     \
+               (1)     [2] 
+               / \     / \ 
+              /   \   5   6
+            (3)   (4)  \   \ 
+            /           \   9
+          (7)            8
+
+        Result: 0, 1, 3, 7, 4, 2
+    \end{verbatim}
+
+    \item Node 2 has a left and right child. Of course, we're going to traverse to the left node (5). 
+    \begin{verbatim}
+                   (0)
+                   / \
+                  /   \
+                 /     \
+               (1)     (2)
+               / \     / \ 
+              /   \  [5]  6
+            (3)   (4)  \   \ 
+            /           \   9
+          (7)            8
+
+        Result: 0, 1, 3, 7, 4, 2, 5
+    \end{verbatim}
+
+    \item Node 5 does not have a left child, but node 5 does have a right child, so we traverse to the right node (8). 
+    \begin{verbatim}
+                   (0)
+                   / \
+                  /   \
+                 /     \
+               (1)     (2)
+               / \     / \ 
+              /   \  (5)  6
+            (3)   (4)  \   \ 
+            /           \   9
+          (7)           [8]
+
+        Result: 0, 1, 3, 7, 4, 2, 5, 8
+    \end{verbatim}
+
+    \item At node 8, we cannot traverse left or right. So, we're done and we traverse back to node 5; since we've done all operations possible on node 5 (we visited it, we tried to traverse left, and we tried to traverse right), we go back to node 2. 
+    \begin{verbatim}
+                   (0)
+                   / \
+                  /   \
+                 /     \
+               (1)    [(2)]
+               / \     / \ 
+              /   \  (5)  6
+            (3)   (4)  \   \ 
+            /           \   9
+          (7)            8
+
+        Result: 0, 1, 3, 7, 4, 2, 5, 8
+    \end{verbatim}
+
+    \item At node 2, we can only traverse to the right node. Since node 2 has a right child, we can traverse to the right node (6).
+    \begin{verbatim}
+                   (0)
+                   / \
+                  /   \
+                 /     \
+               (1)     (2)
+               / \     / \ 
+              /   \  (5) [6]
+            (3)   (4)  \   \ 
+            /           \   9
+          (7)            8
+
+        Result: 0, 1, 3, 7, 4, 2, 5, 8, 6
+    \end{verbatim}
+
+    \item At node 6, we cannot traverse to the left node since there is no left child. But, there is a right child so we traverse to the right node (9). 
+    \begin{verbatim}
+                   (0)
+                   / \
+                  /   \
+                 /     \
+               (1)     (2)
+               / \     / \ 
+              /   \  (5) (6)
+            (3)   (4)  \   \ 
+            /           \  [9]
+          (7)            8
+
+        Result: 0, 1, 3, 7, 4, 2, 5, 8, 6, 9
+    \end{verbatim}
+
+    \item At this point, we traverse back to node 6. Since we're done with node 6, we traverse back to node 2. Since we're done with node 2, we traverse back to node 0 (root node). Since we're done with node 0, we're done! Our final result is: 
+    \begin{verbatim}
+        0, 1, 3, 7, 4, 2, 5, 8, 6, 9
+    \end{verbatim}
+\end{itemize}
+
+% \subsubsection{In-order Traversal (L, V, R)}
+
+
+
 \end{document}
