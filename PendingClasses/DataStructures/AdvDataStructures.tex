@@ -2191,4 +2191,142 @@ So, essentially, if we traversed using level-order traversal, our result would b
 \end{verbatim}
 
 
+\section{Binary Search Trees}
+A binary search tree is a special type of binary tree with the following properties: 
+\begin{itemize}
+    \item It must be a rooted binary tree (can only have 0, 1, or 2 children). 
+    \item Every node is larger than all nodes in its left subtree. 
+    \item Every node is smaller than all nodes in its right subtree. 
+\end{itemize}
+
+Consider the following tree: 
+\begin{verbatim}
+            10
+           /  \  
+          /    \ 
+         /      \ 
+        5       15 
+       / \        \ 
+      /   \        \ 
+     2     7       20 
+                   /
+                  17 
+\end{verbatim}
+This is a valid binary search tree because: 
+\begin{itemize}
+    \item It's rooted. 
+    \item Each node has 0, 1, or 2 children. 
+    \item For any given node, its left node's value are smaller than the given node's value. For example, for node 5, $2 < 5$. Another example is for node 10, where $2 < 5 < 7 < 10$. 
+    \item For any given node, its right node's values are bigger than the given node's value. For example, for node 5, $5 < 7$. Another example is for node 10, where $10 < 15 < 17 < 20$.
+\end{itemize}
+
+Consider the following tree: 
+\begin{verbatim}
+            10 
+           /  \  
+          5    20
+              /  \  
+             9    30
+\end{verbatim}
+This is not a binary search tree. While node 20's left and right child nodes meet the criteria ($9 < 20$ and $20 < 30$), node 9 is on the right of node 10 and we know that $10 < 9$ is false. 
+
+\subsection{BST Find Algorithm}
+Denote \code{query} to be the query (the element we want to find) and \code{current} to be the current node (the node that we're at). The binary search tree find algorithm works as follows
+\begin{enumerate}
+    \item Start at the root. 
+    \item If \code{query == current}, success! 
+    \item Otherwise, if \code{query > current}, traverse right and go back to step 2. 
+    \item Otherwise, if \code{query < current}, traverse left and go back to step 2. 
+\end{enumerate}
+\textbf{Remark:} If we try to traverse left or right but no such child exists, then the element doesn't exist. 
+
+\bigskip 
+
+Consider the following BST: 
+\begin{verbatim}
+            50 
+           / \
+          /   \
+         20    70 
+        /  \    \ 
+       10  25   100 
+\end{verbatim}
+Let's suppose we tried to look for \code{20} (so \code{query = 20}). We start at node 50 (so \code{current = 50}). 
+\begin{itemize}
+    \item Since \code{current = (50 != 20) = query}, we need to check the child nodes. 
+    \item Since \code{query = (20 < 50) = current}, we traverse to the left child. Thus, \code{current = 20}.
+    \item Since \code{current = (20 == 20) = query}, we're done. 
+\end{itemize}
+
+Let's now suppose we tried to look for \code{25}. Once again, \code{query = 25} and \code{current = 50}.
+\begin{itemize}
+    \item Since \code{current = (50 != 25) = query}, we need to check the child nodes. 
+    \item Since \code{query = (25 < 50) = current}, we traverse to the left child. Thus, \code{current = 20}.
+    \item Since \code{current = (20 != 25) = query}, we need to check the child nodes.
+    \item Since \code{query = (25 > 20) = current}, we need to check the right child. Thus, \code{current = 25}.
+    \item Since \code{current = (25 == 25) = query}, we're done. 
+\end{itemize}
+
+Finally, let's suppose we tried to find \code{60}. Once again, \code{query = 60} and \code{current = 50}. 
+\begin{itemize}
+    \item Since \code{current = (50 != 60) = query}, we need to check the child nodes. 
+    \item Since \code{query = (60 > 50) = current}, we go to the right child. Thus, \code{current = 70}.
+    \item Since \code{current = (70 != 60) = query}, we need to check the child nodes.
+    \item Since \code{query = (60 < 70) = current}, we go to the left child. Since 70 does not have a left child, the element is not found. 
+\end{itemize}
+
+\subsection{BST Insert Algorithm}
+The binary search tree insert algorithm works as follows
+\begin{enumerate}
+    \item Perform \code{find} operation, starting at the root. 
+    \item If \code{find} succeeds, there is a duplicate element so we don't insert. 
+    \item If \code{find} doesn't succeed, insert the new element at the site of failure. 
+\end{enumerate}
+
+Let's consider a very simple binary search tree: 
+\begin{verbatim}
+            50 
+              \ 
+              70 
+                \ 
+                100 
+\end{verbatim}
+
+Let's suppose we tried to insert \code{100}. Since \code{100} exists in the binary search tree, we don't need to add this element. 
+
+\bigskip 
+
+Let's suppose we tried to insert \code{65}. Since \code{65} does not exist in the binary search tree, we can add it to the binary search tree. To be concrete: 
+\begin{itemize}
+    \item We start at \code{50} (root element). 
+    \item Since \code{current != 65} but \code{current < 65}, we traverse to the right child. Now, \code{current = 70}. 
+    \item Since \code{current != 65} but \code{current > 65}, we traverse to the left child.
+    \item Since there is nothing to traverse to (node 70 doesn't havea  left child), we append \code{65}, like so:
+    \begin{verbatim}
+            50 
+              \ 
+              70 
+             /  \ 
+            65  100 
+    \end{verbatim}
+\end{itemize}
+
+As a final example, suppose we tried to insert \code{67}. The algorithm will run like so: 
+\begin{itemize}
+    \item We start at \code{50} (root). 
+    \item Since \code{current != 67} but \code{current < 67}, we traverse to the right child. Now, \code{current = 70}. 
+    \item Since \code{current != 67} but \code{current > 67}, we traverse to the left child. So, \code{current = 65}.
+    \item Since \code{current != 65}, but \code{current < 67}, we traverse to the right child. 
+    \item But, since there's nothing to traverse to (node 65 doesn't have a right child), we append \code{67} like so: 
+        \begin{verbatim}
+            50 
+              \ 
+              70 
+             /  \ 
+            65  100
+             \
+             67 
+    \end{verbatim}
+\end{itemize}
+
 \end{document}
