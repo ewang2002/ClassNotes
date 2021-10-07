@@ -2329,4 +2329,333 @@ As a final example, suppose we tried to insert \code{67}. The algorithm will run
     \end{verbatim}
 \end{itemize}
 
+\subsection{BST Successor Algorithm}
+What is a node successor? Given some node $U$, the successor of node $U$ is the next largest node. In other words, it's the node that is immediately larger than node $U$. 
+
+\bigskip 
+
+Consider the following binary search tree\footnote{The tree is a bit oversized due to the way text is formatted, don't worry about that.}: 
+\begin{verbatim}
+                               E
+                    __________/ \__________
+                   /                       \ 
+                  /                         \
+                 /                           \ 
+                B                             H
+               / \                           / \
+              /   \                         /   \ 
+             /     \                       /     \
+            A       C                     G       I
+                     \                   / 
+                      \                 /
+                       \               /
+                        D             F
+\end{verbatim}
+The successors are as follows: 
+\begin{itemize}
+    \item The successor of $A$ is $B$. 
+    \item The successor of $B$ is $C$. 
+    \item The successor of $C$ is $D$. 
+    \item The successor of $D$ is $E$. 
+    \item The successor of $E$ is $F$.
+    \item The successor of $F$ is $G$. 
+    \item The successor of $G$ is $H$. 
+    \item The successor of $H$ is $I$.  
+\end{itemize}
+
+If we had an efficient algorithm to determine the successor of a node, then we can implement an efficient iterator that would iterate over our binary search tree in increasing order of size.
+
+\bigskip 
+
+How do we find the successor of a given node? The algorithm is as follows: 
+\begin{itemize}
+    \item If the node has a right child, traverse right once, then all the way left. 
+    
+    \bigskip 
+
+    Consider the following examples: 
+    \begin{itemize}
+        \item If we wanted to find the successor of $E$, we would traverse right once ($E \to \boxed{H}$) and then traverse all the way left ($H \to G \to \boxed{F}$).
+        \item If we wanted to find the successor of $B$, we would traverse right once ($B \to C$) and then traverse all the way left. Since $C$ doesn't have any left child nodes, $\boxed{C}$ is the successor. 
+    \end{itemize}
+
+    \item Otherwise, traverse up the tree. The first time the current node is its parent's left child, the parent is our successor. 
+    
+    \bigskip 
+
+    Consider the following examples: 
+    \begin{itemize}
+        \item Suppose we wanted to find the successor of $D$. We note that $D$ doesn't have a right child, so we cannot do the first step of this algorithm and must go to this step of the algorithm. 
+        \begin{itemize}
+            \item First, we note that $D$ is $C$'s \emph{right} child. So, the left child condition isn't met. So, we go up one. 
+            \item We note that $C$ is $B$'s right child again, so the left child condition isn't met. 
+            \item We note that $B$ is $E$'s \emph{left} child. So, the left child condition is met. Therefore, $E$ is the successor of $D$. 
+        \end{itemize}
+
+        \item Suppose we wanted to find the successor of $A$. We note that $A$ doesn't have a right child, so we need to do this step of the algorithm.
+        \begin{itemize}
+            \item First, we note that $A$ is $B$'s left child. So, the left child condition is met; thus, $B$ is the successor of $A$. 
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+\subsection{BST Remove Algorithm}
+As usual, we begin by running the find algorithm. However, if we find the node to delete, we need to consider three cases. 
+
+\begin{enumerate}
+    \item \underline{No Children:} Just delete the node. 
+    \item \underline{One Child:} Just directly connect my child to my parent. 
+    \item \underline{Two Children:} Replace my value with my successor's value, and remove me. 
+\end{enumerate}
+
+\subsubsection{Case 1: No Children}
+Consider the following binary search tree: 
+\begin{verbatim}
+        2
+       / \ 
+      1   3
+\end{verbatim}
+If we wanted to remove \code{3}, we can just delete it since it has no children. We can set the parent (\code{2})'s right child node to \code{nullptr}.
+\begin{verbatim}
+    2
+   /  
+  1   
+\end{verbatim}
+
+\subsubsection{Case 2: One Child}
+Consider the following binary search tree: 
+\begin{verbatim}
+        2
+       / \ 
+      1   3 
+           \ 
+            4
+\end{verbatim}
+Suppose we wanted to remove \code{3}, we can simply link \code{2} with \code{4}, like so: 
+\begin{verbatim}
+    2
+   / \ 
+  1   4 
+\end{verbatim}
+
+\subsubsection{Case 3: Two Children}
+Consider the following binary search tree: 
+\begin{verbatim}
+        2 
+       / \ 
+      /   \ 
+     1     4 
+          / \ 
+         /   \ 
+        3     5
+\end{verbatim}
+Suppose we wanted to remove \code{4}. To do so, we need to find node \code{4}'s successor value, put the successor's value in the node's place, and then remove the node itself. We know that node \code{4}'s successor is \code{5}, so we swap their values and then delete the node containing the value that we wanted to remove (in this case, it's the node that we swapped withthe successor). A visualization is shown below\footnote{I put \code{[]} to emphasize the two nodes being swapped. It serves no other purpose.}:
+\begin{verbatim}
+        2                 2                   2                   
+       / \               / \                 / \                  
+      /   \             /   \               /   \ 
+     1    [4]   --->   1     5     --->    1     5 
+          / \               / \                 / 
+         /   \             /   \               /
+        3    [5]          3     4             3
+\end{verbatim}
+
+
+But, what if we had a more complex example? Suppose we had to deal with this binary search tree: 
+\begin{verbatim}
+        2
+       / \ 
+      /   \ 
+     1     4 
+          / \  
+         /   \ 
+        3     6
+               \ 
+                \ 
+                 7
+\end{verbatim}
+Suppose we wanted to remove \code{4}. \code{4}'s successor is \code{6}. We begin by swapping the two values like usual. Then, we can remove the node where \code{4} is at right now and attach the now-deleted node's child node to node \code{6}.  
+\begin{verbatim}
+        2                        2                        2
+       / \                      / \                      / \ 
+      /   \                    /   \                    /   \  
+     1    [4]                 1     6                  1     6 
+          / \       --->           / \        --->          / \  
+         /   \                    /   \                    /   \ 
+        3    [6]                 3     4                  3     7
+               \                        \                         
+                \                        \                         
+                 7                        7
+\end{verbatim}
+
+\subsection{Height of a Node and Tree}
+Consider this tree (which we'll use for some examples to supplement the definitions):
+\begin{verbatim}
+            5
+           / \ 
+          /   \ 
+         /     \ 
+        1       7
+               / \ 
+              /   \ 
+             /     \ 
+            6       8 
+                     \ 
+                      \ 
+                       \ 
+                        9
+\end{verbatim}
+
+Then, we say that: 
+\begin{itemize}
+    \item The \textbf{height} of a \textbf{node} is the \underline{longest} distance (number of edges) from said node to a leaf. 
+    
+    \bigskip 
+
+    In the above tree:
+    \begin{itemize}
+        \item The distance from node 9 to a leaf is 0 (no edges). 
+        \item The distance from node 8 to a leaf is 1 (1 edge).
+        \item The distance from node 7 to a leaf is 2. Although node 7 can reach two different leaf nodes (6, 9), we are only interested in the farthest leaf node (9).
+        \item The distance from node 5 to a leaf is 3. Although node 5 can reach three different leaf nodes (1, 6, 9), we are only interested in the farthest leaf node (9). 
+    \end{itemize}
+
+    \item The \textbf{height} of a \textbf{tree} is the height of the root of the tree. 
+    
+    \bigskip 
+
+    The root of the tree is node 5, so we say that the height of the tree is 3 (since we want to find the distance from the root node to the farthest leaf node).
+\end{itemize}
+
+\subsection{Tree Balance}
+We can think of tree balance as a metric of how tall a tree is with respect to the number of nodes it has. In particular, for some $n$, we can think of tree balancing as a spectrum between perfectly unbalanced and perfectly balanced. 
+
+\bigskip 
+
+Consider $n = 7$ (a tree with 7 nodes).
+\begin{verbatim}
+    |-------------------------------------------------------------------------------|
+    Perfectly Unbalanced                                           Perfectly Balanced 
+
+    1                                                                       4
+     \                                                                     / \  
+      2                                                                   /   \ 
+       \                                                                 /     \ 
+        3                                                               /       \ 
+         \                                                             2         6 
+          4                                                           / \       / \  
+           \                                                         /   \     /   \  
+            5                                                       1     3   5     7 
+             \                                             
+              6                                           
+               \                                          
+                7
+\end{verbatim}
+In a perfectly unbalanced tree, we have a height of \textbf{6}. In a perfectly balanced tree, we have a height of \textbf{2}. Both trees are binary search trees.
+
+\bigskip 
+
+Basically, a perfectly unbalanced binary search tree is like a linked list. 
+
+\subsection{Time Complexity}
+Part of evaluating the time complexity of any BST is figuring out the tree's shape; whether the tree is balanced or unbalanced will make a difference. 
+
+\bigskip 
+
+For the \code{find}, \code{insert}, and \code{delete} operations, the worst-case runtime is as follows: 
+\begin{center}
+    \begin{tabular}{c|c|p{7cm}}
+        \textbf{Tree Type} & \textbf{Worst Case Big-$O$} & \textbf{Why?} \\
+        \hline 
+        Perfectly Unbalanced Tree & $\boxed{O(n)}$ & For a perfectly unbalanced tree, if we have $n$ nodes, then a perfectly unbalanced tree will have a height of $n - 1$. The worst case would occur if we had to traverse over all the edges of the tree. \\
+        Perfectly Balanced Tree   & $O(\log(n))$ & The reason why this is $O(\log(n))$ -- more specifically, $O(\log_{2}(n + 1) - 1)$ -- is because even if we double the number of nodes in a tree, the tree's height would only grow by 1.
+    \end{tabular}
+\end{center}
+\textbf{Remark:} $O(\log(n))$ is not actually the worst case; this is actually a very nice case simply because this assumes that a tree is perfectly balanced. In other words, \emph{if} the tree was perfectly balanced, the worst-case runtime would be $O(\log(n))$; however, because any given tree will probably not be perfect, we cannot make that assumption. So, the worst-case runtime for any given binary search tree is actually $O(n)$. 
+
+\subsubsection{Find Algorithm: Best vs. Worst vs. Average Case}
+We should note that: 
+\begin{itemize}
+    \item The \textbf{best} case scenario is if the query is the root. 
+    \item The \textbf{worst} case scenario is if we need to work with a perfectly unbalanced tree and the query is not found. 
+    \item The \textbf{average} case scenario is the theoretical expected value over all trees and queries. 
+\end{itemize}
+
+For $n$ elements as $n \to \infty$:
+\begin{center}
+    \begin{tabular}{c|c|p{7cm}}
+        \textbf{Case} & \textbf{Runtime} & \textbf{Remark(s)} \\ 
+        \hline 
+        Best & $O(1)$ & It doesn't matter if the tree is perfectly balanced or unbalanced if the root node is the right node. \\ 
+        Worst & $O(n)$ & If the tree is perfectly unbalanced and the value was either not found or is the last node in the tree (i.e. a leaf node). 
+    \end{tabular}
+\end{center}
+
+The average case is a bit more complicated. In particular, we need to assume the following:
+\begin{enumerate}
+    \item All $n$ elements are equally likely to be searched for. 
+    
+    \bigskip 
+
+    If we had a binary search tree with the elements $1, 2, 3$, then: 
+    \[P(Q = 1) = P(Q = 2) = P(Q = 3) = \frac{1}{n} = \frac{1}{3}\]
+    This is saying that the probability that our query is \code{1} is the same as the probability that our query is \code{2} which is the same as saying that the probability that our query is \code{3}, or $\frac{1}{3}$. This holds for $n$ elements. 
+
+    \item All $n!$ possible insertion orders are equally likely. 
+    
+    \bigskip 
+
+    If we had the elements $1, 2, 3$, there are $3! = 6$ possible insertion orders: 
+    \begin{itemize}
+        \item 123 
+        \item 132 
+        \item 213
+        \item 231
+        \item 312
+        \item 321 
+    \end{itemize}
+    \emph{However}, \code{213} and \code{231} gave us the same tree structure. So, there are 5 unique tree structures for 6 possible insertion orders. 
+\end{enumerate}
+
+\subsubsection{Depth of a Node}
+The \textbf{depth of a node} is the number of nodes in the path from that node to the root. 
+
+\bigskip 
+
+For example, consider the following binary search tree: 
+\begin{verbatim}
+                8 
+               / \ 
+              /   \ 
+             /     \ 
+            3      10
+           / \       \ 
+          /   \       \ 
+         1     6      14
+              / \     /
+             4   7   13
+\end{verbatim}
+We can say that: 
+\begin{itemize}
+    \item The number of nodes from the root node to itself is \textbf{1}: itself. 
+    \item The number of nodes from node 10 to the root node is \textbf{2}. 
+    \item The number of nodes from node 14 to the root node is \textbf{14}.
+    \item The number of nodes from node 13 to the root node is \textbf{4}. 
+    \item The number of nodes from node 3 to the root node is \textbf{2}.
+    \item The number of nodes from node 6 to the root node is \textbf{3}. 
+    \item The number of nodes from node 4 to the root node is \textbf{4}. 
+    \item The number of nodes from node 7 to the root node is \textbf{4}. 
+    \item The number of nodes from node 1 to the root node is \textbf{3}. 
+\end{itemize}
+The \textbf{average case time complexity} is the \underline{expected number of operations to find a query}. 
+
+\bigskip 
+
+Suppose one operation is one comparison and we were looking for the number \code{3}. This would require \textbf{2} comparisons, or 2 operations. The average case time complexity is the expected number of operations for every node in this tree. This is equivalent to the \underline{expected depth}. 
+
+\bigskip 
+
+Generally speaking, the number of comparisons to find a node is equal to the depth of that node. 
+
+
 \end{document}
