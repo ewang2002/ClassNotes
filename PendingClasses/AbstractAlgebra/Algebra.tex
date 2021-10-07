@@ -552,68 +552,6 @@ For a negative integer $n$, we let:
     \end{proof}
 \end{mdframed}
 
-
-\subsection{Symmetric Groups}
-Before we introduce symmetric group, we need to discuss what permutations are. 
-\begin{definition}{Permutation}{}
-    A \textbf{permutation} of a set $S$ is a \underline{bijective map} $p$ from a set $S$ to itself: 
-    \[p: S \to S\]
-\end{definition}
-For instance, consider the following table: 
-\begin{center}
-    \begin{tabular}{|c|c c c c c|}
-        \hline 
-        $i$ & 1 & 2 & 3 & 4 & 5 \\ 
-        \hline 
-        $p(i)$ & 3 & 5 & 4 & 1 & 2 \\ 
-        \hline 
-    \end{tabular}
-\end{center}
-This is a permutation $p$ of the set $\{1, 2, 3, 4, 5\}$. It is bijective because every element appears exactly once in the $p(i)$ row (i.e. we're only using each element once). In this particular table, there are two cycles:
-\begin{itemize}
-    \item Cycle 1: 
-    \begin{itemize}
-        \item $p(1) = 3$
-        \item $p(3) = 4$
-        \item $p(4) = 1$
-    \end{itemize}
-    \item Cycle 2: 
-    \begin{itemize}
-        \item $p(2) = 5$
-        \item $p(5) = 2$
-    \end{itemize}
-\end{itemize}
-This can be written in \textbf{cycle notation}:
-\[p = (1 3 4)(2 5)\]
-And can be read off like so: 
-\begin{itemize}
-    \item 1 goes to 3. 
-    \item 3 goes to 4. 
-    \item 4 goes to 1.
-\end{itemize}
-And: 
-\begin{itemize}
-    \item 2 goes to 5. 
-    \item 5 goes to 2.
-\end{itemize}
-The first cycle $(1 3 4)$ is a 3-cycle and the second cycle $(2 5)$ is a 2-cycle\footnote{2-cycles are also known as \textbf{transpositions}.}
-
-\bigskip 
-
-Now, we can introduce the notion of a symmetric group. 
-\begin{definition}{Symmetric Group}{}
-    For some $n \in \Z^+$, a \textbf{symmetric group} is the set of all permutations of the indices $\{1, 2, \dots, n\}$ and is denoted by $S_n$. 
-\end{definition}
-
-
-
-
-
-
-
-
-
-
 \subsection{Subgroups}
 The definition of a subgroup is very similar to that of a group. It states the following. 
 \begin{definition}{Subgroup}{}
@@ -842,5 +780,79 @@ The smallest $m$ possible is:
 \[\frac{\lcm(n, k)}{k} = \frac{n}{\gcd(n, k)}\]
 
 % 43:16
+
+
+
+
+
+
+
+
+
+\section{Permutations}
+Let's briefly discuss permutations, since these are important.
+\begin{definition}{Permutation}{}
+    A \textbf{permutation} of a set $S$ is a \underline{bijective map} $p$ from a set $S$ to itself: 
+    \[p: S \to S\]
+\end{definition}
+For instance, consider the following table: 
+\begin{center}
+    \begin{tabular}{|c|c c c c c|}
+        \hline 
+        $i$ & 1 & 2 & 3 & 4 & 5 \\ 
+        \hline 
+        $p(i)$ & 3 & 5 & 4 & 1 & 2 \\ 
+        \hline 
+    \end{tabular}
+\end{center}
+This is a permutation $p$ of the set $\{1, 2, 3, 4, 5\}$. It is bijective because every element appears exactly once in the $p(i)$ row (i.e. we're only using each element once). In this particular table, there are two cycles:
+\begin{itemize}
+    \item Cycle 1: 
+    \begin{itemize}
+        \item $p(1) = 3$ (1 goes to 3)
+        \item $p(3) = 4$ (3 goes to 4)
+        \item $p(4) = 1$ (4 goes to 1)
+    \end{itemize}
+    \item Cycle 2: 
+    \begin{itemize}
+        \item $p(2) = 5$ (2 goes to 5)
+        \item $p(5) = 2$ (5 goes to 2)
+    \end{itemize}
+\end{itemize}
+If we drew this out, this would look like: 
+\begin{verbatim}
+    1 ---> 3
+   /|\     |        5 ----> 2
+    |     \|/      /|\      |
+    |----- 4        |-------|
+\end{verbatim}
+This can be written in \textbf{cycle notation}:
+\[p = (1 3 4)(2 5)\]
+The first cycle $(1 3 4)$ is a 3-cycle and the second cycle $(2 5)$ is a 2-cycle\footnote{2-cycles are also known as \textbf{transpositions}.}.
+
+\subsection{Symmetric Groups}
+Now, we can introduce the notion of a symmetric group. 
+\begin{definition}{Symmetric Group}{}
+    For some $n \in \Z^+$, a \textbf{symmetric group} is the set of all permutations of the indices $\{1, 2, \dots, n\}$ and is denoted by $S_n$. 
+\end{definition}
+For instance, $S_3$ consists of the following permutations: 
+\begin{itemize}
+    \item $(123)$
+    \item $(132)$
+    \item $(21)$
+    \item $(231)$
+    \item $(312)$
+    \item $(321)$
+\end{itemize}
+
+\subsection{Inverse of a Permutation}
+Recall the permutation example used: 
+\[p = (1 3 4)(2 5)\]
+\begin{verbatim}
+    1 ---> 3
+   /|\     |        5 ----> 2
+    |     \|/      /|\      |
+    |----- 4        |-------|
+\end{verbatim}
 
 \end{document}
