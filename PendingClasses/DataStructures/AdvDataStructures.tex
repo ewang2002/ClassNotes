@@ -2658,4 +2658,100 @@ Suppose one operation is one comparison and we were looking for the number \code
 Generally speaking, the number of comparisons to find a node is equal to the depth of that node. 
 
 
+\newpage 
+\section{Treaps}
+A \textbf{treap} is a special tree data structure. The name comes from how this is a \emph{tree} data structure that makes use of a heap. In particular, a treap stores a \code{(key, priority)} pair. 
+
+\bigskip 
+
+How does it make use of both a tree and a heap? 
+\begin{itemize}
+    \item \textbf{BST} properties with respect to \emph{keys}.
+    \begin{itemize}
+        \item Larger than all keys in the left subtree. 
+        \item Smaller than all keys in the right subtree. 
+    \end{itemize}
+    In other words, if we ignored the priorities, it would hold the binary search tree properties. 
+
+    \item \textbf{Heap} properties with respect to \emph{priorities}. 
+    \begin{itemize}
+        \item Larger than all priorities below. 
+    \end{itemize}
+\end{itemize}
+
+Consider the following valid treap, where the \emph{keys} are the letters and the \emph{priorities} are the numbers: 
+\begin{verbatim}
+                G (14)
+                  /\ 
+                 /  \ 
+                /    \ 
+               /      \ 
+             D (8)    L (10)
+             /\         \ 
+            /  \         \ 
+           /    \         \ 
+          /      \         \ 
+        A (1)   F (3)     T (5)
+\end{verbatim}
+With respect to the binary search tree properties: 
+\begin{itemize}
+    \item We know that $D < G$. 
+    \item We know that $A < D$ and $D < F$. 
+    \item We know that $G < L$. 
+    \item We know that $L < T$. 
+\end{itemize}
+So, it does fulfill the BST properties. With respect to the keys: 
+\begin{itemize}
+    \item We know that $14$ is larger than all other nodes (its children); it's also at the top of the tree. 
+    \item We know that $8$ is larger than its children nodes ($1 < 3 < 8$). 
+    \item We know that $10$ is larger than its child node ($10 > 5$). 
+\end{itemize}
+So, it does fulfill the Heap properties. 
+
+\subsection{AVL Rotations}
+Sometimes, we want to be able to restructure a binary search tree without damaging its binary search tree properties. Here, we make use of something called \textbf{AVL Rotations}.
+
+\bigskip 
+
+Consider the following two trees (here, \code{[a]} means that $a$ is a potential subtree): 
+\begin{verbatim}
+            b        Right        a
+           / \      ------>      / \ 
+          /   \                 /   \ 
+         a    [z]             [x]    b
+        / \          Left            /\
+       /   \        <------         /  \
+     [x]  [y]                     [y]  [z]
+\end{verbatim}
+Regarding the left tree: 
+\begin{itemize}
+    \item $b$ is the parent node. 
+    \item $a$ is a child node with two children. 
+    \item $z$ is a right subtree. It could either be one node, an entire subtree, or a \code{nullptr}. 
+    \item $x$ is a left subtree (with respect to $a$). It could either be one node, an entire subtree, or empty. 
+    \item $y$ is a right subtree (with respect to $a$). It could either be one node, an entire subtree, or empty. 
+\end{itemize}
+Given the left tree, we can do a \textbf{right AVL rotation}, where: 
+\begin{itemize}
+    \item We make $a$ the parent. 
+    \item We make $b$ become its right child. 
+    \item $x$ remains the left child of $a$. 
+    \item $z$ remains the right child of $b$. 
+    \item We make $y$ the left child of $b$. 
+\end{itemize}
+More concretely, regarding the left tree: 
+\begin{itemize}
+    \item We know that $a$ is the left child of $b$. Therefore, $a < b$. 
+    \item We know that $z$ is the right child of $b$. That means everything in the $z$ subtree is greater than $b$. Therefore, because $b > a$, it follows that everything in the $z$ subtree is greater than $a$. 
+    \item The $x$ subtree is a left descendent of $a$, so all nodes in $x$ is less than $a$ and is therefore less than $b$. 
+    \item The $y$ subtree is a right descendent of $a$, so all nodes in $y$ is greater than $a$. 
+\end{itemize}
+Essentially: 
+\begin{verbatim}
+    b > a       a < b 
+    b < z       a < z
+    b > x       a < y
+    b > y       a > x
+\end{verbatim}
+
 \end{document}
