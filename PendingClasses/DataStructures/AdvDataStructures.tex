@@ -2659,7 +2659,10 @@ Generally speaking, the number of comparisons to find a node is equal to the dep
 
 
 \newpage 
-\section{Treaps}
+\section{Treaps and Randomized Search Trees}
+Here, we will talk about treaps and randomized search trees, along with a concept called \emph{AVL rotations}.
+
+\subsection{Treap}
 A \textbf{treap} is a special tree data structure. The name comes from how this is a \emph{tree} data structure that makes use of a heap. In particular, a treap stores a \code{(key, priority)} pair. 
 
 \bigskip 
@@ -2681,17 +2684,17 @@ How does it make use of both a tree and a heap?
 
 Consider the following valid treap, where the \emph{keys} are the letters and the \emph{priorities} are the numbers: 
 \begin{verbatim}
-                G (14)
+                 (G, 14)
                   /\ 
                  /  \ 
                 /    \ 
                /      \ 
-             D (8)    L (10)
+            (D, 8)   (L, 10)
              /\         \ 
             /  \         \ 
            /    \         \ 
           /      \         \ 
-        A (1)   F (3)     T (5)
+        (A, 1)  (F, 3)    (T, 5)
 \end{verbatim}
 With respect to the binary search tree properties: 
 \begin{itemize}
@@ -2723,6 +2726,10 @@ Consider the following two trees (here, \code{[a]} means that $a$ is a potential
        /   \        <------         /  \
      [x]  [y]                     [y]  [z]
 \end{verbatim}
+\textbf{Remark:} We can say that, by doing a right AVL rotation, we are rotating $a$ and $b$ clockwise. By doing a left AVL rotation, we are rotating $a$ and $b$ counterclockwise. 
+
+\bigskip 
+
 Regarding the left tree: 
 \begin{itemize}
     \item $b$ is the parent node. 
@@ -2753,5 +2760,422 @@ Essentially:
     b > x       a < y
     b > y       a > x
 \end{verbatim}
+In this particular AVL rotation: 
+\begin{itemize}
+    \item $x$ (and the edge going into $x$) and $z$ (and the edge going into $z$) remain unchanged. Essentially, this means that $x$ remains a left child of $a$ and $z$ remains a right child of $b$>
+    \item Specifically, the only thing that we are changing is are $b$, $a$, and $y$, and their edge relationships. 
+\end{itemize}
+Why can we make these changes? 
+\begin{itemize}
+    \item We know that $a < b$ so making $a$ the root node and $b$ a right child node is valid. 
+    \item We know that $b > y$ and $a < y$ (or $a < y < b$), so making $y$ the left child of $b$ (where $b$ is the right child of $a$) still maintains the $a < y < b$ property. 
+\end{itemize}
+When making these changes, the key thing to note is that \underline{we are still maintaining BST properties}. 
+
+\bigskip 
+
+Of course, the same idea applies when doing a \textbf{left AVL rotation}. 
+
+\subsubsection{Example 1: Right AVL Rotation}
+Consider the following binary search tree: 
+\begin{verbatim}
+            63
+            /
+           /
+         42
+         /
+        /
+       21
+\end{verbatim}
+Suppose we wanted to do a right AVL rotation on nodes \code{63} and \code{42}. Let's begin by labeling these nodes: 
+\begin{verbatim}
+        (a) 63 
+            /\
+           /  (z)
+      (b) 42
+         /\
+        /  (y)
+   (x) 21
+\end{verbatim}
+Where: 
+\begin{itemize}
+    \item We will rotate \code{42} and \code{63} (nodes $a$ and $b$).
+    \item Nodes $y$ and $z$ are \code{nullptr}. 
+\end{itemize}
+When doing a right rotation, $a$ becomes the new parent and $b$ becomes the new right child for $a$. That is: 
+\begin{verbatim}
+            42
+            /\
+           /  \ 
+          /    \ 
+         21    63 
+\end{verbatim}
+Which is the result. 
+
+\subsubsection{Example 2: Left AVL Rotation}
+Suppose we have the following binary search tree: 
+\begin{verbatim}
+            1
+             \ 
+              \ 
+               \ 
+                \ 
+                 5 
+                / \ 
+               /   \
+              /     \ 
+             /       \ 
+            3         8
+           / \       / \ 
+          /   \     /   \ 
+         2     4   7     9
+                  /
+                 /
+                6
+\end{verbatim}
+Let's suppose that we wanted to perform a left AVL rotation on nodes \code{5} and \code{8}. Then: 
+\begin{itemize}
+    \item \code{1} should remain unchanged. 
+    \item \code{8} would be the right child of \code{1}.
+    \item We would rotate \code{5} counterclockwise, thus it will be the left child of \code{8}.
+    \item The left subtree of \code{5} (in the original tree) and the right subtree of \code{8} (in the original tree) remain unchanged. So, we append those subtrees on their respective parent nodes.
+    \item The left subtree of \code{8} (in the original tree) now becomes the right child of \code{5}.
+\end{itemize}
+
+\begin{verbatim}
+            1
+             \
+              \ 
+               \ 
+                \ 
+                 8 
+                / \ 
+               /   \ 
+              /     \ 
+             /       \
+            5         9
+           / \
+          /   \
+         /     \ 
+        /       \ 
+       3         7
+      / \       /
+     /   \     /
+    2     4   6
+\end{verbatim}
+
+\subsection{Treap Insertion}
+To insert a new key/priority pair: 
+\begin{enumerate}[(1)]
+    \item We first insert this pair via the BST insertion algorithm with respect to the keys. 
+    \item We use AVL rotations to ``bubble up'' to fix Heap with respect to priorities. 
+\end{enumerate}
+
+\subsubsection{Example 1: Simple Treap Insertion}
+Recall that the letter represents the key and the number represents the priority. Consider the following treap: 
+\begin{verbatim}
+            (S, 20)
+              / \ 
+             /   \
+            /     \ 
+        (C, 8)  (V, 11)
+\end{verbatim}
+And let's suppose we wanted to insert $(U, 15)$. 
+\begin{enumerate}[(1)]
+    \item We first insert this pair like how we would insert any pair by using the BST insertion algorithm. The treap would look something like: 
+    \begin{verbatim}
+            (S, 20)
+              / \ 
+             /   \
+            /     \ 
+        (C, 8)  (V, 11)
+                  / 
+                 /
+             (U, 15)
+    \end{verbatim}
+    
+    \item By inserting this pair, though, we have violated the heap properties. So, we're going to do a \textbf{right AVL rotation} on $U$ and $V$ so that $U$ becomes the new parent. So: 
+        \begin{verbatim}
+            (S, 20)
+              / \ 
+             /   \
+            /     \ 
+        (C, 8)  (U, 15)
+                    \  
+                     \
+                   (V, 11)
+    \end{verbatim}
+\end{enumerate}
+
+
+\subsubsection{Example 2: Slightly Harder Treap Insertion}
+Recall that the letter represents the key and the number represents the priority. Consider the following treap: 
+\begin{verbatim}
+                (L, 15)
+                  / \ 
+                 /   \ 
+                /     \ 
+               /       \ 
+            (E, 8)   (T, 10)
+                       / \ 
+                      /   \ 
+                     /     \ 
+                    /       \ 
+                  (Q, 5)   (Z, 7)
+\end{verbatim}
+And let's suppose we wanted to insert $(R, 20)$. 
+\begin{enumerate}[(1)]
+    \item We first insert this pair like how we would insert any pair by using the BST insertion algorithm. The treap would look something like: 
+    \begin{verbatim}
+                (L, 15)
+                  / \ 
+                 /   \ 
+                /     \ 
+               /       \ 
+            (E, 8)   (T, 10)
+                       / \ 
+                      /   \ 
+                     /     \ 
+                    /       \ 
+                  (Q, 5)   (Z, 7)
+                    \ 
+                     \ 
+                      \ 
+                    (R, 20)
+    \end{verbatim}
+    
+    \item By inserting this pair, though, we have violated the heap properties. So, we're going to do a \textbf{left AVL rotation} on $Q$ and $R$ so that $R$ becomes the parent and $Q$ the child.  
+    \begin{verbatim}
+                (L, 15)
+                  / \ 
+                 /   \ 
+                /     \ 
+               /       \ 
+            (E, 8)   (T, 10)
+                       / \ 
+                      /   \ 
+                     /     \ 
+                    /       \ 
+                (R, 20)    (Z, 7)
+                  /
+                 /
+              (Q, 5)
+    \end{verbatim}
+    The changes we made are: 
+    \begin{itemize}
+        \item All we did was made $R$ the parent. 
+        \item Because $Q < R$, $Q$ is now the left child of $R$. 
+    \end{itemize}
+    
+    \item However, in this position, we are still violating the heap properties. So, we need to do another a \textbf{right AVL rotation} on $R$ and $T$.
+    \begin{verbatim}
+                (L, 15)
+                  / \ 
+                 /   \ 
+                /     \ 
+               /       \ 
+            (E, 8)   (R, 20)
+                       / \ 
+                      /   \ 
+                     /     \ 
+                 (Q, 5)  (T, 10)
+                             \ 
+                              \ 
+                            (Z, 7)
+    \end{verbatim} 
+    The changes we made are: 
+    \begin{itemize}
+        \item $R$ is now the parent. 
+        \item $T$ is the right child. 
+        \item $R$ keeps the left child. 
+    \end{itemize}
+
+    \item Once again, we are still not done since we are still violating the heap properties. So, we need to yet another \textbf{left AVL rotation} on $R$ and $L$ so that $R$ becomes the parent and $L$ the child. 
+    \begin{verbatim}
+                (R, 20)
+                  / \ 
+                 /   \ 
+                /     \ 
+               /       \ 
+            (L, 15)   (T, 10)
+             / \         \ 
+            /   \         \ 
+           /     \         \ 
+        (E, 8)  (Q, 5)    (Z, 7)
+    \end{verbatim} 
+    The changes we made are: 
+    \begin{itemize}
+        \item $R$ is the parent. 
+        \item $L$ became the left child. 
+        \item $R$'s prior left child ($Q$) became the $L$'s new right child.
+        \item Everything else remains unchanged.  
+    \end{itemize}
+
+\end{enumerate}
+
+
+\subsection{Randomized Search Trees (RSTs)}
+A randomized search tree is simply a \textbf{treap} where:
+\begin{itemize}
+    \item We represent the elements as \emph{keys} (thus, maintaining BST properties). 
+    \item We \underline{randomly generate} priorities (maintaining heap properties). 
+\end{itemize}
+In other words, we don't assign a priority level to each element, but a random priority level is assigned to each element for us. 
+
+\bigskip 
+
+Because of the randomness of the priorities, we hope that (on average) we get a better balanced tree. 
+
+\subsubsection{Example 1: Sorted Numbers}
+Suppose we wanted to insert the following integers into a binary search tree in this order: 
+\begin{verbatim}
+    1, 2, 3, 4, 5, 6, 7
+\end{verbatim}
+If we put this into a regular binary search tree, we will get a perfectly unbalanced binary search tree, which is terrible if we care about performance. 
+
+\bigskip 
+
+Let's now use a \emph{randomized} search tree (a treap) and see if this changes anything. 
+\begin{itemize}
+    \item Suppose we wanted to insert \code{1}. Suppose the randomly generated priority is \code{36}. So: 
+    \begin{verbatim}
+        (1, 36)
+    \end{verbatim}
+
+    \item Now, suppose we wanted to insert \code{2}. Suppose the randomly generated priority is \code{79}. So: 
+    \begin{verbatim}
+            (1, 36)
+               \
+                \ 
+                 \ 
+                  \ 
+                 (2, 79)
+    \end{verbatim}
+    Afer doing a left AVT (so we can maintain heap properties): 
+    \begin{verbatim}
+            (2, 79)
+               /
+              /
+             /
+            /
+         (1, 36)  
+    \end{verbatim}
+
+    \item Now, suppose we wanted to insert \code{3}. Suppose the randomly generated priority is \code{40}. So: 
+    \begin{verbatim}
+             (2, 79)
+               / \ 
+              /   \ 
+             /     \ 
+            /       \ 
+         (1, 36)  (3, 40)
+    \end{verbatim}
+    Since the heap property is valid, we don't need to change anything. 
+
+    \item Now, suppose we wanted to insert \code{4}. Suppose the randonly generated priority is \code{93}. Then: 
+        \begin{verbatim}
+             (2, 79)
+               / \ 
+              /   \ 
+             /     \ 
+            /       \ 
+         (1, 36)  (3, 40)
+                     \ 
+                      \ 
+                       \ 
+                      (4, 93)
+    \end{verbatim}
+    Since the heap properties are violated, we now need to do a left AVL rotation on \code{4} and \code{3}. This gives us: 
+    \begin{verbatim}
+             (2, 79)
+               / \ 
+              /   \ 
+             /     \ 
+            /       \ 
+         (1, 36)  (4, 93)
+                    /
+                   /
+                  /
+                (3, 40)    
+    \end{verbatim}
+    Since the heap properties are violated, we (again) need to do another left AVL rotation on \code{4} and \code{2}. This gives us: 
+    \begin{verbatim}
+               (4, 93)
+                 /
+                /
+               /
+           (2, 79)
+             / \ 
+            /   \ 
+           /     \ 
+        (1, 36) (3, 40)   
+    \end{verbatim}
+
+    \item Now, suppose we wanted to insert \code{5}. Suppose the randonly generated priority is \code{59}. Then: 
+    \begin{verbatim}
+               (4, 93)
+                 / \ 
+                /   \ 
+               /     \ 
+           (2, 79)  (5, 59)
+             / \ 
+            /   \ 
+           /     \ 
+        (1, 36) (3, 40)   
+    \end{verbatim}
+    The heap properties are satisfied so no additional changes are needed. 
+
+    \item Now, suppose we wanted to insert \code{6}. Suppose the randonly generated priority is \code{2}. Then: 
+    \begin{verbatim}
+               (4, 93)
+                 / \ 
+                /   \ 
+               /     \ 
+           (2, 79)  (5, 59)
+             / \       \ 
+            /   \       \ 
+           /     \       \ 
+        (1, 36) (3, 40) (6, 2)
+    \end{verbatim}
+    The heap properties are satisfied so no additional changes are needed.
+
+    \item Now, suppose we wanted to insert \code{7}. Suppose the randomly generated priority is \code{50}. Then:  
+    \begin{verbatim}
+               (4, 93)
+                 / \ 
+                /   \ 
+               /     \ 
+           (2, 79)  (5, 59)
+             / \       \ 
+            /   \       \ 
+           /     \       \ 
+        (1, 36) (3, 40) (6, 2)
+                           \ 
+                            \
+                           (7, 50)
+    \end{verbatim}
+    Since the heap properties are not satisfied, we need to do a left AVL rotation on \code{7} and \code{6}. So: 
+    \begin{verbatim}
+               (4, 93)
+                 / \ 
+                /   \ 
+               /     \ 
+           (2, 79)  (5, 59)
+             / \       \ 
+            /   \       \ 
+           /     \       \ 
+        (1, 36) (3, 40) (7, 50)
+                         / 
+                        /  
+                     (6, 2)
+    \end{verbatim}
+    The heap properties are now satisifed, so no additional changes are needed. 
+\end{itemize}
+
+At this point, we should note that this \emph{randomized search tree} looks significantly more balanced when compared to a normal binary search tree (which would have been a perfectly unbalanced binary search tree, or a linked list). 
+
+\bigskip 
+
+Again, a randomized search tree still has $O(n)$ worst case time complexity because our key/priority pairs could have been $(1, 7)$, $(2, 6)$, $(3, 5)$, $(4, 4)$, $(5, 3)$, and so on. So, we could still get unlucky with the randomly generated numbers. 
 
 \end{document}
