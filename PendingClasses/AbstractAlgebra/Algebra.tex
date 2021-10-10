@@ -880,8 +880,96 @@ Recall the permutation example used:
 
 
 \newpage 
-\section{Homomorphisms and Isomorphisms}
-Here, we will briefly talk about homomorphisms and isomorphisms.
+\section{Homomorphisms}
+We will now discuss homomorphisms, which is one of the more important concepts to know.  
+
+\subsection{Motivating Examples}
+We begin the discussion of homomorphisms with two motivating examples.
+
+\subsubsection{Motivating Example 1: Modulo Addition}
+Let's suppose we are given two groups: 
+\begin{itemize}
+    \item \underline{Group 1:} $(\Z, +)$. 
+    \item \underline{Group 2:} $(\Z / \Z 2, +)$.
+\end{itemize}
+These two groups may look completely unrelated at first. However, we note the following behaviors between the two groups:
+
+\begin{center}
+    \begin{tabular}{c|c}
+        Operation in $(\Z, +)$ & Operation in $(\Z / \Z 2, +)$ \\ 
+        \hline 
+        Even + Even = Even. & $0 + 0 \equiv 0 \mod{2}$. \\ 
+        Even + Odd = Odd. & $0 + 1 \equiv 1 \mod{2}$. \\ 
+        Odd + Even = Odd. & $1 + 0 \equiv 1 \mod{2}$. \\ 
+        Odd + Odd = Even. & $1 + 1 \equiv 0 \mod{2}$.
+    \end{tabular}
+\end{center}
+
+Something to note here is that we can easily map:
+\begin{itemize}
+    \item \code{Even} (in first group) $\to$ \code{0} (in second group).
+    \item \code{Odd} (in first group) $\to$ \code{1} (in second group).
+\end{itemize}
+This mapping can be represented like so: 
+\[\phi: Z \to \Z / \Z 2\]
+Where: 
+\begin{itemize}
+    \item If $x \in \Z$ is even, map it to $0 \in \Z / \Z 2$. 
+    \item If $x \in \Z$ is odd, map it to $1 \in \Z / \Z 2$. 
+\end{itemize}
+Although these two groups appear to be completely unrelated, they are, in fact, related. 
+
+\subsubsection{Example 2: Generalized Tables}
+Suppose we have two groups $(G, *)$ and $(G', \cdot)$. They can be infinite, finite, commutative, non-commutative, etc. Suppose we have two elements $x, y \in G$. Then, we also know that $x * y \in G$ (closure). 
+
+\bigskip 
+
+Let's suppose we can represent the operations of the above group using a table, like so: 
+\begin{itemize}
+    \item \underline{Group 1:} $(G, *)$. Since we know that $x$, $y$, and $x * y \in G$, they'll appear in this table. 
+    \begin{center}
+        \begin{tabular}{|c|c c c|c|c|}
+            \hline 
+            $*$     & \dots & \dots & \dots & $y$     & \dots \\ 
+            \hline 
+            \vdots  &       &       &       &         &       \\ 
+            \vdots  &       &       &       &         &       \\ 
+            \hline 
+            $x$     &       &       &       & $x * y$ &       \\ 
+            \hline 
+            \vdots  &       &       &       &         &       \\ 
+            \vdots  &       &       &       &         &       \\ 
+            \hline 
+        \end{tabular}
+    \end{center}
+
+    \item \underline{Group 2:} $(G', \cdot)$. In order for these groups to have similar group behavior, $x$, $y$, and $x * y$ in $G$ must correspond to the elements in $G'$. This can be represented by a function: 
+    \[\phi: G \to G'\]
+    We want this function to send a specific part of the table for $G$ to a similar part of the table for $G'$. In this sense, we can say that the place where $x \in G$ is (in the above table) can be mapped to a similar place in the below table for $G'$; the same idea applies to $y \in G$ and $x * y \in G$.  
+    \begin{center}
+        \begin{tabular}{|c|c c c|c|c c|}
+            \hline 
+            $\cdot$   & \dots & \dots & \dots & $\phi(y)$      & \dots & \dots \\ 
+            \hline 
+            \vdots    &       &       &       &                &       &        \\ 
+            \vdots    &       &       &       &                &       &        \\ 
+            \hline 
+            $\phi(x)$ &       &       &       & $\phi(x * y)$  &       &        \\ 
+            \hline 
+            \vdots    &       &       &       &                &       &        \\ 
+            \vdots    &       &       &       &                &       &        \\ 
+            \vdots    &       &       &       &                &       &        \\ 
+            \hline 
+        \end{tabular}
+    \end{center}
+    Here, we got $\phi(x)$, $\phi(y)$, and $\phi(x * y)$ from the function mapping. The function mapping essentially mapped $x$, $y$, and $x * y$ to ``similar'' locations in the $G'$ table. 
+
+    \bigskip 
+
+    An observation to note here is that the square where $\phi(x * y)$ is at (in the table above) must also contain $\phi(x) \cdot \phi(y)$. 
+\end{itemize}
+
+
 
 
 \subsection{Definition of Homomorphism}
@@ -893,127 +981,112 @@ Here, we will briefly talk about homomorphisms and isomorphisms.
 \textbf{Remark:} Here, we say that: 
 \[\underbrace{\phi(a * b)}_{\text{Binary operation in } G} = \overbrace{\phi(a) \cdot \phi(b)}^{\text{Binary operation in } G'}\]
 
-\subsubsection{Pictorial Interpretation}
+\subsection{Pictorial Interpretation}
 A visualization of this process is shown below: 
 \begin{center}
     \includegraphics[scale=0.7]{assets/homo_diagram.png}
 \end{center}
 This is known as a \emph{commutative diagram}.
 
-\subsubsection{Examples of Homomorphisms}
+\subsection{Examples of Homomorphisms}
+We will now discuss some simple example of homomorphisms. 
 
-\begin{itemize}
-    \item \underline{Integers Modulo $n$:} Consider the following function: 
-    \[c_n: (\Z, +) \to (\Z / \Z n, +)\]
-    Defined by: 
-    \[c_{n}(a) = [a]_n\]
-    We can say that $c_n$ is a group homomorphism since for all $a, b \in \Z$: 
-    \[c_{n}(a + b) = [a + b]_n = [a]_n + [b]_n = c_{n}(a) + c_{n}(b)\]
+\subsubsection{Example: Integers}
+Consider the following function: 
+\[c_n: (\Z, +) \to (\Z / \Z n, +)\]
+Defined by: 
+\[c_{n}(a) = [a]_n\]
+We can say that $c_n$ is a group homomorphism since for all $a, b \in \Z$: 
+\[c_{n}(a + b) = [a + b]_n = [a]_n + [b]_n = c_{n}(a) + c_{n}(b)\]
 
-    \item \underline{Function Negation:} Consider the following function: 
-    \[f: (\Z, +) \to (\Z, +)\]
-    Defined by: 
-    \[f(x) = -x\]
-    Then, we say that $f$ is a group homomorphism since for all $x, y \in \Z$: 
-    \[f(x + y) = -(x + y) = (-x) + (-y) = f(x) + f(y)\]
+\subsubsection{Example: Function Negation}
+Consider the following function: 
+\[f: (\Z, +) \to (\Z, +)\]
+Defined by: 
+\[f(x) = -x\]
+Then, we say that $f$ is a group homomorphism since for all $x, y \in \Z$: 
+\[f(x + y) = -(x + y) = (-x) + (-y) = f(x) + f(y)\]
 
-    \item \underline{Exponential Map:} Consider the following function: 
-    \[\phi: (\R, +) \to (\R - \{0\}, \times)\]
-    Defined by: 
-    \[\phi(x) = e^x\]
-    Then, $\phi$ is a group homomorphism since for all $x, y \in \R$: 
-    \[\phi(x + y) = e^{x + y} = e^x \times e^y = \phi(x) \times \phi(y)\]
-    
-    \item \underline{Generalize Exponential Map:} Suppose $(G, *)$ is a group and $g \in G$. Then, we can consider the following function: 
-    \[f: (\Z, +) \to (G, *)\]
-    Defined by: 
-    \[f(n) = g^n\]
-    We know that this is a group homomorphism because for every $m, n \in Z$:
-    \[f(m + n) = g^{m + n} = g^m * g^n = f(m) * f(n)\]
-    
-    \item \underline{Logarithmic Map:} Consider the following logarithmic function: 
-    \[\ln: (\R_{> 0}, \times) \to (\R, +)\]
-    We know that this is a group homomorphism since for all $x, y \in \R_{ > 0}$: 
-    \[\ln(x \times y) = \ln(x) + \ln(y)\]
+\subsubsection{Example: Exponential Map}
+Consider the following function: 
+\[\phi: (\R, +) \to (\R - \{0\}, \times)\]
+Defined by: 
+\[\phi(x) = e^x\]
+Then, $\phi$ is a group homomorphism since for all $x, y \in \R$: 
+\[\phi(x + y) = e^{x + y} = e^x \times e^y = \phi(x) \times \phi(y)\]
 
-    \item \underline{Complex Numbers:} Consider the following function: 
-    \[N: (\C - \{0\}, \times) \to (\R_{> 0}, \times)\]
-    Defined by: 
-    \[N(z) = |z|\]
-    This is a group homomorphism because for every $z \in \C - \{0\}$ and $|z| \in \R_{> 0}$:
-    \[|z_1 \times z_2| = |z_1| \times |z_2|\]
 
-    \item \underline{Matrices:} Define $(GL_{n}(\R), \cdot)$ be the set of invertible $n \times n$ real matrices under matrix multiplication.\footnote{From linear algebra, we know that matrix multiplication is associative, the product of two invertible $n \times n$ is invertible, and for every $a \in GL_{n}(\R)$, $a \cdot I_n = I_n \cdot a = a$ where $I_n$ is the identity matrix.} Consider the function: 
-    \[\theta: GL_{n}(\R) \to GL_{n}(\R)\]
-    Defined by\footnote{If $x$ is a matrix, then $x^T$ is the transpose of said matrix.}: 
-    \[\theta(x) = (x^T)^{-1}\]
-    We know that $\theta$ is a group homomorphism because: 
-    \[\theta(x \cdot y) = ((x \cdot y)^T)^{-1} = (y^T \cdot x^T)^{-1} = (x^T)^{-1} \cdot (y^T)^{-1} = \theta(x) \cdot \theta(y)\]
-\end{itemize}
+\subsubsection{Example: Generalized Exponential Map}
+Suppose $(G, *)$ is a group and $g \in G$. Then, we can consider the following function: 
+\[f: (\Z, +) \to (G, *)\]
+Defined by: 
+\[f(n) = g^n\]
+We know that this is a group homomorphism because for every $m, n \in Z$:
+\[f(m + n) = g^{m + n} = g^m * g^n = f(m) * f(n)\]
 
-\subsection{Definition of Isomorphism}
-\begin{definition}{Isomorphism}{}
-    An \textbf{isomorphism} of two groups $(G, *)$ and $(G', \cdot)$ is a \emph{homomorphism}: 
-    \[\phi: G \to G'\]
-    Which is \underline{bijective} (on sets).  
-\end{definition}
+\subsubsection{Example: Logarithmic Map}
+Consider the following logarithmic function: 
+\[\ln: (\R_{> 0}, \times) \to (\R, +)\]
+We know that this is a group homomorphism since for all $x, y \in \R_{ > 0}$: 
+\[\ln(x \times y) = \ln(x) + \ln(y)\]
 
-\subsubsection{Inverse of Isomorphism}
-Let $\phi^{-1}: G' \to G$ be the inverse function. Then, $\phi^{-1}$ is also a homomorphism. In other words: 
-\[\forall a, b \in G', \phi^{-1}(a \cdot b) = \phi^{-1}(a) * \phi^{-1}(b)\]
-Let $x = \phi^{-1}(a)$ and $y = \phi^{-1}(b)$ so that: 
-\[\phi(x * y) = \phi(x) \cdot \phi(y)\]
-Which follows that: 
-\[x * y = \phi^{-1}(a) * \phi^{-1}(b) = \phi^{-1}(\phi(x) \cdot \phi(y)) = \phi^{-1}(a \cdot b)\]
+\subsubsection{Example: Complex Numbers}
+Consider the following function: 
+\[N: (\C - \{0\}, \times) \to (\R_{> 0}, \times)\]
+Defined by: 
+\[N(z) = |z|\]
+This is a group homomorphism because for every $z \in \C - \{0\}$ and $|z| \in \R_{> 0}$:
+\[|z_1 \times z_2| = |z_1| \times |z_2|\]
 
-\subsubsection{Pictorial Interpretation}
-A pictorial interpretation can be seen as follows: 
-\begin{center}
-    \includegraphics[scale=0.6]{assets/iso_diagram.png}
-\end{center}
+\subsubsection{Example: Matrices}
+Define $(GL_{n}(\R), \cdot)$ be the set of invertible $n \times n$ real matrices under matrix multiplication.\footnote{From linear algebra, we know that matrix multiplication is associative, the product of two invertible $n \times n$ is invertible, and for every $a \in GL_{n}(\R)$, $a \cdot I_n = I_n \cdot a = a$ where $I_n$ is the identity matrix.} Consider the function: 
+\[\theta: GL_{n}(\R) \to GL_{n}(\R)\]
+Defined by\footnote{If $x$ is a matrix, then $x^T$ is the transpose of said matrix.}: 
+\[\theta(x) = (x^T)^{-1}\]
+We know that $\theta$ is a group homomorphism because: 
+\[\theta(x \cdot y) = ((x \cdot y)^T)^{-1} = (y^T \cdot x^T)^{-1} = (x^T)^{-1} \cdot (y^T)^{-1} = \theta(x) \cdot \theta(y)\]
 
-\subsubsection{Properties of Isomorphisms}
-We say that $G$ and $G'$ are isomorphism if there exists some isomorphism between them. Any \emph{purely structural} property of a group is isomorphism-stable in the sense that if $G$ and $G'$ are isomorphic and $G$ has a property, then $G'$ does as well. 
+\subsection{Properties of Homomorphisms}
+\begin{mdframed}
+    \begin{proposition}
+        Let $\phi: G \to G'$ be a group homomorphism. 
+        \begin{enumerate}[(a)]
+            \item $\phi$ maps the identity to the identity: $\phi(e_G) = e_{G'}$. 
+            \item $\phi$ maps inverses to inverses; in other words, for every $a \in G$, $\phi(a^{-1}) = \phi(a)^{-1}$ where $a^{-1}$ is the inverse of $a$ in $G$ and $\phi(a)^{-1}$ is the inverse of $\phi(a)$ in $G'$. This can also be written as: 
+            \[e_G = \phi(a) \phi(a^{-1})\]
+            \item If $a_1, \dots, a_k$ are elements of $G$, then $\phi(a_1, \dots, a_k) = \phi(a_1) \dots \phi(a_k)$. 
+        \end{enumerate}
+    \end{proposition}
+\end{mdframed}
 
-\bigskip 
+The proof is as follows: 
+\begin{mdframed}
+    \begin{proof}
+        We need to show that all three properties hold. 
+        \begin{enumerate}[(a)]
+            \item We note that since $e_G$ is the identity element of $G$, it follows that $e_G * e_G = e_G$. Because $\phi$ is a group homomorphism, it follows that: 
+            \[\boxed{\phi(e_G * e_G)} = \phi(e_G) * \phi(e_G)\]
+            Since $e_G * e_G = e_G$, it follows that $\phi(e_G * e_G) = \phi(e_G)$, so: 
+            \[\phi(e_G) * \phi(e_G) = \boxed{\phi(e_G)}\]
+            Thus: 
+            \[\phi(e_G) * \phi(e_G) = \phi(e_G) * e_{G'}\]
+            Canceling the first element in each side, we now have: 
+            \[\phi(e_G) = e_{G'}\]
 
-Some examples of structural properties include: 
-\begin{itemize}
-    \item Being finite. 
-    \item Having order $n$ for any $n$. 
-    \item Being cyclic. 
-    \item Being abelian/commutative. 
-    \item Number of leements of a given order. 
-\end{itemize}
+            \item For every $a \in G$, we know that $a * a^{-1} = e_G$. Applying $\phi$ to both sides, we have that: 
+            \[\phi(a * a^{-1}) = \phi(e_G)\]
+            By the first part and the fact that $\phi$ is a group homomorphism, we deduce that: 
+            \[\phi(a) * \phi(a^{-1}) = e_{G'}\]
+            Multiplying both sides by the inverse $\phi(a)^{-1}$ of $\phi(a)$ in $G'$, we obtain: 
+            \[\phi(a)^{-1} * \phi(a) * \phi(a^{-1}) = \phi(a)^{-1} * e_H\]
+            And so:
+            \[\phi(a^{-1}) = \phi(a)^{-1}\]
 
-\textbf{Remarks:}
-\begin{itemize}
-    \item $\Z / \Z 6$ is not isomorphic to $S_3$ because $\Z / \Z 6$ is commutative but $S_3$ is not. 
-    \item Any two cyclic groups of the same order are isomorphic. 
-\end{itemize} 
+            \item We can simply make use of induction from the definition. \qedhere
+        \end{enumerate}
+    \end{proof}
+\end{mdframed}
 
-\subsubsection{Examples of Non-Cyclic Isomorphisms}
-The following examples are isomorphic to each other: 
-\begin{itemize}
-    \item The Klein 4-Group: 
-    \begin{center}
-        \begin{tabular}{c|c|c|c|c}
-                & 1 & $a$ & $b$ & $c$ \\ 
-            \hline 
-            1   & 1 & $a$ & $b$ & $c$ \\ 
-            $a$ & $a$ & 1 & $c$ & $b$ \\ 
-            $b$ & $b$ & $c$ & 1 & $a$ \\ 
-            $c$ & $c$ & $b$ & $a$ & 1
-        \end{tabular}
-    \end{center}
-
-    \item $H \subseteq S_4$: 
-    \[\left\{1, (12)(34), (13)(24), (14)(23)\right\}\]
-
-    \item $(\Z / \Z 8 - \{0\}, \times)$
-    \[\{1 \Mod{8}, 3 \Mod{8}, 5 \Mod{8}, 7 \Mod{8}\}\]
-\end{itemize}
-Even though these examples are completely different, they are isomorphic (they are very similar in \emph{structure}). 
 
 \subsection{Image}
 \begin{definition}{Image}{}
@@ -1038,18 +1111,152 @@ For example, we have that $\phi: \det GL_n (\R) \to (\R - \{0\}, \times)$, which
 Where $SL_n$ is the special linear group of $n \times n$ matrices. 
 
 
-\subsection{Properties of Homomorphisms}
-\begin{mdframed}
-    \begin{proposition}
-        Let $\phi: G \to G'$ be a group homomorphism. 
-        \begin{enumerate}[(a)]
-            \item $\phi$ maps the identity to the identity: $\phi(e_G) \to e_{G'}$. 
-            \item $\phi$ maps inverses to inverses; in other words, for every $a \in G$, $\phi(a^{-1}) = \phi(a)^{-1}$ where $a^{-1}$ is the inverse of $a$ in $G$ and $\phi(a)^{-1}$ is the inverse of $\phi(a)$ in $G'$. This can also be written as: 
-            \[e_G = \phi(a) \phi(a^{-1})\]
-            \item If $a_1, \dots, a_k$ are elements of $G$, then $\phi(a_1, \dots, a_k) = \phi(a_1) \dots \phi(a_k)$. 
-        \end{enumerate}
-    \end{proposition}
-\end{mdframed}
+
+
+
+
+
+
+
+
+
+\newpage 
+\section{Isomorphisms}
+We now discuss isomorphisms, a special type of homomorphisms.
+
+\subsection{Motivating Example}
+Before we talk about isomorphisms, let's first talk about two motivating examples. 
+
+\subsubsection{Motivating Example 1: Tables}
+Let's suppose we are given two groups.
+\begin{itemize}
+    \item \underline{Group 1:} $(\Z / \Z 4, +)$. 
+    \item \underline{Group 2:} $(\{1, -1, i, -i\}, \times)$
+\end{itemize}
+At first, these groups don't look at all related to each other. They even have completely different operations. However, they are structurally similar. 
+
+\bigskip 
+
+Consider the table that represents group 1:
+\begin{center}
+    \begin{tabular}{c|c c c c}
+        $+$     & 0 & 1 & 2 & 3 \\ 
+        \hline 
+        0       & 0 & 1 & 2 & 3 \\
+        1       & 1 & 2 & 3 & 0 \\ 
+        2       & 2 & 3 & 0 & 1 \\ 
+        3       & 3 & 0 & 1 & 2
+    \end{tabular}
+\end{center}
+Now, consider the table that represents group 2: 
+\begin{center}
+    \begin{tabular}{c|c c c c}
+        $\times$ & 1 & $i$ & $-1$ & $-i$ \\ 
+        \hline 
+        1        & 1 & $i$ & $-1$ & $-i$ \\ 
+        $i$      & $i$ & $-1$ & $-i$ & 1 \\ 
+        $-1$     & $-1$ & $-i$ & 1 & $i$ \\ 
+        $-i$     & $-i$ & 1 & $i$ & $-1$
+    \end{tabular}
+\end{center}
+One thing that should be clear (after some observation) is how the elements in both tables correspond with each other. Consider the same tables from above, now highlighted: 
+\begin{center}
+    \includegraphics[scale=0.5]{assets/homo_ex.png}
+\end{center}
+Both tables exhibit the same patterns. They're essentially identical groups; they just use different elements and different operations. For instance, in both tables, if we combined a green element with a blue element, we get a purple element. If we combined a blue element with a blue element, we get a red element. In other words, any statement about one table can be said for the other. 
+
+\bigskip 
+
+We say that these two groups are \emph{isomorphic} (equal form). 
+
+\subsubsection{Motivating Example 2: Addition Table}
+Consider the following addition table of $(\Z / \Z_3, +)$.
+\begin{center}
+    \begin{tabular}{c|c c c}
+        $+$     & $[0]_3$ & $[1]_3$ & $[2]_3$ \\ 
+        \hline 
+        $[0]_3$ & $[0]_3$ & $[1]_3$ & $[2]_3$ \\
+        $[1]_3$ & $[1]_3$ & $[2]_3$ & $[0]_3$ \\
+        $[2]_3$ & $[2]_3$ & $[0]_3$ & $[1]_3$ 
+    \end{tabular}
+\end{center}
+Now, consider the Roman numbers: 
+\begin{center}
+    \begin{tabular}{c|c c c}
+        $+$     & 0 & I & II \\ 
+        \hline 
+        0       & 0 & I & II \\ 
+        I       & I & II & 0 \\ 
+        II      & II & 0 & 1
+    \end{tabular}
+\end{center}
+It's clear that both of these are the same groups, only written with different symbols. We only need a \emph{translator} to tell us which one is which. What is a translator (in the context of a group)? It should be a \emph{bijection} which preserves the operation table. Notice that preserving the operation table simply means that it should be a group homomorphism. This brings us to the definition of group isomorphism. 
+
+
+\subsection{Definition of Isomorphism}
+\begin{definition}{Isomorphism}{}
+    An \textbf{isomorphism} of two groups $(G, *)$ and $(G', \cdot)$ is a \emph{homomorphism}: 
+    \[\phi: G \to G'\]
+    Which is \underline{bijective} (on sets). If there is a isomorphism $\phi: G \to G'$, we say that $G$ is isomorphic to $G'$. 
+\end{definition}
+
+\subsection{Inverse of Isomorphism}
+Let $\phi^{-1}: G' \to G$ be the inverse function. Then, $\phi^{-1}$ is also a homomorphism. In other words: 
+\[\forall a, b \in G', \phi^{-1}(a \cdot b) = \phi^{-1}(a) * \phi^{-1}(b)\]
+Let $x = \phi^{-1}(a)$ and $y = \phi^{-1}(b)$ so that: 
+\[\phi(x * y) = \phi(x) \cdot \phi(y)\]
+Which follows that: 
+\[x * y = \phi^{-1}(a) * \phi^{-1}(b) = \phi^{-1}(\phi(x) \cdot \phi(y)) = \phi^{-1}(a \cdot b)\]
+
+\subsection{Pictorial Interpretation}
+A pictorial interpretation can be seen as follows: 
+\begin{center}
+    \includegraphics[scale=0.6]{assets/iso_diagram.png}
+\end{center}
+
+\subsection{Properties of Isomorphisms}
+We say that $G$ and $G'$ are isomorphism if there exists some isomorphism between them. Any \emph{purely structural} property of a group is isomorphism-stable in the sense that if $G$ and $G'$ are isomorphic and $G$ has a property, then $G'$ does as well. 
+
+\bigskip 
+
+Some examples of structural properties include: 
+\begin{itemize}
+    \item Being finite. 
+    \item Having order $n$ for any $n$. 
+    \item Being cyclic. 
+    \item Being abelian/commutative. 
+    \item Number of leements of a given order. 
+\end{itemize}
+
+\textbf{Remarks:}
+\begin{itemize}
+    \item $\Z / \Z 6$ is not isomorphic to $S_3$ because $\Z / \Z 6$ is commutative but $S_3$ is not. 
+    \item Any two cyclic groups of the same order are isomorphic. 
+\end{itemize} 
+
+\subsection{Examples of Non-Cyclic Isomorphisms}
+The following examples are isomorphic to each other: 
+\begin{itemize}
+    \item The Klein 4-Group: 
+    \begin{center}
+        \begin{tabular}{c|c|c|c|c}
+                & 1 & $a$ & $b$ & $c$ \\ 
+            \hline 
+            1   & 1 & $a$ & $b$ & $c$ \\ 
+            $a$ & $a$ & 1 & $c$ & $b$ \\ 
+            $b$ & $b$ & $c$ & 1 & $a$ \\ 
+            $c$ & $c$ & $b$ & $a$ & 1
+        \end{tabular}
+    \end{center}
+
+    \item $H \subseteq S_4$: 
+    \[\left\{1, (12)(34), (13)(24), (14)(23)\right\}\]
+
+    \item $(\Z / \Z 8 - \{0\}, \times)$
+    \[\{1 \Mod{8}, 3 \Mod{8}, 5 \Mod{8}, 7 \Mod{8}\}\]
+\end{itemize}
+Even though these examples are completely different, they are isomorphic (they are very similar in \emph{structure}). 
+
 
 
 \end{document}
