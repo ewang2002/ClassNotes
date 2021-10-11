@@ -3310,7 +3310,7 @@ The insertion algorithm for an AVL tree is slightly more complicated than a norm
 \end{itemize}
 
 \subsubsection{Example 1: Insertion}
-Consider the following AVL tree, where each entry is formatted like $(\text{Element}, \text{Balance Factor})$: 
+Consider the following AVL tree, where each entry is formatted like (Element, Balance Factor): 
 \begin{verbatim}
           (5, 1)
             /\ 
@@ -3359,11 +3359,157 @@ If we wanted to insert \code{20}, we would do the following:
         \item Node \code{5} is the node that is out of balance. 
         \item Node \code{10} is the \emph{heavier} child; it's the child whose subtree is contributing to the invalid balance factor that \code{5} has. 
     \end{itemize}
-    We perform a left AVL rotation because \code{5} is the bad node and \code{10} is the heavier node; so, we can drop the heavier node in as to fix the priority system. % TODO needs to be more clear? 
+    We perform a left AVL rotation because \code{5} is the bad node and \code{10} is the heavier node; it is also the right child. So, by rotating the two nodes counterclockwise, we can drop node \code{5} and bump node \code{10}, balancing the tree. 
 
     \bigskip
 
-    % TODO complete (5:15)
+    Doing the left AVL rotation yields the tree: 
+    \begin{verbatim}
+             (10, 0)
+               / \ 
+              /   \ 
+             /     \ 
+          (5, 0)  (15, 1)
+           / \       \ 
+          /   \       \ 
+         /     \       \ 
+      (1, 0)  (7, 0)   (20, 0)
+    \end{verbatim}
+    We got these values because: 
+    \begin{itemize}
+        \item Nodes \code{20}, \code{7}, and \code{1} are leaf nodes. 
+        \item Node \code{5} has left height \code{1} and right height \code{1}, so it has an overall height of \code{0}. 
+        \item Node \code{15} has left height \code{0} and right height \code{1}, so it has an overall height of \code{1}. 
+        \item Node \code{10} has left height \code{2} and right height \code{2}, so it has an overall height of \code{0}. 
+    \end{itemize}
+    That being said, we now have an AVL tree. 
 \end{enumerate}
+
+\subsubsection{Example 2: Insertion}
+Consider the following AVL tree, where each entry is formatted like (Element, Balance Factor): 
+\begin{verbatim}
+          (3, -1)
+            /
+           /
+          /
+       (1, 0)
+\end{verbatim}
+If we wanted to insert \code{2}, we would do the following: 
+\begin{enumerate}[(1)]
+    \item Insert the element like you would with a normal BST. 
+    \begin{verbatim}
+          (3, ?)
+            /
+           /
+          /
+       (1, ?)
+          \ 
+           \ 
+          (2, ?)
+    \end{verbatim}
+
+    \item We now need to update the balance factors for each node. 
+    \begin{verbatim}
+          (3, -2)
+            /
+           /
+          /
+       (1, 1)
+          \ 
+           \ 
+          (2, 0)
+    \end{verbatim}
+
+    \item Since \code{3} has a load factor of \code{-2}, we need to fix this. To do so, we perform a right AVL rotation on nodes \code{1} and \code{3}.
+    \begin{verbatim}
+            (1, 2)
+               \ 
+                \ 
+                 \ 
+               (3, -1)
+                 /
+                /
+              (2, 0)      
+    \end{verbatim}
+    However, this is also invalid. To fix this, we perform a left AVL rotation on nodes \code{1} and \code{3}: 
+    \begin{verbatim}
+          (3, -2)
+            /
+           /
+          /
+       (1, 1)
+          \ 
+           \ 
+          (2, 0)
+    \end{verbatim}
+    Notice how we basically went back and forth here. This is a problem. What happened? 
+    \begin{itemize}
+        \item Well, we need to keep track of all three nodes, not just nodes \code{1} and \code{3}.
+        \item In the prior examples, the out-of-balance node, its heavy child, and the grandchild formed a \emph{straight} line. That is: 
+        \begin{verbatim}
+                    []
+                    /
+                   /
+                  []
+                  /
+                 /
+                []
+        \end{verbatim}
+        So, we could just do a right AVL rotation for this structure. Likewise, if we had the straight lines (in the opposite direction), we could just do a left AVL rotation. 
+        
+        \item In this example, though, we have the out-of-balance node, its child, but the other child being in a different direction; that is, it formed a \emph{kink} shape like so: 
+        \begin{verbatim}
+                    []
+                     \ 
+                      \ 
+                      []
+                      /
+                     /
+                    []
+        \end{verbatim}
+    \end{itemize}
+    So, what we need to do is convert this kink shape/structure into a straight line. So, we will have to do a double rotation. We will begin by doing a left AVL rotation with nodes \code{1} and \code{2} (the child and the grandchild): 
+    \begin{verbatim}
+          (3, -2)                       (3, -2)
+           /                               /
+          /                               /
+        (1, 1)          ------->       (2, -1)
+          \                              /
+           \                            /
+          (2, 0)                      (1, 0)
+    \end{verbatim}
+    Now, we can do a right AVL rotation with nodes \code{2} and \code{3}:
+    \begin{verbatim}
+            (2, 0)
+              /\ 
+             /  \ 
+            /    \
+          (1, 0) (3, 0)
+    \end{verbatim}
+    Which is an AVL tree. This behavior can be replicated even if the tree is flipped across. 
+\end{enumerate}
+
+\subsubsection{AVL Tree Insertion Summary}
+\begin{itemize}
+    \item If the nodes are in a straight line, like so: 
+    \begin{verbatim}
+            a           a       Out-of-balance node. 
+           /             \ 
+          b               b     Heavy child node. 
+         /                 \ 
+        c                   c   Heavy grandchild node. 
+    \end{verbatim}
+    Then, we can do one AVL rotation on $a$ and $b$.
+    \item If the nodes are in a kink shape, like so: 
+    \begin{verbatim}
+            a           a       Out-of-balance node. 
+           /             \
+          b               b     Heavy child node. 
+           \             /
+            c           c       Heavy grandchild node.
+    \end{verbatim}
+    Then, we need to do an AVL rotation on $b$ and $c$ first, and then $a$ and $c$. In other words, we rotate the child and grandchild nodes first, and then the parent and its new child node next. 
+\end{itemize}
+
 
 \end{document}
