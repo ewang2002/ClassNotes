@@ -3178,4 +3178,192 @@ At this point, we should note that this \emph{randomized search tree} looks sign
 
 Again, a randomized search tree still has $O(n)$ worst case time complexity because our key/priority pairs could have been $(1, 7)$, $(2, 6)$, $(3, 5)$, $(4, 4)$, $(5, 3)$, and so on. So, we could still get unlucky with the randomly generated numbers. 
 
+
+
+
+
+
+\newpage
+\section{AVL Trees}
+We know that a binary search tree has an average time complexity of $O(\log n)$ and worst time complexity of $O(n)$. Of course, even the average time complexity that we found was derived from some unrealistic assumptions. To mitigate this, we introduced the randomized search tree, which is an extension of a binary search tree that makes the assumptions more reasonable. That being said, the worst case time complexity of a randomized search tree is $O(n)$. What if we wanted the worst time complexity of $O(\log n)$? 
+
+\subsection{Introduction to AVL Trees}
+AVL trees are another extension of binary search trees. The only difference, of course, is that it achieves a $O(\log n)$ worst-case for tbe find, insert, and remove operations.
+
+\bigskip 
+
+Before we talk about an AVL tree, we need to talk about some concepts. 
+\begin{itemize}
+    \item \underline{Balance Factor (BH):} If $R$ is the \underline{height} of the right subtree and $L$ is the \underline{height} of the left subtree, then: 
+    \[\text{BH} = R - L\]
+    \textbf{Recall:} The \textbf{height} of a \textbf{node} is the \underline{longest} distance (number of edges) from said node to a leaf. 
+
+    \item \underline{AVL Tree:} A binary search tree in which every node has a balance factor of $-1$, $0$, or $1$. 
+\end{itemize}
+
+\subsubsection{Example 1: AVL Tree}
+Consider the following binary search tree: 
+\begin{verbatim}
+            E
+           / \ 
+          /   \ 
+         /     \  
+        /       \ 
+       /         \
+      B           H
+     / \         / \
+    A   C       G   I 
+         \     /
+          D   F
+\end{verbatim}
+We note that: 
+\begin{itemize}
+    \item Nodes $A$, $D$, $F$, and $I$ have a balance factor of $0$ because their left and right height is 0 (they have no subtrees). 
+    \item Node $C$ has a height of 0 on the left (no left child) and a height of 1 on the right (right subtree with 1 node: $D$). So:
+    \[BH_{C} = 1 - 0 = 1\]
+    \item Node $G$ has a height of 1 on the left (left subtree with 1 node: $F$) and a height of 0 on the right (no right child), so: 
+    \[BH_{G} = 0 - 1 = -1\]
+    \item Node $H$ has a height of 2 on the left (left subtree with 2 nodes: $G$ and $F$) and a height of 1 on the right (right subtree with 1 node: $I$). So: 
+    \[BH_{H} = 1 - 2 = -1\]
+    \item Node $B$ has a height of 1 on the left (left subtree with 1 node: $A$) and a height of 2 on the right (right subtree with 2 nodes: $C$ and $D$). So: 
+    \[BH_{B} = 2 - 1 = 1\]
+    \item Node $E$ has a height of 3 on the left (left subtree with height 3: $B$, $C$, $D$) and a height of 3 on the right (right subtree with height 3: $H$, $G$, $F$). So: 
+    \[BH_{E} = 3 - 3 = 0\]
+    Again, remember that the height is the longest distance from one node to a leaf. So, for the left subtree of $E$, this would be 3 since $B$, $C$, and $D$ form the longest distance from $E$ to a leaf. 
+\end{itemize}
+Because every node has a balance factor of $-1$, $0$, or $1$, this is an AVL tree. 
+
+
+\subsubsection{Example 2: Non-AVL Tree}
+Consider the following binary search tree: 
+\begin{verbatim}
+            8 
+           / \ 
+          /   \ 
+         /     \
+        /       \ 
+       3        10
+      / \         \ 
+     1   6         14
+        / \        /
+       4   7      13
+\end{verbatim}
+We note that: 
+\begin{itemize}
+    \item Nodes \code{1}, \code{4}, \code{7}, and \code{13} all have balance factor of 0 since they don't have any subtree. 
+    \item Node \code{14} has a left height of 1 and right height of 0, so its height is -1. 
+    \item Node \code{6} has a left and right height of 1, so its height is 0.
+    \item Node \code{3} has a left height of 1 and right height of 2, so its height of 1. 
+    \item Node \code{10} has a left height of 0 and a right height of 2, so its height is 2. 
+\end{itemize}
+Here, we note that Node \code{10} violates the property of an AVL tree (its balance factor is not -1, 0, or 1). So, this tree is \textbf{not} an AVL tree. 
+
+
+\subsection{Proof of AVL Tree Worst-Case Time Complexity}
+We said that worst-case time complexity to find an element in an AVL tree is $O(\log n)$. We need to prove that this is actually the case. 
+
+\begin{mdframed}
+    \begin{proof}
+        Denote $N_h$ to be the minimum number of nodes that can form an AVL tree with height $h$. Consider, for instance, the following tree: 
+    \begin{verbatim}
+                [ ]         Root Node 
+                / \          
+               /   \ 
+              /     \ 
+             ( )    ( )     Left / Right Subtree 
+                              Each subtree can be empty, have one node, 
+                              or many nodes. 
+    \end{verbatim}
+    If this AVL tree has height $h$, we want to minimize the number of nodes that can form this tree. This tree would have, in its entirety, $N_h$ nodes. Suppose we picked an arbitrary subtree, say, the right subtree on the right. Then, this subtree would have a height of $h - 1$ and would thus have $N_{h - 1}$ nodes. By the properties of an AVL tree, we know that the root node can have a balance factor of -1, 0, or 1. The left subtree (in its worst case scenario) would have a height of $h - 2$; this is because the left height plus the root node would give us a height of $h - 2 + 1 = h - 1$, and the right height plus the root node would give us a height of $h - 1 + 1 = h$. So, the balance factor of the root node would be: 
+    \[h - (h - 1) = h - h + 1 = 1\]
+    Since the left subtree has a height of $h - 2$, it follows that the left subtree has $N_{h - 2}$ nodes. 
+
+    \bigskip 
+
+    We can define a recurrence relation representing the total number of nodes in this tree like so: 
+    \[\overbrace{N_h}^{\substack{\text{Total number of} \\ \text{nodes}}} = \underbrace{N_{h - 1}}_{\substack{\text{Number of nodes} \\ \text{in right subtree}}} + \overbrace{N_{h - 2}}^{\substack{\text{Number of nodes} \\ \text{in left subtree}}} + \underbrace{1}_{\text{Root node}}\]
+    For this proof only, let's assume that the height of a node is determined by the number of nodes as opposed to the number of edges. For instance, a tree with one node would have a height of 1 and a tree with no nodes would have a height of 0. Then, we know that: 
+    \[N_1 = 1\]
+    \[N_2 = N_1 + N_0 + 1 = 1 + 1 = 2\]
+    Then, we can do: 
+    \[N_{h - 1} = N_{h - 2} + N_{h - 3} + 1\]
+    \[N_h = (N_{h - 2} + N_{h - 3} + 1) + N_{h - 2} + 1 = 2N_{h - 2} + N_{h - 3} + 2\]
+    We know that: 
+    \[N_h > 2N_{h - 2}\]
+    This is because when we had a tree with $N_h$ nodes, one of the subtrees had $N_{h - 1}$ nodes and the other had $N_{h - 2}$ nodes. By definition, $H_{n - 2}$ is smaller than $H_{n - 1}$. Since, $H_n = N_{h - 2} + N_{h - 1} + 1$, by definition $H_n$ is greater than $2N_{h - 2}$. Therefore: 
+    \[N_h > 2^{\frac{h}{2}} \implies \log N_h > \log 2^{\frac{h}{2}} \implies 2\log N_h > h\]
+    And, therefore: 
+    \[\boxed{h \text{ is } O(\log N_h)}\]
+    \end{proof}
+\end{mdframed}
+
+\subsection{AVL Tree Insertion}
+We now discuss AVL tree insertions. We won't discuss the AVL tree \code{find} algorithm simply because the \code{find} algorithm is equivalent to that of a normal binary search tree's \code{find} algorithm. 
+
+\bigskip 
+
+The insertion algorithm for an AVL tree is slightly more complicated than a normal binary search tree. Specifically, we need to do the following: 
+\begin{itemize}
+    \item Insert the element like you would with a regular BST insertion. 
+    \item After this is done, update balance factors across the tree. 
+    \item If any balance factors were broken as a result of this insertion, fix broken balance factors using AVL rotations. 
+\end{itemize}
+
+\subsubsection{Example 1: Insertion}
+Consider the following AVL tree, where each entry is formatted like $(\text{Element}, \text{Balance Factor})$: 
+\begin{verbatim}
+          (5, 1)
+            /\ 
+           /  \ 
+          /    \ 
+      (1, 0) (10, 0) 
+               /\ 
+              /  \
+          (7, 0) (15, 0)
+\end{verbatim}
+If we wanted to insert \code{20}, we would do the following: 
+\begin{enumerate}[(1)]
+    \item Insert the element like you would with a normal BST. 
+    \begin{verbatim}
+          (5, ?)
+            /\ 
+           /  \ 
+          /    \ 
+      (1, ?) (10, ?) 
+               /\ 
+              /  \
+          (7, ?) (15, ?)
+                   \ 
+                    \ 
+                   (20, ?)
+    \end{verbatim}
+
+    \item We now need to update the balance factors for each node. 
+    \begin{verbatim}
+          (5, 2)
+            /\ 
+           /  \ 
+          /    \ 
+      (1, 0) (10, 1) 
+               /\ 
+              /  \
+          (7, 0) (15, 1)
+                   \ 
+                    \ 
+                   (20, 0)
+    \end{verbatim}
+    \textbf{Remark:} We only need to update the balance factor of all the nodes \emph{along the path} from the new node to the root node. 
+
+    \item Notice how node \code{5} has a balance factor of \code{2}. This is a problem; we now need to fix it using AVL rotations. So, we'll perform a \textbf{left AVL rotation} on nodes \code{5} and \code{10}. How did we figure this out? 
+    \begin{itemize}
+        \item Node \code{5} is the node that is out of balance. 
+        \item Node \code{10} is the \emph{heavier} child; it's the child whose subtree is contributing to the invalid balance factor that \code{5} has. 
+    \end{itemize}
+    We perform a left AVL rotation because \code{5} is the bad node and \code{10} is the heavier node; so, we can drop the heavier node in as to fix the priority system. % TODO needs to be more clear? 
+
+    \bigskip
+
+    % TODO complete (5:15)
+\end{enumerate}
+
 \end{document}
