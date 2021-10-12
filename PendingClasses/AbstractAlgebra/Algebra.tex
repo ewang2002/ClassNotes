@@ -1305,10 +1305,14 @@ Even though these examples are completely different, they are isomorphic (they a
 
 \newpage 
 \section{Equivalence Relations}
-We will go over topics covered in other courses that will be used in this course. We begin with the topic of equivalence relations. 
+We will briefly talk about equivalence relations, which are particularly important for near-future topics like cosets.
+
+\bigskip 
+
+\textbf{Note:} A lot of the notes here was taken from Professor Golsefidy's Math 103A notes. 
 
 \subsection{Definition}
-Let $X$ be a non-empty set. Then, a \textbf{relation} over $X$ is a subset $R$ of $X \times X$. If $(x, y) \in R$, we say that $x$ is $R$-related to $y$ and write $x R y$. 
+Let $S$ be a non-empty set. Then, a \textbf{relation} over $S$ is a subset $R$ of $S \times S$. If $(x, y) \in R$, we say that $x$ is $R$-related to $y$ and write $x R y$. 
 
 \bigskip 
 
@@ -1316,18 +1320,28 @@ So, for these relations, we should think about inequalities equalities, or congr
 
 \bigskip 
 
-Suppose $R$ is a relation over $X$. Then:
+Suppose $R$ is a relation over $S$. Then:
 \begin{itemize}
-    \item $R$ is called \textbf{reflexive} if $\forall x \in X$, $x R x$. That is, every $x \in X$ is related to itself. 
-    \item $R$ is called \textbf{symmetric} if $\forall x, y \in X$, $x R y \implies y R x$. In other words, if $x$ is related to $y$, is $y$ related to $x$? 
-    \item $R$ is called \textbf{transitive} if $\forall x, y, z \in X$, $x R y$ and $y R z$ implies that $x R z$. 
+    \item $R$ is called \textbf{reflexive} if $\forall x \in S$, $x R x$. That is, every $x \in S$ is related to itself. 
+    \item $R$ is called \textbf{symmetric} if $\forall x, y \in S$, $x R y \implies y R x$. In other words, if $x$ is related to $y$, is $y$ related to $x$? 
+    \item $R$ is called \textbf{transitive} if $\forall x, y, z \in S$, $x R y$ and $y R z$ implies that $x R z$. 
 \end{itemize}
 
 \begin{definition}{Equivalence Relation}{equivRel}
-    $R$ is called an \textbf{equivalence relation} if $R$ is reflexive, symmetric, and transitive. 
+    An \textbf{equivalence relation} on a set $S$ is a relation that holds between certain pairs of elements of $S$. We may write it as $a \sim b$ and speak of it as \emph{equivalence} of $a$ and $b$ (or simply, $a$ is equivalent to $b$). An equivalence relation is required to be: 
+    \begin{itemize}
+        \item \underline{Reflexive:} For all $a$, $a \sim a$. 
+        \item \underline{Symmetric:} $\forall a, b \in S$, if $a \sim b$, then $b \sim a$. 
+        \item \underline{Transitive:} $\forall a, b, c \in S$, if $a \sim b$ and $b \sim c$, then $a \sim c$. 
+    \end{itemize}
 \end{definition}
 
-\textbf{Remark:} An equivalence relation is essentially an equality with respect to a certain measurement. In life, we often measure things or people with respect to properties (for example, scores or ratings). So, when we want to compare things, we pick a certain property and then, \emph{from that point of view}, determine whether these things are equal. In this regard, equivalence relations are exactly equalities. 
+\textbf{Remarks:}
+\begin{itemize}
+    \item An equivalence relation is essentially an equality with respect to a certain measurement. In life, we often measure things or people with respect to properties (for example, scores or ratings). So, when we want to compare things, we pick a certain property and then, \emph{from that point of view}, determine whether these things are equal. In this regard, equivalence relations are exactly equalities. 
+    \item Another way we can think of an equivalence relation is through a function: 
+    \[S \times S \to \{\text{true}, \text{false}\}\]
+\end{itemize} 
 
 \subsubsection{Example: Relations}
 Suppose $X$ and $Y$ are two non-empty sets and $f: X \to Y$ is a function. Let $\sim$ be the following relation over $X$:
