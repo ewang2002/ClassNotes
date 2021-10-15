@@ -3511,5 +3511,299 @@ If we wanted to insert \code{2}, we would do the following:
     Then, we need to do an AVL rotation on $b$ and $c$ first, and then $a$ and $c$. In other words, we rotate the child and grandchild nodes first, and then the parent and its new child node next. 
 \end{itemize}
 
+\section{Red-Black Trees}
+The red-black tree is a slightly more complicated self-balancing binary search tree. Here, we will talk more about what it is and why we have it. 
+
+\subsection{Properties}
+Here are some properties of a red-black tree. 
+\begin{enumerate}[(1)]
+    \item All nodes must either be \textbf{black} or \textbf{red}. 
+    \item The root must be \textbf{black}. 
+    \item If a node is \textbf{red}, all of its children must be \textbf{black}. You cannot a \textbf{red} node with a \textbf{red} child. 
+    \item For every node $u$, every possible path from $u$ to a \code{null} reference must have the same number of \textbf{black} nodes. A \code{null} reference is \textbf{black}. Essentially, for every single node in the tree, we should be able to take any arbitrary path to get to a \code{null} reference and you should hit the same exact number of black nodes for every single path that could be taken from that given node.
+\end{enumerate}
+
+Consider the following tree: 
+\begin{center}
+    \includegraphics[scale=0.6]{img/rb_tree_1.png}
+\end{center}
+\begin{itemize}
+    \item The first property is satisfied; this can be seen above. 
+    \item The second property is satisfied since the root node (\code{30}) is, indeed, black.
+    \item The third property is satisfied. In particular, we notice that node \code{60} has two children that are black; the leaf nodes all have no children. 
+    \item The fourth property is satisifed. Let's consider some examples: 
+    \begin{itemize}
+        \item Node \code{5} has no black nodes. It also has 0 possible ways to go from said node to a \code{null} reference. 
+        \item Node \code{10} has 1 black node (itself) to a \code{null} reference. There is also one possible way to go to a \code{null} reference.
+        \item Node \code{15} has 2 black nodes (15, 10 or 15, 20) to either \code{null} reference and 2 possible ways to go to a \code{null} reference. 
+        \item Node \code{30} has 3 black nodes, or 5 different paths (30, 15, 20 or 30, 15, 10 or 30, 70, 85 or 30, 70, 50 or 30, 70, 65) to the \code{null} reference. % TODO clarify
+    \end{itemize}
+\end{itemize}
+So, this is a red-black tree. 
+
+\subsection{Red-Black Trees vs. AVL Trees}
+Recall the same red-black tree from above. However, is that red-black tree a valid AVL tree? Well: 
+\begin{center}
+    \includegraphics[scale=0.6]{img/rb_tree_avl.png}
+\end{center}
+From this, it is indeed a valid AVL tree. However, is this the case for all red-black tree? Consider the same tree as above, but with the only difference being that we removed Node \code{5}. This would look like: 
+\begin{center}
+    \includegraphics[scale=0.6]{img/rb_tree_no_avl.png}
+\end{center}
+This is still a red-black tree because it satisfies all the properties. In particular, we note that: 
+\begin{itemize}
+    \item $30 \to 15 \to 10$
+    \item $30 \to 15 \to 20$
+    \item $30 \to 70 \to 50$
+    \item $30 \to 70 \to 65$
+    \item $30 \to 70 \to 85$
+\end{itemize}
+And it follows that this is still a red-black tree. \textbf{However}, it is not a valid AVL tree. 
+
+\subsection{Proof of Red-Black Tree Worst-Case Time Complexity}
+We said that the worst-case time complexity to find an element in a red-black tree is $O(\log n)$. We now need to prove that this is the case. 
+
+\begin{mdframed}
+    \begin{proof}
+        Denote $bh(x)$ to be the number of black nodes from $x$ to a leaf node (excluding itself). Consider the following red-black tree: 
+        \begin{verbatim}
+                    B
+                   / \ 
+                  /   \ 
+                 B     R
+                      / \ 
+                     B   B
+        \end{verbatim}
+        Here, we note that: 
+        \begin{itemize}
+            \item $bh(\text{root}) = 1$. We exclude the root node when counting the number of nodes, so there is only one other black node. 
+            \item $bh(\text{leaf}) = 0$. We cannot count the leaf node itself since we cannot count the initial node. 
+            \item $bh(R) = 1$. There are two possible paths from it to a leaf, and on each path there is exactly one black node. 
+        \end{itemize}
+        Our first claim is: any subtree rooted at $x$ has at least $2^{bh(x)} - 1$ internal nodes. To prove this, we will use induction. 
+        \begin{itemize}
+            \item \underline{Base Case:} Consider $bh(x) = 0$. This happens when $x$ is a leaf node. So, $2^0 - 1 = 1 - 1 = 0$. This works because the black height of a leaf is 0, and the subtree rooted at a leaf has 0 internal nodes because that subtree only contains that leaf itself.
+            \item \underline{Inductive Step:} Let's assume that this claim holds true if the black height is less than $bh(x)$. We now want to show taht this is the case for $bh(x)$. To do so, we need to consider several scenarios (note that $x$ is the root node of the subtree): 
+            \begin{itemize}
+                \item If $x$ is black and both of its children are black, then it follows that $x$ has $bh(x)$ black height and both child nodes have $bh(x) - 1$ black height. 
+                \item If $x$ is black but it has at least one red child, then the red child would have a black height of $bh(x)$ given that $x$ has a black height of $bh(x)$. This is because we do not even count the red node when counting the black height. Whatever number of black nodes we passed from $x$ to a leaf (excluding $x$), we must have passed through the same exact number of nodes through the red child node.
+                \item If $x$ is red, then we know that its children must be black (by definition). If $x$ has a black height of $bh(x)$, then both of $x$'s child nodes will have a black height of $bh(x) - 1$ (note that we need to exclude the black node itself when we are calculating its black height). 
+            \end{itemize}
+            Basically, the number of internal nodes in any possible subtree of $x$ is:
+            \[\underbrace{2^{bh(x) - 1} - 1}_{\text{From one child}} + \overbrace{2^{bh(x) - 1} - 1}^{\text{From one child}} + \underbrace{1}_{x \text{ itself}} \geq 2^{bh(x)} - 1\]
+            It follows that the claim holds true even in the generalization.  
+        \end{itemize}
+        Now, denote $h$ to be the height of the tree. In general, at least half of the nodes on any path from the root to the leaf must be black. We are guaranteed that: 
+        \[bh(x) \geq \frac{h}{2}\]
+        \[n \geq 2^{\frac{h}{2}} - 1\]
+        Therefore: 
+        \[n + 1 \geq 2^{\frac{h}{2}}\]
+        This implies that: 
+        \[\log(n + 1) \geq \frac{h}{2}\]
+        So, we get that: 
+        \[h \leq 2 \log(n + 1)\]
+        In other words, $h$ is $O(\log n)$. 
+    \end{proof}
+\end{mdframed}
+
+\subsection{Red-Black Tree Insertion}
+We need to consider a few cases. 
+
+\subsubsection{Insertion Case 1: Empty Tree}
+For this, we insert the new node as the root. Then, color that node \textbf{black}. 
+
+\bigskip 
+
+If we insert \code{20} into the red-black tree, then we are left with the tree: 
+\begin{center}
+    \includegraphics[scale=0.6]{img/init_rb.png}
+\end{center}
+
+\subsubsection{Insertion Case 2: Non-Empty}
+We need to do the following: 
+\begin{itemize}
+    \item Perform regular BST insertion. If you ever see a black node with 2 red children, recolor all three (make the parent red and the children black). In other words: 
+    \begin{verbatim}
+            B                   R
+           / \      ----->     / \ 
+          R   R               B   B
+    \end{verbatim}
+    If the parent is the root, color it black. 
+
+    \item Color the new node \textbf{red}. 
+    
+    \item Potentially fix the tree for red-black tree properties. This is where we need to consider the potential cases.
+    
+    \begin{itemize}
+        \item \underline{Case 1: Child of Black Node}
+        
+        Consider the following tree: 
+        \begin{verbatim}
+                ...         (This is part of a tree)
+                   \ 
+                    B
+        \end{verbatim}
+        If the new node that we are about to insert is the child of a black node, then we're done. This is because the new node will be red by default, so: 
+        \begin{verbatim}
+                ...         (This is part of a tree)
+                   \ 
+                    B
+                   /
+                  R
+        \end{verbatim}
+        Here, we note that the new node is on the left. However, if the new node is on the right, we're still done since we didn't violate anything. 
+
+        \item \underline{Case 2: Child of Red Node, Straight Line}
+
+        Here, we need to: 
+        \begin{enumerate}
+            \item Insert 
+            \item Single Rotation 
+            \item Recolor 
+        \end{enumerate}
+        So, consider the following tree: 
+        \begin{verbatim}
+                ... 
+                   \ 
+                 (W, Black)
+                     \ 
+                    (V, Red)
+        \end{verbatim}
+
+        If we added a node $X$, then it would look like\footnote{Note that the letters are some variables.}: 
+        \begin{verbatim}
+                ... 
+                   \ 
+                 (W, Black)
+                     \ 
+                    (V, Red)
+                       \ 
+                    (X, Red)
+        \end{verbatim}
+        We now need to perform a left AVL rotation on $W$ and $V$, like so: 
+        \begin{verbatim}
+                ... 
+                   \ 
+                 (V, Red)
+                  /    \ 
+         (W, Black)   (X, Red)
+        \end{verbatim}
+        Now, we need to recolor those nodes. 
+        \begin{verbatim}
+                ... 
+                   \ 
+                 (V, Black)
+                  /    \ 
+            (W, Red) (X, Red)
+        \end{verbatim}
+
+        Likewise, if we had the following tree: 
+        \begin{verbatim}
+                         ... 
+                        /  
+                    (W, Black)
+                     / 
+                (V, Red)
+        \end{verbatim}
+        And we added a variable $X$, it would look like: 
+        \begin{verbatim}
+                         ... 
+                        /  
+                    (W, Black)
+                     / 
+                (V, Red)
+                  /
+                (X, Red)
+        \end{verbatim}
+        We would perform a right AVL rotation on $W$ and $V$, like so: 
+        \begin{verbatim}
+                    ...
+                   /
+                (V, Red)
+                 /   \ 
+                /     \ 
+            (X, Red)  (W, Black)
+        \end{verbatim}
+        And then to recolor these nodes:
+        \begin{verbatim}
+                    ...
+                   /
+                (V, Black)
+                 /   \ 
+                /     \ 
+            (X, Red)  (W, Red)
+        \end{verbatim}
+
+        \item \underline{Case 3: Child of Red Node, Kink}
+    
+        Here, we need to: 
+        \begin{enumerate}
+            \item Rotate to make straight line. 
+            \item Perform straight line insertion case. 
+        \end{enumerate}
+        So, consider the following tree: 
+        \begin{verbatim}
+            ...
+               \ 
+             (W, Black)
+               / 
+            (V, Red)
+        \end{verbatim}
+        And suppose we wanted to add $X$, which will be a right child of $V$: 
+        \begin{verbatim}
+            ...
+               \ 
+             (W, Black)
+               / 
+            (V, Red)
+               \ 
+             (X, Red)
+        \end{verbatim}
+        Here, we have a kink-shape. So, we need to perform a left AVL rotation on $V$ and $X$: 
+        \begin{verbatim}
+                    ... 
+                   /
+                (W, Black)
+                 / 
+             (X, Red)
+               /
+             (V, Red)
+        \end{verbatim}
+        Now, we can do the straight-line fix (from the previous part). First, we perform a right AVL rotation on $X$ and $W$ and then update the colors. 
+        
+        \bigskip 
+
+        Now, consider the following tree: 
+        \begin{verbatim}
+                ...
+               / 
+            (W, Black)
+               \ 
+              (V, Red)
+        \end{verbatim}
+        And suppose we wanted to add $X$, which will be a left child of $V$: 
+        \begin{verbatim}
+                ...
+               / 
+            (W, Black)
+               \ 
+              (V, Red)
+               /
+             (X, Red)
+        \end{verbatim}
+        We will perform a right AVL rotation on $V$ and $X$: 
+        \begin{verbatim}
+                ...
+               / 
+            (W, Black)
+               \ 
+              (X, Red)
+                 \ 
+                (V, Red)
+        \end{verbatim}
+        And then we can do the straight-line fix. This involves performing a left AVL rotation on $W$ and $X$ followed by updating the colors.
+
+    \end{itemize}
+\end{itemize}
 
 \end{document}
