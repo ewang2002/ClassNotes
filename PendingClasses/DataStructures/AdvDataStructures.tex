@@ -3806,4 +3806,61 @@ We need to do the following:
     \end{itemize}
 \end{itemize}
 
+
+
+
+
+\newpage 
+\section{Set and Map ADTs}
+Now, we'll talk more about set and map ADTs (abstract data types).
+
+\subsection{The Set ADT}
+A set abstract data type is one that stores multiple elements (keys), like an array. It has the following operations: 
+\begin{itemize}
+    \item \code{find(x)}: \code{true} if \code{x} exists in this set and \code{false} otherwise.
+    \item \code{insert(x)}: Add \code{x} to the set. So, whether or not \code{x} was in the set, this operation will make sure \code{x} is in said set. 
+    \item \code{remove(x)}: Removes \code{x} from the set.  
+\end{itemize}
+Notice how we have not discussed any implementation details yet, or what to do if any of these fail (aside from \code{find}). What if we call \code{insert} with an element that already exists in the set? Or, what if \code{remove} is called with an element that doesn't exist in the set? 
+
+\bigskip 
+
+In other words, simply think of a set as a bag of items that has some number of unique elements; you can check if the element exists, insert an element, remove an element, and so on. 
+
+\subsection{The Map ADT}
+A map abstract data type is one that stores multiple (key, value) pairs. It has the following operations: 
+\begin{itemize}
+    \item \code{get(k)}: Returns the value associated with key \code{k} if \code{k} exists in the map.
+    \item \code{put(k, v)}: Maps the key \code{k} to the value \code{v}.
+    \item \code{remove(k)}: Removes the key \code{k} and its value from the map. 
+\end{itemize}
+Once again, we have not discussed any implementation details; that is left to whatever ultimately implements this abstract data type. For instance, if we called \code{get} on an key \code{k} that doesn't exist, then should the method return \code{nullptr}? Or throw an error? How about \code{put}? What if the key \code{k} already exists in the map? Should we update the value? Or should we throw an error? 
+
+\bigskip 
+
+For instance, suppose we have a map called \code{students}. Our key could be the student names and the value could be the grades. It would look roughly like: 
+\begin{verbatim}
+    names (k)       grades (v)
+    --------------------------
+    Niema      ->   A+ 
+    Felix      ->   A 
+    Ryan       ->   A
+\end{verbatim}
+So, with respect to the \emph{keys}, this is essentially a set. In other words, we can think of a map as a set with an associated value. 
+
+\subsection{Implementing the Set and Map ADT}
+How can we implement the set and map ADT? We will only briefly discuss how we can implement the set ADT since we can easily transform a set ADT implementation to a map ADT implementation (by storing the key \emph{and} the value as opposed to just the key). The converse is also true; that is, we can transform a map ADT implementation to a set ADT implementation by using dummy values for the values. 
+
+\begin{itemize}
+    \item \underline{Unsorted Linked List:} $O(n)$ find/remove, $O(1)$ insert.
+    \item \underline{Sorted Linked List:} $O(n)$ find/remove/insert, can iterate in sorted order. 
+    \item \underline{Unsorted ArrayList:} $O(n)$ find/remove, amortized $O(1)$ insert. 
+    \item \underline{Sorted ArrayList:} $O(\log n)$ find (binary search), $O(n)$ remove/insert, can iterate sorted. 
+    \item \underline{Self-Balancing BST:} $O(\log n)$ find/insert/remove, can iterate sorted. 
+    \item \underline{Hash Table:} $O(1)$ expected, need to perform $O(k)$ hash where $k$ is a constant representing the length of the key. 
+\end{itemize}
+
+
+
+
 \end{document}
