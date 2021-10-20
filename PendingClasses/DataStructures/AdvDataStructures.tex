@@ -3861,6 +3861,179 @@ How can we implement the set and map ADT? We will only briefly discuss how we ca
 \end{itemize}
 
 
+% TODO explain this more clearly 
+\newpage 
+\section{Multiway Tries}
+In many tree structures, we store elements in the \textbf{nodes} of a tree. Each node represents a single element. A \emph{trie} is a bit different, though. 
+
+\subsection{Trie}
+A \textbf{trie} is a tree structure in which elements are represented by \textbf{paths}. Consider the following \emph{binary trie} (a binary trie is a trie that is a binary tree):
+\begin{verbatim}
+            [ ]
+            / \ 
+         0 /   \ 1
+          /     \ 
+        [w]     [ ]
+      0 /     0 / \ 1 
+       [w]    [w] [w]
+\end{verbatim}
+Here, we don't even look at the nodes (value-wise). Rather, consider the path from the root node to the left-most leaf node. Here, we note that this path from the root to that leaf node via the edges forms a string of \code{00}. Nodes that are denoted \code{[w]} are word nodes; think of them as separators. 
+
+\bigskip
+
+If we take the path to the left-most node and then to the right path followed by the left path, and then the right path fully, we note that this forms the words:  
+\begin{verbatim}
+    0, 00, 10, 11
+     ^   ^   ^ 
+    (Word Nodes)
+
+    0 
+    0 -> 0 
+    1 -> 0
+    1 -> 1
+\end{verbatim}
+
+
+\subsection{Multiway Tries}
+A \textbf{multiway trie} is a trie in which nodes can have more than \textbf{two children}. 
+
+\bigskip 
+
+Consider the following multiway trie over the DNA alphabet:
+\begin{verbatim}
+            [ ]
+             |
+             | T
+            [ ]
+            / \ 
+           /   \ G 
+          / A   \ 
+         /       \ 
+        [ ]      [ ]
+      A / \ G    / \ A
+      [w] [w]  [w] [w]
+\end{verbatim}
+Where the DNA alphabet is: 
+\[\{A, C, G, T\}\]
+The word nodes are denoted by \code{[w]}. We note that the words that can be represented are: 
+\begin{itemize}
+    \item TAA 
+    \item TAG 
+    \item TGA 
+\end{itemize}
+
+Now, consider the following multiway trie over the English alphabet: 
+\begin{verbatim}
+            [ ]
+             | 
+             | A
+             |
+            [ ]
+            / \  T
+         D /   \ 
+          [w]  [ ]
+           |    |
+        S  |    | E
+          [w]  [w]
+\end{verbatim}
+The words that are stored are as follows: 
+\begin{itemize}
+    \item AD 
+    \item ADS 
+    \item ATE 
+\end{itemize}
+So, does the word \code{AT} exist in this multiway try? 
+\begin{itemize}
+    \item The answer is no. While there is a path that consist of \code{AT}, this does not stop at a word node. So, you have \code{ATE}, but not \code{AT}.
+\end{itemize}
+
+%  3:43 of this vid
+\subsection{MWT Insertion, Finding, and Removing}
+How do we insert elements, find elements, or remove elements in a MWT? The algorithm for them are essentially the same. For this, we are going to do the following: 
+\begin{itemize}
+    \item Initialize MWT. 
+    \item Insert ANT. 
+    \item Insert ART. 
+    \item Insert AN. 
+    \item Find ART. 
+    \item Find ARM. 
+    \item Find A. 
+    \item Remove ANT. 
+    \item Find ANT. 
+\end{itemize}
+Generally speaking, insertion works like so: 
+\begin{itemize}
+    \item Start at the root.
+    \item For each letter in the word that we are inserting: 
+    \begin{itemize}
+        \item Check if the current node has a child edge labeled by that letter. 
+        \item If it does not, create new child edge labeled by letter.
+        \item Traverse down to that next child edge. 
+    \end{itemize}
+    \item Once we finish that word, we mark the current node as a word node. 
+\end{itemize}
+
+\begin{itemize}
+    \item Initialize MWT: An initialized MWT is simply the root node. 
+    \begin{verbatim}
+        [ ]
+    \end{verbatim}
+
+    \item Insert ANT: We use the process defined above. 
+    \begin{itemize}
+        \item Insert A since it doesn't already exist. Then, traverse down. 
+        \begin{verbatim}
+            [ ]
+             | 
+             | A 
+            [ ]
+        \end{verbatim}
+
+        \item Insert N since it doesn't already exist. Then, traverse down. 
+        \begin{verbatim}
+            [ ]
+             | 
+             | A 
+            [ ]
+             | 
+             | N  
+            [ ]
+        \end{verbatim}
+
+        \item Insert T since it doesn't alredy exist. Then, traverse down. 
+        \begin{verbatim}
+            [ ]
+             | 
+             | A 
+            [ ]
+             | 
+             | N  
+            [ ]
+             | 
+             | T  
+            [ ]
+        \end{verbatim}
+
+        \item Since we're done with all letters, set the node that we stopped at as a word node. 
+        \begin{verbatim}
+            [ ]
+             | 
+             | A 
+            [ ]
+             | 
+             | N  
+            [ ]
+             | 
+             | T  
+            [W]
+        \end{verbatim}
+    \end{itemize}
+
+    \item Insert ART: Same ideas as above. 
+    \begin{itemize}
+        \item 
+    \end{itemize}
+\end{itemize}
 
 
 \end{document}
