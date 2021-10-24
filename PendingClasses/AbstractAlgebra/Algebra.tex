@@ -1516,16 +1516,16 @@ We also have:
 So, there are three left cosets. 
 
 \subsection{Left Cosets and Partitions}
-Consider the following proposition. 
-\begin{proposition}
+Consider the following corollary: 
+\begin{corollary}{}{}
     The left cosets of $H$ in $G$ form a \underline{partition} of $G$. 
-\end{proposition}
-Then: 
+\end{corollary}
+To show that this is the case, we note that: 
 \begin{itemize}
     \item Every $a \in G$ is in the same left coset (because $e \in H$). 
     \item If $a, b \in G$, then $aH = bH$ or $aH \cap bH = \emptyset$. In other words, if $aH \cap bH \neq \emptyset$, then $aH = bH$. To show this, suppose $c \in aH \cap bH$. Then: 
     \[c = ah_1 \qquad \text{for some } h_1 \in H\]
-    \[c = ah_2 \qquad \text{for some } h_2 \in H\]
+    \[c = bh_2 \qquad \text{for some } h_2 \in H\]
     By transitivity, we know that: 
     \[ah_1 = bh_2\]
     Since $H$ has inverses and closure, then:
@@ -1609,18 +1609,183 @@ Of course, we cannot forget the right coset.
     Where $a \in G$ is a fixed element. 
 \end{definition}
 
-We note that right cosets also partition the group $G$; however, they aren't always the same as left cosets. If we consider the symmetric group from above, evaluating all left and right cosets will give us different cosets. 
+We note that right cosets also partition the group $G$; however, right cosets \underline{aren't always} the same as left cosets. If we consider the symmetric group from above, evaluating all left and right cosets will give us different cosets. 
 
-\subsection{Normal Subgroup}
-We finally conclude by discussing normal subgroups briefly. 
+
+\subsection{Definition of Normal Subgroups}
 \begin{definition}{Normal Subgroup}{}
-    A subgroup $H$ of a group $G$ is a \textbf{normal subgroup} if $\forall g \in G$ and $h \in H$: 
-    \[g^{-1} h g \in H\]
+    A subgroup $H$ of a group $G$ is (with binary operation $*$) a \textbf{normal subgroup} if $\forall g \in G$ and $h \in H$: 
+    \[g^{-1} * h * g \in H\]
 \end{definition}
 \textbf{Remarks:}
 \begin{itemize}
-    \item The operation $g^{-1} h g \in H$ is known as conjugating $h$ by $g$. 
+    \item The operation $g^{-1} * h * g \in H$ is known as conjugating $h$ by $g$. 
     \item The left cosets are equal to the right cosets. 
 \end{itemize}
+
+
+
+
+\newpage 
+\section{Conjugation and Normal Subgroups}
+In this section, we place significantly more emphasis on conjugations and normal subgroups. 
+
+\subsection{Conjugation}
+Let's first recall the definition of conjugation.
+\begin{definition}{Conjugation}{}
+    Let $G$ be a group. Let $a, g \in G$ be elements. Then, the \textbf{conjugate} of $a$ by $g$ is the element: 
+    \[g * a * g^{-1} \in G\]
+\end{definition}
+Why is this important? 
+\begin{itemize}
+    \item If we fix $g$, then we know that: 
+    \[(g * a * g^{-1}) * (g * b * g^{-1}) = g * (a * b) * g^{-1}\]
+    In other words, the function $\phi_g: G \to G$ can be defined by: 
+    \[\phi_{g}(a) = g * a * g^{-1}\]
+    This is a homomorphism. We also note that its inverse can be defined by the function $\phi_{g^{-1}}$.
+    
+    \item Suppose we have an element that doesn't ``move'' when conjugated by $g$. In particular: 
+    \[g * a * g^{-1} = a \iff g * a = a * g\]
+    Or, in other words, $g$ commutes with $a$. 
+\end{itemize}
+
+\subsection{Center of a Group}
+We now talk about the \emph{center} of a group, which is also an important topic. 
+
+\begin{definition}{Center of a Group}{}
+    The \textbf{center} of $G$ is the set $Z$ of elements which commute with \underline{all} of $G$. In particular, it is defined by: 
+    \[Z = \{z \in G \mid z * x = x * z \text{ for all } x \in G\}\]
+\end{definition}
+\textbf{Remarks:}
+\begin{itemize}
+    \item $Z$ is always a normal subgroup of $G$. 
+    \item The center of the general linear group $GL_{n}(\R)$ consists of all scalar matrices. In other words:
+    \[\left\{\begin{bmatrix}
+        a & 0 & \dots & 0 \\ 
+        0 & a & \dots & 0 \\ 
+        \vdots & \vdots & \ddots & \vdots \\ 
+        0 & 0 & 0 & a 
+    \end{bmatrix} \mathrel{\bigg|} a \in \R - \{0\}\right\}\]
+    \item The center of the special linear group $SL_{2}(\R)$ consists of $\{I, -I\}$. 
+    \item The center of the special linear group $SL_{n}(\R)$ consists of: 
+    \[
+        \begin{cases}
+            \{\pm I\} & n \text{ even} \\ 
+            \{I\} & n \text{ odd}
+        \end{cases}    
+    \]
+    \item The center of the symmetric group $S_n$ is trivial if $n \geq 3$.
+\end{itemize}
+
+Consider the following proposition: 
+\begin{proposition}
+    $Z$ is an abelian subgroup. 
+\end{proposition}
+To show that this is the case, we give a proof: 
+\begin{mdframed}
+    \begin{proof}
+        We need to show that $Z$ meets all the properties of a subgroup. 
+        \begin{itemize}
+            \item \underline{Identity:} We know that $e \in Z$. 
+            \item \underline{Closure:} If we have $g, h \in Z$ with some random $a \in G$, we know that: 
+            \[g * h * a = g * a * h = a * g * h \in Z\]
+            \item \underline{Inverse:} Suppose we have $g \in Z$ with corresponding inverse $g^{-1} \in Z$ and some $a \in G$. Then: 
+            \[g^{-1} * a = a * g^{-1} \iff a * g = g * a\]
+        \end{itemize}
+    \end{proof}
+    Hence, $Z$ is a subgroup. 
+\end{mdframed}
+
+\subsection{Automorphisms}
+Recall that, when we talked about conjugations, we mentioned that this was a homomorphism: 
+\[\phi_g: G \to G\]
+In fact, we can say that this is an \emph{automorphism}. We define this like so: 
+\begin{definition}{Automorphism}{}
+    An \textbf{automorphism} is an \emph{isomorphism} on a group $G$ to itself. It is defined by: 
+    \[\phi: G \to G\]
+\end{definition}
+We also note that the \textbf{automorphism group} of a group $G$ form a group under \emph{composition}. Notationally, this is represented by $\aut(G)$.
+
+\bigskip 
+
+Conjugation defines a homomorphism from $G \to \aut(G)$, which is defined by: 
+\[g \to \phi_g\]
+Consider:
+\[(g * h) * a * (h^{-1} * g^{-1}) = g * (h * a * h^{-1}) * g^{-1}\]
+Which we can define by: 
+\[\phi_{g * h} = \phi_g \circ \phi_h\]
+One interesting case to note is: if $G$ is \emph{abelian}, then: 
+\[\phi_g (a) = a \qquad \forall a \in G\]
+In other words, $\phi_g = \id_g$. This implies that the homomorphism $G \to \aut(G)$ is \emph{trivial}.
+
+\bigskip 
+
+On the other hand, for $n \geq 3$, the following is isomorphic:  
+\[S_n \to \aut(S_n)\]
+\emph{However}, this is not isomorphic\footnote{If interested, look up ``outer automorphism of $S_6$.''} when $n = 6$. 
+
+\subsection{Conjugation in Symmetric Groups}
+Let's suppose we have $g = (12345)$ and $a = (12)(34)$. Then: 
+\[g^{-1} = (15432)\]
+Mapping each of $i \in [1, 2, 3, 4, 5]$, we have: 
+\begin{itemize}
+    \item $1 \xrightarrow{g^{-1}} 5 \xrightarrow{a} 5 \xrightarrow{g} 1$
+    \item $2 \xrightarrow{g^{-1}} 1 \xrightarrow{a} 2 \xrightarrow{g} 3$
+    \item $3 \xrightarrow{g^{-1}} 2 \xrightarrow{a} 1 \xrightarrow{g} 2$
+    \item $4 \xrightarrow{g^{-1}} 3 \xrightarrow{a} 4 \xrightarrow{g} 5$
+    \item $5 \xrightarrow{g^{-1}} 4 \xrightarrow{a} 3 \xrightarrow{g} 4$
+\end{itemize}
+So, our result is: 
+\[g * a * g^{-1} = (1)(23)(45)\]
+We notice a few things. In general:  
+\begin{itemize}
+    \item $g * a * g^{-1}$ has the \underline{same cycle structure} as $a$, which implies that they have the same order. 
+    \item We also get the new cycle structure from the old one by applying $g$ to the cycle notation of $a$. 
+\end{itemize}
+
+\subsection{Commutator}
+The commutator of $a$ and $g$ is given by: 
+\[g * a * g^{-1} * a^{-1}\]
+This is $e$ (the identity) if and only if $g$ commutes with $a$. 
+
+\subsection{Normal Subgroups}
+Recall the following definition:
+\begin{definition}{Normal Subgroup}{}
+    A subgroup $H$ of a group $G$ is (with binary operation $*$) a \textbf{normal subgroup} if $\forall g \in G$:
+    \[g * H * g^{-1} = \{g * h * g^{-1} \mid h \in H\} = H\]
+    Where $H$ in the right-side of the equality is treated as a \emph{set}, not term-by-term. % lec 10/15, 45:55 
+\end{definition}
+
+\subsubsection{Example: Symmetric Group}
+Consider $G = S_3$ with $H = \cyclic{(123)}$. Then, $H$ is normal. This is because conjugation by $g$ must send $h$ to an element of order 3, namely $h$ or $h^{-1}$. We know that: 
+\[\cyclic{h} = \cyclic{h^{-1}} = H\]
+
+\subsection{Kernal of a Homomorphism}
+Consider the following proposition: 
+\begin{proposition}
+    The kernal of a homomorphism is a normal subgroup.
+\end{proposition}
+
+The proof is as follows: 
+\begin{mdframed}
+    \begin{proof}
+        If $a$ is in the kernal of the homomorphism $\phi: G \to G'$ and if $g$ is any element of $G$, then: 
+        \[\phi(g * a * g^{-1}) = \phi(g) \cdot \phi(a) \cdot \phi(g) = \phi(g) \cdot e_{G'} \cdot \phi(g)^{-1}.\]
+        Therefore, $g * a * g^{-1}$ is in the kernal too. 
+    \end{proof}
+\end{mdframed}
+
+\subsection{Cosets and Normal Groups}
+Finally, we consider the following proposition.
+\begin{proposition}
+    Let $H$ be a subgroup of $G$. The following conditions are equivalent: 
+    \begin{itemize}
+        \item $H$ is a normal subgroup. 
+        \item For all $g \in G$, $g * H * g^{-1} = H$. In particular, for all $g \in G$, $g * H * g^{-1} \subseteq H$. The same applies to $g^{-1}$; $g^{-1} * H * g \subseteq H \iff H \subseteq g * H * g^{-1}$. 
+        \item For all $g \in G$, the left coset $g * H$ is equal to the right coset $H * g$. 
+        \item Every left coset of $H$ in $G$ is a right coset. In other words:
+        \[\underbrace{g * H}_{\text{Left coset.}} = \underbrace{H * g}_{\text{Right coset.}}\] 
+    \end{itemize}
+\end{proposition}
 
 \end{document}
