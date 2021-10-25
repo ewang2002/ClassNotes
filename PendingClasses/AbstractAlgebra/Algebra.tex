@@ -1883,10 +1883,103 @@ The above lemma states that this is a well-defined operation. We now need to che
     \end{proof}
 \end{mdframed}
 
-\subsection{Introduction to the First Isomorphism Theorem}
-This ultimately leads us to the first isomorphism theorem, which will be discussed later. 
+
+
+
+
+
+\newpage 
+\section{First Isomorphism Theorem and Correspondence Theorem}
+Let $G$ be a group and $N$ a normal subgroup of $G$. In other words, $\forall g \in G$, we have that $g * N * g^{-1} = N$. We also defined the quotient group $\overline{G}$, which is a group with a surjective homomorphism $\pi: G \to \overline{G}$ with kernal $N$.
+
+\bigskip 
+
+We can use this information to introduce the First Isomorphism Theorem. 
+
+\subsection{First Isomorphism Theorem}
 \begin{theorem}{First Isomorphism Theorem}{}
-    Let $\phi: G \to G'$ be a surjective group homomorphism with kernal $N$. The quotient group $\overline{G}$ is isomorphic to the image of $G'$. To be precise, let $\pi: G \to \overline{G}$ be the canonical map. There is a unique $\overline{\phi}: \overline{G} \to G'$ such that $\phi = \overline{\phi} \circ \pi$. 
+    Let $\phi: G \to G'$ be a surjective group homomorphism with kernal $N$. The quotient group $\overline{G}$ is isomorphic to the image of $G'$. To be precise, let $\pi: G \to \overline{G}$ be the canonical map. There is a unique $\overline{\phi}: \overline{G} \to G'$ such that:
+    \[\phi = \overline{\phi} \circ \pi\] 
 \end{theorem}
+The proof is as follows: 
+\begin{mdframed}
+    % might want to use page 84 of textbook for proof
+    \begin{proof}
+        The partition defined by $\pi$ and $\phi$ are the same; namely, the cosets of $N$. Define $\overline{\phi}$ by saying that for $\overline{g} \in \overline{G}$, $\overline{\phi}(\overline{g})$ is the unique element of $G'$ such that $\pi^{-1}(\overline{g}) = \phi^{-1}(h)$ as cosets of $N$. 
+
+        \bigskip 
+
+        $\overline{\phi}$ is a homomorphism because $\overline{g}, \overline{h} \in \overline{G}$ whose $g, h \in G$ with $\pi(g) = \overline{g}$ and $\pi(h) = \overline{h}$, which implies that $\pi(g * h) = \overline{g} \cdot \overline{h}$. Then: 
+        \begin{equation*}
+            \begin{aligned}
+                \overline{\overline{g} * \overline{h}} &= \overline{\phi}(\pi(g * h)) \\ 
+                    &= \phi(g * h) \\ 
+                    &= \phi(g) \cdot \phi(h) \\ 
+                    &= \overline{\phi}(\pi(g)) \cdot \overline{\phi}(\pi(h)) \\ 
+                    &= \overline{\phi}(\overline{g}) \overline{\phi}(\overline{\overline{h}})
+            \end{aligned}
+        \end{equation*} 
+        Thus, we are done. 
+    \end{proof}
+\end{mdframed}
+Consider the following diagram, which highlights this theorem: 
+\begin{center}
+    \includegraphics[scale=0.9]{assets/first_iso.png}
+\end{center}
+Any surjective homomorphism with the kernal $N$ are preimages of elements that have cosets of $N$.
+
+\bigskip 
+
+Recall this lemma, which we may or may not have talked about at some point. 
+\begin{lemma}{}{}
+    Let $\phi: G \to G'$ be a surjective homomorphism with kernal $N$. Then, for every $g' \in G'$: 
+    \[\phi^{-1}(g') = \{g \in G \mid \phi(g) = g'\}\]
+    Represents a left/right coset of $N$. 
+\end{lemma}
+Its proof is as follows: 
+\begin{mdframed}
+    \begin{proof}
+        Since $\phi$ is surjective, we can pick a $g_1 \in G$ with $\phi(g_1) = g'$. We claim that $g_1 * N = \phi^{-1}(g') = N * g$. We show that $g_1 N \subseteq \phi^{-1}(g')$. For any $n \in N$, we note that $\phi(g * n) = \phi(g_1) \cdot \phi(n) = \phi(g_1)$. Now we show that $\phi^{-1}(g') \subseteq g_1 * N$. Pick any $g_2 \in G$ with $\phi(g_2) = g'$. Then, $\phi(g_1) = \phi(g_2)$ implies that $\phi(g_{1}^{-1} * g_2) = \phi(g_1)^{-1} \cdot \phi(g_2) = e$. So:
+        \[g_{1}^{-1} * g_2 \in N \implies g_2 \in g_1 * N\]
+        So, we are done.  
+    \end{proof}
+\end{mdframed}
+
+\subsection{Correspondence Theorem}
+We now talk about the correspondence theorem.
+\begin{theorem}{Correspondence Theorem}{}
+    Let $\phi: G \to G'$ be a surjective homomorphism with kernal $N$. Then, there is a bijection from the subgroups of $G'$ to the subgroups of $G$ containing $N$ defined by: 
+    \[H' \to \phi^{-1}(H')\]
+\end{theorem}
+
+\begin{definition}{Restriction}{}
+    Let $\phi: G \to G'$ be a homomorphism. Let $H$ be a subgroup (not necessarily normal) of $G$. We define: 
+    \[\phi |_{H}: H \to G'\]
+    To be the restriction. It can be written as the composition $H \to G \xrightarrow{\phi} G'$ (the inclusion homomorphism). 
+\end{definition}
+\textbf{Remarks:}
+\begin{itemize}
+    \item $\ker\left(\frac{\phi}{H}\right) = (\ker(\phi)) \cap H$.
+    \item $\im\left(\frac{\phi}{H}\right) = \phi(H) = \{\phi(h) \mid h \in H\}$
+\end{itemize}
+
+\subsubsection{Example: Permutations and Sign}
+Let $\sigma: S_n \to \{\pm 1\}$ be the sign homomorphism. We define the \underline{alternating group} $A_n$ to be $\ker(\sigma)$. In other words:
+\[A_n = \ker(\sigma)\]
+Suppose $H$ is a subgroup of $S_n$ of \underline{odd} order. (e.g., $\cyclic{g}$ where $g$ is a cycle of odd length). Then: 
+\[|H| = |\ker(\phi \mid_H)| \cdot \underbrace{\left|\im\left(\frac{\phi}{H}\right)\right|}_{\substack{\text{Order must divide} \\ \text{order of } \{\pm 1\}}}\]
+Here, we note that $\left|\im\left(\frac{\phi}{H}\right)\right|$ must be 1. This means that $H \subseteq A_n$. 
+
+\subsection{Inverse Image}
+We now define an inverse image.
+\begin{definition}{Inverse Image}{}
+    Let $\phi: G \to G'$ be a homomorphism. Then, for $H' \subseteq G'$ a subgroup, the \textbf{inverse image} (preimage) is defined by: 
+\[\phi^{-1}(H') = \{g \in G \mid \phi(g) \in H\}\]
+\end{definition}
+THis is a subgroup because it has all three characteristics of a subgroup (which we will not show). 
+
+\bigskip
+
+For example, if the homomorphism is $(\Z, +) \to (\Z / \Z n)$, then for any $d$ that divides $n$, the multiples of $d$ in $\Z / \Z n$ form a subgroup whose inverse image in $\Z$ is $\Z d$. For instance, if $d = 4$ and $n = 6$, then the multiples of 4 in $\Z / \Z 6$ are $4(4) = 16 \equiv 2 \mod{6}$. 
 
 \end{document}
