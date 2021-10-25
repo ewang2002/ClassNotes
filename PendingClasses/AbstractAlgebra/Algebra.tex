@@ -1756,6 +1756,12 @@ Recall the following definition:
     Where $H$ in the right-side of the equality is treated as a \emph{set}, not term-by-term. % lec 10/15, 45:55 
 \end{definition}
 
+A few examples of normal subgroups: 
+\begin{itemize}
+    \item The trivial subgroup is normal. 
+    \item $G$ is normal in itself. 
+\end{itemize}
+
 \subsubsection{Example: Symmetric Group}
 Consider $G = S_3$ with $H = \cyclic{(123)}$. Then, $H$ is normal. This is because conjugation by $g$ must send $h$ to an element of order 3, namely $h$ or $h^{-1}$. We know that: 
 \[\cyclic{h} = \cyclic{h^{-1}} = H\]
@@ -1787,5 +1793,100 @@ Finally, we consider the following proposition.
         \[\underbrace{g * H}_{\text{Left coset.}} = \underbrace{H * g}_{\text{Right coset.}}\] 
     \end{itemize}
 \end{proposition}
+ 
+
+
+
+
+
+
+
+
+
+
+
+\newpage 
+\section{Quotient Groups}
+We can use the properties of a normal subgroup to talk more about quotient groups. 
+
+\subsection{Definition of a Quotient Group}
+First, as always, we begin with a definition. 
+\begin{definition}{Quotient Group}{}
+    The \textbf{quotient group} of $G$ by $H$, when it exists (it will exist if $H$ is normal), is a group $\overline{G}$ together with a \emph{surjective} homomorphism: 
+    \[\phi: G \to \overline{G}\]
+    Where the kernal is denoted $H$. 
+\end{definition}
+For example, if $G = (\Z, +)$ and $H = \Z n$, then $\overline{G} = \Z / \Z n$. We can define: 
+\[\phi: G \to \overline{G}\]
+\[\phi: \Z^+ \to \Z / \Z n\]
+By performing the following mapping: 
+\[a \to a \mod{n}\]
+
+\bigskip 
+
+Assume $H$ is normal. Then, we call it $N$ instead. So, we define the set $\overline{G} = \frac{G}{N}$ as the partition of $G$ into (left or right) cosets for $H$. 
+
+\subsection{Product of Cosets}
+Here, we will show that the product of two cosets is a coset. 
+\begin{lemma}{}{}
+    Let $N$ be a \underline{normal subgroup} for $G$. Let $s_1 = a * N$ and $s_2 = b * N$ be two cosets of $N$ in $G$. Then: 
+    \[s_1 * s_2 = \boxed{a * b * N} = \{g_1 * g_2 \mid g_1 \in s_1, g_2 \in s_2\}\]
+\end{lemma}
+
+\begin{mdframed}
+    \begin{proof}
+        The proof is as follows: 
+        \begin{equation*}
+            \begin{aligned}
+                a * N * b * N &= \{a * n_1 * b * n_2 \mid n_1, n_2 \in N\} \\
+                    &= \{a * b * \underbrace{\underbrace{(b^{-1} * n_1 * b)}_{\in N \text{ by conjugation}} * n_2}_{\in N \text{ by subgroup}} \mid n_1, n_2 \in N\}
+            \end{aligned}
+        \end{equation*}
+        We also know that: 
+        \begin{equation*}
+            \begin{aligned}
+                a * b * N &= \{a * b * n \mid n \in N\} \\ 
+                    &= \{a * e * b * n \mid n \in N\}
+            \end{aligned}
+        \end{equation*}
+        As these are equal, the proof is complete. 
+    \end{proof}    
+\end{mdframed}
+
+\subsection{Showing Group Properties}
+Now that we know that the product of two cosets is a cosets, we define a law of composition on $\overline{G}$: 
+\[a * N * b * N = a * b * N\]
+The above lemma states that this is a well-defined operation. We now need to check that this is a group. In particular, we need to show: 
+\begin{itemize}
+    \item Associativity.
+    \item Identity. 
+    \item Inverse. 
+    \item Homomorphism (By definition).
+\end{itemize}
+\begin{mdframed}
+    \begin{proof}
+        Let $G$ be a group. We know that $\phi: G \to \overline{G}$ is a surjective function and $\phi(a) \cdot \phi(b) = \phi(a * b)$. Pick three elements $\overline{x_1}$, $\overline{x_2}$, and $\overline{x_3}$. Write these as $\phi(\overline{x_1})$, $\phi(\overline{x_2})$, and $\phi(\overline{x_3})$ for some $x_1$, $x_2$, and $x_3 \in G$. Then, in $G$, we have that: 
+        \[(x_1 * x_2) * x_3 = x_1 * (x_2 * x_3)\]
+        Applying $\phi$ to both sides: 
+        \begin{equation*}
+            \begin{aligned}
+                \phi(x_1 * (x_2 * x_3)) &= \phi(x_1) \cdot \phi(x_2 * x_3) \\ 
+                    &= \phi(x_1) \cdot (\phi(x_2) \cdot \phi(x_3)) \\ 
+                    &= \overline{x_1} \cdot (\overline{x_2} \cdot \overline{x_3})
+            \end{aligned}
+        \end{equation*}
+        We can apply the same steps to the expression on the left side. Therefore, this is associative. The rest of the group properties will be omitted. 
+
+        \bigskip 
+
+        We have now proved that for every normal subgroup $N$ of $G$, $\phi: G \to \overline{G}$ is a surjective homomorphism. 
+    \end{proof}
+\end{mdframed}
+
+\subsection{Introduction to the First Isomorphism Theorem}
+This ultimately leads us to the first isomorphism theorem, which will be discussed later. 
+\begin{theorem}{First Isomorphism Theorem}{}
+    Let $\phi: G \to G'$ be a surjective group homomorphism with kernal $N$. The quotient group $\overline{G}$ is isomorphic to the image of $G'$. To be precise, let $\pi: G \to \overline{G}$ be the canonical map. There is a unique $\overline{\phi}: \overline{G} \to G'$ such that $\phi = \overline{\phi} \circ \pi$. 
+\end{theorem}
 
 \end{document}
