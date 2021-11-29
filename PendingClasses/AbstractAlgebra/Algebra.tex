@@ -247,6 +247,7 @@ First, we show that\begin{definition}{Group}{}
 \textbf{Remark:}
 \begin{itemize}
     \item Notationally, this can be represented by $(G, *)$ or $\langle G, * \rangle$. This is saying that we are pairing a set with a binary operation. 
+    \item The \emph{order} of a group $G$ is the number of elements that it contains. We will often denote the order by $|G|$. Remember that $G$ is a set, so you can think of the order of $G$ as its cardinality. 
 \end{itemize}
 
 \begin{definition}{Abelian Group}{}
@@ -560,7 +561,7 @@ For a negative integer $n$, we let:
 \section{Subgroups}
 The definition of a subgroup is very similar to that of a group. It states the following. 
 \begin{definition}{Subgroup}{}
-    A subset $H$ of a group $G$ is a \textbf{subgroup} if it has the following properties: 
+    A subset $H$ of a group $(G, \circ)$ is a \textbf{subgroup} $(H, \circ)$ if it has the following properties: 
     \begin{enumerate}
         \item \underline{Identity/Neutral Element:} The identity element of $G$ belongs in $H$. In other words, there is an element $e \in H$ (where the same $e \in G$) such that for all $x \in H$:
         \[e * x = x * e = x\]
@@ -572,9 +573,11 @@ The definition of a subgroup is very similar to that of a group. It states the f
         \[a * b \in H\]
         It should be noted that this property is \emph{implied} by the definition of a binary operation (law of composition). This binary operation is inherited from the group $G$.  
     \end{enumerate}
+    We denote this by $H \leq G$. 
 \end{definition}
 \textbf{Remarks:}
 \begin{itemize}
+    \item More concisely, a subgroup of a group $(G, \cdot)$ is a subset $H \subseteq G$ such that $(H, \circ)$ is also a group.
     \item Because associativity is a property that is in a group, it is also implicitly a property that is in a subgroup. 
     \item This also implies that the subgroup $H$ is a group.
     \item If $G$ is a group, then $G$ is a subgroup of itself. If we want to exclude this property (i.e. we don't want $G$ to be classified as a subgroup of itself), we would want $H$ to be a \emph{proper subgroup} of $G$.
@@ -598,7 +601,7 @@ Consider the group $(\R, +)$. Some possible subgroups are:
 \begin{itemize}
     \item $(\Z, +)$. The group of integers under addition. 
     \item $(\Z a, +)$. Here, we note that:
-    \[(\Z a, +) = \{n \in Z \mid n = ka \text{ for some } k \in \Z\}\]
+    \[(\Z a, +) = \{n \in \Z \mid n = ka \text{ for some } k \in \Z\}\]
     \item $(\{0\}, +)$. The trivial subgroup, consisting of only the identity element.
     \item $(\R, +)$. The whole group. 
 \end{itemize}
@@ -620,8 +623,8 @@ Consider the group $(\Z, +)$. Some subgroups include:
     \[(\Z a, +) = \{n \in Z \mid n = ka \text{ for some } k \in \Z\}\] 
 \end{itemize}
 
-\subsection{More on Subgroups}
-Of course, we now need to discuss some theorems and applications of subgroups. 
+\subsection{Subgroups of the Additive Group of Integers}
+An important theorem to consider is the following: 
 \begin{theorem}{}{}
     Let $S$ be a subgroup of the additive group $(\Z, +)$. Either $S$ is the trivial subgroup $\{0\}$, or else it has the form $\Z a$, where $a$ is the smallest positive integer in $S$. 
 \end{theorem}
@@ -640,13 +643,137 @@ Of course, we now need to discuss some theorems and applications of subgroups.
 
         \bigskip 
 
-        To show $\Z a = S$, assume by contradiction that it's not. Pick some $n \in S$ with $n \notin \Z a$. By Euclidean division, $n = qa + r$ for some $q, r \in \Z$, where $0 \leq r < a$. Additionally, we cannot have $r = 0$ because $n \notin \Z a$. Then, $n \in S$ and $qa \in S$, $-qa \in S$, and therefore $n - qa = r \in S$. But, $r$ is positive and $r < a$, which is a contradiction. \qedhere 
-
-        % Now, we need to show that $S \subseteq \Z a$; that is, every element $n$ of $S$ is an integer multiple of $a$. We can use division with remainder to write $n = qa + r$, where $q, r \in \Z$ and where the remainder $r$ is in the range $0 \leq r < a$. Since $\Z a$ is contained in $S$, $qa \in S$ and, of course, $n \in S$. Since $S$ is a subgroup, $r = n - qa \in S$. Now, by our choice, $a$ is the smallest positive integer in $S$, while the remainder $r$ is in the range $0 \leq r < a$. The only remainder that can be in $S$ is 0, so $r = 0$ and $n$ is the integer multiple $qa$ of $a$. 
+        To show $\Z a = S$, assume by contradiction that it's not. Pick some $n \in S$ with $n \notin \Z a$. By Euclidean division, $n = qa + r$ for some $q, r \in \Z$, where $0 \leq r < a$. Additionally, we cannot have $r = 0$ because $n \notin \Z a$. Then, $n \in S$ and $qa \in S$, $-qa \in S$, and therefore $n - qa = r \in S$. But, $r$ is positive and $r < a$, which is a contradiction. \qedhere  
     \end{proof}
 \end{mdframed}
 
-% prop 2.3.5
+\subsection{Relation to GCD, LCM, and Prime Numbers}
+In this section, we will briefly talk about subgroups in the context of the greatest common divisor, least common multiple, and prime numbers. 
+
+\subsubsection{Relation to GCD}
+One application of the above theorem relates to subgroups that contain two integers $a$ and $b$. We can define the set of all integer combinations $ra + sb$ of $a$ and $b$ as follows: 
+\[S = \Z a + \Z b = \{n \in \Z \mid n = ra + sb \text{ for some integers } r, s\} \leq (\Z, +)\]
+This is called the subgroup \emph{generated} by $a$ and $b$ because it is the smallest subgroup that contains both $a$ and $b$. If $a$ and $b$ aren't both zero, then $S$ is not the trivial group $\{0\}$. By the above theorem, we know that $S$ has the form $\Z d$, which is the set of integers divisible by $d$. Here, $d = \gcd(a, b)$, the greatest common divisor of $a$ and $b$. 
+\begin{mdframed}
+    \begin{proposition}
+        Let $a$ and $b$ be integers, not both zero, and let $d = \gcd(a, b)$, the positive integer that generates the subgroup $S = \Z a + \Z b$. So, $\Z d = \Z a + \Z b$ and: 
+        \begin{enumerate}[(a)]
+            \item $d$ divides $a$ and $b$. 
+            \item If an integer $x$ divides both $a$ and $b$, then it also divides $d$. 
+            \item There are integers $r$ and $s$ such that $d = ra + sb$. 
+        \end{enumerate}
+    \end{proposition}
+\end{mdframed}
+
+\begin{mdframed}
+    \begin{proof}
+        We know that part (c) of this proposition simply restates the original proposition. Now, if $a$, $b \in S$ and $S = \Z d$, then it follows that $d$ divides $a$ and $b$, thus satisfying the first proposition. Finally, if $x \in \Z$ divides both $a$ and $b$, then it must be true that $x$ divides the integer combination $ra + sb = d$. 
+    \end{proof}
+\end{mdframed}
+
+As an example, consider $a = 4$ and $b = 6$. Then, $d = \gcd(4, 6) = 2$ and: 
+\[\Z a = \Z 4 = \{\dots, -8, -4, 0, 4, 8, \dots\}\]
+\[\Z b = \Z 6 = \{\dots, -12, -6, 0, 6, 12, \dots\}\]
+So: 
+\begin{equation*}
+    \begin{aligned}
+        \Z a + \Z b &= \Z 4 + \Z 6 \\ 
+                &= \{\dots, -8 - 12, -8 - 6, \dots, -4 - 12, \dots 0 - 12, 0 - 6, \dots 4 - 12, 4 - 8, \dots, 8 - 6, \dots\} \\ 
+                &= \{\dots, -12, -10, -8, -6, -4, -2, 0, 2, 4, 6, 8, 10, 12, \dots\} \\ 
+                &= \Z 2 \\ 
+                &= \Z d
+    \end{aligned}
+\end{equation*}
+
+
+\subsubsection{Relation to Prime Numbers}
+We now introduce the notion of prime numbers, which is closely related to this topic. Two nonzero integers $a$ and $b$ are said to be \emph{relatively prime} if the only positive integer that divides both of them is 1. That is, $\gcd(a, b) = 1$. It follows that $\Z a + \Z b = \Z$. 
+\begin{corollary}{}{}
+    A pair $a$, $b$ of integers is relatively prime if and only if there are integers $r$ and $s$ such that $ra + sb = 1$.
+\end{corollary}
+
+\begin{corollary}{}{}
+    Let $p$ be a prime integer. If $p$ divides a product $ab$ of integers, then $p$ divides $a$ or $p$ divides $b$. 
+\end{corollary}
+
+\begin{mdframed}
+    \begin{proof}
+        Suppose that the prime $p$ divides $ab$ but not $a$. Then, the only positive divisors of $p$ are $1$ and $p$. Since $p$ does not divide $a$, it follows that $\gcd(a, p) = 1$. Therefore, we know that there must be integers $r$ and $s$ such that $ra + sp = 1$. Multiplying both sides by $b$ gives us: 
+        \[rab + spb = b\]
+        Which we note that $p$ divides both $rab$ and $spb$. So, $p$ divides $b$. By symmetry, $p$ divides $a$ as well. 
+    \end{proof}
+\end{mdframed}
+
+As an example, consider $a = 3$ and $b = 4$. These two numbers are relatively prime; that is, $\gcd(3, 4) = 1$. It follows that: 
+\[\Z a = \Z 3 = \{\dots, -6, -3, 0, 3, 6, \dots\}\]
+\[\Z b = \Z 4 = \{\dots, -8, -4, 0, 4, 8, \dots\}\]
+And so: 
+\begin{equation*}
+    \begin{aligned}
+        \Z a + \Z b &= \Z 3 + \Z 4 \\ 
+            &= \{\dots, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, \dots\} \\ 
+            &= \Z 1 \\ 
+            &= \Z
+    \end{aligned}
+\end{equation*}
+We know that, for $a = 3$ and $b = 4$, $ab = 12$. Take $p = 3$. Then, we know that 3 divides 3 but 3 does not divide 4. Likewise, take $p = 2$. Then, we know that 2 divides 4 but 2 does not divide 3. 
+
+\subsubsection{Relation to LCM}
+Another subgroup of $(\Z, +)$ associated to a pair of integers $a$ and $b$ is the intersection; that is, $\Z a \cap \Z b$, the set of integers contained in both $\Z a$ and $\Z b$. Assuming that neither $a$ nor $b$ is zero, $\Z a \cap \Z b$ is a subgroup that is not trivial (since we know that $a$ and $b$ are not zero, $ab \neq 0$). So, $\Z a \cap \Z b$ has the form $\Z m$ for some positive integer $m$. This $m$ is known as the \emph{least common multiple} of $a$ and $b$, and is commonly denoted by $\lcm(a, b)$. 
+
+\begin{mdframed}
+    \begin{proposition}
+        Let $A$ and $b$ be integers different from zero, and let $m = \lcm(a, b)$, the positive integer that generates the subgroup $S = \Z a \cap \Z b$. Then, $\Z m = \Z a \cap \Z b$ and so: 
+        \begin{enumerate}[(a)]
+            \item $m$ is divisible by both $a$ and $b$. 
+            \item If an integer $n$ is divisible by $a$ and by $b$, then it is divisible by $m$. 
+        \end{enumerate}
+    \end{proposition}
+\end{mdframed}
+
+\begin{mdframed}
+    \begin{proof}
+        Both statements follow from the fact that an integer is divisible by $a$ and by $b$ if and only if it is contained in $\Z m = \Z a \cap \Z b$. 
+    \end{proof}
+\end{mdframed}
+
+As an example, consider again $a = 4$ and $b = 6$. Then, $m = \lcm(4, 6) = 12$ and: 
+\[\Z a = \Z 4 = \{\dots, -24, -20, -16, -12, -8, -4, 0, 4, 8, 12, 16, 20, 24, \dots\}\]
+\[\Z b = \Z 6 = \{\dots, -24, -18, -12, -6, 0, 6, 12, 18, 24 \dots\}\]
+So: 
+\begin{equation*}
+    \begin{aligned}
+        \Z a \cap \Z b &= \Z 4 \cap \Z 6 \\ 
+            &= \{\dots, -24, -12, 0, 12, 24, \dots\} \\ 
+            &= \Z 12 \\ 
+            &= \Z m
+    \end{aligned}
+\end{equation*}
+
+
+\subsubsection{LCM and GCD}
+
+\begin{corollary}{}{}
+    Let $d = \gcd(a, b)$ and $m = \lcm(a, b)$. Then, $ab = dm$. 
+\end{corollary}
+
+\begin{mdframed}
+    \begin{proof}
+        Since $b / d$ is an integer, $a$ divides $ab / d$. Similarly, $b$ divides $ab / d$, so $m$ divides $ab / d$. We can write $d  = ra + sb$, implying that $dm = ram + sbm$. Both terms on the right is divisible by $ab$, so $ab$ divides $dm$ and so $ab$ and $dm$ are positive and each one divides the other, leading to $ab = dm$.  
+    \end{proof}
+\end{mdframed}
+
+As an example, take $a = 4$ and $b = 10$ so that $d = \gcd(4, 10) = 2$ and $m = \lcm(4, 10) = 20$. Then, it follows that: 
+\[ab = 4(10) = 40 = 2(20) = dm\]
+
+
+
+
+
+
+
+
+
 
 \newpage 
 \section{Cyclic Groups} 
@@ -657,20 +784,25 @@ Here, we will briefly talk about cyclic groups, subgroups, and order of elements
     Let $G$ be a group. Let $x \in G$ be an element. A \textbf{cyclic subgroup} $H = \cyclic{x}$ generated by $x$ is the subset: 
     \[H = \{\dots, x^{-2}, x^{-1}, x^0, x^1, x^2, \dots\} \subseteq G\]
     Namely, we note that: 
-    \[\cyclic{x} = \{x^n \mid x \in \Z\}\]
+    \[\cyclic{x} = \{x^n \mid n \in \Z\}\]
 \end{definition}
+We will now verify that a cyclic subgroup is, indeed, a subgroup. 
+\begin{mdframed}
+    \begin{proof}
+        To check that $H$ is a subgroup, we show that it meets the properties of a subgroup. In particular:
+        \begin{itemize}
+            \item \underline{Closure:} We have that (regardless of signs): 
+            \[x^m x^n = x^{m + n}\]
 
-To check that $H$ is a \underline{commutative} subgroup, we show that it meets the properties of a subgroup. In particular:  
-\begin{itemize}
-    \item \underline{Closure:} We have that (regardless of signs): 
-    \[x^m x^n = x^{m + n}\]
+            \item \underline{Identity:} We know that: 
+            \[e = x^0 \in G\]
 
-    \item \underline{Identity:} We know that: 
-    \[e = x^0 \in G\]
-
-    \item \underline{Inverse:} We know that (regardless of signs): 
-    \[x^n = x^{-n}\]
-\end{itemize}
+            \item \underline{Inverse:} We know that (regardless of signs): 
+            \[x^n = x^{-n}\]
+        \end{itemize}
+        So, a cyclic subgroup is a subgroup. 
+    \end{proof}
+\end{mdframed}
 
 \textbf{Remark:} $H$ may or may not be infinite. For example, consider the group $(\Z, +)$. If $x = a$ (some positive integer), then the following is infinite: 
 \[H = \Z a\]
@@ -686,7 +818,10 @@ By which it cycles around (hence the name).
     A group $(G, *)$ is called a \textbf{cyclic group} if $G = \cyclic{x}$ for some $x \in G$. 
 \end{definition}
 
-\subsection{Cyclic Groups are Abelian (Commutative)}
+\subsection{Properties of Cyclic Subgroups}
+Now, we'll talk about some important properties of cyclic subgroups.
+
+\subsubsection{Cyclic Groups are Abelian}
 To show that cyclic groups are abelian, we provide a proof. 
 \begin{mdframed}
     \begin{proof}
@@ -697,8 +832,7 @@ To show that cyclic groups are abelian, we provide a proof.
     \end{proof}
 \end{mdframed}
 
-\subsection{Properties of Cyclic Subgroups}
-Now, we'll talk about some important properties of cyclic subgroups.
+\subsubsection{Subgroup of Cyclic Groups}
 \begin{theorem}{}{}
     Every subgroup of a cyclic group is cyclic.
 \end{theorem}
@@ -713,9 +847,9 @@ The proof for this theorem is as follows:
         \[\{g^{sk} \mid k \in \Z\} \subseteq H\]
         Which completes this proof.
     \end{proof}
-\end{mdframed} % TODO order discussed at 46:18
+\end{mdframed}
 
-We now consider the following proposition.
+\subsubsection{Order of a Cyclic Subgroup}
 \begin{mdframed}
     \begin{proposition}
         Let $\cyclic{x}$ be the cyclic subgroup of a group $G$ generated by an element $x$, and let $S \subseteq \Z$ denote the set of integer $k$ such that $x^k = 1$.
@@ -727,43 +861,55 @@ We now consider the following proposition.
     \end{proposition}
 \end{mdframed}
 
-\textbf{Remarks:}
-\begin{itemize}
-    \item The order of $\cyclic{x}$ is the same thing as saying the cardinality of $\cyclic{x}$, or the number of elements. 
-    \item An element $x \in G$ (a group) has order $n$ if $\cyclic{x}$ has order $n$. However, it's not correct to say that $x$ has a cardinality. 
-    \item We can say that $x^n = 1$ and $x^r \neq 1$ for $r \in [1, \dots, n - 1]$. 
-    \item For the third point, we can demonstrate this like so: 
-    \[x^a = x^{qn + r} = (x^{n})^{q} x^r = 1^q x^r = x^r\]
-    Essentially, it wraps around back to the identity element, so in that sense you can think of the exponents as the residue classes modulo $n$. 
-    \item An element might have infinite order if it never cycles. 
-\end{itemize}
+\subsection{Order of a Cyclic Group}
+\begin{definition}{Order of a Cyclic Group}{}
+    The group $\cyclic{x} = \{1, x, \dots, x^{n - 1}\}$ described in part (c) of the proposition above is called the \textbf{cyclic group of order $n$}. The order of $\cyclic{x}$ is the same thing as saying the cardinality of $\cyclic{x}$, or the group generated by this element. 
+    
+    \bigskip 
+    
+    We note that $\cyclic{x}$ can have infinitely many elements; in this case, we say that this cyclic subgroup is \emph{infinite cyclic}.
+\end{definition}
+
+\begin{definition}{Order of an Element}{}
+    An element $x$ of a group has \textbf{order} $n$ if $n$ is the smallest positive integer with the property that: 
+    \[x^n = 1 \quad \text{(Identity Element)}\]
+    This is the same thing as saying that the cyclic subgroup $\cyclic{x}$ generated by $x$ has order $n$. 
+    
+    \bigskip
+    
+    An element might have infinite order if the corresponding cyclic subgroup never cycles back. 
+\end{definition}
+
+\textbf{Warning:} The order of an element is \emph{not} the same thing as the order of a group, although they are related. Recall that the \emph{order} of a group $G$ is the number of elements that it contains.
+
+\bigskip
+
+\textbf{Remark:} For a finite cyclic subgroup, we can say that $\boxed{x^n = 1}$ and $x^r \neq 1$ for $r \in [1, \dots, n - 1]$. To demonstrate, we note that: 
+\[x^a = x^{qn + r} = (x^{n})^{q} x^r = 1^q x^r = x^r\]
+Essentially, it wraps around back to the identity element, so in that sense you can think of the exponents as the residue classes modulo $n$. 
+
+\bigskip 
+
+\textbf{Summary:} So, really, when we say that some element $x \in G$ has order $n$, we mean that $x^n = 1$, the identity element. 
 
 \subsection{Examples of Cyclic Subgroups}
 Here, we briefly explain some examples of cyclic subgroups.
 
 \subsubsection{Example: Trivial}
-The identity element, 1, has order 1. It cycles back immediately. 
+The identity element, 1, has order 1. It cycles back immediately. This is represented by the set: 
+\[\{1\}\]
 
-\subsubsection{Example: Symmetric Group of Size 3}
+\subsubsection{Non-Example: Symmetric Group of Size 3}
 Consider $G = S_3$. Then, we have: 
 \begin{itemize}
     \item $x = (1 2)$: has order 2. 
-    \item $x = (1 2 3)$: has order 3.
+    \item $y = (1 2 3)$: has order 3.
     \begin{itemize}
-        \item $x^2 = (1 3 2)$
-        \item $x^3 = (1)$
+        \item $y^2 = (1 3 2)$
+        \item $y^3 = (1)$
     \end{itemize}
 \end{itemize}
-Which elements of $S_3$ have order 6? 
-\begin{itemize}
-    \item $(1)$
-    \item $(1 2)$
-    \item $(2 3)$
-    \item $(1 3)$
-    \item $(1 2 3)$
-    \item $(1 3 2)$
-\end{itemize}
-None of these elements have order 6, so $S_3$ is not a cyclic group. 
+Which elements of $S_3 = \{(1), (1 2), (2 3), (1 3), (1 2 3), (1 3 2)\}$ have order 6? Well, none of these elements have order 6, so $S_3$ is not a cyclic group. This is particularly because, by the definition of a cyclic group, there has to be an element of $x \in S_3$ that generates the entire set $S_3$. However, as none of these elements of $S_3$ actually have an order of 6, $S_3$ \emph{itself} cannot be generated by any of its elements. 
 
 \subsubsection{Example: Matrices}
 Consider $G = GL_{2}(\R)$. The element $x = \begin{bmatrix}
@@ -783,7 +929,7 @@ Consider $G = GL_{2}(\R)$. The element $x = \begin{bmatrix}
     0 & 1
 \end{bmatrix}\]
 
-As you can see, we can never get back to the identity element. 
+As you can see, we can never get back to the identity element. So, $x$ has infinite order. 
 
 \subsubsection{Example: Matrices}
 The matrix $x = \begin{bmatrix}
@@ -810,7 +956,7 @@ The matrix $x = \begin{bmatrix}
     1 & 0 \\ 
     0 & 1
 \end{bmatrix} = I\]
-So, $x$ has order 6. We note that $x^6 = x^0$. 
+So, $x$ has order 6. We note that $x^6 = x^0 = 1$. 
 
 \subsection{More on Cyclic Groups}
 Consider the following proposition: 
@@ -1430,9 +1576,11 @@ Now, suppose that $\sim$ is the equivalence relation over a non-empty set $X$, w
 
 For $x \in X$, we let $[x] = \{y \in X \mid y \sim x\}$ (all the elements that are $\sim$-related to $x$).\footnote{So, it's obvious that $[x] \subseteq X$.} We call $[x]$ the \textbf{equivalence class of $x$ with respect to $\sim$}. When $x \sim y$, we can say that $x$ is equivalent to $y$ with respect to $\sim$. 
 
-\begin{proposition}
-    Suppose $\sim$ is an equivalence relation over a non-empty set $X$. Then, $\{[x] \mid x \in X\}$ is a partition of $X$. 
-\end{proposition}
+\begin{mdframed}
+    \begin{proposition}
+        Suppose $\sim$ is an equivalence relation over a non-empty set $X$. Then, $\{[x] \mid x \in X\}$ is a partition of $X$. 
+    \end{proposition}
+\end{mdframed}
 This proposition is essentially asking us to show the following properties: 
 \begin{itemize}
     \item Covering: Every element of this set belongs to one of these equivalence classes. 
@@ -1678,9 +1826,11 @@ We now talk about the \emph{center} of a group, which is also an important topic
 \end{itemize}
 
 Consider the following proposition: 
-\begin{proposition}
-    $Z$ is an abelian subgroup. 
-\end{proposition}
+\begin{mdframed}
+    \begin{proposition}
+        $Z$ is an abelian subgroup. 
+    \end{proposition}
+\end{mdframed}
 To show that this is the case, we give a proof: 
 \begin{mdframed}
     \begin{proof}
@@ -1768,9 +1918,11 @@ Consider $G = S_3$ with $H = \cyclic{(123)}$. Then, $H$ is normal. This is becau
 
 \subsection{Kernal of a Homomorphism}
 Consider the following proposition: 
-\begin{proposition}
-    The kernal of a homomorphism is a normal subgroup.
-\end{proposition}
+\begin{mdframed}
+    \begin{proposition}
+        The kernal of a homomorphism is a normal subgroup.
+    \end{proposition}
+\end{mdframed}
 
 The proof is as follows: 
 \begin{mdframed}
@@ -1783,16 +1935,18 @@ The proof is as follows:
 
 \subsection{Cosets and Normal Groups}
 Finally, we consider the following proposition.
-\begin{proposition}
-    Let $H$ be a subgroup of $G$. The following conditions are equivalent: 
-    \begin{itemize}
-        \item $H$ is a normal subgroup. 
-        \item For all $g \in G$, $g * H * g^{-1} = H$. In particular, for all $g \in G$, $g * H * g^{-1} \subseteq H$. The same applies to $g^{-1}$; $g^{-1} * H * g \subseteq H \iff H \subseteq g * H * g^{-1}$. 
-        \item For all $g \in G$, the left coset $g * H$ is equal to the right coset $H * g$. 
-        \item Every left coset of $H$ in $G$ is a right coset. In other words:
-        \[\underbrace{g * H}_{\text{Left coset.}} = \underbrace{H * g}_{\text{Right coset.}}\] 
-    \end{itemize}
-\end{proposition}
+\begin{mdframed}
+    \begin{proposition}
+        Let $H$ be a subgroup of $G$. The following conditions are equivalent: 
+        \begin{itemize}
+            \item $H$ is a normal subgroup. 
+            \item For all $g \in G$, $g * H * g^{-1} = H$. In particular, for all $g \in G$, $g * H * g^{-1} \subseteq H$. The same applies to $g^{-1}$; $g^{-1} * H * g \subseteq H \iff H \subseteq g * H * g^{-1}$. 
+            \item For all $g \in G$, the left coset $g * H$ is equal to the right coset $H * g$. 
+            \item Every left coset of $H$ in $G$ is a right coset. In other words:
+            \[\underbrace{g * H}_{\text{Left coset.}} = \underbrace{H * g}_{\text{Right coset.}}\] 
+        \end{itemize}
+    \end{proposition}
+\end{mdframed}
  
 
 
@@ -1981,5 +2135,29 @@ THis is a subgroup because it has all three characteristics of a subgroup (which
 \bigskip
 
 For example, if the homomorphism is $(\Z, +) \to (\Z / \Z n)$, then for any $d$ that divides $n$, the multiples of $d$ in $\Z / \Z n$ form a subgroup whose inverse image in $\Z$ is $\Z d$. For instance, if $d = 4$ and $n = 6$, then the multiples of 4 in $\Z / \Z 6$ are $4(4) = 16 \equiv 2 \mod{6}$. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 \end{document}
