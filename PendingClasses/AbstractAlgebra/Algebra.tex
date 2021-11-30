@@ -1975,29 +1975,52 @@ As an example, the possible orders of elements of a group with order 12 are 1, 2
     \end{proof}
 \end{mdframed}
 
-\subsection{Link to Homomorphisms}
-We can think of homomorphisms in terms of cosets like so. Let: 
+\subsection{Relationship to Homomorphisms}
+We can apply the counting formula to the homomorphism
 \[\varphi: G \to G'\]
-Be a homomorphism of groups. Let $a, b \in G$ be two elements. Then, the following are equivalent: 
-\begin{itemize}
-    \item $\varphi(a) = \varphi(b)$
-    \item $b$ is in the coset $aK$ where $K = \ker(\varphi)$. 
-    \item The partition defined by $\varphi$ is the partition into left cosets. 
-\end{itemize}
-To show that the first point and the second points are the same, we have that: 
-\begin{equation*}
-    \begin{aligned}
-        \varphi(a) = \varphi(b) &\iff \varphi(a^{-1}) \varphi(a) = \varphi(a^{-1}) \varphi(b) \\ 
-            &\iff \varphi(a^{-1}a) = \varphi(a^{-1}b) \\ 
-            &\iff \varphi(e) = \varphi(a^{-1} b) \\ 
-            &\iff e = \varphi(a^{-1} b) \\ 
-            &\iff a^{-1} b \in K \\ 
-            &\iff b \in aK 
-    \end{aligned}
-\end{equation*}
+Here, we see that elements $a, b \in G$ are congruent, i.e. $\varphi(a) = \varphi(b)$ if and only if $b$ is in the coset $aK$ of the kernal $K$.
+\begin{mdframed}
+    \begin{proposition}
+        Let $\varphi: G \mapsto G'$ be a homomorphism with $\ker(\varphi) = K$. Then, for each $a, b \in G$, the following are equivalent: 
+        \begin{enumerate}[(a)]
+            \item $\varphi(a) = \varphi(b)$. 
+            \item $a^{-1}b \in K$.
+            \item $b \in aK$. 
+            \item $bK = aK$. 
+        \end{enumerate}
+    \end{proposition}
+\end{mdframed}
+
+We'll provide a proof for the first statement. 
+\begin{mdframed}
+    \begin{proof}
+        \begin{equation*}
+            \begin{aligned}
+                \varphi(a) = \varphi(b) &\iff \varphi(a^{-1}) \varphi(a) = \varphi(a^{-1}) \varphi(b) \\ 
+                    &\iff \varphi(a^{-1}a) = \varphi(a^{-1}b) \\ 
+                    &\iff \varphi(e) = \varphi(a^{-1} b) && \varphi \text{ is a homomorphism}\\ 
+                    &\iff e = \varphi(a^{-1} b) \\ 
+                    &\iff a^{-1} b \in K && \text{Definition of kernal}\\ 
+                    &\iff b \in aK 
+            \end{aligned}
+        \end{equation*}
+        So, the first point is done. 
+    \end{proof}
+\end{mdframed}
 
 \begin{corollary}{}{}
     The homomorphism $\varphi: G \to G'$ is injective if and only if $\ker(\varphi) = \{e\}$ (the trivial group). 
+\end{corollary}
+
+Another corollary comes from the counting formula. In particular, for a homomorphism $\varphi: G \mapsto G'$, the following counting formula holds: 
+\[[G: \ker \varphi] = |\im \varphi|\]
+\begin{corollary}{}{}
+    Let $\varphi: G \mapsto G'$ be a homomorphism of finite groups. Then: 
+    \begin{itemize}
+        \item $|G| = |\ker \varphi| \cdot |\im \varphi|$.
+        \item $|\ker \varphi|$  divides $|G|$. 
+        \item $|\im \varphi|$ divides both $|G|$ and $|G'|$. 
+    \end{itemize}
 \end{corollary}
 
 
@@ -2009,7 +2032,20 @@ Of course, we cannot forget the right coset.
     Where $a \in G$ is a fixed element. 
 \end{definition}
 
-We note that right cosets also partition the group $G$; however, right cosets \underline{aren't always} the same as left cosets. If we consider the symmetric group from above, evaluating all left and right cosets will give us different cosets. 
+We note that right cosets also partition the group $G$; however, right cosets \underline{aren't always} the same as left cosets. To showcase this, consider again $G = S_3$ with $H = \cyclic{y}$ where $x = (123) \in S_3$ and $y = (12) \in S_3$. Then:
+\begin{center}
+    \begin{tabular}{c|c}
+        $\mathbf{a \in S_3}$ & $\mathbf{Ha}$ \\ 
+        \hline 
+        $(1)$       & $H(1) = \{1, y\}$ \\ 
+        $x$         & $Hx = \{x, yx\}$ \\ 
+        $x^2$       & $Hx^2 = \{x^2, yx^2\} = \{x^2, xy\}$ \\ 
+        $y$         & $Hy = \{y, 1\} = \{1, y\} = H(1)$ \\ 
+        $xy$        & $Hxy = \{xy, yxy\} = \{x^2, xy\} = Hx^2$ \\ 
+        $x^2 y$     & $Hx^2 y = \{x^2 y, yx^2 y\} = \{x^2, x^2 y\} = Hx$
+    \end{tabular}
+\end{center}
+That being said, the left and right cosets \emph{would} be equal if the subgroup $H$ is normal.
 
 
 \subsection{Definition of Normal Subgroups}
@@ -2022,6 +2058,51 @@ We note that right cosets also partition the group $G$; however, right cosets \u
     \item The operation $g^{-1} * h * g \in H$ is known as conjugating $h$ by $g$. 
     \item The left cosets are equal to the right cosets. 
 \end{itemize}
+We can now introduce another proposition. 
+\begin{mdframed}
+    \begin{proposition}
+        Let $H$ be a subgroup of a group $G$. The following conditions are equivalent: 
+        \begin{enumerate}[(i)]
+            \item $H$ is a normal subgroup. For all $h \in H$ and all $g \in G$, $g * h * g^{-1} \in H$. 
+            \item For all $g \in G$, $g * H * g^{-1} = H$. 
+            \item For all $g \in G$, $gH = Hg$. 
+            \item Every left coset of $H$ in $G$ is a right coset. 
+        \end{enumerate}
+    \end{proposition}
+\end{mdframed}
+
+\begin{mdframed}
+    \begin{proof}
+        The notation $g * H * g^{-1}$ stands for the set of all elements $g * h * g^{-1}$ with $h \in H$. Suppose that $H$ is normal. Then, it's obvious that (i) holds, and implies that $g * H * g^{-1} \subseteq H$ for all $g \in G$. Substituting $g^{-1}$ for $g$ shows that $g^{-1} * H * g \subseteq H$ as well. If we multiply this inclusion on the left by $g$ and on the right by $g^{-1}$, we now have that $H \subseteq g * H * g^{-1}$. Therefore, $g * H * g^{-1} = H$, proving (ii). We can work backwards to show that (ii) implies (i). 
+
+        \bigskip 
+
+        With $g * H * g^{-1} = H$, multiply both sides on the right by $g$ gives us: 
+        \[g * H = H * g\]
+        Which shows that (ii) implies (iii). We can reverse this operation easily, so (iii) implies (ii).
+
+        \bigskip 
+
+        For the last part, we need to know when a left coset is equal to a right coset. Remember that the right coset partitions the group $G$, and we note that the left coset $gH$ and the right coset $Hg$ have an element in common: $g = g * 1 = 1 * g$. So, if the left coset $gH$ is equal to any right coset, that coset must be $Hg$. 
+    \end{proof}
+\end{mdframed}
+
+\begin{mdframed}
+    \begin{proposition}
+        \begin{enumerate}[(a)]
+            \item If $H$ is a subgroup of a group $G$ and $g$ is an element of $G$, the set $g * H * g^{-1}$ is also a subgroup. 
+            \item If a group $G$ has just one subgroup $H$ of order $r$, then that subgroup is normal. 
+        \end{enumerate}
+    \end{proposition}
+\end{mdframed}
+
+
+
+
+
+
+
+
 
 
 
@@ -2041,12 +2122,12 @@ Why is this important?
     \item If we fix $g$, then we know that: 
     \[(g * a * g^{-1}) * (g * b * g^{-1}) = g * (a * b) * g^{-1}\]
     In other words, the function $\phi_g: G \to G$ can be defined by: 
-    \[\phi_{g}(a) = g * a * g^{-1}\]
-    This is a homomorphism. We also note that its inverse can be defined by the function $\phi_{g^{-1}}$.
+    \[\varphi_{g}(a) = g * a * g^{-1}\]
+    This is a homomorphism. We also note that its inverse can be defined by the function $\varphi_{g^{-1}}$.
     
     \item Suppose we have an element that doesn't ``move'' when conjugated by $g$. In particular: 
     \[g * a * g^{-1} = a \iff g * a = a * g\]
-    Or, in other words, $g$ commutes with $a$. 
+    Then, $g$ commutes with $a$. 
 \end{itemize}
 
 \subsection{Center of a Group}
