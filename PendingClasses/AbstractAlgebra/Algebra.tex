@@ -1194,16 +1194,27 @@ Take our example $\sigma = (123)(4567) \in S_7$. We know that $\sigma$ can be de
 \[\sigma = (123)(4567) = (12)(23)(45)(56)(67) \in S_7\]
 So, $\sigma$ can be represented by \textbf{5} transpositions. Therefore:
 \[(-1)^{5} = -1\]
+So, actually, a better definition of even and odd permutations is as follows: 
+\begin{itemize}
+    \item A permutation is \emph{even} if it can be written as a product of an even number of transpositions. 
+    \item A permutation is \emph{odd} if it can be written as a product of an odd number of transpositions.
+\end{itemize}
 
 \subsection{Alternating Group}
 We now talk about alternating groups, a subgroup of the symmetric group. 
 \begin{definition}{Alternating Group}
     The \textbf{alternating group} $A_n$ is the group of \emph{even} permutations. 
 \end{definition}
+We now show that this is a subgroup of the symmetric group. 
+\begin{mdframed}
+    \begin{proof}
+        To show that $A_n$ is a subgroup, we need to show that all properties of a subgroup are satisifed. First, We know that $(1)$, the identity permutation, is an even permutation, so $(1) \in A_n$. Next, if $\tau$ and $\sigma$ are even, then it follows that $\tau^{-1}$ is even (decompose $\tau$ into transpositions and write the product backwards). Therefore, $\sigma\tau^{-1}$ is even and so $\sigma\tau^{-1} \in A_n$. 
+    \end{proof}
+\end{mdframed}
 
 For example, we know that $S_3 = \{(1), (12), (13), (23), (123), (132)\}$. So: 
 \[A_3 = \{(1), (123), (132)\}\]
-The alternating group has order $\frac{n!}{2}$, where $n$ is the number of elements. This makes sense as half of the permutations in a symmetric group are odd. 
+The alternating group has order $\frac{n!}{2}$, where $n$ is the number of elements.
 
 
 
@@ -1244,7 +1255,7 @@ Something to note here is that we can easily map:
     \item \code{Odd} (in first group) $\to$ \code{1} (in second group).
 \end{itemize}
 This mapping can be represented like so: 
-\[\phi: Z \to \Z / \Z 2\]
+\[\varphi: \Z \to \Z / \Z 2\]
 Where: 
 \begin{itemize}
     \item If $x \in \Z$ is even, map it to $0 \in \Z / \Z 2$. 
@@ -1277,17 +1288,17 @@ Let's suppose we can represent the operations of the above group using a table, 
     \end{center}
 
     \item \underline{Group 2:} $(G', \cdot)$. In order for these groups to have similar group behavior, $x$, $y$, and $x * y$ in $G$ must correspond to the elements in $G'$. This can be represented by a function: 
-    \[\phi: G \to G'\]
+    \[\varphi: G \to G'\]
     We want this function to send a specific part of the table for $G$ to a similar part of the table for $G'$. In this sense, we can say that the place where $x \in G$ is (in the above table) can be mapped to a similar place in the below table for $G'$; the same idea applies to $y \in G$ and $x * y \in G$.  
     \begin{center}
         \begin{tabular}{|c|c c c|c|c c|}
             \hline 
-            $\cdot$   & \dots & \dots & \dots & $\phi(y)$      & \dots & \dots \\ 
+            $\cdot$   & \dots & \dots & \dots & $\varphi(y)$      & \dots & \dots \\ 
             \hline 
             \vdots    &       &       &       &                &       &        \\ 
             \vdots    &       &       &       &                &       &        \\ 
             \hline 
-            $\phi(x)$ &       &       &       & $\phi(x * y)$  &       &        \\ 
+            $\varphi(x)$ &       &       &       & $\varphi(x * y)$  &       &        \\ 
             \hline 
             \vdots    &       &       &       &                &       &        \\ 
             \vdots    &       &       &       &                &       &        \\ 
@@ -1295,11 +1306,11 @@ Let's suppose we can represent the operations of the above group using a table, 
             \hline 
         \end{tabular}
     \end{center}
-    Here, we got $\phi(x)$, $\phi(y)$, and $\phi(x * y)$ from the function mapping. The function mapping essentially mapped $x$, $y$, and $x * y$ to ``similar'' locations in the $G'$ table. 
+    Here, we got $\varphi(x)$, $\varphi(y)$, and $\varphi(x * y)$ from the function mapping. The function mapping essentially mapped $x$, $y$, and $x * y$ to ``similar'' locations in the $G'$ table. 
 
     \bigskip 
 
-    An observation to note here is that the square where $\phi(x * y)$ is at (in the table above) must also contain $\phi(x) \cdot \phi(y)$. 
+    An observation to note here is that the square where $\varphi(x * y)$ is at (in the table above) must also contain $\varphi(x) \cdot \varphi(y)$. 
 \end{itemize}
 
 
@@ -1308,11 +1319,11 @@ Let's suppose we can represent the operations of the above group using a table, 
 \subsection{Definition of Homomorphism}
 \begin{definition}{Homomorphism}{}
     Let $(G, *)$ and $(G', \cdot)$ be two different groups. A \textbf{homomorphism} (also known as a \emph{group homomorphism}) from $G$ to $G'$ is a function: 
-    \[\phi: G \to G'\]
-    Such that for all $a, b \in G$, $\phi(a * b) = \phi(a) \cdot \phi(b)$. 
+    \[\varphi: G \to G'\]
+    Such that for all $a, b \in G$, $\varphi(a * b) = \varphi(a) \cdot \varphi(b)$. 
 \end{definition}
 \textbf{Remark:} Here, we say that: 
-\[\underbrace{\phi(a * b)}_{\text{Binary operation in } G} = \overbrace{\phi(a) \cdot \phi(b)}^{\text{Binary operation in } G'}\]
+\[\underbrace{\varphi(a * b)}_{\text{Binary operation in } G} = \overbrace{\varphi(a) \cdot \varphi(b)}^{\text{Binary operation in } G'}\]
 
 \subsection{Pictorial Interpretation}
 A visualization of this process is shown below: 
@@ -1342,11 +1353,11 @@ Then, we say that $f$ is a group homomorphism since for all $x, y \in \Z$:
 
 \subsubsection{Example: Exponential Map}
 Consider the following function: 
-\[\phi: (\R, +) \to (\R - \{0\}, \times)\]
+\[\varphi: (\R, +) \to (\R - \{0\}, \times)\]
 Defined by: 
-\[\phi(x) = e^x\]
-Then, $\phi$ is a group homomorphism since for all $x, y \in \R$: 
-\[\phi(x + y) = e^{x + y} = e^x \times e^y = \phi(x) \times \phi(y)\]
+\[\varphi(x) = e^x\]
+Then, $\varphi$ is a group homomorphism since for all $x, y \in \R$: 
+\[\varphi(x + y) = e^{x + y} = e^x \times e^y = \varphi(x) \times \varphi(y)\]
 
 
 \subsubsection{Example: Generalized Exponential Map}
@@ -1382,12 +1393,12 @@ We know that $\theta$ is a group homomorphism because:
 \subsection{Properties of Homomorphisms}
 \begin{mdframed}
     \begin{proposition}
-        Let $\phi: G \to G'$ be a group homomorphism. 
+        Let $\varphi: G \to G'$ be a group homomorphism. 
         \begin{enumerate}[(a)]
-            \item $\phi$ maps the identity to the identity: $\phi(e_G) = e_{G'}$. 
-            \item $\phi$ maps inverses to inverses; in other words, for every $a \in G$, $\phi(a^{-1}) = \phi(a)^{-1}$ where $a^{-1}$ is the inverse of $a$ in $G$ and $\phi(a)^{-1}$ is the inverse of $\phi(a)$ in $G'$. This can also be written as: 
-            \[e_G = \phi(a) \phi(a^{-1})\]
-            \item If $a_1, \dots, a_k$ are elements of $G$, then $\phi(a_1, \dots, a_k) = \phi(a_1) \dots \phi(a_k)$. 
+            \item $\varphi$ maps the identity to the identity: $\varphi(e_G) = e_{G'}$. 
+            \item $\varphi$ maps inverses to inverses; in other words, for every $a \in G$, $\varphi(a^{-1}) = \varphi(a)^{-1}$ where $a^{-1}$ is the inverse of $a$ in $G$ and $\varphi(a)^{-1}$ is the inverse of $\varphi(a)$ in $G'$. This can also be written as: 
+            \[e_G = \varphi(a) \varphi(a^{-1})\]
+            \item If $a_1, \dots, a_k$ are elements of $G$, then $\varphi(a_1, \dots, a_k) = \varphi(a_1) \dots \varphi(a_k)$. 
         \end{enumerate}
     \end{proposition}
 \end{mdframed}
@@ -1397,23 +1408,23 @@ The proof is as follows:
     \begin{proof}
         We need to show that all three properties hold. 
         \begin{enumerate}[(a)]
-            \item We note that since $e_G$ is the identity element of $G$, it follows that $e_G * e_G = e_G$. Because $\phi$ is a group homomorphism, it follows that: 
-            \[\boxed{\phi(e_G * e_G)} = \phi(e_G) * \phi(e_G)\]
-            Since $e_G * e_G = e_G$, it follows that $\phi(e_G * e_G) = \phi(e_G)$, so: 
-            \[\phi(e_G) * \phi(e_G) = \boxed{\phi(e_G)}\]
+            \item We note that since $e_G$ is the identity element of $G$, it follows that $e_G * e_G = e_G$. Because $\varphi$ is a group homomorphism, it follows that: 
+            \[\boxed{\varphi(e_G * e_G)} = \varphi(e_G) * \varphi(e_G)\]
+            Since $e_G * e_G = e_G$, it follows that $\varphi(e_G * e_G) = \varphi(e_G)$, so: 
+            \[\varphi(e_G) * \varphi(e_G) = \boxed{\varphi(e_G)}\]
             Thus: 
-            \[\phi(e_G) * \phi(e_G) = \phi(e_G) * e_{G'}\]
+            \[\varphi(e_G) * \varphi(e_G) = \varphi(e_G) * e_{G'}\]
             Canceling the first element in each side, we now have: 
-            \[\phi(e_G) = e_{G'}\]
+            \[\varphi(e_G) = e_{G'}\]
 
-            \item For every $a \in G$, we know that $a * a^{-1} = e_G$. Applying $\phi$ to both sides, we have that: 
-            \[\phi(a * a^{-1}) = \phi(e_G)\]
-            By the first part and the fact that $\phi$ is a group homomorphism, we deduce that: 
-            \[\phi(a) * \phi(a^{-1}) = e_{G'}\]
-            Multiplying both sides by the inverse $\phi(a)^{-1}$ of $\phi(a)$ in $G'$, we obtain: 
-            \[\phi(a)^{-1} * \phi(a) * \phi(a^{-1}) = \phi(a)^{-1} * e_H\]
+            \item For every $a \in G$, we know that $a * a^{-1} = e_G$. Applying $\varphi$ to both sides, we have that: 
+            \[\varphi(a * a^{-1}) = \varphi(e_G)\]
+            By the first part and the fact that $\varphi$ is a group homomorphism, we deduce that: 
+            \[\varphi(a) * \varphi(a^{-1}) = e_{G'}\]
+            Multiplying both sides by the inverse $\varphi(a)^{-1}$ of $\varphi(a)$ in $G'$, we obtain: 
+            \[\varphi(a)^{-1} * \varphi(a) * \varphi(a^{-1}) = \varphi(a)^{-1} * e_H\]
             And so:
-            \[\phi(a^{-1}) = \phi(a)^{-1}\]
+            \[\varphi(a^{-1}) = \varphi(a)^{-1}\]
 
             \item We can simply make use of induction from the definition. \qedhere
         \end{enumerate}
@@ -1423,35 +1434,37 @@ The proof is as follows:
 
 \subsection{Image}
 \begin{definition}{Image}{}
-    The \textbf{image} of a general homomorphism $\phi: G \to G'$ is simply the image of $\phi$ as a map of sets: 
-    \[\im(\phi) = \{x \in G' \mid x = \phi(a) \text{ for some } a \in G\}\]
+    The \textbf{image} of a general homomorphism $\varphi: G \to G'$ is simply the image of $\varphi$ as a map of sets: 
+    \[\im(\varphi) = \{x \in G' \mid x = \varphi(a) \text{ for some } a \in G\}\]
+    More simply: 
+    \[\im(\varphi) = \{\varphi(g) \mid g \in G\}\]
 \end{definition}
-The image of $\phi$ is a subgroup of $G'$. Say $a, b \in G'$ are in the image; that is, $\exists x, y \in G$ such that $\phi(x) = a$, $\phi(y) = b$. Then: 
-\[\phi(xy) = ab\]
-This implies that the image has closure. The image has the identity (consider the second property in the propositions). Finally, the image has the inverse since $\phi(x^{-1}) = a^{-1}$. 
+The image of $\varphi$ is a subgroup of $G'$. Say $a, b \in G'$ are in the image; that is, $\exists x, y \in G$ such that $\varphi(x) = a$, $\varphi(y) = b$. Then: 
+\[\varphi(xy) = ab\]
+This implies that the image has closure. The image has the identity (consider the second property in the propositions). Finally, the image has the inverse since $\varphi(x^{-1}) = a^{-1}$. 
 
 \subsection{Kernal}
 \begin{definition}{Kernal}{}
-    The \textbf{kernal} of a general homomorphism $\phi: G \to G'$ is the set of elements of $G$ that are mapped to the identity in $G'$: 
-    \[\ker(\phi) = \{a \in G \mid \phi(a) = e_{G'}\}\]
+    The \textbf{kernal} of a general homomorphism $\varphi: G \to G'$ is the set of elements of $G$ that are mapped to the identity in $G'$: 
+    \[\ker(\varphi) = \{a \in G \mid \varphi(a) = e_{G'}\}\]
 \end{definition}
-Here, the kernal of $\phi$ is a subgroup of $G$. 
+Here, the kernal of $\varphi$ is a subgroup of $G$. 
 
 
 \subsubsection{Example: Matrices}
-For example, we have that $\phi: \det GL_n (\R) \to (\R - \{0\}, \times)$, which means that: 
+For example, we have that $\varphi: \det GL_n (\R) \to (\R - \{0\}, \times)$, which means that: 
 \[\ker(a) = SL_n\]
 Where $SL_n$ is the special linear group of $n \times n$ matrices. 
 
 \subsection{Conjugation}
 For a fixed $g \in G$ where the binary operation is $*$, the function: 
-\[\phi: G \to G\]
+\[\varphi: G \to G\]
 Defined by: 
-\[\phi(a) = g^{-1} * a * g\]
+\[\varphi(a) = g^{-1} * a * g\]
 Is a homomorphism. In particular, we call this the conjugate. This is a homomorphism because: 
 \begin{equation*}
     \begin{aligned}
-        \phi(a * b) &= \phi(a) * \phi(b) \\ 
+        \varphi(a * b) &= \varphi(a) * \varphi(b) \\ 
             &= (g^{-1} * a * g) * (g^{-1} * b * g) \\ 
             &= g^{-1} * a * (g * g^{-1}) * b * g \\ 
             &= g^{-1} * a * b * g
@@ -1538,18 +1551,25 @@ It's clear that both of these are the same groups, only written with different s
 
 \subsection{Definition of Isomorphism}
 \begin{definition}{Isomorphism}{}
-    An \textbf{isomorphism} of two groups $(G, *)$ and $(G', \cdot)$ is a \emph{homomorphism}: 
-    \[\phi: G \to G'\]
-    Which is \underline{bijective} (on sets). If there is a isomorphism $\phi: G \to G'$, we say that $G$ is isomorphic to $G'$. 
+    An \textbf{isomorphism} of two groups $(G, *)$ and $(G', \cdot)$ is a \underline{bijective} \emph{homomorphism}: 
+    \[\varphi: G \to G'\]
+    If there is a isomorphism $\varphi: G \to G'$, we say that $G$ is isomorphic to $G'$ and write $G \cong G'$. 
 \end{definition}
+\textbf{Remark:} To say that two groups are isomorphic is to say that they are the same as \emph{groups}. The elements of the two groups, and the associated group operations, may be different; however, both groups have the same exact structures.
 
 \subsection{Inverse of Isomorphism}
-Let $\phi^{-1}: G' \to G$ be the inverse function. Then, $\phi^{-1}$ is also a homomorphism. In other words: 
-\[\forall a, b \in G', \phi^{-1}(a \cdot b) = \phi^{-1}(a) * \phi^{-1}(b)\]
-Let $x = \phi^{-1}(a)$ and $y = \phi^{-1}(b)$ so that: 
-\[\phi(x * y) = \phi(x) \cdot \phi(y)\]
-Which follows that: 
-\[x * y = \phi^{-1}(a) * \phi^{-1}(b) = \phi^{-1}(\phi(x) \cdot \phi(y)) = \phi^{-1}(a \cdot b)\]
+\begin{lemma}{}{}
+    A homomorphism $\varphi: G \mapsto G'$ is an isomorphism if and only if it is invertible. In this case, $\varphi^{-1}$ is also a homomorphism, hence an isomorphism.
+\end{lemma}
+\begin{mdframed}
+    \begin{proof}
+        The first statement here is trivial, since a map of sets is bijective if and only if it has an inverse. Now, suppose $\varphi: G \mapsto G'$ is an isomorphism. Then, we need to show that $\varphi^{-1}: G' \mapsto G$ is a homomorphism. To make things explicit, suppose $G$ has the binary operation $*$ and $G'$ has the binary operation $\cdot$. Let $x, y \in G'$; then, we need to show that: 
+        \[\varphi^{-1}(x \cdot y) = \varphi^{-1}(x) * \varphi^{-1}(y)\]
+        Since $\varphi: G \mapsto G'$ is surjective, there exists $a, b \in G$ such that $\varphi(a) = x$ and $\varphi(b) = y$. Then: 
+        \[\varphi^{-1}(x \cdot y) = \varphi^{-1}(\varphi(a) \cdot \varphi(b)) = \varphi^{-1}(\varphi(a * b)) = a * b = \varphi^{-1}(x) * \varphi^{-1}(y)\]
+        Therefore, $\varphi^{-1}$ is a homomorphism. Since $\varphi^{-1}$ is invertible, its inverse being $\varphi$, it is an isomorphism by the first part of the lemma. 
+    \end{proof}
+\end{mdframed}
 
 \subsection{Pictorial Interpretation}
 A pictorial interpretation can be seen as follows: 
@@ -1568,7 +1588,7 @@ Some examples of structural properties include:
     \item Having order $n$ for any $n$. 
     \item Being cyclic. 
     \item Being abelian/commutative. 
-    \item Number of leements of a given order. 
+    \item Number of elements of a given order. 
 \end{itemize}
 
 \textbf{Remarks:}
@@ -1577,12 +1597,49 @@ Some examples of structural properties include:
     \item Any two cyclic groups of the same order are isomorphic. 
 \end{itemize} 
 
-\subsection{Examples of Non-Cyclic Isomorphisms}
+\subsubsection{Abelian Structure}
+\begin{mdframed}
+    \begin{proposition}
+        Suppose $G$ and $G'$ are isomorphic groups. If $G$ is abelian, then so is $G'$. 
+    \end{proposition}
+\end{mdframed}
+
+\begin{mdframed}
+    \begin{proof}
+        We once again take $G$ to have binary operation $*$ and $G'$ to have binary operation $\cdot$. Take $x, y \in G'$. Since $G$ and $G'$ are isomorphic, then let $\varphi(a) = x$ and $\varphi(b) = y$ where $a, b \in G$. Then: 
+        \begin{equation*}
+            \begin{aligned}
+                x \cdot y &= \varphi(a) \cdot \varphi(b) \\ 
+                    &= \varphi(a * b) && \varphi \text{ is a homomorphism.} \\ 
+                    &= \varphi(b * a) && G \text{ is abelian (commutative).} \\ 
+                    &= \varphi(b) \cdot \varphi(a) && \varphi \text{ is a homomorphism.} \\ 
+                    &= y \cdot x
+            \end{aligned}
+        \end{equation*}  
+        Therefore, $G'$ is abelian. 
+    \end{proof}
+\end{mdframed}
+
+\subsubsection{Order Structure}
+\begin{mdframed}
+    \begin{proposition}
+        Suppose $G$ and $G'$ are isomorphic groups. If $G$ has a subgroup $K$ of order $n$, so does $G'$.
+    \end{proposition}
+\end{mdframed}
+
+\begin{mdframed}
+    \begin{proof}
+        Since $K$ is a subgroup of $G$ and $|K| = n$, then $\varphi(K)$ is a subgroup of $G'$. Since $\varphi$ maps $K$ bijectively onto $\varphi(K)$, it follows that $|\varphi(K)| = n$. 
+    \end{proof}
+\end{mdframed}
+
+
+\subsubsection{Examples of Non-Cyclic Isomorphisms}
 The following examples are isomorphic to each other: 
 \begin{itemize}
-    \item The Klein 4-Group: 
+    \item The Klein Four Group: 
     \begin{center}
-        \begin{tabular}{c|c|c|c|c}
+        \begin{tabular}{c|c c c c}
                 & 1 & $a$ & $b$ & $c$ \\ 
             \hline 
             1   & 1 & $a$ & $b$ & $c$ \\ 
@@ -1875,27 +1932,27 @@ To show that this is the case, we note that:
 
 \subsection{Link to Homomorphism}
 We can think of homomorphisms in terms of cosets like so. Let: 
-\[\phi: G \to G'\]
+\[\varphi: G \to G'\]
 Be a homomorphism of groups. Let $a, b \in G$ be two elements. Then, the following are equivalent: 
 \begin{itemize}
-    \item $\phi(a) = \phi(b)$
-    \item $b$ is in the coset $aK$ where $K = \ker(\phi)$. 
-    \item The partition defined by $\phi$ is the partition into left cosets. 
+    \item $\varphi(a) = \varphi(b)$
+    \item $b$ is in the coset $aK$ where $K = \ker(\varphi)$. 
+    \item The partition defined by $\varphi$ is the partition into left cosets. 
 \end{itemize}
 To show that the first point and the second points are the same, we have that: 
 \begin{equation*}
     \begin{aligned}
-        \phi(a) = \phi(b) &\iff \phi(a^{-1}) \phi(a) = \phi(a^{-1}) \phi(b) \\ 
-            &\iff \phi(a^{-1}a) = \phi(a^{-1}b) \\ 
-            &\iff \phi(e) = \phi(a^{-1} b) \\ 
-            &\iff e = \phi(a^{-1} b)
+        \varphi(a) = \varphi(b) &\iff \varphi(a^{-1}) \varphi(a) = \varphi(a^{-1}) \varphi(b) \\ 
+            &\iff \varphi(a^{-1}a) = \varphi(a^{-1}b) \\ 
+            &\iff \varphi(e) = \varphi(a^{-1} b) \\ 
+            &\iff e = \varphi(a^{-1} b)
             &\iff a^{-1} b \in K \\ 
             &\iff b \in aK 
     \end{aligned}
 \end{equation*}
 
 \begin{corollary}{}{}
-    The homomorphism $\phi: G \to G'$ is injective if and only if $\ker(\phi) = \{e\}$ (the trivial group). 
+    The homomorphism $\varphi: G \to G'$ is injective if and only if $\ker(\varphi) = \{e\}$ (the trivial group). 
 \end{corollary}
 
 
@@ -2002,7 +2059,7 @@ Recall that, when we talked about conjugations, we mentioned that this was a hom
 In fact, we can say that this is an \emph{automorphism}. We define this like so: 
 \begin{definition}{Automorphism}{}
     An \textbf{automorphism} is an \emph{isomorphism} on a group $G$ to itself. It is defined by: 
-    \[\phi: G \to G\]
+    \[\varphi: G \to G\]
 \end{definition}
 We also note that the \textbf{automorphism group} of a group $G$ form a group under \emph{composition}. Notationally, this is represented by $\aut(G)$.
 
@@ -2077,8 +2134,8 @@ Consider the following proposition:
 The proof is as follows: 
 \begin{mdframed}
     \begin{proof}
-        If $a$ is in the kernal of the homomorphism $\phi: G \to G'$ and if $g$ is any element of $G$, then: 
-        \[\phi(g * a * g^{-1}) = \phi(g) \cdot \phi(a) \cdot \phi(g) = \phi(g) \cdot e_{G'} \cdot \phi(g)^{-1}.\]
+        If $a$ is in the kernal of the homomorphism $\varphi: G \to G'$ and if $g$ is any element of $G$, then: 
+        \[\varphi(g * a * g^{-1}) = \varphi(g) \cdot \varphi(a) \cdot \varphi(g) = \varphi(g) \cdot e_{G'} \cdot \varphi(g)^{-1}.\]
         Therefore, $g * a * g^{-1}$ is in the kernal too. 
     \end{proof}
 \end{mdframed}
@@ -2117,12 +2174,12 @@ We can use the properties of a normal subgroup to talk more about quotient group
 First, as always, we begin with a definition. 
 \begin{definition}{Quotient Group}{}
     The \textbf{quotient group} of $G$ by $H$, when it exists (it will exist if $H$ is normal), is a group $\overline{G}$ together with a \emph{surjective} homomorphism: 
-    \[\phi: G \to \overline{G}\]
+    \[\varphi: G \to \overline{G}\]
     Where the kernal is denoted $H$. 
 \end{definition}
 For example, if $G = (\Z, +)$ and $H = \Z n$, then $\overline{G} = \Z / \Z n$. We can define: 
-\[\phi: G \to \overline{G}\]
-\[\phi: \Z^+ \to \Z / \Z n\]
+\[\varphi: G \to \overline{G}\]
+\[\varphi: \Z^+ \to \Z / \Z n\]
 By performing the following mapping: 
 \[a \to a \mod{n}\]
 
@@ -2169,13 +2226,13 @@ The above lemma states that this is a well-defined operation. We now need to che
 \end{itemize}
 \begin{mdframed}
     \begin{proof}
-        Let $G$ be a group. We know that $\phi: G \to \overline{G}$ is a surjective function and $\phi(a) \cdot \phi(b) = \phi(a * b)$. Pick three elements $\overline{x_1}$, $\overline{x_2}$, and $\overline{x_3}$. Write these as $\phi(\overline{x_1})$, $\phi(\overline{x_2})$, and $\phi(\overline{x_3})$ for some $x_1$, $x_2$, and $x_3 \in G$. Then, in $G$, we have that: 
+        Let $G$ be a group. We know that $\varphi: G \to \overline{G}$ is a surjective function and $\varphi(a) \cdot \varphi(b) = \varphi(a * b)$. Pick three elements $\overline{x_1}$, $\overline{x_2}$, and $\overline{x_3}$. Write these as $\varphi(\overline{x_1})$, $\varphi(\overline{x_2})$, and $\varphi(\overline{x_3})$ for some $x_1$, $x_2$, and $x_3 \in G$. Then, in $G$, we have that: 
         \[(x_1 * x_2) * x_3 = x_1 * (x_2 * x_3)\]
-        Applying $\phi$ to both sides: 
+        Applying $\varphi$ to both sides: 
         \begin{equation*}
             \begin{aligned}
-                \phi(x_1 * (x_2 * x_3)) &= \phi(x_1) \cdot \phi(x_2 * x_3) \\ 
-                    &= \phi(x_1) \cdot (\phi(x_2) \cdot \phi(x_3)) \\ 
+                \varphi(x_1 * (x_2 * x_3)) &= \varphi(x_1) \cdot \varphi(x_2 * x_3) \\ 
+                    &= \varphi(x_1) \cdot (\varphi(x_2) \cdot \varphi(x_3)) \\ 
                     &= \overline{x_1} \cdot (\overline{x_2} \cdot \overline{x_3})
             \end{aligned}
         \end{equation*}
@@ -2183,7 +2240,7 @@ The above lemma states that this is a well-defined operation. We now need to che
 
         \bigskip 
 
-        We have now proved that for every normal subgroup $N$ of $G$, $\phi: G \to \overline{G}$ is a surjective homomorphism. 
+        We have now proved that for every normal subgroup $N$ of $G$, $\varphi: G \to \overline{G}$ is a surjective homomorphism. 
     \end{proof}
 \end{mdframed}
 
@@ -2202,25 +2259,25 @@ We can use this information to introduce the First Isomorphism Theorem.
 
 \subsection{First Isomorphism Theorem}
 \begin{theorem}{First Isomorphism Theorem}{}
-    Let $\phi: G \to G'$ be a surjective group homomorphism with kernal $N$. The quotient group $\overline{G}$ is isomorphic to the image of $G'$. To be precise, let $\pi: G \to \overline{G}$ be the canonical map. There is a unique $\overline{\phi}: \overline{G} \to G'$ such that:
-    \[\phi = \overline{\phi} \circ \pi\] 
+    Let $\varphi: G \to G'$ be a surjective group homomorphism with kernal $N$. The quotient group $\overline{G}$ is isomorphic to the image of $G'$. To be precise, let $\pi: G \to \overline{G}$ be the canonical map. There is a unique $\overline{\varphi}: \overline{G} \to G'$ such that:
+    \[\varphi = \overline{\varphi} \circ \pi\] 
 \end{theorem}
 The proof is as follows: 
 \begin{mdframed}
     % might want to use page 84 of textbook for proof
     \begin{proof}
-        The partition defined by $\pi$ and $\phi$ are the same; namely, the cosets of $N$. Define $\overline{\phi}$ by saying that for $\overline{g} \in \overline{G}$, $\overline{\phi}(\overline{g})$ is the unique element of $G'$ such that $\pi^{-1}(\overline{g}) = \phi^{-1}(h)$ as cosets of $N$. 
+        The partition defined by $\pi$ and $\varphi$ are the same; namely, the cosets of $N$. Define $\overline{\varphi}$ by saying that for $\overline{g} \in \overline{G}$, $\overline{\varphi}(\overline{g})$ is the unique element of $G'$ such that $\pi^{-1}(\overline{g}) = \varphi^{-1}(h)$ as cosets of $N$. 
 
         \bigskip 
 
-        $\overline{\phi}$ is a homomorphism because $\overline{g}, \overline{h} \in \overline{G}$ whose $g, h \in G$ with $\pi(g) = \overline{g}$ and $\pi(h) = \overline{h}$, which implies that $\pi(g * h) = \overline{g} \cdot \overline{h}$. Then: 
+        $\overline{\varphi}$ is a homomorphism because $\overline{g}, \overline{h} \in \overline{G}$ whose $g, h \in G$ with $\pi(g) = \overline{g}$ and $\pi(h) = \overline{h}$, which implies that $\pi(g * h) = \overline{g} \cdot \overline{h}$. Then: 
         \begin{equation*}
             \begin{aligned}
-                \overline{\overline{g} * \overline{h}} &= \overline{\phi}(\pi(g * h)) \\ 
-                    &= \phi(g * h) \\ 
-                    &= \phi(g) \cdot \phi(h) \\ 
-                    &= \overline{\phi}(\pi(g)) \cdot \overline{\phi}(\pi(h)) \\ 
-                    &= \overline{\phi}(\overline{g}) \overline{\phi}(\overline{\overline{h}})
+                \overline{\overline{g} * \overline{h}} &= \overline{\varphi}(\pi(g * h)) \\ 
+                    &= \varphi(g * h) \\ 
+                    &= \varphi(g) \cdot \varphi(h) \\ 
+                    &= \overline{\varphi}(\pi(g)) \cdot \overline{\varphi}(\pi(h)) \\ 
+                    &= \overline{\varphi}(\overline{g}) \overline{\varphi}(\overline{\overline{h}})
             \end{aligned}
         \end{equation*} 
         Thus, we are done. 
@@ -2236,14 +2293,14 @@ Any surjective homomorphism with the kernal $N$ are preimages of elements that h
 
 Recall this lemma, which we may or may not have talked about at some point. 
 \begin{lemma}{}{}
-    Let $\phi: G \to G'$ be a surjective homomorphism with kernal $N$. Then, for every $g' \in G'$: 
-    \[\phi^{-1}(g') = \{g \in G \mid \phi(g) = g'\}\]
+    Let $\varphi: G \to G'$ be a surjective homomorphism with kernal $N$. Then, for every $g' \in G'$: 
+    \[\varphi^{-1}(g') = \{g \in G \mid \varphi(g) = g'\}\]
     Represents a left/right coset of $N$. 
 \end{lemma}
 Its proof is as follows: 
 \begin{mdframed}
     \begin{proof}
-        Since $\phi$ is surjective, we can pick a $g_1 \in G$ with $\phi(g_1) = g'$. We claim that $g_1 * N = \phi^{-1}(g') = N * g$. We show that $g_1 N \subseteq \phi^{-1}(g')$. For any $n \in N$, we note that $\phi(g * n) = \phi(g_1) \cdot \phi(n) = \phi(g_1)$. Now we show that $\phi^{-1}(g') \subseteq g_1 * N$. Pick any $g_2 \in G$ with $\phi(g_2) = g'$. Then, $\phi(g_1) = \phi(g_2)$ implies that $\phi(g_{1}^{-1} * g_2) = \phi(g_1)^{-1} \cdot \phi(g_2) = e$. So:
+        Since $\varphi$ is surjective, we can pick a $g_1 \in G$ with $\varphi(g_1) = g'$. We claim that $g_1 * N = \varphi^{-1}(g') = N * g$. We show that $g_1 N \subseteq \varphi^{-1}(g')$. For any $n \in N$, we note that $\varphi(g * n) = \varphi(g_1) \cdot \varphi(n) = \varphi(g_1)$. Now we show that $\varphi^{-1}(g') \subseteq g_1 * N$. Pick any $g_2 \in G$ with $\varphi(g_2) = g'$. Then, $\varphi(g_1) = \varphi(g_2)$ implies that $\varphi(g_{1}^{-1} * g_2) = \varphi(g_1)^{-1} \cdot \varphi(g_2) = e$. So:
         \[g_{1}^{-1} * g_2 \in N \implies g_2 \in g_1 * N\]
         So, we are done.  
     \end{proof}
@@ -2252,33 +2309,33 @@ Its proof is as follows:
 \subsection{Correspondence Theorem}
 We now talk about the correspondence theorem.
 \begin{theorem}{Correspondence Theorem}{}
-    Let $\phi: G \to G'$ be a surjective homomorphism with kernal $N$. Then, there is a bijection from the subgroups of $G'$ to the subgroups of $G$ containing $N$ defined by: 
-    \[H' \to \phi^{-1}(H')\]
+    Let $\varphi: G \to G'$ be a surjective homomorphism with kernal $N$. Then, there is a bijection from the subgroups of $G'$ to the subgroups of $G$ containing $N$ defined by: 
+    \[H' \to \varphi^{-1}(H')\]
 \end{theorem}
 
 \begin{definition}{Restriction}{}
-    Let $\phi: G \to G'$ be a homomorphism. Let $H$ be a subgroup (not necessarily normal) of $G$. We define: 
-    \[\phi |_{H}: H \to G'\]
-    To be the restriction. It can be written as the composition $H \to G \xrightarrow{\phi} G'$ (the inclusion homomorphism). 
+    Let $\varphi: G \to G'$ be a homomorphism. Let $H$ be a subgroup (not necessarily normal) of $G$. We define: 
+    \[\varphi |_{H}: H \to G'\]
+    To be the restriction. It can be written as the composition $H \to G \xrightarrow{\varphi} G'$ (the inclusion homomorphism). 
 \end{definition}
 \textbf{Remarks:}
 \begin{itemize}
-    \item $\ker\left(\frac{\phi}{H}\right) = (\ker(\phi)) \cap H$.
-    \item $\im\left(\frac{\phi}{H}\right) = \phi(H) = \{\phi(h) \mid h \in H\}$
+    \item $\ker\left(\frac{\varphi}{H}\right) = (\ker(\varphi)) \cap H$.
+    \item $\im\left(\frac{\varphi}{H}\right) = \varphi(H) = \{\varphi(h) \mid h \in H\}$
 \end{itemize}
 
 \subsubsection{Example: Permutations and Sign}
 Let $\sigma: S_n \to \{\pm 1\}$ be the sign homomorphism. We define the \underline{alternating group} $A_n$ to be $\ker(\sigma)$. In other words:
 \[A_n = \ker(\sigma)\]
 Suppose $H$ is a subgroup of $S_n$ of \underline{odd} order. (e.g., $\cyclic{g}$ where $g$ is a cycle of odd length). Then: 
-\[|H| = |\ker(\phi \mid_H)| \cdot \underbrace{\left|\im\left(\frac{\phi}{H}\right)\right|}_{\substack{\text{Order must divide} \\ \text{order of } \{\pm 1\}}}\]
-Here, we note that $\left|\im\left(\frac{\phi}{H}\right)\right|$ must be 1. This means that $H \subseteq A_n$. 
+\[|H| = |\ker(\varphi \mid_H)| \cdot \underbrace{\left|\im\left(\frac{\varphi}{H}\right)\right|}_{\substack{\text{Order must divide} \\ \text{order of } \{\pm 1\}}}\]
+Here, we note that $\left|\im\left(\frac{\varphi}{H}\right)\right|$ must be 1. This means that $H \subseteq A_n$. 
 
 \subsection{Inverse Image}
 We now define an inverse image.
 \begin{definition}{Inverse Image}{}
-    Let $\phi: G \to G'$ be a homomorphism. Then, for $H' \subseteq G'$ a subgroup, the \textbf{inverse image} (preimage) is defined by: 
-\[\phi^{-1}(H') = \{g \in G \mid \phi(g) \in H\}\]
+    Let $\varphi: G \to G'$ be a homomorphism. Then, for $H' \subseteq G'$ a subgroup, the \textbf{inverse image} (preimage) is defined by: 
+\[\varphi^{-1}(H') = \{g \in G \mid \varphi(g) \in H\}\]
 \end{definition}
 THis is a subgroup because it has all three characteristics of a subgroup (which we will not show). 
 
