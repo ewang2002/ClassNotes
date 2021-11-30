@@ -1849,7 +1849,7 @@ There aree two types of cosets: \emph{left} cosets and \emph{right} cosets.
 \begin{definition}{Left Coset}{}
     Let $G$ be a group and $H$ be a subgroup. A \textbf{left coset} of $H$ in $G$ is a subset of $H$ of the form:  
     \[aH = \{ah \mid h \in H\}\]
-    Where $a \in G$ is a fixed element. 
+    Where $a \in G$ is a fixed element and is called the \emph{representative} of the coset $aH$. 
 \end{definition}
 \textbf{Remark:} The subgroup $H$ is a particular left coset because $H = eH$, where $e$ is the identity element of $H$. 
 
@@ -1858,46 +1858,93 @@ Let $G = (\Z, +)$ and $H = (\Z n, +)$. For some $a \in G$, the left coset is def
 \[aH = \{\dots, a - 2n, a - n, a, a + n, a + 2n, \dots\}\]
 This represents the entire residue class of $a \Mod{n}$. 
 
-\subsubsection{Non-Abelian Example: Permutations and Cyclic Groups}
-Let $G = S_3$ and $H = \cyclic{x}$ where $x = (12) \in S_3$. The left cosets are: 
-\[eH = H = \{(1), x\}\]
-\[xH = H = \{x, x^2\} = \{x, (1)\} = H\]
-Let $y = (123) \in S_3$. Then: 
-\[yH = \{y, yx\} = \{(123), (13)\}\]
-\[yxH = \{yx, yxx\} = \{yx, y\} = yH\]
-We also have: 
-\[y^2 H = \{y^2, y^2 x\} = \{(132), (23)\}\]
-\[y^2 x H = \{y^2 x, y^2 x^2\} = \{y^2 x, y^2\} = y^2 H\]
-So, there are three left cosets. 
+\subsubsection{Non-Abelian Example: Permutations}
+Let $G = S_3 = \{(1), x, x^2, y, xy, x^2 y\}$. Define $x = (123)$ and $y = (12)$. Finally, define the subgroup:
+\[H = \cyclic{y} = \{(1), y\}\] 
+Then: 
+\begin{center}
+    \begin{tabular}{c|c}
+        $\mathbf{a \in S_3}$ & $\mathbf{aH}$ \\ 
+        \hline 
+        $(1)$       & $(1)H = \{1, y\}$ \\ 
+        $x$         & $xH = \{x, xy\}$ \\ 
+        $x^2$       & $x^2 H = \{x^2, x^2 y\}$ \\ 
+        $y$         & $yH = \{y, 1\} = \{1, y\} = (1)H$ \\ 
+        $xy$        & $xyH = \{xy, x\} = \{x, xy\} = xH$ \\ 
+        $x^2 y$     & $x^2 yH = \{x^2 y, x^2\} = \{x^2, x^2 y\} = x^2 H$
+    \end{tabular}
+\end{center}
+So, there are three left cosets:
+\[\underbrace{\{(1), y\}}_{(1)H = yH} \qquad \underbrace{\{x, xy\}}_{xH = xyH} \qquad \underbrace{\{x^2, x^2 y\}}_{x^2 H = x^2 yH}\]
+Notice that the left cosets here partition $S_3$.
 
 \subsection{Left Cosets and Partitions}
 Consider the following corollary: 
 \begin{corollary}{}{}
-    The left cosets of $H$ in $G$ form a \underline{partition} of $G$. 
+    The left cosets of $H$ in $G$ form a \underline{partition} of $G$. Equivalently, the left cosets of $H$ in $G$ form an equivalence relation: 
+    \[a \sim b \text{ if } b = ah \text{ for some } h \in H\]
 \end{corollary}
-To show that this is the case, we note that: 
-\begin{itemize}
-    \item Every $a \in G$ is in the same left coset (because $e \in H$). 
-    \item If $a, b \in G$, then $aH = bH$ or $aH \cap bH = \emptyset$. In other words, if $aH \cap bH \neq \emptyset$, then $aH = bH$. To show this, suppose $c \in aH \cap bH$. Then: 
-    \[c = ah_1 \qquad \text{for some } h_1 \in H\]
-    \[c = bh_2 \qquad \text{for some } h_2 \in H\]
-    By transitivity, we know that: 
-    \[ah_1 = bh_2\]
-    Since $H$ has inverses and closure, then:
-    \[b^{-1} ah_1 = b^{-1} b h_2\]
-    \[b^{-1} ah_1 h_{1}^{-1} = h_2 h_{1}^{-1}\] 
-    \[b^{-1} a = \underbrace{h_{2} h_{1}^{-1} \in H}_{\text{By closure of } H}\]
-    Now, for any $d \in aH$: 
-    \[d = ah_3 \qquad \text{for some } h_3 \in H\]
-    It follows that:
-    \[d = bh_2 h_{1}^{-1} h_3 \in bH\]
-    Where $b^{-1} a = h_{2} h_{1}^{-1}$. Therefore: 
-    \[aH \subseteq bH\]
-    And reverse by the same logic. 
-\end{itemize}
+\begin{mdframed}
+    \begin{proof}
+        We'll show that the left cosets of $H$ form an equivalence relation. To do so, we show that the three properties of an equivalence relation is satisifed.  
+        \begin{itemize}
+            \item \underline{Reflexive:} For all $a \in G$, we know that: 
+            \[a = a * e\]
+            Where $e \in H$ is the identity element. Therefore, $a \sim a$; $a$ is in its own left coset. 
+            
+            \item \underline{Symmetric:} If $a \sim b$, this implies that $b = ah$ for some $h \in H$. This further implies that $a = bh^{-1}$ for $h^{-1} \in H$, which shows that $b \sim a$. 
+            
+            \item \underline{Transitivity:} If $a \sim b$ and $b \sim c$, then $b = ah_1$ and $c = bh_2$. Then, $c = (ah_1)h_2 = a(h_1 h_2)$ for $h_1, h_2 \in H$. By closure, it follows that $a \sim c$. 
+        \end{itemize}
+        So, we are done. 
+    \end{proof}
+\end{mdframed}
 
+An alternative proof is as follows: 
+\begin{mdframed}
+    \begin{proof}
+        We need to show that the union of the left cosets is the whole group, and that different cosets do not overlap. Let $g \in G$. Since $e \in H$ (the identity element), it follows that $g * e = g$ is in $gH$. This shows that every element of $G$ lies in some coset of $H$, so the union of the cosets is all of $G$. 
+
+        \bigskip 
+
+        Suppose $aH$ and $bH$ are two cosets of $H$, and suppose $aH \cap bH \neq \emptyset$ (i.e. they are not disjoint). Then, it must be the case that $aH = bH$ (or else we would have overlaps). To show that this is the case, take $g \in aH \cap bH$. We write $g = ah_1 = bh_2$ for some $h_1, h_2 \in H$. Then: 
+        \[g = ah_1 \iff gh_{1}^{-1} = a\]
+        So: 
+        \[a = gh_{1}^{-1} = bh_2 h_{1}^{-1}\]
+        Let $ah \in aH$. Then: 
+        \[ah = bh_2 h_{1}^{-1}h\]
+        We now note that $bh_2 h_{1}^{-1}h \in bH$ since $h_2 h_{1}^{-1}h \in H$. Therefore, $ah \in bH$ and so $aH \subset bH$. By symmetry, we know that $bH \subset aH$ so that $aH = bH$, as expected. 
+    \end{proof}
+\end{mdframed}
+
+\textbf{Remark:} To summarize, let $H$ be a subgroup of a group $G$ and let $a, b \in G$. The following are equivalent:
+\begin{itemize}
+    \item $b = ah$ for some $h \in H$, or $a^{-1}b \in H$. 
+    \item $b$ is an element of the left coset $aH$. 
+    \item The left cosets $aH$ and $bH$ are equal. 
+\end{itemize}
+\textbf{Remark:} The number of left cosets of a subgroup is called the \emph{index} of $H$ in $G$. The index is denoted by: 
+\[[G: H]\]
+So, in the $S_3$ example above, $[S_3, \cyclic{y}] = 3$. 
+
+\subsubsection{Partition and Order}
+\begin{lemma}{}{}
+    All left cosets $aH$ of a subgroup $H$ of a group $G$ have the same order. Alternatively, any two left cosets have the same number of elements. 
+\end{lemma}
+\begin{mdframed}
+    \begin{proof}
+        Multiplication by $a$ defines a map $H \mapsto aH$ that sends $h \mapsto ah$. This map is bijective, with the inverse of this map being multiplication by $a^{-1}$. 
+    \end{proof}
+\end{mdframed}
+\textbf{Remarks:}
+\begin{itemize}
+    \item Another way to think about it is as follows: if $H$ has cardinality $n$, then $aH$ must also have cardinality $n$ since all we're doing is multiplying $a$ to each element of $H$. The same idea applies with $bH$. 
+    \item Since left cosets have the same order, and since they partition the group, we obtain the important \emph{counting formula:}
+    \[|G| = |H| [G: H]\]
+    So, in the $S_3$ example above, $6 = 2 [G: H] \iff [G: H] = 3$.    
+\end{itemize} 
 \subsection{Lagrange's Theorem}
-\begin{theorem}{Lagrange's Theorem}
+\begin{theorem}{Lagrange's Theorem}{}
     Let $G$ be a \underline{finite} group (not necessarily cyclic) and let $H$ be a subgroup. Then, the order of $H$ always divides the order of $G$.  
 \end{theorem}
 
@@ -1906,8 +1953,6 @@ To show that this is the case, we note that:
         The ratio $\frac{|G|}{|H|}$ (the order of $G$ divided by the order of $H$) is simply the number of left cosets. 
     \end{proof}
 \end{mdframed}
-
-\textbf{Remark:} We can write $\frac{|G|}{|H|}$ as $[G: H]$. This notation denotes the number of left cosets of a subgroup, and is called the \textbf{index} of $H$ in $G$. 
 
 \begin{corollary}{}{}
     For a finite group $G$ and an element $a \in G$, the order of $a$ divides the order of $G$.
@@ -1918,6 +1963,7 @@ To show that this is the case, we note that:
         The order of an element $a$ of a group $G$ is equal to the order of the cyclic subgroup $\cyclic{a}$ generated by $a$. 
     \end{proof}
 \end{mdframed}
+As an example, the possible orders of elements of a group with order 12 are 1, 2, 3, 4, 6, and 12. 
 
 \begin{corollary}{}{}
     Suppose $G$ is a group of prime order $p$. Then, $G$ is a cyclic group. 
@@ -1925,12 +1971,11 @@ To show that this is the case, we note that:
 
 \begin{mdframed}
     \begin{proof}
-        Pick any $g \in G - \{1\}$. Then, $g$ has order a divisor of $p$ but not $1$. Then, $g$ has order $p$ so it follows that: 
-        \[G = \cyclic{g}\]
+        Suppose $G$ is a group of order $p$, a prime number. Let $g \in G$ such that $g$ is not the identity. Then, $\cyclic{g} \leq G$ and since $g \neq 1$, it follows that $|\cyclic{g}| \neq 1$. However, by Lagrange's Theorem, $|\cyclic{g}|$ divides $|G|$. The only positive integers which divide $|G| = p$ are 1 and $p$, so it follows that $|\cyclic{g}| = p$. This means that $\cyclic{g} = G$, so $G$ is cyclic with generator $g$.  
     \end{proof}
 \end{mdframed}
 
-\subsection{Link to Homomorphism}
+\subsection{Link to Homomorphisms}
 We can think of homomorphisms in terms of cosets like so. Let: 
 \[\varphi: G \to G'\]
 Be a homomorphism of groups. Let $a, b \in G$ be two elements. Then, the following are equivalent: 
@@ -1945,7 +1990,7 @@ To show that the first point and the second points are the same, we have that:
         \varphi(a) = \varphi(b) &\iff \varphi(a^{-1}) \varphi(a) = \varphi(a^{-1}) \varphi(b) \\ 
             &\iff \varphi(a^{-1}a) = \varphi(a^{-1}b) \\ 
             &\iff \varphi(e) = \varphi(a^{-1} b) \\ 
-            &\iff e = \varphi(a^{-1} b)
+            &\iff e = \varphi(a^{-1} b) \\ 
             &\iff a^{-1} b \in K \\ 
             &\iff b \in aK 
     \end{aligned}
