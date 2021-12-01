@@ -2045,56 +2045,7 @@ We note that right cosets also partition the group $G$; however, right cosets \u
         $x^2 y$     & $Hx^2 y = \{x^2 y, yx^2 y\} = \{x^2, x^2 y\} = Hx$
     \end{tabular}
 \end{center}
-That being said, the left and right cosets \emph{would} be equal if the subgroup $H$ is normal.
-
-
-\subsection{Definition of Normal Subgroups}
-\begin{definition}{Normal Subgroup}{}
-    A subgroup $H$ of a group $G$ is (with binary operation $*$) a \textbf{normal subgroup} if $\forall g \in G$ and $h \in H$: 
-    \[g^{-1} * h * g \in H\]
-\end{definition}
-\textbf{Remarks:}
-\begin{itemize}
-    \item The operation $g^{-1} * h * g \in H$ is known as conjugating $h$ by $g$. 
-    \item The left cosets are equal to the right cosets. 
-\end{itemize}
-We can now introduce another proposition. 
-\begin{mdframed}
-    \begin{proposition}
-        Let $H$ be a subgroup of a group $G$. The following conditions are equivalent: 
-        \begin{enumerate}[(i)]
-            \item $H$ is a normal subgroup. For all $h \in H$ and all $g \in G$, $g * h * g^{-1} \in H$. 
-            \item For all $g \in G$, $g * H * g^{-1} = H$. 
-            \item For all $g \in G$, $gH = Hg$. 
-            \item Every left coset of $H$ in $G$ is a right coset. 
-        \end{enumerate}
-    \end{proposition}
-\end{mdframed}
-
-\begin{mdframed}
-    \begin{proof}
-        The notation $g * H * g^{-1}$ stands for the set of all elements $g * h * g^{-1}$ with $h \in H$. Suppose that $H$ is normal. Then, it's obvious that (i) holds, and implies that $g * H * g^{-1} \subseteq H$ for all $g \in G$. Substituting $g^{-1}$ for $g$ shows that $g^{-1} * H * g \subseteq H$ as well. If we multiply this inclusion on the left by $g$ and on the right by $g^{-1}$, we now have that $H \subseteq g * H * g^{-1}$. Therefore, $g * H * g^{-1} = H$, proving (ii). We can work backwards to show that (ii) implies (i). 
-
-        \bigskip 
-
-        With $g * H * g^{-1} = H$, multiply both sides on the right by $g$ gives us: 
-        \[g * H = H * g\]
-        Which shows that (ii) implies (iii). We can reverse this operation easily, so (iii) implies (ii).
-
-        \bigskip 
-
-        For the last part, we need to know when a left coset is equal to a right coset. Remember that the right coset partitions the group $G$, and we note that the left coset $gH$ and the right coset $Hg$ have an element in common: $g = g * 1 = 1 * g$. So, if the left coset $gH$ is equal to any right coset, that coset must be $Hg$. 
-    \end{proof}
-\end{mdframed}
-
-\begin{mdframed}
-    \begin{proposition}
-        \begin{enumerate}[(a)]
-            \item If $H$ is a subgroup of a group $G$ and $g$ is an element of $G$, the set $g * H * g^{-1}$ is also a subgroup. 
-            \item If a group $G$ has just one subgroup $H$ of order $r$, then that subgroup is normal. 
-        \end{enumerate}
-    \end{proposition}
-\end{mdframed}
+That being said, the left and right cosets \emph{would} be equal if the subgroup $H$ is normal. This will be discussed in the next section.
 
 
 
@@ -2121,7 +2072,7 @@ Why is this important?
 \begin{itemize}
     \item If we fix $g$, then we know that: 
     \[(g * a * g^{-1}) * (g * b * g^{-1}) = g * (a * b) * g^{-1}\]
-    In other words, the function $\phi_g: G \to G$ can be defined by: 
+    In other words, the function $\varphi_g: G \to G$ can be defined by: 
     \[\varphi_{g}(a) = g * a * g^{-1}\]
     This is a homomorphism. We also note that its inverse can be defined by the function $\varphi_{g^{-1}}$.
     
@@ -2129,6 +2080,44 @@ Why is this important?
     \[g * a * g^{-1} = a \iff g * a = a * g\]
     Then, $g$ commutes with $a$. 
 \end{itemize}
+
+\subsection{Conjugacy as an Equivalence Relation}
+Conjugation is an example of an equivalence relation on a group. Two group elements $a, b \in G$ are conjugate, $a \sim b$ if $b = gag^{-1}$ for some $g \in G$. This will be formalized in the following lemma. 
+\begin{lemma}{}{}
+    Conjugacy is an equivalence relation. 
+\end{lemma}
+
+\begin{mdframed}
+    \begin{proof}
+        We simply show that all three properties of an equivalence relation is satisifed. 
+        \begin{itemize}
+            \item \underline{Reflexive:} $x = exe^{-1}$. Here, $x$ is in the same conjugacy class as itself so $x \sim x$. 
+            \item \underline{Symmetric:} $x = gyg^{-1} \implies y = g^{-1}yg$. Here, $x$ is conjugate to $y$ implies that $y$ is conjugate is to $x$, or that $x \sim y \implies y \sim x$. 
+            \item \underline{Transitive:} $x = gyg^{-1}$ and $y = hzh^{-1}$ implies that $x = (gh)z(gh)^{-1}$. Here, this means that $x \sim y$ and $y \sim z$ implies that $x \sim z$. 
+        \end{itemize}
+        So, conjugacy is an equivalence relation. 
+    \end{proof}
+\end{mdframed}
+Since conjugacy is an equivalence relation, it partitions the group $G$ into equivalence classes, known as \textbf{conjugacy classes}. 
+
+\subsection{Conjugacy Classes}
+Given some fixed $a \in G$, something that we may ask is: which elements can be written as $gag^{-1}$ for some $g \in G$? The set of all such elements in $G$ is called the conjugacy class of $a$ and is denoted by $C(a)$. Formally, this is the set: 
+\[C(a) = \{gag^{-1} \mid g \in G\}\]
+
+Some remarks to consider:
+\begin{itemize}
+    \item In any group, $C(e) = \{e\}$ where $e$ is the identity element. This is because $geg^{-1} = e$ for any $g \in G$. 
+    \item If $a$ and $g$ commute, then $gag^{-1} = a$. Thus, when computing $C(a)$, we only need to check $gag^{-1}$ for those $g \in G$ that do not commute with $a$.
+    \item Moreover, $C(x) = \{x\}$ if and only if $x$ commutes with everything in $G$. 
+\end{itemize}
+
+\subsubsection{Example: Symmetric Group of 3 Elements}
+$S_3$ has three conjugacy classes: 
+\begin{enumerate}
+    \item The identity. 
+    \item Transposing two elements. 
+    \item A cyclic permutation of all three. 
+\end{enumerate}
 
 \subsection{Center of a Group}
 We now talk about the \emph{center} of a group, which is also an important topic. 
@@ -2181,7 +2170,7 @@ To show that this is the case, we give a proof:
 
 \subsection{Automorphisms}
 Recall that, when we talked about conjugations, we mentioned that this was a homomorphism: 
-\[\phi_g: G \to G\]
+\[\varphi_g: G \to G\]
 In fact, we can say that this is an \emph{automorphism}. We define this like so: 
 \begin{definition}{Automorphism}{}
     An \textbf{automorphism} is an \emph{isomorphism} on a group $G$ to itself. It is defined by: 
@@ -2192,14 +2181,14 @@ We also note that the \textbf{automorphism group} of a group $G$ form a group un
 \bigskip 
 
 Conjugation defines a homomorphism from $G \to \aut(G)$, which is defined by: 
-\[g \to \phi_g\]
+\[g \to \varphi_g\]
 Consider:
 \[(g * h) * a * (h^{-1} * g^{-1}) = g * (h * a * h^{-1}) * g^{-1}\]
 Which we can define by: 
-\[\phi_{g * h} = \phi_g \circ \phi_h\]
+\[\varphi_{g * h} = \varphi_g \circ \varphi_h\]
 One interesting case to note is: if $G$ is \emph{abelian}, then: 
-\[\phi_g (a) = a \qquad \forall a \in G\]
-In other words, $\phi_g = \id_g$. This implies that the homomorphism $G \to \aut(G)$ is \emph{trivial}.
+\[\varphi_g (a) = a \qquad \forall a \in G\]
+In other words, $\varphi_g = \id_g$. This implies that the homomorphism $G \to \aut(G)$ is \emph{trivial}.
 
 \bigskip 
 
@@ -2208,7 +2197,7 @@ On the other hand, for $n \geq 3$, the following is isomorphic:
 \emph{However}, this is not isomorphic\footnote{If interested, look up ``outer automorphism of $S_6$.''} when $n = 6$. 
 
 \subsection{Conjugation in Symmetric Groups}
-Let's suppose we have $g = (12345)$ and $a = (12)(34)$. Then: 
+Let's suppose we have $g = (12345)$ and $a = (12)(34)$, and we wanted to find $gag^{-1}$. Then: 
 \[g^{-1} = (15432)\]
 Mapping each of $i \in [1, 2, 3, 4, 5]$, we have: 
 \begin{itemize}
@@ -2229,14 +2218,22 @@ We notice a few things. In general:
 \subsection{Commutator}
 The commutator of $a$ and $g$ is given by: 
 \[g * a * g^{-1} * a^{-1}\]
-This is $e$ (the identity) if and only if $g$ commutes with $a$. 
+This is $e$ (the identity) if and only if $g$ commutes with $a$. In particular: 
+\begin{lemma}{}{}
+    Two element $a$ and $b$ of a group commute, $a * b = b * a$, if and only if $a * b * a^{-1} = b$, and this is true if and only if $a * b * a^{-1} * b^{-1} = 1$. 
+\end{lemma}
 
 \subsection{Normal Subgroups}
 Recall the following definition:
 \begin{definition}{Normal Subgroup}{}
-    A subgroup $H$ of a group $G$ is (with binary operation $*$) a \textbf{normal subgroup} if $\forall g \in G$:
-    \[g * H * g^{-1} = \{g * h * g^{-1} \mid h \in H\} = H\]
-    Where $H$ in the right-side of the equality is treated as a \emph{set}, not term-by-term. % lec 10/15, 45:55 
+    A subgroup $H$ of a group $G$ is (with binary operation $*$) \textbf{normal} if $\forall g \in G$ and $\forall h \in H$: 
+    \[g * h * g^{-1} \in H\]
+    Notationally, we can write this as $H \triangleleft G$. Equivalently, we can say that: 
+    \begin{itemize}
+        \item $g^{-1} * h * g \in H$.
+        \item $g * H * g^{-1} \subseteq H$ and $H \subseteq g * H * g^{-1}$. We can do this by multiplying the left side of the first expression by $g^{-1}$ and the right side by $g$. 
+        \item $g * H * g^{-1} = H$.
+    \end{itemize}
 \end{definition}
 
 A few examples of normal subgroups: 
@@ -2244,6 +2241,71 @@ A few examples of normal subgroups:
     \item The trivial subgroup is normal. 
     \item $G$ is normal in itself. 
 \end{itemize}
+
+Now, we briefly talk about a proposition: 
+\begin{mdframed}
+    \begin{proposition}
+        Let $H$ be a subgroup of a group $G$. The following conditions are equivalent: 
+        \begin{enumerate}[(i)]
+            \item $H$ is a normal subgroup. For all $h \in H$ and all $g \in G$, $g * h * g^{-1} \in H$. 
+            \item For all $g \in G$, $g * H * g^{-1} = H$. 
+            \item For all $g \in G$, $gH = Hg$. 
+            \item Every left coset of $H$ in $G$ is a right coset. In other words:
+            \[\underbrace{g * H}_{\text{Left coset.}} = \underbrace{H * g}_{\text{Right coset.}}\] 
+        \end{enumerate}
+    \end{proposition}
+\end{mdframed}
+
+\begin{mdframed}
+    \begin{proof}
+        The notation $g * H * g^{-1}$ stands for the set of all elements $g * h * g^{-1}$ with $h \in H$. Suppose that $H$ is normal. Then, it's obvious that (i) holds, and implies that $g * H * g^{-1} \subseteq H$ for all $g \in G$. Substituting $g^{-1}$ for $g$ shows that $g^{-1} * H * g \subseteq H$ as well. If we multiply this inclusion on the left by $g$ and on the right by $g^{-1}$, we now have that $H \subseteq g * H * g^{-1}$. Therefore, $g * H * g^{-1} = H$, proving (ii). We can work backwards to show that (ii) implies (i). 
+
+        \bigskip 
+
+        With $g * H * g^{-1} = H$, multiply both sides on the right by $g$ gives us: 
+        \[g * H = H * g\]
+        Which shows that (ii) implies (iii). We can reverse this operation easily, so (iii) implies (ii).
+
+        \bigskip 
+
+        For the last part, we need to know when a left coset is equal to a right coset. Remember that the right coset partitions the group $G$, and we note that the left coset $gH$ and the right coset $Hg$ have an element in common: $g = g * 1 = 1 * g$. So, if the left coset $gH$ is equal to any right coset, that coset must be $Hg$. 
+    \end{proof}
+\end{mdframed}
+
+\begin{mdframed}
+    \begin{proposition}
+        \begin{enumerate}[(a)]
+            \item If $H$ is a subgroup of a group $G$ and $g$ is an element of $G$, the set $g * H * g^{-1}$ is also a subgroup. 
+            \item If a group $G$ has just one subgroup $H$ of order $r$, then that subgroup is normal. 
+        \end{enumerate}
+    \end{proposition}
+\end{mdframed}
+
+We now introduce another example of normal subgroups in example. 
+
+\begin{mdframed}
+    \begin{proposition}
+        Let $H$ be a subgroup of $G$. If $[G: H] = 2$, then $H$ is normal.
+    \end{proposition}
+\end{mdframed}
+
+\begin{mdframed}
+    \begin{proof}
+        Since $[G: H] = 2$, it follows that $H$ has two left and right cosets. The cosets are: 
+        \begin{itemize}
+            \item $H$ itself (the identity element).
+            \item Which means that $gH$ and $Hg$ are the other left and right cosets, respectively.
+        \end{itemize}
+        By the definition of a coset, we know that: 
+        \[H \cup gH = G = H \cup Hg\]
+        Because these are disjoint unions, it follows that $gH = Hg$, so it follows that $gHg^{-1} = H$. This equation holds for any $g$ in the coset $gH$, and clearly holsd for any element of the trivial coset $H$. So, the equation holds for all $G$, and $H$ is normal. 
+    \end{proof}
+\end{mdframed}
+
+
+\subsubsection{Example: Alternating Group}
+The alternating group $A_n$ is a normal subgroup of $S_n$. This is because the even permutations make up half of $S_n$, so $[S_n: A_n] = 2$. Therefore, $A_n$ is normal. 
+
 
 \subsubsection{Example: Symmetric Group}
 Consider $G = S_3$ with $H = \cyclic{(123)}$. Then, $H$ is normal. This is because conjugation by $g$ must send $h$ to an element of order 3, namely $h$ or $h^{-1}$. We know that: 
@@ -2265,21 +2327,6 @@ The proof is as follows:
         Therefore, $g * a * g^{-1}$ is in the kernal too. 
     \end{proof}
 \end{mdframed}
-
-\subsection{Cosets and Normal Groups}
-Finally, we consider the following proposition.
-\begin{mdframed}
-    \begin{proposition}
-        Let $H$ be a subgroup of $G$. The following conditions are equivalent: 
-        \begin{itemize}
-            \item $H$ is a normal subgroup. 
-            \item For all $g \in G$, $g * H * g^{-1} = H$. In particular, for all $g \in G$, $g * H * g^{-1} \subseteq H$. The same applies to $g^{-1}$; $g^{-1} * H * g \subseteq H \iff H \subseteq g * H * g^{-1}$. 
-            \item For all $g \in G$, the left coset $g * H$ is equal to the right coset $H * g$. 
-            \item Every left coset of $H$ in $G$ is a right coset. In other words:
-            \[\underbrace{g * H}_{\text{Left coset.}} = \underbrace{H * g}_{\text{Right coset.}}\] 
-        \end{itemize}
-    \end{proposition}
-\end{mdframed}
  
 
 
@@ -2299,19 +2346,32 @@ We can use the properties of a normal subgroup to talk more about quotient group
 \subsection{Definition of a Quotient Group}
 First, as always, we begin with a definition. 
 \begin{definition}{Quotient Group}{}
-    The \textbf{quotient group} of $G$ by $H$, when it exists (it will exist if $H$ is normal), is a group $\overline{G}$ together with a \emph{surjective} homomorphism: 
-    \[\varphi: G \to \overline{G}\]
-    Where the kernal is denoted $H$. 
+    Let $N$ be a normal subgroup of a group $G$. We define the \textbf{quotient group} of $N$ in $G$, written $\overline{G} = G/N$, and read ``$G$ modulo $N$,'' as the set of cosets of $N$ in $G$. 
 \end{definition}
+
+We also note the following theorem: 
+\begin{theorem}{}{}
+    Let $N$ be a normal subgroup of a group $G$, and let $\overline{G}$ denote the set of cosets of $N$ in $G$. We can define a surjective homomorphism: 
+    \[\pi: G \mapsto \overline{G}\]
+    Defined by: 
+    \[\pi(a) = \overline{a}\]
+    Here, $\ker(\pi) = N$. 
+\end{theorem}
+
+\subsubsection{Example: Integers}
 For example, if $G = (\Z, +)$ and $H = \Z n$, then $\overline{G} = \Z / \Z n$. We can define: 
 \[\varphi: G \to \overline{G}\]
 \[\varphi: \Z^+ \to \Z / \Z n\]
 By performing the following mapping: 
 \[a \to a \mod{n}\]
 
-\bigskip 
+\subsubsection{Example: Symmetric Group}
+Let $G = S_3$ and $N = \cyclic{(123)}$. Then: 
+\[S_3 / \cyclic{(123)} = \{N, (12)N\}\]
+Where: 
+\[N = \{(1), (123), (132)\}\]
+\[(12)N = \{(12), (23), (13)\}\]
 
-Assume $H$ is normal. Then, we call it $N$ instead. So, we define the set $\overline{G} = \frac{G}{N}$ as the partition of $G$ into (left or right) cosets for $H$. 
 
 \subsection{Product of Cosets}
 Here, we will show that the product of two cosets is a coset. 
@@ -2342,7 +2402,7 @@ Here, we will show that the product of two cosets is a coset.
 
 \subsection{Showing Group Properties}
 Now that we know that the product of two cosets is a cosets, we define a law of composition on $\overline{G}$: 
-\[a * N * b * N = a * b * N\]
+\[aN * bN = ab * N\]
 The above lemma states that this is a well-defined operation. We now need to check that this is a group. In particular, we need to show: 
 \begin{itemize}
     \item Associativity.
@@ -2369,6 +2429,11 @@ The above lemma states that this is a well-defined operation. We now need to che
         We have now proved that for every normal subgroup $N$ of $G$, $\varphi: G \to \overline{G}$ is a surjective homomorphism. 
     \end{proof}
 \end{mdframed}
+
+
+
+
+
 
 
 
