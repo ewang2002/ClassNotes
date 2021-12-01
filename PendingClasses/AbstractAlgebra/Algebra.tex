@@ -2453,6 +2453,11 @@ We can use this information to introduce the First Isomorphism Theorem.
     Let $\varphi: G \to G'$ be a surjective group homomorphism with kernal $N$. The quotient group $\overline{G}$ is isomorphic to the image of $G'$. To be precise, let $\pi: G \to \overline{G}$ be the canonical map. There is a unique $\overline{\varphi}: \overline{G} \to G'$ such that:
     \[\varphi = \overline{\varphi} \circ \pi\] 
 \end{theorem}
+A significantly more concise definition of the First Isomorphism Theorem is as follows: 
+\begin{theorem}{First Isomorphism Theorem (Concise)}{}
+    Let $\varphi: G \mapsto G'$ be a homomorphism. Then, there is a well-defined induced isomorphism $\overline{\varphi}: G / \ker(\varphi) \mapsto \im(\varphi)$. 
+\end{theorem}
+
 The proof is as follows: 
 \begin{mdframed}
     % might want to use page 84 of textbook for proof
@@ -2497,6 +2502,49 @@ Its proof is as follows:
     \end{proof}
 \end{mdframed}
 
+The following corollary is probably the most useful:
+\begin{corollary}{}{}
+    Let $\varphi: G \mapsto G'$ be a group homomorphism with kernal $N$ and image $H'$. The quotient group $\overline{G} = G / N$ is isomorphic to the image $H'$. 
+\end{corollary}
+
+So, if we need to show that there is an isomorphism of the form: 
+\[G / N \cong H\]
+All we need to do is: 
+\begin{itemize}
+    \item Find $\varphi: G \mapsto H$ (a homomorphism). 
+    \item Show that $\ker(\varphi) = N$. 
+    \item Show that $\im(\varphi) = H$. 
+\end{itemize}
+
+\subsubsection{Example 1: Matrices}
+Suppose we wanted to show that $GL_{n}(\R) / SL_{n}(\R) \cong \R - \{0\}$. 
+\begin{itemize}
+    \item Consider $\varphi: GL_{n}(\R) \mapsto \R - \{0\}$, the determinant function.
+    \item The kernal of $\varphi$ is all matrices with determinant 1. Thus: 
+    \[\ker(\varphi) = SL_{n}(\R) = \{A \in GL_{n}(\R) \mid \det(A) = 1\}\]
+    \item The image of $\varphi$ is simply all possible determinants; that is: 
+    \[\im(\varphi) = \R - \{0\}\]
+\end{itemize}
+Therefore, $GL_{n}(\R) / SL_{n}(\R) \cong \R - \{0\}$. 
+
+\subsubsection{Example 2: Permutations}
+Suppose we wanted to show that $S_n / A_n \cong \{\pm 1\}$. 
+\begin{itemize}
+    \item Consider $\varphi: S_n \mapsto \{\pm 1\}$, the sign function. 
+    \item By definition, $\ker(\varphi) = A_n$ (recall that the sign of any even permutation is 1). 
+    \item By definition, the sign function is surjective if $n \geq 2$. 
+\end{itemize}
+Therefore, $S_n / A_n \cong \{1\}$. 
+
+\subsubsection{Example 3: Group Itself}
+Suppose we wanted to show that $G / G \cong \{1\}$.
+\begin{itemize}
+    \item Consider $\varphi: G \mapsto G$ by the function $\varphi(g) = 1$, which is a surjective homomorphism.
+    \item The kernal of $\varphi$ is all elements $g \in G$ such that $\varphi(g) = 1$. So, this is trivially just $G$. Thus, $\ker(\varphi) = G$. 
+    \item Because $\varphi$ is surjecrive, $\im(\varphi) = \{1\}$.  
+\end{itemize}
+So, $G / G \cong \{1\}$. 
+
 \subsection{Correspondence Theorem}
 We now talk about the correspondence theorem.
 \begin{theorem}{Correspondence Theorem}{}
@@ -2540,6 +2588,57 @@ For example, if the homomorphism is $(\Z, +) \to (\Z / \Z n)$, then for any $d$ 
 
 
 
+
+
+
+\newpage 
+\section{Product Groups}
+Now, we talk about product groups. 
+
+\subsection{Definition of a Product Group}
+\begin{definition}{Product Group}{}
+    Let $(G, *)$ and $(G', \cdot)$ be two groups. The product set $G \times G'$, the set of pairs of elements $(a, a')$ with $a \in G$ and $a' \in G'$, can be made into a group by component-wise multiplication; that is, multiplication of pairs is defined by the rule: 
+    \[(a, a') \cdot (b, b') = (a * b, a' \cdot b')\]
+    This is known as the \textbf{product group}.
+\end{definition}
+The proof that this is actually a group is as follows:
+\begin{mdframed}
+    \begin{proof}
+        Let $(G, *)$ and $(G', \cdot)$ be two groups. We note that $(e, e')$ is the identity (where $e \in G$ and $e' \in G'$ are the corresponding identity elements), the inverse of $(a, a')$ is $(a, a')^{-1} = (a^{-1}, (a')^{-1})$, and associativity implicitly applies. Therefore, the product group is a group. 
+    \end{proof}
+\end{mdframed}
+
+\subsection{Properties of Product Groups}
+Now, we focus on some properties of product groups. 
+
+\subsubsection{Prime Order and Isomorphism}
+\begin{mdframed}
+    \begin{proposition}
+        Let $r$ and $s$ be relatively prime integers; that is, $\gcd(r, s) = 1$. A cyclic group of order $rs$ is isomorphic to the product of a cyclic group of order $r$ and a cyclic group of order $s$. 
+    \end{proposition}
+\end{mdframed}
+
+\subsubsection{Product Groups and Isomorphism}
+\begin{mdframed}
+    \begin{proposition}
+        Let $H$ and $K$ be subgroups of a group $G$ and let $f: H \times K \mapsto G$ be the multiplication map, defined by $f(h, k) = hk$. Its image is the set $HK = \{hk \mid h \in H, k \in K\}$. 
+        \begin{enumerate}[(a)]
+            \item $f$ is injective if and only if $H \cap K = \{e\}$ (the identity). 
+            \item $f$ is a homomorphism from the product group $H \times K$ to $G$ if and only if the elements of $K$ commute with the elements of $H$: $hk = kh$. 
+            \item If $H$ is a normal subgroup of $G$, then $HK$ is a subgroup of $G$. 
+            \item $f$ is an isomorphism from the product group $H \times K$ to $G$ if and only if $H \cap K = \{1\}$, $HK = G$, and also $H$ and $K$ are both normal subgroups of $G$. 
+        \end{enumerate}
+    \end{proposition}
+\end{mdframed}
+
+\subsubsection{Order}
+\begin{itemize}
+    \item The order of a direct product $G_1 \times G_2 \times \dots \times G_n$ is: 
+    \[|G_1 \times G_2 \times \dots \times G_n| = |G_1| \cdot |G_2| \cdot \ldots \cdot |G_n|\]
+    \item The order of an element $(g, h)$ is: 
+    \[|(g, h)| = \lcm(|g|, |h|)\]
+    Or, more verbosely, the order of $(g, h)$ is the least common multiple of the orders of $g$ and $h$. 
+\end{itemize}
 
 
 
