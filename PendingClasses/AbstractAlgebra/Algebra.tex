@@ -2541,7 +2541,7 @@ Suppose we wanted to show that $G / G \cong \{1\}$.
 \begin{itemize}
     \item Consider $\varphi: G \mapsto G$ by the function $\varphi(g) = 1$, which is a surjective homomorphism.
     \item The kernal of $\varphi$ is all elements $g \in G$ such that $\varphi(g) = 1$. So, this is trivially just $G$. Thus, $\ker(\varphi) = G$. 
-    \item Because $\varphi$ is surjecrive, $\im(\varphi) = \{1\}$.  
+    \item Because $\varphi$ is surjective, $\im(\varphi) = \{1\}$.  
 \end{itemize}
 So, $G / G \cong \{1\}$. 
 
@@ -2648,13 +2648,201 @@ Now, we focus on some properties of product groups.
 
 
 
+\newpage 
+\section{Symmetries and Isometries}
+One major application of groups is the idea of symmetries. In fact, groups were invented to analyze symmetries of certain algebraic structures. In this section and the following sections, we will talk about symmetries, isometries, and more. 
+
+\subsection{Types of Symmetries}
+Let's begin with a brief introduction on the types of symmetries. 
+
+\subsubsection{Bilateral Symmetry}
+Bilaterial symmetry is the property of being divisible into symmetrical halves on either side of a unique plane. For example, consider the following figures: 
+\begin{center}
+    \includegraphics[scale=0.8]{assets/bilaterial_sym.png}
+\end{center}
+
+\subsubsection{Rotational Symmetry}
+Rotational symmetry is essentially the property an object has when it looks the same after some rotation by a partial turn.  
+\begin{center}
+    \includegraphics[scale=0.8]{assets/rotational_sym.png}
+\end{center}
+
+\subsubsection{Translational Symmetry}
+Translational symmetry is the property an object has when a particular translation does not change the object. 
+\begin{center}
+    \includegraphics[scale=0.8]{assets/translational_sym.png}
+\end{center}
+Figures like these are supposed to extend indefinitely in both directions.
+
+\subsubsection{Glide Symmetry}
+Glide symmetry is the operation that usually involves reflection in a plane, followed by a translation parallel with that plane. 
+\begin{center}
+    \includegraphics[scale=0.8]{assets/glide_sym.png}
+\end{center}
+Figures like these are supposed to extend indefinitely in both directions.
+
+\subsubsection{Combining Symmetries}
+Of course, we can combine multiple symmetries. For instance, the following wallpaper pattern may have two independent translational symmetries: 
+\begin{center}
+    \includegraphics[scale=0.8]{assets/wallpaper.png}
+\end{center}
+The star from the first few images has bilaterial as well as rotational symmetry. The figure below has both translational and rotational symmetries combined: 
+\begin{center}
+    \includegraphics[scale=0.8]{assets/honey.png}
+\end{center}
 
 
+\subsection{Isometries}
+Here, we say that a rigid motion of the plane is called an \textbf{isometry}. In particular, these are: 
+\begin{itemize}
+    \item Translations. 
+    \item Rotations. 
+    \item Reflections.
+    \item Glide Reflections. 
+\end{itemize}
+
+We note that all of these rigid motions preserve the overall figure. Of course, there is a more precise definition. 
+\begin{definition}{Isometry}{}
+    An \textbf{isometry} of $n$-dimensional space $\R^n$ is a distance-preserving map $f$ from $\R^n$ to itself, a map such that for all $u, v \in \R^n$: 
+    \[|f(u) - f(v)| = |u - v|\]
+    An isometry will map a figure to a congruent figure. 
+\end{definition}
+
+\subsubsection{Example: Orthogonal Linear Operations}
+An orthogonal operation $\varphi$ is linear, which means that $\varphi(u) - \varphi(v) = \varphi(u - v)$ so that $|varphi(u) - \varphi(v)| = |\varphi(u - v)|$. Additionally, because $\varphi$ is orthogonal, it preserves dot products and lengths. So, $|\varphi(u - v)| = |u - v|$. 
+
+\subsubsection{Example: Translation}
+The \emph{translation} $t_a$ by a vector $a$, the map defined by $t_{a}(x) = x + a$, is an isometry.
+
+\subsubsection{Example: Compositions}
+The composition of isometries is, of course, an isometry. 
+
+\subsection{Properties of Isometries}
+Now, we'll talk about some properties of isometries.
+
+\begin{theorem}{}{}
+    The following conditions on a map $\varphi: \R^n \mapsto \R^n$ are equivalent: 
+    \begin{itemize}
+        \item $\varphi$ is an isometry that fixes the origin: $\varphi(0) = 0$. 
+        \item $\varphi$ preserves the dot product: for all $u$ and $v$, $\varphi(v) \cdot \varphi(w) = v \cdot w$.
+        \item $\varphi$ is an orthogonal linear operator. 
+    \end{itemize}
+\end{theorem}
+
+\begin{lemma}{}{}
+    Let $x$ and $y$ be points of $\R^n$. If the three dot products $(x \cdot x)$, $(x \cdot y)$, and $(y \cdot y)$ are equal, then $x = y$.  
+\end{lemma}
+
+\begin{corollary}{}{}
+    Every isometry $f$ of $\R^n$ is the composition of an orthogonal linear operator and a translation. More precisely, if $f$ is an isometry and if $f(0) = a$, then $f = t_{a}\varphi$ where $t_a$ is a translation and $\varphi$ is an orthogonal linear operator. This expression for $f$ is unique. 
+\end{corollary}
+\textbf{Remark:} To work with the expressions $t_a \varphi$ for isometries, we need to determine the product (i.e. compositions) of two such expressions. Some rules to consider: 
+\begin{itemize}
+    \item $t_a t_b = t_{a + b}$.
+    \item $\varphi t_a = t_{a'}\varphi$ where $a' = \varphi(a)$. 
+\end{itemize}
+The last relation can be verified like so:
+\[\varphi t_{a}(x) = \varphi(x + a) = \varphi(x) + \varphi(a) = \varphi(x) + a' = t_{a'}\varphi(x)\]
+
+\begin{corollary}{}{}
+    The set of all isometries of $\R^n$ forms a group that we denoted by $M_n$, with composition of functions as its law of composition. 
+\end{corollary}
+
+\begin{mdframed}
+    \begin{proof}
+        The composition of isometries is an isometry, and the inverse of an isometry is an isometry because orthogonal vectors and translations are invertible. Additionally, if $f = t_a \varphi$, then $f^{-1} = \varphi^{-1} t_{a}^{-1} = \varphi^{-1} t_{-a}$, which is a composition of isometries. 
+    \end{proof}
+\end{mdframed}
+
+\subsubsection{Homomorphism of the Group of Isometries}
+Consider the map $\pi: M_n \mapsto O_n$, defined by dropping the translation part of an isometry $f$. We can write $f$ in the form $f = t_a \varphi$ and define: 
+\[\pi(f) = \varphi\]
+
+\begin{mdframed}
+    \begin{proposition}
+        The map $\pi$ is a surjective homomorphism. Its kernal is the set $T = \{t_v\}$ of translations, which is a normal subgroup of $M_n$.
+    \end{proposition}    
+\end{mdframed}
+
+\begin{corollary}{}{}
+    The homomorphism $\pi: M_n \mapsto O_n$ does not change when the origin is shifted by a translation. 
+\end{corollary}
+
+\subsubsection{Orientation}
+The determinant of an orthogonal operator $\varphi$ on $\R^n$ is $\pm 1$. The operator is said to be:
+\begin{itemize}
+    \item \textbf{Orientation-preserving} if the determinant is 1. 
+    \item \textbf{Orientation-reversing} if the determinant is -1. 
+\end{itemize}
+Similarly, we note that an orientation-preserving isometry $f$ is one such that, when written in the form $f = t_a \varphi$, the $\varphi$ operator is orientation-preserving. The same can be applied for orientation-reversing. It should be noted that: 
+\[\sigma: M_n \mapsto \{\pm 1\}\]
+That sends an orientation-preserving isometry to 1 and an orientation-reversing isometry to -1 is a group homomorphism. 
 
 
+\subsection{Isometries of the Plane}
+First, we dneote the group of isometries of the plane by $M$. We choose a coordinate system and use it to identify the plane with the space $\R^2$. Then, we choose as generators the \emph{translations}, the \emph{rotations} about the origin, and the \emph{reflection} about the $e_1$-axis (an axis). We denote the rotation through the angle $\theta$ by $\rho_{\theta}$, and the reflection about the $e_1$-axis by $r$. Essentially, to summarize, we have the following operations:
+\begin{enumerate}
+    \item \emph{Translation} $t_a$ by a vector $a$. 
+    \[t_{a}(x) = x + a = \begin{bmatrix}
+        x_1 \\ x_2
+    \end{bmatrix} + \begin{bmatrix}
+        a_1 \\ a_2
+    \end{bmatrix}\]
+    \item \emph{Rotation} $\rho_{\theta}$ by an angle $\theta$ about the origin. 
+    \[\rho_{\theta}(x) = \begin{bmatrix}
+        \cos(\theta) & -\sin(\theta) \\ 
+        \sin(\theta) & \cos(\theta)
+    \end{bmatrix} \begin{bmatrix}
+        x_1 \\ x_2
+    \end{bmatrix}\] 
+    \item \emph{Reflection} $r$ about the $e_1$-axis.
+    \[r(x) = \begin{bmatrix}
+        1 & 0 \\ 0 & -1
+    \end{bmatrix} \begin{bmatrix}
+        x_1 \\ x_2 
+    \end{bmatrix}\]
+\end{enumerate}
+Although we didn't include rotation about a point (other than the origin) or reflections about other lines or glides, every element of $M$ is a product of these isometries. 
 
+\begin{theorem}{}{}
+    Let $m \in M$ be an isometry of the plane. Then, for a uniquely determined vector $v$ and an angle $\theta$ that is possibly zero: 
+    \[m = t_v \rho_{\theta}\]
+    \[m = t_v \rho_{\theta} r\] 
+\end{theorem}
+\textbf{Remark:} An isometry of the form $t_v \rho_{\theta}$ preserves orientation while $t_v \rho_{\theta} r$ reverses orientation. 
 
+\begin{mdframed}
+    \begin{proof}
+        We know that any isometry $m$ is written uniquely in the form $m = t_v \varphi$ where $\varphi$ is an orthogonal operator. In $\R^2$, those orthogonal linear operators are the rotations $\rho_{\theta}$ about the origin and the reflection about lines through the origin. The reflections have the form $\rho_{\theta} r$. 
+    \end{proof}
+\end{mdframed}
 
+Computation in $M$ can be done using the symbols $t_v$, $\rho_{\theta}$, and $r$, using the following rules for composing them: 
+\begin{itemize}
+    \item $\rho_{\theta} t_v = t_{v'} \rho_{\theta}$ where $v' = \rho_{\theta}(v)$. 
+    \item $rt_v = t_{v'}r$ where $v' = r(v)$. 
+    \item $r\rho_{\theta} = \rho_{-\theta} r$. 
+    \item $t_v t_w = t_{v + w}$. 
+    \item $\rho_{\theta_1}\rho_{\theta_2} = \rho_{\theta_1 + \theta_2}$.
+    \item $rr = 1$. 
+\end{itemize}
+
+\begin{theorem}{}{}
+    Every isometry of the plane has one of the following forms: 
+    \begin{enumerate}[(a)]
+        \item Orientation-preserving isometries. 
+        \begin{itemize}
+            \item Translation: a map $t_v$ that sends $p \rightsquigarrow p + v$.
+            \item Rotation: rotation of the plane through a nonzero angle $\theta$ about some point.  
+        \end{itemize}
+
+        \item Orientation-reversing isometries: 
+        \begin{itemize}
+            \item Reflection: a bilaterial symmetry about a line $\ell$. 
+            \item Glide Reflection (or \emph{glide} for short): reflection about a line $\ell$, followed by a translation by a nonzero vector parallel to $\ell$. 
+        \end{itemize}
+    \end{enumerate}
+\end{theorem}
 
 
 \end{document}
