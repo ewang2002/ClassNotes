@@ -8,7 +8,7 @@
 \pagestyle{fancy}
 \fancyhf{}
 \rhead{Math 100A}
-\chead{November 29th, 2021}
+\chead{December 1st, 2021}
 \lhead{Course Notes}
 \rfoot{\thepage}
 
@@ -25,7 +25,7 @@
             
         \vspace{0.5cm}
         \LARGE
-        Abstract Algebra
+        Abstract Algebra: Group Theory
             
         \vspace{1.5cm}
             
@@ -78,10 +78,10 @@ The idea is that whatever ``type'' we give our binary operation, we will get tha
     A binary operation (also known as the law of composition) consists of: 
     \begin{itemize}
         \item A set $S$. 
-        \item An operation; more concretely, a function $S \times S \to S$.
+        \item An operation; more concretely, a function $S \times S \mapsto S$.
     \end{itemize}
 
-    More formally, a binary operation $*$ over a set $S$ is a function mapping $f: S \times S \to S$. For each $(a, b) \in S \times S$, we can denote the element $f(a, b)$ of $S$ by $a * b$.
+    More formally, a binary operation $*$ over a set $S$ is a function mapping $f: S \times S \mapsto S$. For each $(a, b) \in S \times S$, we can denote the element $f(a, b)$ of $S$ by $a * b$.
 
     \bigskip 
 
@@ -96,7 +96,7 @@ The idea is that whatever ``type'' we give our binary operation, we will get tha
 \textbf{Remark:}
 \begin{itemize}
     \item An element $a \in S$ (where $S$ is a set equipped with a binary operation $*$) is \emph{invertible} if there is another element $b$ such that: 
-    \[a * b = e \qquad b * a = 1\]
+    \[a * b = \id \qquad b * a = \id\]
 \end{itemize}
 
 
@@ -187,7 +187,7 @@ What properties could binary operations have?
     
     \bigskip 
     
-    More specifically, we say that $e$ is a left identity if $f(e, s) = s$ for all $s \in S$. $e$ is a right identity if $f(s, e) = s$ for all $s \in S$. Then, $e$ is a two-sided identity if it is both a left identity and right identity.  
+    More specifically, we say that $\id$ is a left identity if $f(\id, s) = s$ for all $s \in S$. $\id$ is a right identity if $f(s, \id) = s$ for all $s \in S$. Then, $\id$ is a two-sided identity if it is both a left identity and right identity.  
     
     \bigskip 
 
@@ -197,14 +197,14 @@ What properties could binary operations have?
 
     As a fact, there can be \textbf{at most} one identity element for any given binary operation. The proof is discussed later. 
 
-    \item \textbf{Inverse:} For a general \underline{associative} binary operation $f: S \times S \to S$ with a two-sided identity $e$, an element $s \in S$ has a two-sided inverse if it has a left inverse (denote this $l \in S$) and a right inverse (denote this $r \in S$); that is: 
-    \[\overbrace{f(l, s)}^{\text{Left Inverse}} = \underbrace{f(s, r)}_{\text{Right Inverse}} = e\]
+    \item \textbf{Inverse:} For a general \underline{associative} binary operation $f: S \times S \mapsto S$ with a two-sided identity $\id$, an element $s \in S$ has a two-sided inverse if it has a left inverse (denote this $l \in S$) and a right inverse (denote this $r \in S$); that is: 
+    \[\overbrace{f(l, s)}^{\text{Left Inverse}} = \underbrace{f(s, r)}_{\text{Right Inverse}} = \id\]
 
     \bigskip 
 
     We often write $s^{-1}$ to mean an inverse of $s$ when it exists. So, for instance (both ways are the same thing), we could have written: 
-    \[f(s^{-1}, s) = f(s, s^{-1}) = e\]
-    \[s^{-1} * s = s * s^{-1} = e\]
+    \[f(s^{-1}, s) = f(s, s^{-1}) = \id\]
+    \[s^{-1} * s = s * s^{-1} = \id\]
 
     \bigskip 
 
@@ -233,15 +233,15 @@ First, we show that\begin{definition}{Group}{}
         \item \underline{Associativity}: For all $a, b, c \in G$, we have:
         \[(a * b) * c = a * (b * c)\]
 
-        \item \underline{Identity/Neutral Element:} There is an element $e \in G$ such that for all $x \in G$:
-        \[e * x = x * e = x\]
+        \item \underline{Identity Element:} There is an element $\id \in G$ such that for all $x \in G$:
+        \[\id * x = x * \id = x\]
 
         \item \underline{Inverse:} Corresponding to each $a \in G$, there is an element $a^{-1} \in G$ such that:
-        \[a * a^{-1} = a^{-1} * a = e\]
+        \[a * a^{-1} = a^{-1} * a = \id\]
 
         \item \underline{Closure:} For all $a, b \in G$, we have:
         \[a * b \in G\]
-        It should be noted that this property is \emph{implied} by the definition of a binary operation (law of composition); namely, that $G \times G \to G$.  
+        It should be noted that this property is \emph{implied} by the definition of a binary operation (law of composition); namely, that $G \times G \mapsto G$.  
     \end{enumerate}
 \end{definition}
 \textbf{Remark:}
@@ -265,8 +265,8 @@ First, we show that\begin{definition}{Group}{}
             \hline 
             \textbf{Group} & \textbf{Inverse} & \textbf{Identity} \\ 
             \hline 
-            Multiplicative $(G, \times)$ & $h^{-1} = \frac{1}{h}$ & $e = 1$ \\ 
-            Addition $(G, +)$ & $h^{-1} = -h$ & $e = 0$ \\ 
+            Multiplicative $(G, \times)$ & $h^{-1} = \frac{1}{h}$ & $\id = 1$ \\ 
+            Addition $(G, +)$ & $h^{-1} = -h$ & $\id = 0$ \\ 
             \hline 
         \end{tabular}
     \end{center}
@@ -327,19 +327,19 @@ If we wanted to indicate that we are working with real or complex matrices, we w
 \subsubsection{Non-Example: Addition and Multiplication}
 We mentioned that $(\Q - \{0\}, \times)$, $(\R - \{0\}, \times)$, and $(\C - \{0\}, \times)$ are groups. However, we note that $(\Z - \{0\}, \times)$ and $(\Z_{\geq 0}, +)$ are \emph{not} groups. 
 \begin{itemize}
-    \item We already briefly explained why $\Z$ under multiplication is not a group. The same idea applies even if we do not include 0; that is, $\Z - \{0\}$ is not a group. We know that $\Z - \{0\}$ has a unique identity element under $\times$; this element is 1. This is the case because, if $e$ is the identity element of $\Z - \{0\}$ under $\times$, then by definition: 
-    \[e \times x = x \times e = x\]
-    Which implies that $e = 1$. We also know that $2 \in \Z - \{0\}$. However, 2 does not have an inverse in $\Z - \{0\}$. To show this, we prove by contradition. If 2 has an inverse in $\Z - \{0\}$, then by definition it follows that for some $a^{-1} \in \Z - \{0\}$:
-    \[2 \times a^{-1} = a^{-1} \times 2 = e\]
-    But, since we know that $e = 1$, it follows that:
+    \item We already briefly explained why $\Z$ under multiplication is not a group. The same idea applies even if we do not include 0; that is, $\Z - \{0\}$ is not a group. We know that $\Z - \{0\}$ has a unique identity element under $\times$; this element is 1. This is the case because, if $\id$ is the identity element of $\Z - \{0\}$ under $\times$, then by definition: 
+    \[\id \times x = x \times \id = x\]
+    Which implies that $\id = 1$. We also know that $2 \in \Z - \{0\}$. However, 2 does not have an inverse in $\Z - \{0\}$. To show this, we prove by contradition. If 2 has an inverse in $\Z - \{0\}$, then by definition it follows that for some $a^{-1} \in \Z - \{0\}$:
+    \[2 \times a^{-1} = a^{-1} \times 2 = \id\]
+    But, since we know that $\id = 1$, it follows that:
     \[2 \times a^{-1}= 1\]
     But, as the only solution to this is $\frac{1}{2}$, we know that $\frac{1}{2} \notin \Z - \{0\}$. Thus, this is a contradiction. Thus, $\Z - \{0\}$ under multiplication is not a group. 
 
-    \item We know that $\Z_{\geq 0}$ has a unique identity element under addition and that is 0. This is because if $e$ is a unique element of $(\Z_{\geq 0}, +)$, then by definition, we know that: 
-    \[e + x = x + e = x\]
-    It is obvious that $e = 0$. Now, we want to show that 1 does not have an inverse with respect to addition in $\Z_{\geq 0}$. We'll prove this by contradiction. Suppose 1 does have an inverse. Recall that if 1 does have an inverse, then there is an $x \in \Z_{\geq 0}$ such that for some $a^{-1} \in \Z_{\geq 0}$:
-    \[a^{-1} + 1 = 1 + a^{-1} = e\]
-    But, as $e = 0$, it follows that: 
+    \item We know that $\Z_{\geq 0}$ has a unique identity element under addition and that is 0. This is because if $\id$ is a unique element of $(\Z_{\geq 0}, +)$, then by definition, we know that: 
+    \[\id + x = x + \id = x\]
+    It is obvious that $\id = 0$. Now, we want to show that 1 does not have an inverse with respect to addition in $\Z_{\geq 0}$. We'll prove this by contradiction. Suppose 1 does have an inverse. Recall that if 1 does have an inverse, then there is an $x \in \Z_{\geq 0}$ such that for some $a^{-1} \in \Z_{\geq 0}$:
+    \[a^{-1} + 1 = 1 + a^{-1} = \id\]
+    But, as $\id = 0$, it follows that: 
     \[a^{-1} + 1 = 0 \iff a^{-1} = -1\]
     However, we note that $-1 \notin \Z_{\geq 0}$ so this is a contradiction. Thus, $\Z_{\geq 0}$ under addition is not a group.
 \end{itemize}
@@ -352,28 +352,28 @@ Could we have two unique two-sided identities in $G$? The answer is \underline{n
 
 \begin{mdframed}
     \begin{proof}
-        Assume by contradiction that we had $e_1$ and $e_2$, both of which are unique two-sided identity elements. Then, we know that $e_1 * e_2 = e_2$ since $e_1$ is an identity. But, since $e_2$ is also an identity, then $e_1 * e_2 = e1$. So, it follows that $e_1$ and $e_2$ are not unique; in other words, $e_1 = e_2$. 
+        Assume by contradiction that we had $\id_1$ and $\id_2$, both of which are unique two-sided identity elements. Then, we know that $\id_1 * \id_2 = \id_2$ since $\id_1$ is an identity. But, since $\id_2$ is also an identity, then $\id_1 * \id_2 = e1$. So, it follows that $\id_1$ and $\id_2$ are not unique; in other words, $\id_1 = \id_2$. 
     \end{proof}
 \end{mdframed}
 
 \subsubsection{Uniqueness of Inverses.}
 
 If $g_1$, $g_2$ are both inverses of some element $h$, then\footnote{Here, we denote $g_1$ as the left-inverse and $g_2$ is the right-inverse.}:
-\[g_1 * h = h * g_2 = e\]
+\[g_1 * h = h * g_2 = \id\]
 Additionally, we know that:
-\[g_1 * (h * g_2) = g_1 * e = g_1\]
-\[(g_1 * h) * g_2 = e * g_2 = g_2\]
+\[g_1 * (h * g_2) = g_1 * \id = g_1\]
+\[(g_1 * h) * g_2 = \id * g_2 = g_2\]
 And so it follows that $g_1 = g_2$, thus $h$ will have a unique inverse. To be more concrete, we have the proof. 
 \begin{mdframed}
     \begin{proof}
-        We note that $g_1 * h = e$ and $h * g_2 = e$. Then:
+        We note that $g_1 * h = \id$ and $h * g_2 = \id$. Then:
         \begin{equation*}
             \begin{aligned}
-                g_1 &= g_1 * e && e \text{ is the identity element.} \\ 
+                g_1 &= g_1 * \id && \id \text{ is the identity element.} \\ 
                     &= g_1 * (h * g_2) \\ 
                     &= (g_1 * h) * g_2 && \text{Associativity} \\ 
-                    &= e * g_2 \\ 
-                    &= g_2 && e \text{ is the identity element.}
+                    &= \id * g_2 \\ 
+                    &= g_2 && \id \text{ is the identity element.}
             \end{aligned}
         \end{equation*}
         So, it follows that $g_1 = g_2$. Thus, an element $h$ will have a unique inverse. 
@@ -390,7 +390,7 @@ Suppose we have the expression $g * a = g * b$. This implies that $a = b$. Simil
             \begin{aligned}
                 g * a = g * b &\implies g^{-1} * (g * a) = g^{-1} * (g * b) \\
                     &\implies (g^{-1} * g) * a = (g^{-1} * g) * b && \text{Associativity (Prop. 1)} \\
-                    &\implies e * a = e * b && \text{Definition of Inverse (Prop. 3)} \\  
+                    &\implies \id * a = \id * b && \text{Definition of Inverse (Prop. 3)} \\  
                     &\implies a = b && \text{Definition of Identity (Prop. 2)}
             \end{aligned}
         \end{equation*}
@@ -410,25 +410,25 @@ Suppose we have the expression $g * a = g * b$. This implies that $a = b$. Simil
 \begin{mdframed}
     \begin{proof}
         Since the inverse of an element is unique, it is enough to check that: 
-        \[(g * h) * (h^{-1} * g^{-1}) = (h^{-1} * g^{-1}) * (g * h) = e\]
+        \[(g * h) * (h^{-1} * g^{-1}) = (h^{-1} * g^{-1}) * (g * h) = \id\]
         So: 
         \begin{equation*}
             \begin{aligned}
                 (g * h) * (h^{-1} * g^{-1}) &= g * (h * h^{-1}) * g^{-1} && \text{Associativity (Prop. 1)} \\ 
-                    &= g * e * g^{-1} && \text{Definition of Inverse (Prop. 3)} \\ 
-                    &= (g * e) * g^{-1} && \text{Associativity (Prop. 1)} \\ 
+                    &= g * \id * g^{-1} && \text{Definition of Inverse (Prop. 3)} \\ 
+                    &= (g * \id) * g^{-1} && \text{Associativity (Prop. 1)} \\ 
                     &= g * g^{-1} && \text{Definition of Identity (Prop. 2)} \\ 
-                    &= e && \text{Identity Element}
+                    &= \id && \text{Identity Element}
             \end{aligned}
         \end{equation*}
         Similarly: 
         \begin{equation*}
             \begin{aligned}
                 (h^{-1} * g^{-1}) * (g * h) &= h^{-1} * (g^{-1} * g) * h && \text{Associativity (Prop. 1)} \\ 
-                    &= h^{-1} * e * h && \text{Definition of Inverse (Prop. 3)} \\ 
-                    &= (h^{-1} * e) * h && \text{Associativity (Prop. 1)} \\ 
+                    &= h^{-1} * \id * h && \text{Definition of Inverse (Prop. 3)} \\ 
+                    &= (h^{-1} * \id) * h && \text{Associativity (Prop. 1)} \\ 
                     &= h^{-1} * h && \text{Definition of Identity (Prop. 2)} \\ 
-                    &= e && \text{Identity Element}
+                    &= \id && \text{Identity Element}
             \end{aligned}
         \end{equation*}
         So, the proof is complete. 
@@ -444,9 +444,9 @@ We should note that, despite using the $-1$ superscript to denote a multiplicati
 
 \begin{mdframed}
     \begin{proof}
-        We have that $g^{-1} * g = e$. Multiplying both sides by $(g^{-1})^{-1}$ from the left, we now have: 
-        \[((g^{-1})^{-1} * g^{-1}) * g = (g^{-1})^{-1} * e = (g^{-1})^{-1}\]
-        Hence, $e * g = (g^{-1})^{-1}$ and so $g = (g^{-1})^{-1}$.     
+        We have that $g^{-1} * g = \id$. Multiplying both sides by $(g^{-1})^{-1}$ from the left, we now have: 
+        \[((g^{-1})^{-1} * g^{-1}) * g = (g^{-1})^{-1} * \id = (g^{-1})^{-1}\]
+        Hence, $\id * g = (g^{-1})^{-1}$ and so $g = (g^{-1})^{-1}$.     
     \end{proof}
 \end{mdframed}
 
@@ -483,15 +483,15 @@ For a negative integer $n$, we let:
             \[(g^{-r})^{-s} = (g^{-1})^{-rs} = \underbrace{(g^{-1})^{-1} * \dots * (g^{-1})^{-1}}_{rs \text{ times}} = \underbrace{g * \dots * g}_{rs \text{ times}} = g^{rs}\]
 
             \item \underline{Case 5:} Suppose $m = 0$. Since $m = mn = 0$, it follows that: 
-            \[(g^n)^m = e\]
-            \[g^{nm} = e\]
+            \[(g^n)^m = \id\]
+            \[g^{nm} = \id\]
 
             \item \underline{Case 6:} Suppose $n = 0$. By the same reasoning as case 5, we have that $n = mn = 0$. So: 
-            \[(g^n)^m = e^m = e\]
-            \[g^{mn} = e\]
+            \[(g^n)^m = \id^m = \id\]
+            \[g^{mn} = \id\]
         \end{itemize}
 
-        Here, we notice that $e * \dots * e = e$ and $e^{-1} = e$, and so $e^m = e$. So, we showed that $(g^n)^m = g^{mn}$ for every $m, n \in \Z$. 
+        Here, we notice that $\id * \dots * \id = \id$ and $\id^{-1} = \id$, and so $\id^m = \id$. So, we showed that $(g^n)^m = g^{mn}$ for every $m, n \in \Z$. 
     \end{proof}
 \end{mdframed}
 
@@ -524,7 +524,7 @@ For a negative integer $n$, we let:
 \begin{mdframed}
     \begin{proof}
         Like the previous proof, we will consider various cases depending on the signs of $m$ and $n$. Since it is easier to work with positive numbers, we will write $m = \text{sign}(m) r$ and $n = \text{sign}(n) s$ where $r = |m|$ and $s = |n|$, where: 
-        \[\text{sign}: \R \to \{-1, 1\}\]
+        \[\text{sign}: \R \mapsto \{-1, 1\}\]
         \begin{itemize}
             \item \underline{Case 1:} Suppose $m$ and $n$ are positive. Then: 
             \[g^m * g^n = (\underbrace{g * \dots * g}_{m \text{ times}}) * (\underbrace{g * \dots * g}_{n \text{ times}}) = \underbrace{g * \dots * g}_{m + n \text{ times}} = g^{m + n}\]
@@ -543,10 +543,10 @@ For a negative integer $n$, we let:
             \end{equation*}
     
             \item \underline{Case 4:} Suppose $m = 0$. Then: 
-            \[g^m * g^n  = e * g^n = g^n = g^{m + n}\]
+            \[g^m * g^n  = \id * g^n = g^n = g^{m + n}\]
     
             \item \underline{Case 5:} Suppose $n = 0$. Then: 
-            \[g^m * g^n = g^m * e = g^m = g^{m + n}\]
+            \[g^m * g^n = g^m * \id = g^m = g^{m + n}\]
         \end{itemize}
         By the above cases, we obtain the claim when $n \geq 0$ and $m \in \Z$. So: 
         \begin{itemize}
@@ -583,11 +583,11 @@ The definition of a subgroup is very similar to that of a group. It states the f
 \begin{definition}{Subgroup}{}
     A subset $H$ of a group $(G, \circ)$ is a \textbf{subgroup} $(H, \circ)$ if it has the following properties: 
     \begin{enumerate}
-        \item \underline{Identity/Neutral Element:} The identity element of $G$ belongs in $H$. In other words, there is an element $e \in H$ (where the same $e \in G$) such that for all $x \in H$:
-        \[e * x = x * e = x\]
+        \item \underline{Identity/Neutral Element:} The identity element of $G$ belongs in $H$. In other words, there is an element $\id \in H$ (where the same $\id \in G$) such that for all $x \in H$:
+        \[\id * x = x * \id = x\]
 
         \item \underline{Inverse:} For some $a \in H$, its inverse in $G$ belongs to $H$. More generally, corresponding to each $a \in H$, there is an element $a^{-1} \in H$ such that:
-        \[a * a^{-1} = a^{-1} * a = e\]
+        \[a * a^{-1} = a^{-1} * a = \id\]
 
         \item \underline{Closure:} For all $a, b \in H$, we have:
         \[a * b \in H\]
@@ -601,7 +601,7 @@ The definition of a subgroup is very similar to that of a group. It states the f
     \item Because associativity is a property that is in a group, it is also implicitly a property that is in a subgroup. 
     \item This also implies that the subgroup $H$ is a group.
     \item If $G$ is a group, then $G$ is a subgroup of itself. If we want to exclude this property (i.e. we don't want $G$ to be classified as a subgroup of itself), we would want $H$ to be a \emph{proper subgroup} of $G$.
-    \item The identity element $\{e\}$ by itself is known as a \emph{trivial subgroup}. 
+    \item The identity element $\{\id\}$ by itself is known as a \emph{trivial subgroup}. 
 \end{itemize}
 
 
@@ -815,7 +815,7 @@ We will now verify that a cyclic subgroup is, indeed, a subgroup.
             \[x^m x^n = x^{m + n}\]
 
             \item \underline{Identity:} We know that: 
-            \[e = x^0 \in G\]
+            \[\id = x^0 \in G\]
 
             \item \underline{Inverse:} We know that (regardless of signs): 
             \[x^n = x^{-n}\]
@@ -859,7 +859,7 @@ To show that cyclic groups are abelian, we provide a proof.
 The proof for this theorem is as follows: 
 \begin{mdframed}
     \begin{proof}
-        Suppose $(G, *)$ is generated by $g$ and $H$ is a subgroup of $G$. So, $G = \{g^n \mid n \in \Z\}$. If $H = \{e_G\}$, then it is generated by $e_G$ and so it is cyclic. Otherwise, we can assume (without loss of generality), we can and will assume that $H \neq \{e_G\}$. Hence, for some $l \in \Z - \{0\}$, $g^l \in H$. Because $H$ is a subgroup, we know that $(g^l)^{-1} \in H$. Thus, $g^{-l} \in H$. Either $l > 0$ or $-l > 0$, so there is a positive integer $m$ such that $g^m \in H$. By the well-ordering principle, there is: 
+        Suppose $(G, *)$ is generated by $g$ and $H$ is a subgroup of $G$. So, $G = \{g^n \mid n \in \Z\}$. If $H = \{\id_G\}$, then it is generated by $\id_G$ and so it is cyclic. Otherwise, we can assume (without loss of generality), we can and will assume that $H \neq \{\id_G\}$. Hence, for some $l \in \Z - \{0\}$, $g^l \in H$. Because $H$ is a subgroup, we know that $(g^l)^{-1} \in H$. Thus, $g^{-l} \in H$. Either $l > 0$ or $-l > 0$, so there is a positive integer $m$ such that $g^m \in H$. By the well-ordering principle, there is: 
         \[s = \min\{m \in \Z \mid m > 0, g^m \in H\}\]
         Since $s \in \{m \in \Z \mid m > 0, g^m \in H\}$, it follows that $g \in H$. Because $H$ is a subgroup of $G$ and $g^r \in H$, $\cyclic{g^s} \subseteq H$. This implies that: 
         \[\{(g^s)^k \mid k \in \Z\} \subseteq H\]
@@ -1074,7 +1074,7 @@ Let's briefly discuss permutations, since these are important.
 \subsection{Introduction to Permutations}
 \begin{definition}{Permutation}{}
     A \textbf{permutation} of a set $S$ is a \underline{bijective map} $p$ from a set $S$ to itself: 
-    \[p: S \to S\]
+    \[p: S \mapsto S\]
 \end{definition}
 For instance, consider the following table: 
 \begin{center}
@@ -1160,7 +1160,7 @@ For instance, suppose $\sigma = (123)(4567)$. Then, we can decompose this permut
 
 \subsection{Sign of a Permutation}
 We can define the sign of a permutation by the following function: 
-\[\text{sgn}: S_n \to \{\pm1\}\]
+\[\text{sgn}: S_n \mapsto \{\pm1\}\]
 A permutation is said to be \textbf{even} if its sign is 1. Conversely, a permutation is odd if its sign is -1. 
 
 \subsubsection{Sign of a Cycle}
@@ -1251,11 +1251,11 @@ These two groups may look completely unrelated at first. However, we note the fo
 
 Something to note here is that we can easily map:
 \begin{itemize}
-    \item \code{Even} (in first group) $\to$ \code{0} (in second group).
-    \item \code{Odd} (in first group) $\to$ \code{1} (in second group).
+    \item \code{Even} (in first group) $\mapsto$ \code{0} (in second group).
+    \item \code{Odd} (in first group) $\mapsto$ \code{1} (in second group).
 \end{itemize}
 This mapping can be represented like so: 
-\[\varphi: \Z \to \Z / \Z 2\]
+\[\varphi: \Z \mapsto \Z / \Z 2\]
 Where: 
 \begin{itemize}
     \item If $x \in \Z$ is even, map it to $0 \in \Z / \Z 2$. 
@@ -1288,7 +1288,7 @@ Let's suppose we can represent the operations of the above group using a table, 
     \end{center}
 
     \item \underline{Group 2:} $(G', \cdot)$. In order for these groups to have similar group behavior, $x$, $y$, and $x * y$ in $G$ must correspond to the elements in $G'$. This can be represented by a function: 
-    \[\varphi: G \to G'\]
+    \[\varphi: G \mapsto G'\]
     We want this function to send a specific part of the table for $G$ to a similar part of the table for $G'$. In this sense, we can say that the place where $x \in G$ is (in the above table) can be mapped to a similar place in the below table for $G'$; the same idea applies to $y \in G$ and $x * y \in G$.  
     \begin{center}
         \begin{tabular}{|c|c c c|c|c c|}
@@ -1319,7 +1319,7 @@ Let's suppose we can represent the operations of the above group using a table, 
 \subsection{Definition of Homomorphism}
 \begin{definition}{Homomorphism}{}
     Let $(G, *)$ and $(G', \cdot)$ be two different groups. A \textbf{homomorphism} (also known as a \emph{group homomorphism}) from $G$ to $G'$ is a function: 
-    \[\varphi: G \to G'\]
+    \[\varphi: G \mapsto G'\]
     Such that for all $a, b \in G$, $\varphi(a * b) = \varphi(a) \cdot \varphi(b)$. 
 \end{definition}
 \textbf{Remark:} Here, we say that: 
@@ -1337,7 +1337,7 @@ We will now discuss some simple example of homomorphisms.
 
 \subsubsection{Example: Integers}
 Consider the following function: 
-\[c_n: (\Z, +) \to (\Z / \Z n, +)\]
+\[c_n: (\Z, +) \mapsto (\Z / \Z n, +)\]
 Defined by: 
 \[c_{n}(a) = [a]_n\]
 We can say that $c_n$ is a group homomorphism since for all $a, b \in \Z$: 
@@ -1345,7 +1345,7 @@ We can say that $c_n$ is a group homomorphism since for all $a, b \in \Z$:
 
 \subsubsection{Example: Function Negation}
 Consider the following function: 
-\[f: (\Z, +) \to (\Z, +)\]
+\[f: (\Z, +) \mapsto (\Z, +)\]
 Defined by: 
 \[f(x) = -x\]
 Then, we say that $f$ is a group homomorphism since for all $x, y \in \Z$: 
@@ -1353,7 +1353,7 @@ Then, we say that $f$ is a group homomorphism since for all $x, y \in \Z$:
 
 \subsubsection{Example: Exponential Map}
 Consider the following function: 
-\[\varphi: (\R, +) \to (\R - \{0\}, \times)\]
+\[\varphi: (\R, +) \mapsto (\R - \{0\}, \times)\]
 Defined by: 
 \[\varphi(x) = e^x\]
 Then, $\varphi$ is a group homomorphism since for all $x, y \in \R$: 
@@ -1362,7 +1362,7 @@ Then, $\varphi$ is a group homomorphism since for all $x, y \in \R$:
 
 \subsubsection{Example: Generalized Exponential Map}
 Suppose $(G, *)$ is a group and $g \in G$. Then, we can consider the following function: 
-\[f: (\Z, +) \to (G, *)\]
+\[f: (\Z, +) \mapsto (G, *)\]
 Defined by: 
 \[f(n) = g^n\]
 We know that this is a group homomorphism because for every $m, n \in Z$:
@@ -1370,13 +1370,13 @@ We know that this is a group homomorphism because for every $m, n \in Z$:
 
 \subsubsection{Example: Logarithmic Map}
 Consider the following logarithmic function: 
-\[\ln: (\R_{> 0}, \times) \to (\R, +)\]
+\[\ln: (\R_{> 0}, \times) \mapsto (\R, +)\]
 We know that this is a group homomorphism since for all $x, y \in \R_{ > 0}$: 
 \[\ln(x \times y) = \ln(x) + \ln(y)\]
 
 \subsubsection{Example: Complex Numbers}
 Consider the following function: 
-\[N: (\C - \{0\}, \times) \to (\R_{> 0}, \times)\]
+\[N: (\C - \{0\}, \times) \mapsto (\R_{> 0}, \times)\]
 Defined by: 
 \[N(z) = |z|\]
 This is a group homomorphism because for every $z \in \C - \{0\}$ and $|z| \in \R_{> 0}$:
@@ -1384,7 +1384,7 @@ This is a group homomorphism because for every $z \in \C - \{0\}$ and $|z| \in \
 
 \subsubsection{Example: Matrices}
 Define $(GL_{n}(\R), \cdot)$ be the set of invertible $n \times n$ real matrices under matrix multiplication.\footnote{From linear algebra, we know that matrix multiplication is associative, the product of two invertible $n \times n$ is invertible, and for every $a \in GL_{n}(\R)$, $a \cdot I_n = I_n \cdot a = a$ where $I_n$ is the identity matrix.} Consider the function: 
-\[\theta: GL_{n}(\R) \to GL_{n}(\R)\]
+\[\theta: GL_{n}(\R) \mapsto GL_{n}(\R)\]
 Defined by\footnote{If $x$ is a matrix, then $x^T$ is the transpose of said matrix.}: 
 \[\theta(x) = (x^T)^{-1}\]
 We know that $\theta$ is a group homomorphism because: 
@@ -1393,11 +1393,11 @@ We know that $\theta$ is a group homomorphism because:
 \subsection{Properties of Homomorphisms}
 \begin{mdframed}
     \begin{proposition}
-        Let $\varphi: G \to G'$ be a group homomorphism. 
+        Let $\varphi: G \mapsto G'$ be a group homomorphism. 
         \begin{enumerate}[(a)]
-            \item $\varphi$ maps the identity to the identity: $\varphi(e_G) = e_{G'}$. 
+            \item $\varphi$ maps the identity to the identity: $\varphi(\id_G) = \id_{G'}$. 
             \item $\varphi$ maps inverses to inverses; in other words, for every $a \in G$, $\varphi(a^{-1}) = \varphi(a)^{-1}$ where $a^{-1}$ is the inverse of $a$ in $G$ and $\varphi(a)^{-1}$ is the inverse of $\varphi(a)$ in $G'$. This can also be written as: 
-            \[e_G = \varphi(a) \varphi(a^{-1})\]
+            \[\id_G = \varphi(a) \varphi(a^{-1})\]
             \item If $a_1, \dots, a_k$ are elements of $G$, then $\varphi(a_1, \dots, a_k) = \varphi(a_1) \dots \varphi(a_k)$. 
         \end{enumerate}
     \end{proposition}
@@ -1408,21 +1408,21 @@ The proof is as follows:
     \begin{proof}
         We need to show that all three properties hold. 
         \begin{enumerate}[(a)]
-            \item We note that since $e_G$ is the identity element of $G$, it follows that $e_G * e_G = e_G$. Because $\varphi$ is a group homomorphism, it follows that: 
-            \[\boxed{\varphi(e_G * e_G)} = \varphi(e_G) * \varphi(e_G)\]
-            Since $e_G * e_G = e_G$, it follows that $\varphi(e_G * e_G) = \varphi(e_G)$, so: 
-            \[\varphi(e_G) * \varphi(e_G) = \boxed{\varphi(e_G)}\]
+            \item We note that since $\id_G$ is the identity element of $G$, it follows that $\id_G * \id_G = \id_G$. Because $\varphi$ is a group homomorphism, it follows that: 
+            \[\boxed{\varphi(\id_G * \id_G)} = \varphi(\id_G) * \varphi(\id_G)\]
+            Since $\id_G * \id_G = \id_G$, it follows that $\varphi(\id_G * \id_G) = \varphi(\id_G)$, so: 
+            \[\varphi(\id_G) * \varphi(\id_G) = \boxed{\varphi(\id_G)}\]
             Thus: 
-            \[\varphi(e_G) * \varphi(e_G) = \varphi(e_G) * e_{G'}\]
+            \[\varphi(\id_G) * \varphi(\id_G) = \varphi(\id_G) * \id_{G'}\]
             Canceling the first element in each side, we now have: 
-            \[\varphi(e_G) = e_{G'}\]
+            \[\varphi(\id_G) = \id_{G'}\]
 
-            \item For every $a \in G$, we know that $a * a^{-1} = e_G$. Applying $\varphi$ to both sides, we have that: 
-            \[\varphi(a * a^{-1}) = \varphi(e_G)\]
+            \item For every $a \in G$, we know that $a * a^{-1} = \id_G$. Applying $\varphi$ to both sides, we have that: 
+            \[\varphi(a * a^{-1}) = \varphi(\id_G)\]
             By the first part and the fact that $\varphi$ is a group homomorphism, we deduce that: 
-            \[\varphi(a) * \varphi(a^{-1}) = e_{G'}\]
+            \[\varphi(a) * \varphi(a^{-1}) = \id_{G'}\]
             Multiplying both sides by the inverse $\varphi(a)^{-1}$ of $\varphi(a)$ in $G'$, we obtain: 
-            \[\varphi(a)^{-1} * \varphi(a) * \varphi(a^{-1}) = \varphi(a)^{-1} * e_H\]
+            \[\varphi(a)^{-1} * \varphi(a) * \varphi(a^{-1}) = \varphi(a)^{-1} * \id_H\]
             And so:
             \[\varphi(a^{-1}) = \varphi(a)^{-1}\]
 
@@ -1434,7 +1434,7 @@ The proof is as follows:
 
 \subsection{Image}
 \begin{definition}{Image}{}
-    The \textbf{image} of a general homomorphism $\varphi: G \to G'$ is simply the image of $\varphi$ as a map of sets: 
+    The \textbf{image} of a general homomorphism $\varphi: G \mapsto G'$ is simply the image of $\varphi$ as a map of sets: 
     \[\im(\varphi) = \{x \in G' \mid x = \varphi(a) \text{ for some } a \in G\}\]
     More simply: 
     \[\im(\varphi) = \{\varphi(g) \mid g \in G\}\]
@@ -1445,20 +1445,20 @@ This implies that the image has closure. The image has the identity (consider th
 
 \subsection{Kernal}
 \begin{definition}{Kernal}{}
-    The \textbf{kernal} of a general homomorphism $\varphi: G \to G'$ is the set of elements of $G$ that are mapped to the identity in $G'$: 
-    \[\ker(\varphi) = \{a \in G \mid \varphi(a) = e_{G'}\}\]
+    The \textbf{kernal} of a general homomorphism $\varphi: G \mapsto G'$ is the set of elements of $G$ that are mapped to the identity in $G'$: 
+    \[\ker(\varphi) = \{a \in G \mid \varphi(a) = \id_{G'}\}\]
 \end{definition}
 Here, the kernal of $\varphi$ is a subgroup of $G$. 
 
 
 \subsubsection{Example: Matrices}
-For example, we have that $\varphi: \det GL_n (\R) \to (\R - \{0\}, \times)$, which means that: 
+For example, we have that $\varphi: \det GL_n (\R) \mapsto (\R - \{0\}, \times)$, which means that: 
 \[\ker(a) = SL_n\]
 Where $SL_n$ is the special linear group of $n \times n$ matrices. 
 
 \subsection{Conjugation}
 For a fixed $g \in G$ where the binary operation is $*$, the function: 
-\[\varphi: G \to G\]
+\[\varphi: G \mapsto G\]
 Defined by: 
 \[\varphi(a) = g^{-1} * a * g\]
 Is a homomorphism. In particular, we call this the conjugate. This is a homomorphism because: 
@@ -1552,8 +1552,8 @@ It's clear that both of these are the same groups, only written with different s
 \subsection{Definition of Isomorphism}
 \begin{definition}{Isomorphism}{}
     An \textbf{isomorphism} of two groups $(G, *)$ and $(G', \cdot)$ is a \underline{bijective} \emph{homomorphism}: 
-    \[\varphi: G \to G'\]
-    If there is a isomorphism $\varphi: G \to G'$, we say that $G$ is isomorphic to $G'$ and write $G \cong G'$. 
+    \[\varphi: G \mapsto G'\]
+    If there is a isomorphism $\varphi: G \mapsto G'$, we say that $G$ is isomorphic to $G'$ and write $G \cong G'$. 
 \end{definition}
 \textbf{Remark:} To say that two groups are isomorphic is to say that they are the same as \emph{groups}. The elements of the two groups, and the associated group operations, may be different; however, both groups have the same exact structures.
 
@@ -1703,11 +1703,11 @@ Suppose $R$ is a relation over $S$. Then:
 \begin{itemize}
     \item An equivalence relation is essentially an equality with respect to a certain measurement. In life, we often measure things or people with respect to properties (for example, scores or ratings). So, when we want to compare things, we pick a certain property and then, \emph{from that point of view}, determine whether these things are equal. In this regard, equivalence relations are exactly equalities. 
     \item Another way we can think of an equivalence relation is through a function: 
-    \[S \times S \to \{\text{true}, \text{false}\}\]
+    \[S \times S \mapsto \{\text{true}, \text{false}\}\]
 \end{itemize} 
 
 \subsubsection{Example: Relations}
-Suppose $X$ and $Y$ are two non-empty sets and $f: X \to Y$ is a function. Let $\sim$ be the following relation over $X$:
+Suppose $X$ and $Y$ are two non-empty sets and $f: X \mapsto Y$ is a function. Let $\sim$ be the following relation over $X$:
 \[\forall x_1, x_2 \in X \quad x_1 \sim x_2 \iff f(x_1) = f(x_2)\]
 Then, $\sim$ is an equivalence relation\footnote{Another way of interpreting this statement is as follows: $x_1$ is in relation to $x_2$ precisely when $f(x_1) = f(x_2)$. The claim here, then, is that this is an equivalence relation.}.
 
@@ -1750,7 +1750,7 @@ Recall that $P$ is called a \textbf{partition} of a non-empty set $X$ if:
 \end{center}
 
 Suppose $P$ is a partition of $X$. Then, we can get a classification function from $X$ to $P$:
-\[X \to P\]
+\[X \mapsto P\]
 \[x \mapsto [x]_P\]
 Here, $[x]_P$ is the unique element of $P$ which contains $x$. In other words, if we refer to the above diagram, we can think of $[x]_P$, a set, as one of the sets $A_1$, $A_2$, $A_3$, $A_4$, or $A_5$ which contains $x$. So, we can think of this function as saying that every $x \in X$ belongs to one of the sets $[x]_P$. 
 
@@ -1772,7 +1772,7 @@ By the previous example, $x \sim_P y \iff [x]_P = [y]_P$ is an equivalence relat
 
 \begin{mdframed}
     \begin{proof}
-        For $x \in X$, let $[x]_P$ to be the unique element of $P$ which contains $x$. So, $x \mapsto [x]_P$ is a function from $X \to P$. By the previous example, $x \sim y \iff [x]_p = [y]_p$ is an equivalence relation over $X$. Notice that this means $x \sim y$ exactly when $x$ and $y$ are in the same element of $P$. 
+        For $x \in X$, let $[x]_P$ to be the unique element of $P$ which contains $x$. So, $x \mapsto [x]_P$ is a function from $X \mapsto P$. By the previous example, $x \sim y \iff [x]_p = [y]_p$ is an equivalence relation over $X$. Notice that this means $x \sim y$ exactly when $x$ and $y$ are in the same element of $P$. 
     \end{proof}
 \end{mdframed}
 
@@ -1851,7 +1851,7 @@ There aree two types of cosets: \emph{left} cosets and \emph{right} cosets.
     \[aH = \{ah \mid h \in H\}\]
     Where $a \in G$ is a fixed element and is called the \emph{representative} of the coset $aH$. 
 \end{definition}
-\textbf{Remark:} The subgroup $H$ is a particular left coset because $H = eH$, where $e$ is the identity element of $H$. 
+\textbf{Remark:} The subgroup $H$ is a particular left coset because $H = \id H$, where $\id$ is the identity element of $H$. 
 
 \subsubsection{Abelian Example: Integers}
 Let $G = (\Z, +)$ and $H = (\Z n, +)$. For some $a \in G$, the left coset is defined by: 
@@ -1889,8 +1889,8 @@ Consider the following corollary:
         We'll show that the left cosets of $H$ form an equivalence relation. To do so, we show that the three properties of an equivalence relation is satisifed.  
         \begin{itemize}
             \item \underline{Reflexive:} For all $a \in G$, we know that: 
-            \[a = a * e\]
-            Where $e \in H$ is the identity element. Therefore, $a \sim a$; $a$ is in its own left coset. 
+            \[a = a * \id\]
+            Where $\id \in H$ is the identity element. Therefore, $a \sim a$; $a$ is in its own left coset. 
             
             \item \underline{Symmetric:} If $a \sim b$, this implies that $b = ah$ for some $h \in H$. This further implies that $a = bh^{-1}$ for $h^{-1} \in H$, which shows that $b \sim a$. 
             
@@ -1903,7 +1903,7 @@ Consider the following corollary:
 An alternative proof is as follows: 
 \begin{mdframed}
     \begin{proof}
-        We need to show that the union of the left cosets is the whole group, and that different cosets do not overlap. Let $g \in G$. Since $e \in H$ (the identity element), it follows that $g * e = g$ is in $gH$. This shows that every element of $G$ lies in some coset of $H$, so the union of the cosets is all of $G$. 
+        We need to show that the union of the left cosets is the whole group, and that different cosets do not overlap. Let $g \in G$. Since $\id \in H$ (the identity element), it follows that $g * \id = g$ is in $gH$. This shows that every element of $G$ lies in some coset of $H$, so the union of the cosets is all of $G$. 
 
         \bigskip 
 
@@ -1977,7 +1977,7 @@ As an example, the possible orders of elements of a group with order 12 are 1, 2
 
 \subsection{Relationship to Homomorphisms}
 We can apply the counting formula to the homomorphism
-\[\varphi: G \to G'\]
+\[\varphi: G \mapsto G'\]
 Here, we see that elements $a, b \in G$ are congruent, i.e. $\varphi(a) = \varphi(b)$ if and only if $b$ is in the coset $aK$ of the kernal $K$.
 \begin{mdframed}
     \begin{proposition}
@@ -1998,8 +1998,8 @@ We'll provide a proof for the first statement.
             \begin{aligned}
                 \varphi(a) = \varphi(b) &\iff \varphi(a^{-1}) \varphi(a) = \varphi(a^{-1}) \varphi(b) \\ 
                     &\iff \varphi(a^{-1}a) = \varphi(a^{-1}b) \\ 
-                    &\iff \varphi(e) = \varphi(a^{-1} b) && \varphi \text{ is a homomorphism}\\ 
-                    &\iff e = \varphi(a^{-1} b) \\ 
+                    &\iff \varphi(\id) = \varphi(a^{-1} b) && \varphi \text{ is a homomorphism}\\ 
+                    &\iff \id = \varphi(a^{-1} b) \\ 
                     &\iff a^{-1} b \in K && \text{Definition of kernal}\\ 
                     &\iff b \in aK 
             \end{aligned}
@@ -2009,7 +2009,7 @@ We'll provide a proof for the first statement.
 \end{mdframed}
 
 \begin{corollary}{}{}
-    The homomorphism $\varphi: G \to G'$ is injective if and only if $\ker(\varphi) = \{e\}$ (the trivial group). 
+    The homomorphism $\varphi: G \mapsto G'$ is injective if and only if $\ker(\varphi) = \{\id\}$ (the trivial group). 
 \end{corollary}
 
 Another corollary comes from the counting formula. In particular, for a homomorphism $\varphi: G \mapsto G'$, the following counting formula holds: 
@@ -2072,13 +2072,32 @@ Why is this important?
 \begin{itemize}
     \item If we fix $g$, then we know that: 
     \[(g * a * g^{-1}) * (g * b * g^{-1}) = g * (a * b) * g^{-1}\]
-    In other words, the function $\varphi_g: G \to G$ can be defined by: 
+    In other words, the function $\varphi_g: G \mapsto G$ can be defined by: 
     \[\varphi_{g}(a) = g * a * g^{-1}\]
     This is a homomorphism. We also note that its inverse can be defined by the function $\varphi_{g^{-1}}$.
     
     \item Suppose we have an element that doesn't ``move'' when conjugated by $g$. In particular: 
     \[g * a * g^{-1} = a \iff g * a = a * g\]
     Then, $g$ commutes with $a$. 
+\end{itemize}
+
+\subsection{Conjugation in Symmetric Groups}
+Let's suppose we have $g = (12345)$ and $a = (12)(34)$, and we wanted to find $gag^{-1}$. Then: 
+\[g^{-1} = (15432)\]
+Mapping each of $i \in [1, 2, 3, 4, 5]$, we have: 
+\begin{itemize}
+    \item $1 \xrightarrow{g^{-1}} 5 \xrightarrow{a} 5 \xrightarrow{g} 1$
+    \item $2 \xrightarrow{g^{-1}} 1 \xrightarrow{a} 2 \xrightarrow{g} 3$
+    \item $3 \xrightarrow{g^{-1}} 2 \xrightarrow{a} 1 \xrightarrow{g} 2$
+    \item $4 \xrightarrow{g^{-1}} 3 \xrightarrow{a} 4 \xrightarrow{g} 5$
+    \item $5 \xrightarrow{g^{-1}} 4 \xrightarrow{a} 3 \xrightarrow{g} 4$
+\end{itemize}
+So, our result is: 
+\[g * a * g^{-1} = (1)(23)(45)\]
+We notice a few things. In general:  
+\begin{itemize}
+    \item $g * a * g^{-1}$ has the \underline{same cycle structure} as $a$, which implies that they have the same order. 
+    \item We also get the new cycle structure from the old one by applying $g$ to the cycle notation of $a$. 
 \end{itemize}
 
 \subsection{Conjugacy as an Equivalence Relation}
@@ -2106,22 +2125,40 @@ Given some fixed $a \in G$, something that we may ask is: which elements can be 
 
 Some remarks to consider:
 \begin{itemize}
-    \item In any group, $C(e) = \{e\}$ where $e$ is the identity element. This is because $geg^{-1} = e$ for any $g \in G$. 
+    \item In any group, $C(\id) = \{\id\}$ where $\id$ is the identity element. This is because $g \id g^{-1} = \id$ for any $g \in G$. 
     \item If $a$ and $g$ commute, then $gag^{-1} = a$. Thus, when computing $C(a)$, we only need to check $gag^{-1}$ for those $g \in G$ that do not commute with $a$.
     \item Moreover, $C(x) = \{x\}$ if and only if $x$ commutes with everything in $G$. 
 \end{itemize}
 
+\textbf{Note:} This will be further discussed later. 
+
 \subsubsection{Example: Symmetric Group of 3 Elements}
-$S_3$ has three conjugacy classes: 
-\begin{enumerate}
-    \item The identity. 
-    \item Transposing two elements. 
-    \item A cyclic permutation of all three. 
-\end{enumerate}
+For any symmetric group, cycle type determines conjugacy classes. Consider the symmetric group of 3 elements. It has the following conjugacy classes:
+\begin{center}
+    \begin{tabular}{c|c|c}
+        \textbf{Cycle Structure} & \textbf{Elements} & \textbf{Size of Conjugacy Class} \\ 
+        \hline 
+        \code{(a)(b)(c)} & $\{(1)\}$ & 1 \\ 
+        \code{(ab)(c)} & $\{(12), (23), (13)\}$ & 3 \\ 
+        \code{(abc)} & $\{(123), (132)\}$ & 2
+    \end{tabular}
+\end{center}
+
+\subsubsection{Example: Symmetric Group of 4 Elements}
+For any symmetric group, cycle type determines conjugacy classes. Consider the symmetric group of 4 elements. It has the following conjugacy classes:
+\begin{center}
+    \begin{tabular}{c|c|c}
+        \textbf{Cycle Structure} & \textbf{Elements} & \textbf{Size of Conjugacy Class} \\ 
+        \hline 
+        \code{(a)(b)(c)(d)} & $\{(1)\}$ & 1 \\ 
+        \code{(ab)(c)(d)} & $\{(12), (13), (14), (23), (24), (34)\}$ & 6 \\ 
+        \code{(ab)(cd)} & $\{(12)(34), (13)(24), (14), (23)\}$ & 3 \\ 
+        \code{(abc)(d)} & $\{(123), (132), (234), (243), (341), (314), (412), (421)\}$ & 8 \\ 
+        \code{(abcd)} & $\{(1234), (1243), (1324), (1342), (1423), (1432)\}$ & 6 
+    \end{tabular}
+\end{center}
 
 \subsection{Center of a Group}
-We now talk about the \emph{center} of a group, which is also an important topic. 
-
 \begin{definition}{Center of a Group}{}
     The \textbf{center} of $G$ is the set $Z$ of elements which commute with \underline{all} of $G$. In particular, it is defined by: 
     \[Z = \{z \in G \mid z * x = x * z \text{ for all } x \in G\}\]
@@ -2140,8 +2177,8 @@ We now talk about the \emph{center} of a group, which is also an important topic
     \item The center of the special linear group $SL_{n}(\R)$ consists of: 
     \[
         \begin{cases}
-            \{\pm I\} & n \text{ even} \\ 
-            \{I\} & n \text{ odd}
+            \{\pm \mathbf{I}\} & n \text{ even} \\ 
+            \{\mathbf{I}\} & n \text{ odd}
         \end{cases}    
     \]
     \item The center of the symmetric group $S_n$ is trivial if $n \geq 3$.
@@ -2153,12 +2190,11 @@ Consider the following proposition:
         $Z$ is an abelian subgroup. 
     \end{proposition}
 \end{mdframed}
-To show that this is the case, we give a proof: 
 \begin{mdframed}
     \begin{proof}
         We need to show that $Z$ meets all the properties of a subgroup. 
         \begin{itemize}
-            \item \underline{Identity:} We know that $e \in Z$. 
+            \item \underline{Identity:} We know that $\id \in Z$. 
             \item \underline{Closure:} If we have $g, h \in Z$ with some random $a \in G$, we know that: 
             \[g * h * a = g * a * h = a * g * h \in Z\]
             \item \underline{Inverse:} Suppose we have $g \in Z$ with corresponding inverse $g^{-1} \in Z$ and some $a \in G$. Then: 
@@ -2170,55 +2206,36 @@ To show that this is the case, we give a proof:
 
 \subsection{Automorphisms}
 Recall that, when we talked about conjugations, we mentioned that this was a homomorphism: 
-\[\varphi_g: G \to G\]
+\[\varphi_g: G \mapsto G\]
 In fact, we can say that this is an \emph{automorphism}. We define this like so: 
 \begin{definition}{Automorphism}{}
     An \textbf{automorphism} is an \emph{isomorphism} on a group $G$ to itself. It is defined by: 
-    \[\varphi: G \to G\]
+    \[\varphi: G \mapsto G\]
 \end{definition}
 We also note that the \textbf{automorphism group} of a group $G$ form a group under \emph{composition}. Notationally, this is represented by $\aut(G)$.
 
 \bigskip 
 
-Conjugation defines a homomorphism from $G \to \aut(G)$, which is defined by: 
-\[g \to \varphi_g\]
+Conjugation defines a homomorphism from $G \mapsto \aut(G)$, which is defined by: 
+\[g \mapsto \varphi_g\]
 Consider:
 \[(g * h) * a * (h^{-1} * g^{-1}) = g * (h * a * h^{-1}) * g^{-1}\]
 Which we can define by: 
 \[\varphi_{g * h} = \varphi_g \circ \varphi_h\]
 One interesting case to note is: if $G$ is \emph{abelian}, then: 
 \[\varphi_g (a) = a \qquad \forall a \in G\]
-In other words, $\varphi_g = \id_g$. This implies that the homomorphism $G \to \aut(G)$ is \emph{trivial}.
+In other words, $\varphi_g = \id_g$. This implies that the homomorphism $G \mapsto \aut(G)$ is \emph{trivial}.
 
 \bigskip 
 
 On the other hand, for $n \geq 3$, the following is isomorphic:  
-\[S_n \to \aut(S_n)\]
+\[S_n \mapsto \aut(S_n)\]
 \emph{However}, this is not isomorphic\footnote{If interested, look up ``outer automorphism of $S_6$.''} when $n = 6$. 
-
-\subsection{Conjugation in Symmetric Groups}
-Let's suppose we have $g = (12345)$ and $a = (12)(34)$, and we wanted to find $gag^{-1}$. Then: 
-\[g^{-1} = (15432)\]
-Mapping each of $i \in [1, 2, 3, 4, 5]$, we have: 
-\begin{itemize}
-    \item $1 \xrightarrow{g^{-1}} 5 \xrightarrow{a} 5 \xrightarrow{g} 1$
-    \item $2 \xrightarrow{g^{-1}} 1 \xrightarrow{a} 2 \xrightarrow{g} 3$
-    \item $3 \xrightarrow{g^{-1}} 2 \xrightarrow{a} 1 \xrightarrow{g} 2$
-    \item $4 \xrightarrow{g^{-1}} 3 \xrightarrow{a} 4 \xrightarrow{g} 5$
-    \item $5 \xrightarrow{g^{-1}} 4 \xrightarrow{a} 3 \xrightarrow{g} 4$
-\end{itemize}
-So, our result is: 
-\[g * a * g^{-1} = (1)(23)(45)\]
-We notice a few things. In general:  
-\begin{itemize}
-    \item $g * a * g^{-1}$ has the \underline{same cycle structure} as $a$, which implies that they have the same order. 
-    \item We also get the new cycle structure from the old one by applying $g$ to the cycle notation of $a$. 
-\end{itemize}
 
 \subsection{Commutator}
 The commutator of $a$ and $g$ is given by: 
 \[g * a * g^{-1} * a^{-1}\]
-This is $e$ (the identity) if and only if $g$ commutes with $a$. In particular: 
+This is $\id$ (the identity) if and only if $g$ commutes with $a$. In particular: 
 \begin{lemma}{}{}
     Two element $a$ and $b$ of a group commute, $a * b = b * a$, if and only if $a * b * a^{-1} = b$, and this is true if and only if $a * b * a^{-1} * b^{-1} = 1$. 
 \end{lemma}
@@ -2291,17 +2308,93 @@ We now introduce another example of normal subgroups in example.
 
 \begin{mdframed}
     \begin{proof}
-        Since $[G: H] = 2$, it follows that $H$ has two left and right cosets. The cosets are: 
-        \begin{itemize}
-            \item $H$ itself (the identity element).
-            \item Which means that $gH$ and $Hg$ are the other left and right cosets, respectively.
-        \end{itemize}
-        By the definition of a coset, we know that: 
+        Since $[G: H] = 2$, it follows that $H$ has two left and right cosets. The cosets are $H$ itself (the identity element), which means that $gH$ and $Hg$ are the other left and right cosets, respectively. By the definition of a coset, we know that: 
         \[H \cup gH = G = H \cup Hg\]
         Because these are disjoint unions, it follows that $gH = Hg$, so it follows that $gHg^{-1} = H$. This equation holds for any $g$ in the coset $gH$, and clearly holsd for any element of the trivial coset $H$. So, the equation holds for all $G$, and $H$ is normal. 
     \end{proof}
 \end{mdframed}
 
+Finally, we can relate conjugacy classes to normal subgroups. 
+\begin{theorem}{}{}
+    Let $G$ be a group and let $H$ be a subgroup of $G$. Then, $H$ is normal in $G$ if and only if $H$ is a union of conjugacy classes of $G$.
+\end{theorem}
+
+\begin{mdframed}
+    \begin{proof}
+        \begin{equation*}
+            \begin{aligned}
+                H \triangleleft G &\iff \forall g \in G, gHg^{-1} \subseteq H && \text{Definition of Normal Subgroup} \\ 
+                    &\iff \forall h \in H, \forall g \in G, ghg^{-1} \in H && \text{Definition of Normal Subgroup} \\ 
+                    &\iff \forall h \in H, C(h) \subseteq H && \text{Where } C(h) \text{ is the conjugacy class of } h \in G  \\ 
+                    &\iff H = \bigcup_{h \in H} C(h)
+            \end{aligned}
+        \end{equation*}
+        So, we are done. 
+    \end{proof}
+\end{mdframed}
+\textbf{Remark:} So, we can say that a normal subgroup is a \textbf{subgroup} that is a \textbf{union of conjugacy classes}. 
+
+\subsubsection{Example: Symmetric Group of 4 Elements}
+Recall our example from above. For any symmetric group, cycle type determines conjugacy classes. Consider the symmetric group of 4 elements. It has the following conjugacy classes:
+\begin{center}
+    \begin{tabular}{c|c|c}
+        \textbf{Cycle Structure} & \textbf{Elements} & \textbf{Size of Conjugacy Class} \\ 
+        \hline 
+        \code{(a)(b)(c)(d)} & $\{(1)\}$ & 1 \\ 
+        \code{(ab)(c)(d)} & $\{(12), (13), (14), (23), (24), (34)\}$ & 6 \\ 
+        \code{(ab)(cd)} & $\{(12)(34), (13)(24), (14), (23)\}$ & 3 \\ 
+        \code{(abc)(d)} & $\{(123), (132), (234), (243), (341), (314), (412), (421)\}$ & 8 \\ 
+        \code{(abcd)} & $\{(1234), (1243), (1324), (1342), (1423), (1432)\}$ & 6 
+    \end{tabular}
+\end{center}
+So, a normal subgroup of $S_4$ will be a union of these \emph{conjugacy classes}. For example, the union of conjugacy classes shown below is a normal subgroup of $S_4$:
+\[C((1)) \cup C((12)(34)) = \{(1), (12)(34), (13)(24), (14), (23)\}\]
+Of course, we can't simply just take any conjugacy classes and take the union of them. In fact, for $S_4$, the above subgroup is the only non-trivial proper normal subgroup. 
+\begin{itemize}
+    \item For example, if we tried to take the conjugacy class of the identity and the conjugacy class of the transpositions, e.g. $C((1)) \cup C((12))$, then we won't have closure. So, this isn't even a subgroup. 
+    \item If we don't have the identity to begin with, then that's a problem. 
+\end{itemize}
+So, making a subgroup by taking the union of the conjugacy classes is \emph{not a given}. To show that $S_4$ only has one non-trivial proper normal subgroup, it is important to realize that: 
+\begin{itemize}
+    \item Each conjugacy class is disjoint one from another. So, taking the union of two conjugacy classes will result in the number of elements being the sum of the number of the elements from those classes. 
+    \item Every subgroup must have the identity element, so we must always pick the identity conjugacy class. 
+    \item By Lagrange's Theorem, the order of the subgroup must divide the order of the group. Since $|S_4| = 24$, we need to find a subgroup of order 1, 2, 3, 4, 6, 8, 12, or 24. Since it cannot be trivial or the entire group, we need to find a subgroup of order 2, 3, 4, 6, 8, or 12.
+    \item By looking at the orders of each conjugacy class, we note that we can only hae $C(1)$ and $C((12)(34))$. This is because $1 + 3$ divides 24. However, 1 + any even number (which are the other sizes of the conjugacy classes) will result in an odd number, which does not divide 24. 
+\end{itemize}
+
+% https://www.youtube.com/watch?v=kz4CVRlkAuM
+
+\subsubsection{Example: Symmetric Group of 5 Elements}
+Suppose we wanted to show that $S_5$ contains no normal subgroup of order 5.
+
+\begin{mdframed}
+    \begin{proof}
+        First, we note that normal subgroups are simply unions of conjugacy classes. For symmetric groups, the conjugacy classes are permutations of the same cycle structure. Recall that $|S_5| = 5! = 120$. Getting the number of occurrences of each cycle involves using some combinatorics. 
+        \begin{itemize}
+            \item \underline{$(a)(b)(c)(d)(e)$}: The identity permutation is the only permutation with order 1, so there is \textbf{1}. 
+            \item \underline{$(ab)(c)(d)(e)$}: There are $\binom{5}{2}$ ways to pick two elements from a set of 5 elements, and then $\frac{2!}{2}$ ways to rearrange these elements uniquely in a cycle. The result is $\binom{5}{2} \frac{2!}{2} = 10$. 
+            \item \underline{$(ab)(cd)(e)$}: There are $\binom{5}{2}$ ways to pick the first two elements from a set of 5 elements and $\frac{2!}{2}$ ways to rearrange these elements uniquely in the first 2-cycle. Then, there are $\binom{3}{2}$ ways to pick the next two elements from a set of 3 elements (note that we took out the first two elements) and $\frac{2!}{2}$ ways to rearrange these elements in a 2-cycle. This results in $\binom{5}{2} \frac{2!}{2} \binom{3}{2} \frac{2!}{2}$. But, because this does not account for the possibility that $(ab)(cd) = (cd)(ab)$, we need to divide by 2 to get the correct answer. Thus, the result is $\frac{\binom{5}{2} \frac{2!}{2} \binom{3}{2} \frac{2!}{2}}{2} = 15$.
+            \item \underline{$(abc)(d)(e)$}: There are $\binom{5}{3}$ ways to pick three elements from a set of 5 elements, and $\frac{3!}{3}$ ways to rearrange these elements in a 3-cycle uniquely. Thus, the result is $\binom{5}{3} \frac{3!}{3} = 20$.
+            \item \underline{$(abc)(de)$}: There are $\binom{5}{3}$ ways to pick 3 elements from a set of 5 elements and $\frac{3!}{3}$ ways to rearrange these elements in a 3-cycle uniquely. There are $\binom{2}{2}$ ways to pick 2 elements from the set of 2 remaining elements (we took out 3 elements for the previous cycle) and $\frac{2!}{2}$ ways to rearrange these elements in a 2-cycle uniquely. Thus, the result is $\binom{5}{3} \frac{3!}{3} \cdot \binom{2}{2} \frac{2!}{2} = 20$. 
+            \item \underline{$(abcd)(e)$}: There are $\binom{5}{4}$ ways to pick four elements from a set of 5 elements, and $\frac{4!}{4}$ ways to rearrange these elements in a 4-cycle uniquely. Thus, the answer is $\binom{5}{4} \frac{4!}{4} = 30$.
+            \item \underline{$(abcde)$}: As we are dealing with the entire set, there is only one way to pick 5 elements from a set of 5 elements. There are $\frac{5!}{5}$ ways to rearrange these elements in a 5-cycle uniquely. Thus, the answer is $\binom{5}{5} \frac{5!}{5} = 24$. 
+        \end{itemize}
+        So, the orders are as follows: 
+        \begin{center}
+            \begin{tabular}{c|c}
+                \textbf{Structure/Class} & \textbf{Occurance} \\ 
+                \hline
+                $(1)$ & 1 \\ 
+                $(ab)$ & 10 \\ 
+                $(ab)(cd)$ & 15 \\ 
+                $(abc)$ & 20 \\ 
+                $(abcd)$ & 30 \\ 
+                $(abcde)$ & 24
+            \end{tabular}
+        \end{center}
+        By Lagrange's Theorem, we know that any subgroup of $S_5$ must have order that divides $|S_5| = 120$. We also know that the a normal subgroup is a subgroup that is also the union of conjugacy classes. Since our subgroup must have the identity element, our subgroup has at least order 1. However, the rest of the conjugacy classes have order that is greater than 4 (since we already picked the identity conjugacy class). Therefore, $S_5$ cannot have a normal subgroup of order 5.  
+    \end{proof}    
+\end{mdframed}
 
 \subsubsection{Example: Alternating Group}
 The alternating group $A_n$ is a normal subgroup of $S_n$. This is because the even permutations make up half of $S_n$, so $[S_n: A_n] = 2$. Therefore, $A_n$ is normal. 
@@ -2322,8 +2415,8 @@ Consider the following proposition:
 The proof is as follows: 
 \begin{mdframed}
     \begin{proof}
-        If $a$ is in the kernal of the homomorphism $\varphi: G \to G'$ and if $g$ is any element of $G$, then: 
-        \[\varphi(g * a * g^{-1}) = \varphi(g) \cdot \varphi(a) \cdot \varphi(g) = \varphi(g) \cdot e_{G'} \cdot \varphi(g)^{-1}.\]
+        If $a$ is in the kernal of the homomorphism $\varphi: G \mapsto G'$ and if $g$ is any element of $G$, then: 
+        \[\varphi(g * a * g^{-1}) = \varphi(g) \cdot \varphi(a) \cdot \varphi(g) = \varphi(g) \cdot \id_{G'} \cdot \varphi(g)^{-1}.\]
         Therefore, $g * a * g^{-1}$ is in the kernal too. 
     \end{proof}
 \end{mdframed}
@@ -2360,10 +2453,10 @@ We also note the following theorem:
 
 \subsubsection{Example: Integers}
 For example, if $G = (\Z, +)$ and $H = \Z n$, then $\overline{G} = \Z / \Z n$. We can define: 
-\[\varphi: G \to \overline{G}\]
-\[\varphi: \Z^+ \to \Z / \Z n\]
+\[\varphi: G \mapsto \overline{G}\]
+\[\varphi: \Z^+ \mapsto \Z / \Z n\]
 By performing the following mapping: 
-\[a \to a \mod{n}\]
+\[a \mapsto a \mod{n}\]
 
 \subsubsection{Example: Symmetric Group}
 Let $G = S_3$ and $N = \cyclic{(123)}$. Then: 
@@ -2393,7 +2486,7 @@ Here, we will show that the product of two cosets is a coset.
         \begin{equation*}
             \begin{aligned}
                 a * b * N &= \{a * b * n \mid n \in N\} \\ 
-                    &= \{a * e * b * n \mid n \in N\}
+                    &= \{a * \id * b * n \mid n \in N\}
             \end{aligned}
         \end{equation*}
         As these are equal, the proof is complete. 
@@ -2412,7 +2505,7 @@ The above lemma states that this is a well-defined operation. We now need to che
 \end{itemize}
 \begin{mdframed}
     \begin{proof}
-        Let $G$ be a group. We know that $\varphi: G \to \overline{G}$ is a surjective function and $\varphi(a) \cdot \varphi(b) = \varphi(a * b)$. Pick three elements $\overline{x_1}$, $\overline{x_2}$, and $\overline{x_3}$. Write these as $\varphi(\overline{x_1})$, $\varphi(\overline{x_2})$, and $\varphi(\overline{x_3})$ for some $x_1$, $x_2$, and $x_3 \in G$. Then, in $G$, we have that: 
+        Let $G$ be a group. We know that $\varphi: G \mapsto \overline{G}$ is a surjective function and $\varphi(a) \cdot \varphi(b) = \varphi(a * b)$. Pick three elements $\overline{x_1}$, $\overline{x_2}$, and $\overline{x_3}$. Write these as $\varphi(\overline{x_1})$, $\varphi(\overline{x_2})$, and $\varphi(\overline{x_3})$ for some $x_1$, $x_2$, and $x_3 \in G$. Then, in $G$, we have that: 
         \[(x_1 * x_2) * x_3 = x_1 * (x_2 * x_3)\]
         Applying $\varphi$ to both sides: 
         \begin{equation*}
@@ -2426,7 +2519,7 @@ The above lemma states that this is a well-defined operation. We now need to che
 
         \bigskip 
 
-        We have now proved that for every normal subgroup $N$ of $G$, $\varphi: G \to \overline{G}$ is a surjective homomorphism. 
+        We have now proved that for every normal subgroup $N$ of $G$, $\varphi: G \mapsto \overline{G}$ is a surjective homomorphism. 
     \end{proof}
 \end{mdframed}
 
@@ -2442,7 +2535,7 @@ The above lemma states that this is a well-defined operation. We now need to che
 
 \newpage 
 \section{First Isomorphism Theorem and Correspondence Theorem}
-Let $G$ be a group and $N$ a normal subgroup of $G$. In other words, $\forall g \in G$, we have that $g * N * g^{-1} = N$. We also defined the quotient group $\overline{G}$, which is a group with a surjective homomorphism $\pi: G \to \overline{G}$ with kernal $N$.
+Let $G$ be a group and $N$ a normal subgroup of $G$. In other words, $\forall g \in G$, we have that $g * N * g^{-1} = N$. We also defined the quotient group $\overline{G}$, which is a group with a surjective homomorphism $\pi: G \mapsto \overline{G}$ with kernal $N$.
 
 \bigskip 
 
@@ -2450,7 +2543,7 @@ We can use this information to introduce the First Isomorphism Theorem.
 
 \subsection{First Isomorphism Theorem}
 \begin{theorem}{First Isomorphism Theorem}{}
-    Let $\varphi: G \to G'$ be a surjective group homomorphism with kernal $N$. The quotient group $\overline{G}$ is isomorphic to the image of $G'$. To be precise, let $\pi: G \to \overline{G}$ be the canonical map. There is a unique $\overline{\varphi}: \overline{G} \to G'$ such that:
+    Let $\varphi: G \mapsto G'$ be a surjective group homomorphism with kernal $N$. The quotient group $\overline{G}$ is isomorphic to the image of $G'$. To be precise, let $\pi: G \mapsto \overline{G}$ be the canonical map. There is a unique $\overline{\varphi}: \overline{G} \mapsto G'$ such that:
     \[\varphi = \overline{\varphi} \circ \pi\] 
 \end{theorem}
 A significantly more concise definition of the First Isomorphism Theorem is as follows: 
@@ -2489,14 +2582,14 @@ Any surjective homomorphism with the kernal $N$ are preimages of elements that h
 
 Recall this lemma, which we may or may not have talked about at some point. 
 \begin{lemma}{}{}
-    Let $\varphi: G \to G'$ be a surjective homomorphism with kernal $N$. Then, for every $g' \in G'$: 
+    Let $\varphi: G \mapsto G'$ be a surjective homomorphism with kernal $N$. Then, for every $g' \in G'$: 
     \[\varphi^{-1}(g') = \{g \in G \mid \varphi(g) = g'\}\]
     Represents a left/right coset of $N$. 
 \end{lemma}
 Its proof is as follows: 
 \begin{mdframed}
     \begin{proof}
-        Since $\varphi$ is surjective, we can pick a $g_1 \in G$ with $\varphi(g_1) = g'$. We claim that $g_1 * N = \varphi^{-1}(g') = N * g$. We show that $g_1 N \subseteq \varphi^{-1}(g')$. For any $n \in N$, we note that $\varphi(g * n) = \varphi(g_1) \cdot \varphi(n) = \varphi(g_1)$. Now we show that $\varphi^{-1}(g') \subseteq g_1 * N$. Pick any $g_2 \in G$ with $\varphi(g_2) = g'$. Then, $\varphi(g_1) = \varphi(g_2)$ implies that $\varphi(g_{1}^{-1} * g_2) = \varphi(g_1)^{-1} \cdot \varphi(g_2) = e$. So:
+        Since $\varphi$ is surjective, we can pick a $g_1 \in G$ with $\varphi(g_1) = g'$. We claim that $g_1 * N = \varphi^{-1}(g') = N * g$. We show that $g_1 N \subseteq \varphi^{-1}(g')$. For any $n \in N$, we note that $\varphi(g * n) = \varphi(g_1) \cdot \varphi(n) = \varphi(g_1)$. Now we show that $\varphi^{-1}(g') \subseteq g_1 * N$. Pick any $g_2 \in G$ with $\varphi(g_2) = g'$. Then, $\varphi(g_1) = \varphi(g_2)$ implies that $\varphi(g_{1}^{-1} * g_2) = \varphi(g_1)^{-1} \cdot \varphi(g_2) = \id$. So:
         \[g_{1}^{-1} * g_2 \in N \implies g_2 \in g_1 * N\]
         So, we are done.  
     \end{proof}
@@ -2548,14 +2641,14 @@ So, $G / G \cong \{1\}$.
 \subsection{Correspondence Theorem}
 We now talk about the correspondence theorem.
 \begin{theorem}{Correspondence Theorem}{}
-    Let $\varphi: G \to G'$ be a surjective homomorphism with kernal $N$. Then, there is a bijection from the subgroups of $G'$ to the subgroups of $G$ containing $N$ defined by: 
-    \[H' \to \varphi^{-1}(H')\]
+    Let $\varphi: G \mapsto G'$ be a surjective homomorphism with kernal $N$. Then, there is a bijection from the subgroups of $G'$ to the subgroups of $G$ containing $N$ defined by: 
+    \[H' \mapsto \varphi^{-1}(H')\]
 \end{theorem}
 
 \begin{definition}{Restriction}{}
-    Let $\varphi: G \to G'$ be a homomorphism. Let $H$ be a subgroup (not necessarily normal) of $G$. We define: 
-    \[\varphi |_{H}: H \to G'\]
-    To be the restriction. It can be written as the composition $H \to G \xrightarrow{\varphi} G'$ (the inclusion homomorphism). 
+    Let $\varphi: G \mapsto G'$ be a homomorphism. Let $H$ be a subgroup (not necessarily normal) of $G$. We define: 
+    \[\varphi |_{H}: H \mapsto G'\]
+    To be the restriction. It can be written as the composition $H \mapsto G \xrightarrow{\varphi} G'$ (the inclusion homomorphism). 
 \end{definition}
 \textbf{Remarks:}
 \begin{itemize}
@@ -2564,7 +2657,7 @@ We now talk about the correspondence theorem.
 \end{itemize}
 
 \subsubsection{Example: Permutations and Sign}
-Let $\sigma: S_n \to \{\pm 1\}$ be the sign homomorphism. We define the \underline{alternating group} $A_n$ to be $\ker(\sigma)$. In other words:
+Let $\sigma: S_n \mapsto \{\pm 1\}$ be the sign homomorphism. We define the \underline{alternating group} $A_n$ to be $\ker(\sigma)$. In other words:
 \[A_n = \ker(\sigma)\]
 Suppose $H$ is a subgroup of $S_n$ of \underline{odd} order. (e.g., $\cyclic{g}$ where $g$ is a cycle of odd length). Then: 
 \[|H| = |\ker(\varphi \mid_H)| \cdot \underbrace{\left|\im\left(\frac{\varphi}{H}\right)\right|}_{\substack{\text{Order must divide} \\ \text{order of } \{\pm 1\}}}\]
@@ -2573,14 +2666,14 @@ Here, we note that $\left|\im\left(\frac{\varphi}{H}\right)\right|$ must be 1. T
 \subsection{Inverse Image}
 We now define an inverse image.
 \begin{definition}{Inverse Image}{}
-    Let $\varphi: G \to G'$ be a homomorphism. Then, for $H' \subseteq G'$ a subgroup, the \textbf{inverse image} (preimage) is defined by: 
+    Let $\varphi: G \mapsto G'$ be a homomorphism. Then, for $H' \subseteq G'$ a subgroup, the \textbf{inverse image} (preimage) is defined by: 
 \[\varphi^{-1}(H') = \{g \in G \mid \varphi(g) \in H\}\]
 \end{definition}
 THis is a subgroup because it has all three characteristics of a subgroup (which we will not show). 
 
 \bigskip
 
-For example, if the homomorphism is $(\Z, +) \to (\Z / \Z n)$, then for any $d$ that divides $n$, the multiples of $d$ in $\Z / \Z n$ form a subgroup whose inverse image in $\Z$ is $\Z d$. For instance, if $d = 4$ and $n = 6$, then the multiples of 4 in $\Z / \Z 6$ are $4(4) = 16 \equiv 2 \mod{6}$. 
+For example, if the homomorphism is $(\Z, +) \mapsto (\Z / \Z n)$, then for any $d$ that divides $n$, the multiples of $d$ in $\Z / \Z n$ form a subgroup whose inverse image in $\Z$ is $\Z d$. For instance, if $d = 4$ and $n = 6$, then the multiples of 4 in $\Z / \Z 6$ are $4(4) = 16 \equiv 2 \mod{6}$. 
 
 
 
@@ -2604,7 +2697,7 @@ Now, we talk about product groups.
 The proof that this is actually a group is as follows:
 \begin{mdframed}
     \begin{proof}
-        Let $(G, *)$ and $(G', \cdot)$ be two groups. We note that $(e, e')$ is the identity (where $e \in G$ and $e' \in G'$ are the corresponding identity elements), the inverse of $(a, a')$ is $(a, a')^{-1} = (a^{-1}, (a')^{-1})$, and associativity implicitly applies. Therefore, the product group is a group. 
+        Let $(G, *)$ and $(G', \cdot)$ be two groups. We note that $(\id, \id')$ is the identity (where $\id \in G$ and $\id' \in G'$ are the corresponding identity elements), the inverse of $(a, a')$ is $(a, a')^{-1} = (a^{-1}, (a')^{-1})$, and associativity implicitly applies. Therefore, the product group is a group. 
     \end{proof}
 \end{mdframed}
 
@@ -2623,7 +2716,7 @@ Now, we focus on some properties of product groups.
     \begin{proposition}
         Let $H$ and $K$ be subgroups of a group $G$ and let $f: H \times K \mapsto G$ be the multiplication map, defined by $f(h, k) = hk$. Its image is the set $HK = \{hk \mid h \in H, k \in K\}$. 
         \begin{enumerate}[(a)]
-            \item $f$ is injective if and only if $H \cap K = \{e\}$ (the identity). 
+            \item $f$ is injective if and only if $H \cap K = \{\id\}$ (the identity). 
             \item $f$ is a homomorphism from the product group $H \times K$ to $G$ if and only if the elements of $K$ commute with the elements of $H$: $hk = kh$. 
             \item If $H$ is a normal subgroup of $G$, then $HK$ is a subgroup of $G$. 
             \item $f$ is an isomorphism from the product group $H \times K$ to $G$ if and only if $H \cap K = \{1\}$, $HK = G$, and also $H$ and $K$ are both normal subgroups of $G$. 
@@ -2757,6 +2850,9 @@ The last relation can be verified like so:
 \subsubsection{Homomorphism of the Group of Isometries}
 Consider the map $\pi: M_n \mapsto O_n$, defined by dropping the translation part of an isometry $f$. We can write $f$ in the form $f = t_a \varphi$ and define: 
 \[\pi(f) = \varphi\]
+Here, $O_n$ is the group of isometries preserving the origin. More specifically, it is the group of distance-preserving transformations of an Euclidean space of dimension $n$ that preserves a \emph{fixed point}, where the group operation is (like with $M_n$) composing transformations/isometries. 
+
+\bigskip 
 
 \begin{mdframed}
     \begin{proposition}
@@ -2780,7 +2876,11 @@ That sends an orientation-preserving isometry to 1 and an orientation-reversing 
 
 
 \subsection{Isometries of the Plane}
-First, we dneote the group of isometries of the plane by $M$. We choose a coordinate system and use it to identify the plane with the space $\R^2$. Then, we choose as generators the \emph{translations}, the \emph{rotations} about the origin, and the \emph{reflection} about the $e_1$-axis (an axis). We denote the rotation through the angle $\theta$ by $\rho_{\theta}$, and the reflection about the $e_1$-axis by $r$. Essentially, to summarize, we have the following operations:
+First, we dneote the group of isometries of the plane by $M$. We choose a coordinate system and use it to identify the plane with the space $\R^2$. Then, we choose as generators the \emph{translations}, the \emph{rotations} about the origin, and the \emph{reflection} about the $e_1$-axis (an axis). We denote the rotation through the angle $\theta$ by $\rho_{\theta}$, and the reflection about the $e_1$-axis by $r$. 
+
+\bigskip 
+
+Essentially, to summarize, we have the following operations:
 \begin{enumerate}
     \item \emph{Translation} $t_a$ by a vector $a$. 
     \[t_{a}(x) = x + a = \begin{bmatrix}
@@ -2844,5 +2944,287 @@ Computation in $M$ can be done using the symbols $t_v$, $\rho_{\theta}$, and $r$
     \end{enumerate}
 \end{theorem}
 
+\subsection{Finite Group of Orthogonal Operators on the Plane}
+\begin{theorem}{}{}
+    Let $G$ be a finite subgroup of the orthogonal group $O_2$. There is an integer $n$ such that $G$ is one of the following groups: 
+    \begin{itemize}
+        \item $C_n$: the \emph{cyclic group} of order $n$ generated by the rotation $\rho_{\theta}$ where $\theta = 2\pi / n$. 
+        \item $D_n$: the \emph{dihedral group} of order $2n$ generated by two elements: the rotation $\rho_{\theta}$, where $\theta = 2\pi / n$, and a reflection $r$ about a line $\ell$ through the origin. 
+    \end{itemize}
+\end{theorem}
+\textbf{Remark:} Recall that $O_n$ is the group of isometries that preserve a fixed point (in our case, most of the time, the origin). So, it makes sense to drop the translation part of the isometry. 
+
+\subsubsection{Dihedral Groups: An Introduction}
+As mentioned, the dihedral group is comprised of rotations $\rho_{\theta}$ and a reflection $r'$. Let us define $x = \rho_{\theta}$ and $y = r$. 
+
+\begin{mdframed}
+    \begin{proposition}
+        The dihedral group $D_n$ has order $2n$. It is generated by two elements $x$ and $y$ that satisfy the relations: 
+        \[x^n = \id \qquad y^2 = \id \qquad yx = x^{-1} y\]
+        The elements of $D_n$ are: 
+        \[\{\id, x, x^2, \dots, x^{n - 1}, y, xy, x^{2}y, \dots, x^{n - 1}y\}\]
+    \end{proposition}
+\end{mdframed}
+We can write more relations. In particular: 
+\[xyxy = \id \qquad yx = x^{n - 1}y \qquad xy = yx^{-1}\]
+
+\textbf{Remarks:} 
+\begin{itemize}
+    \item Rotations ($x$) will always have order $n$. 
+    \item Reflections ($y$ or $x^a y$ for some $a$) will always have order 2. 
+\end{itemize}
+
+\begin{corollary}{}{}
+    The dihedral group $D_3$ and the symmetric group $S_3$ are isomorphic. 
+\end{corollary}
+\begin{mdframed}
+    \begin{proof}
+        Since these groups are sufficiently small enough as both have order 6, we can count the orders of each element. In particular, for $D_3$: 
+        \begin{center}
+            \begin{tabular}{c|c|c}
+                \textbf{Order} & \textbf{Elements} & \textbf{Count} \\ 
+                \hline 
+                1 & $\id$ & 1 \\ 
+                2 & $xy$, $y$, $x^2 y$ & 3 \\ 
+                3 & $x$, $x^2$ & 2
+            \end{tabular}
+        \end{center}
+
+        And for $S_3$: 
+        \begin{center}
+            \begin{tabular}{c|c|c}
+                \textbf{Order} & \textbf{Elements} & \textbf{Count} \\ 
+                \hline 
+                1 & $\id$ & 1 \\ 
+                2 & $(12)$, $(13)$, $(23)$ & 3 \\ 
+                3 & $(123)$, $(132)$ & 2
+            \end{tabular}
+        \end{center}
+        
+        Since both groups have the same number of elements with the same number of orders, they are isomorphic to each other. 
+    \end{proof}
+\end{mdframed}
+\textbf{Remarks:}
+\begin{itemize}
+    \item For $n > 3$, $S_n$ and $D_n$ are no longer isomorphic since $D_n$ has order $n!$ while $S_n$ has order $n!$. 
+    \item When $n \geq 3$, the elements of the dihedral group $D_n$ are orthogonal operators that carry a regular $n$-sided polygon $\triangle$ to itself: the group of symmetries of $\triangle$. 
+    \item $D_1$ and $D_2$ are too small to be symmetry groups of an $n$-gon in the usual sense.
+    \begin{itemize}
+        \item In particular, we can think of $D_1$ as the group $\{\id, r\}$ of two elements, or a cyclic group. 
+        \item $D_2$ contains the four elements $\{\id, \rho, r, \rho r\}$ where $\rho$ is the rotation with angle $\pi$ and $\rho r$ is the reflection about the vertical axis, and is isomorphic to the Klein four group. 
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Discrete Subgroups}
+\begin{definition}{Discrete Subgroup}{}
+    A subgroup $\Gamma$ of the additive group $(\R, +)$ is called \textbf{discrete} if there is a (small) positive real number $\epsilon$ such that every nonzero element $c$ of $\Gamma$ satisfies the property $|c| \geq \epsilon$. 
+\end{definition}
+
+\subsubsection{Fixed Point Theorem}
+\begin{theorem}{Fixed Point Theorem}{}
+    Let $G$ be a finite group of isometries of the plane. There is a point in the plane that is fixed by every element of $G$, a point $p$ such that $g(p) = p$ for all $g \in G$. 
+\end{theorem}
+
+
+\subsection{Discrete Groups of Isometries}
+\begin{definition}{Discrete Group}{}
+    A group $G$ of isometries of the plane $P$ is \textbf{discrete} if it does not contain arbitrarily small translations or rotations. More precisely, $G$ is discrete if there is a positive real number $\epsilon$ so that: 
+    \begin{enumerate}[(i)]
+        \item If an element of $G$ is the translation by a nonzero vector $a$, then the length of $a$ is at least $\epsilon$: $|a| \geq \epsilon$.
+        \item If an element of $G$ is the rotation through a nonzero angle $\epsilon$ about some point of the plane, then the absolute value of $\theta$ is at least $\epsilon$: $|\theta| \geq \epsilon$.
+    \end{enumerate}
+\end{definition}
+\textbf{Remark:} Since the translation vectors and the rotation angles form different sets, it might seem more appropriate to have separate lower bounds for them. However, in this definition, we do not care about the best bounds for the vectors and the angles, so we choose $\epsilon$ small enough to take care of both at the same time. 
+
+\bigskip
+
+There are three main tools for analyzing a discrete group $G$: 
+\begin{itemize}
+    \item The translation group $L$, a subgroup of the group $V$ of translation vectors. 
+    \item The point group $\overline{G}$, a subgroup of the orthogonal group $O_2$. 
+    \item An operation of $\overline{G}$ on $L$. 
+\end{itemize}
+
+\subsubsection{Translation Group}
+The translation group $L$ of $G$ is the set of vectors $v$ such that the translation $t_v$ is in $G$: 
+\[L = \{v \in G \mid t_v \in G\}\]
+Since $t_v t_w = t_{v + w}$ and $t_{v}^{-1} = t_{-v}$, it follows that $L$ is a subgroup is the additive group $V^+$ of all translation vectors. The bound $\epsilon$ on translations in $G$ bounds the lengths of the vectors in $L$. 
+
+% TODO 
+
+
+
+
+
+
+
+
+
+
+
+\newpage
+\section{Group Action (Operations)}
+We now focus on the aspect of groups as the symmetries of sets, of which we use group actions to formalize. 
+
+\subsection{Definition of a Group Action}
+\begin{definition}{Group Action}{}
+    If $(G, \cdot)$ is a group with identity element $\id$ and $X$ is a set, then a left \textbf{group action} $m$ of $G$ on $X$ is a function: 
+    \[m: G \times X \mapsto X \qquad (g, x) \mapsto g * x\]
+    That satisfies the following two axioms: 
+    \begin{itemize}
+        \item \underline{Identity:} For all $x \in X$,
+        \[m(\id, x) = x\]
+        \item \underline{Associativity:} For $g_1, g_2 \in G$ and $x \in X$, 
+        \[m(g_1, \alpha(g_2, x)) = m(g_1 \cdot g_2, x)\]
+    \end{itemize}
+
+    When it's clear that we're performing a group action, we can shorten the axioms as follows: 
+    \begin{itemize}
+        \item \underline{Identity:} For all $x \in X$,
+        \[\id * x = x\]
+        \item \underline{Associativity:} For all $g_1, g_2 \in G$ and $x \in X$, 
+        \[g_1 * (g_2 * x) = (g_1 \cdot g_2) * x\]
+    \end{itemize}
+
+    In this sense, we say that $G$ acts on $X$ with $m$ and write $G \curvearrowright X$.
+\end{definition}
+
+\subsubsection{Example: Symmetric Group}
+Take $G = S_n$ and $X = \{1, 2, \dots, n\}$. Then, for some $\sigma \in S_n$ and $i \in X$: 
+\[\sigma * i = \sigma(i)\]
+Here, we apply $\sigma$ to $x$, or we say that $\sigma$ acts on $x$. 
+
+\begin{mdframed}
+    \begin{proof}
+        Here, we show that this a group action. 
+        \begin{itemize}
+            \item \underline{Identity:}
+            \[\id * i = \id(i) = i\]
+
+            \item \underline{Associativity:}
+            \begin{equation*}
+                \begin{aligned}
+                    \sigma_1 * (\sigma_2 * i) &= \sigma_1 * \sigma_{2}(i) \\ 
+                        &= \sigma_{1}(\sigma_{2}(i)) \\ 
+                        &= (\sigma_{1}\sigma_{2})(i) \\ 
+                        &= \sigma_{1}\sigma_{2} * i
+                 \end{aligned}
+            \end{equation*}
+        \end{itemize}
+        So, we are done. 
+    \end{proof}
+\end{mdframed}
+
+\subsubsection{Example: Group on Itself via Multiplication}
+Suppose $(G, \cdot)$ is a group. Then, $G$ acts on $G$ by left multiplication. Take $g \in G$ and $x \in G$. Then:  
+\[g * x = g \cdot x\]
+
+\subsubsection{Example: Group on Itself via Conjugation}
+Suppose $(G, \cdot)$ is a group. Then, $G$ acts on $G$ by conjugation. Take $g \in G$ and $x \in G$. Then:  
+\[g * x = g \cdot x \cdot g^{-1}\]
+
+\begin{mdframed}
+    \begin{proof}
+        Here, we show that this is a group action. 
+        \begin{itemize}
+            \item \underline{Identity:}
+            \[\id * x = \id \cdot x \cdot \id^{-1} = x\]
+
+            \item \underline{Associativity:}
+            \begin{equation*}
+                \begin{aligned}
+                    g_1 * (g_2 * x) &= g_1 * (g_2 \cdot x \cdot g_{2}^{-1}) \\ 
+                        &= g_1 \cdot (g_2 \cdot x \cdot g_{2}^{-1}) \cdot g_{1}^{-1} \\ 
+                        &= (g_1 \cdot g_2) \cdot x \cdot (g_{2}^{-1} \cdot g_{1}^{-1}) \\ 
+                        &= (g_1 \cdot g_2) \cdot x \cdot (g_1 \cdot g_2)^{-1} \\ 
+                        &= (g_1 \cdot g_2) * x
+                \end{aligned}
+            \end{equation*}
+        \end{itemize}
+        So, we are done. 
+    \end{proof}
+\end{mdframed}
+
+\subsection{Orbit}
+Given an operation of a group $G$ on a set $X$, an element $x \in X$ will be sent to various other elements by the group action. We collect together these elements, obtaining a subset called the orbit. 
+\begin{definition}{Orbit}{}
+    Suppose $G$ acts on $X$. Then, the \textbf{orbit} of $x \in X$ is defined by: 
+    \[O_x = \{x' \in X \mid x' = g * x \text{ for some } g \in G\} = \{g * x \mid g \in G\}\] 
+\end{definition}
+
+The orbits for a group action are equivalence classes for the equivalence relation: 
+\[x \sim y \text{ if } y = g * x \text{ for some } g \in G\]
+Since they are equivalence classes, the orbits partition the set $X$. If $X$ consists of just one orbit, then the action of $G$ is called \textbf{transitive}; this means that every element of $X$ is carried to every other one by some element of the group.
+
+\subsubsection{Example: Symmetric Group}
+Suppose we're asked to describe the orbits of the group operation of $S_n$ on $\{1, 2, \dots, n\}$ by: 
+\[\sigma * i = \sigma(i)\]
+\begin{mdframed}
+    \begin{proof}
+        Consider the orbits of the group operation $S_n$ on $\{1, 2, \dots, n\}$ by $\sigma * i = \sigma(i)$. Then, for $\sigma \in S_n$, we have:  
+        \[O_{i} = \{\sigma(i) \mid \sigma \in S_n\} = \{1, 2, \dots, n\}\]
+        In this case, we consider the action of $S_n$ to be transitive. Consider the following permutation: 
+        \[\sigma = (i, k) \in S_n\]
+        If $i \in \{1, 2, \dots, n\}$ is our input and $k$ is the number that we're trying to find, then we note that $i$ maps to $k$ so that there is always a way to get some $k \in \{1, 2, \dots, n\}$. 
+    \end{proof}
+\end{mdframed}
+
+As an example, suppose we have the group $S_4$ with the set $S = \{1, 2, 3, 4\}$. Then, you are able to get every element in $S$ like so: 
+\begin{itemize}
+    \item $\sigma = (2, 4) \in S_4$. Then, $\sigma(2) = 4$. In other words, 2 maps to 4.
+    \item $\sigma = (2, 3) \in S_4$. Then, $\sigma(2) = 3$. In other words, 2 maps to 3.
+    \item $\sigma = (1) \in S_4$. Then, $\sigma(2) = 2$. In other words, 2 maps to 2.
+    \item $\sigma = (2, 1) \in S_4$. Then, $\sigma(2) = 1$. In other words, 2 maps to 1.
+\end{itemize}
+
+\subsubsection{Example: Symmetric Group, Tuple Pair}
+Suppose we're asked to describe the orbits of the group operation of $S_n$ on $\{1, 2, \dots, n\}$ by: 
+\[\sigma * (i_1, i_2) = (\sigma(i_1), \sigma(i_2))\]
+
+\begin{mdframed}
+    \begin{proof}
+        We claim that the orbits of the group operation mentioned above are: 
+        \[O_{(a, b)} = \text{All tuples such that both elements are unique, i.e. not the same.}\]
+        \[O_{(a, a)} = \text{All tuples such that both elements are the same.}\]
+        To show that this is the case, we can work with $O_a$ and $O_b$ individually. For some $a \in \{1, 2, \dots, n\}$, we note that $O_a = \{1, 2, \dots, n\}$ by the same logic we used in the previous example. We can do the same with $b$. If $a \neq b$, then it follows that $O_{(a, b)}$ will generate all unique possibilities of $(c, d)$ such that $c, d \in \{1, 2, \dots, n\}$ where $c \neq d$. But, suppose $a = b$. Then, the resulting orbit will be all tuples where the first and second elements are the same. Taking the union of both orbits, we have: 
+        \[O_{(a, b)} \cup O_{(a, a)} = \{1, 2, \dots, n\}^2\]
+        As expected. 
+    \end{proof}
+\end{mdframed}
+
+\subsubsection{Example: Conjugation}
+Consider again the example of conjugation. In particular, if $G$ acts on $G$ by conjugation, then the orbit is defined as: 
+\begin{equation*}
+    \begin{aligned}
+        O_{x} &= \{g * x \mid g \in G\} \\
+            &= \{g \cdot x \cdot g^{-1} \mid g \in G\} \\ 
+            &= C_x
+    \end{aligned}
+\end{equation*}
+This is the set of all conjugates of $x$, and the set of all conjugates of $x$ is called the conjugacy class of $x$.
+
+\subsection{Stabilizer}
+\begin{definition}{Stabilizer}{}
+    The \textbf{stabilizer} of an element $x \in X$ is the set of group elements that leave $x$ fixed. It is a \emph{subgroup} of $G$ that we denoted by $G_x$:
+    \[G_x = \{g \in G \mid g * s = s\}\] 
+\end{definition}
+
+\begin{mdframed}
+    \begin{proposition}
+        Let $X$ be a set on which a group $G$ acts on. Let $x \in X$ and let $H$ be the stabilizer of $x$. Then: 
+        \begin{enumerate}[(a)]
+            \item If $a$ and $b$ are elements of $G$, then $a * s = b * s$ if and only if $a^{-1} \cdot b \in H$, and this is true if and only if $b$ is in the coset $aH$. 
+            \item Suppose that $a * s = s'$. The stabilizer $H'$ of $s'$ is a conjugate subgroup: 
+            \[H' = aHa^{-1} = \{g \in G \mid g = aha^{-1} \text{ for some } h \in H\}\]
+        \end{enumerate}
+    \end{proposition}
+\end{mdframed}
+
+\subsubsection{Example: Permutations}
+Consider the permutation group $S = \{(1), (12), (34), (12)(34)\}$ and the set $\{1, 2, 3, 4\}$. Then: 
+\[G_1 = \{g \in G \mid g(1) = 1\} = \{(1), (34)\}\]
+\[G_2 = \{g \in G \mid g(2) = 2\} = \{(1), (34)\}\]
+\[G_3 = \{g \in G \mid g(3) = 3\} = \{(1), (12)\}\]
+\[G_4 = \{g \in G \mid g(4) = 4\} = \{(1), (12)\}\]
 
 \end{document}
