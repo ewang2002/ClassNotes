@@ -8,7 +8,7 @@
 \pagestyle{fancy}
 \fancyhf{}
 \rhead{Math 100A}
-\chead{December 1st, 2021}
+\chead{December 3rd, 2021}
 \lhead{Course Notes}
 \rfoot{\thepage}
 
@@ -3380,6 +3380,7 @@ We will now apply the Counting Formula to classify the finite subgroups of $SO_3
 Here, we will talk about several important topics. A lot of these will involve conjugation (once again). 
 
 \subsection{Cayley's Theorem}
+% is this right? 
 \begin{theorem}{Cayley's Theorem}{}
     Every finite group is isomorphic to a subgroup of a permutation group. A group of order $n$ is isomorphic to a subgroup of the symmetric group $S_n$. 
 \end{theorem}
@@ -3395,6 +3396,8 @@ Here, we will talk about several important topics. A lot of these will involve c
     \item The centralizer of an element $g \in G$ is a \emph{subgroup} of $G$. 
     \item This should not be confused with the center of a group $Z(G)$, which is the set of elements that commute with every element of the group: 
     \[Z(G) = \{z \in G \mid zy = yz \text{ for all } y \in G\}\]
+    \item Note that: 
+    \[Z(G) = \bigcap_{a \in G} Z(a)\]
 \end{itemize}
 
 \begin{definition}{Conjugacy Class}{}
@@ -3510,6 +3513,35 @@ Rule out as many class equations for a group of order 10 as possible:
     \end{proof}
 \end{mdframed}
 
+\subsection{\texorpdfstring{$p$}{p}-Groups}
+\begin{definition}{$p$-Group}{}
+    A group whose order is a positive power of a prime $p$ is called a \textbf{$p$-group}.
+\end{definition} 
 
+\begin{mdframed}
+    \begin{proposition}
+        The center of a $p$-group is not the trivial group. 
+    \end{proposition}
+\end{mdframed}
+
+\begin{mdframed}
+    \begin{proof}
+        Say that $|G| = p^n$ for some $n \geq 1$. If $|G| = p$, then $G \cong C_p$ which is abelian so $Z(G) = G$. 
+        
+        \bigskip 
+
+        Otherwise, for any $x \in G$, consider $Z(x) \subseteq G$, which is a subgroup. Suppose, towards a contradiction, that $|Z(G)| = 1$. Choosing $x \in G - \{\id\}$, we get that $Z(x)$ is a proper subgroup. Then: 
+        \[|C(x)| = \frac{|G|}{|Z(x)|} = p^d\]
+        Where $1 \leq d \leq n$. The class equation for $G$ is as follows: 
+        \[|G| = |C_1| + |C_2| + \dots + |C_k|\]
+        Let $C_1$ be the conjugacy class of the identity. Then, $|C_1| = 1$. So, for $1 \leq d_2, \dots, d_k \leq n$, we have: 
+        \[p^n = 1 + p^{d_2} + \dots + p^{d_k}\]
+        However, this is a contradiction as the right-hand side is no longer a power of $p$. The reason this is the case is because we know that $p^{d_2} \equiv 0 \Mod{p}$, $p^{d_k} \equiv 0 \Mod{p}$, but we note that $1 \equiv 1 \Mod{p}$ which is a problem. 
+    \end{proof}
+\end{mdframed}
+
+\begin{theorem}{Fixed Point Theorem}{}
+    Let $G$ be a $p$-group, and let $X$ be a finite set on which $G$ operates. If the order of $X$ is not divisible by $p$, then there is a fixed point for the operation of $G$ on $X$: an element $x$ whose stabilizer is the entire group. 
+\end{theorem}
 
 \end{document}
