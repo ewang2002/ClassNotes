@@ -3947,93 +3947,302 @@ So, does the word \code{AT} exist in this multiway try?
     \item The answer is no. While there is a path that consist of \code{AT}, this does not stop at a word node. So, you have \code{ATE}, but not \code{AT}.
 \end{itemize}
 
-%  3:43 of this vid
+
 \subsection{MWT Insertion, Finding, and Removing}
-How do we insert elements, find elements, or remove elements in a MWT? The algorithm for them are essentially the same. For this, we are going to do the following: 
-\begin{itemize}
-    \item Initialize MWT. 
-    \item Insert ANT. 
-    \item Insert ART. 
-    \item Insert AN. 
-    \item Find ART. 
-    \item Find ARM. 
-    \item Find A. 
-    \item Remove ANT. 
-    \item Find ANT. 
-\end{itemize}
-Generally speaking, insertion works like so: 
+Insertion works like so: 
 \begin{itemize}
     \item Start at the root.
     \item For each letter in the word that we are inserting: 
     \begin{itemize}
         \item Check if the current node has a child edge labeled by that letter. 
         \item If it does not, create new child edge labeled by letter.
-        \item Traverse down to that next child edge. 
+        \item Traverse down to the node that the end of that child edge. 
     \end{itemize}
     \item Once we finish that word, we mark the current node as a word node. 
 \end{itemize}
 
+Finding works like so: 
 \begin{itemize}
-    \item Initialize MWT: An initialized MWT is simply the root node. 
-    \begin{verbatim}
-        [ ]
-    \end{verbatim}
-
-    \item Insert ANT: We use the process defined above. 
+    \item Start at the root. 
+    \item For each letter in the word that we are inserting: 
     \begin{itemize}
-        \item Insert A since it doesn't already exist. Then, traverse down. 
-        \begin{verbatim}
-            [ ]
-             | 
-             | A 
-            [ ]
-        \end{verbatim}
-
-        \item Insert N since it doesn't already exist. Then, traverse down. 
-        \begin{verbatim}
-            [ ]
-             | 
-             | A 
-            [ ]
-             | 
-             | N  
-            [ ]
-        \end{verbatim}
-
-        \item Insert T since it doesn't alredy exist. Then, traverse down. 
-        \begin{verbatim}
-            [ ]
-             | 
-             | A 
-            [ ]
-             | 
-             | N  
-            [ ]
-             | 
-             | T  
-            [ ]
-        \end{verbatim}
-
-        \item Since we're done with all letters, set the node that we stopped at as a word node. 
-        \begin{verbatim}
-            [ ]
-             | 
-             | A 
-            [ ]
-             | 
-             | N  
-            [ ]
-             | 
-             | T  
-            [W]
-        \end{verbatim}
+        \item Check if the current node has a child edge labeled by that letter. 
+        \item If it does not, the word does not exist and we can return. 
+        \item Traverse down to the node that the end of that child edge. 
     \end{itemize}
-
-    \item Insert ART: Same ideas as above. 
-    \begin{itemize}
-        \item 
-    \end{itemize}
+    \item Check if the node is a word node. If it is, the word is found. Otherwise, it is not found. 
 \end{itemize}
+
+Deleting works like so: 
+\begin{itemize}
+    \item Start at the root. 
+    \item For each letter in the word that we are inserting: 
+    \begin{itemize}
+        \item Check if the current node has a child edge labeled by that letter. 
+        \item If it does not, the word does not exist and we can return. 
+        \item Traverse down to the node that the end of that child edge. 
+    \end{itemize}
+    \item Check if the node is a word node. If it is, unmark it as a word node (so that it doesn't form a word). 
+\end{itemize}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\newpage 
+\section{Ternary Search Trees}
+A ternary search tree serves a similar purpose to a multiway trie. However, performance-wise, there are differences. 
+\begin{itemize}
+    \item \underline{BST:} $O(k \log n)$, memory efficient. 
+    \item \underline{MWT:} $O(k)$, memory inefficient. 
+    \item \underline{TST:} Somewhere in between. It stores words similarly to a MWT, but with less wasted speed. 
+\end{itemize}
+One notable difference between MWTs and TSTs is how we use \textbf{nodes} to store a letter.
+
+\subsection{TST Find Algorithm}
+The find algorithm for a ternary search tree works like so: 
+\begin{itemize}
+    \item Start at the root node. Denote $N$ as the node that we are at and $N_l$ as the letter at this node. 
+    \item For each letter $l$ in the query: 
+    \begin{itemize}
+        \item If $l > N_l$, then traverse to the right child node. 
+        \item Else, if $l < N_l$, then traverse to the left child node. 
+        \item Else, we do the following: 
+        \begin{itemize}
+            \item If $l$ is the last letter of the query and $N$ is a word node, then we found the word. 
+            \item Else, traverse to the middle child. 
+        \end{itemize}
+    \end{itemize}
+    \item At this point, the word wasn't found, so it doesn't exist. 
+\end{itemize}
+
+For instance, consider the following ternary search tree: 
+\begin{verbatim}
+    c
+    |\ 
+    | \ 
+    a  m 
+    |  |
+    |  |
+    l [e]
+    |   \ 
+    |    \ 
+   [l]    i 
+          |
+          |
+          n
+         /|
+        / |
+      [d][d]
+\end{verbatim}
+Let's suppose I wanted to find \code{mind}.
+\begin{itemize}
+    \item We start at the root node \code{c}, and focus on the first letter of the query \code{m}. Since \code{m > c}, we traverse right. 
+    \item Now, we're at the node \code{m}. We are still focusing on the first letter \code{m}. Since \code{m == m}, we traverse down. 
+    \item Now, we're at the node \code{e}. We are now focusing on the second letter of the query \code{i}. Since \code{i > e}, we traverse right.
+    \item Now, we're at the node \code{i}. We are still now focusing on the second letter of the query \code{i}. Since \code{i == i}, we traverse down. 
+    \item Now, we're at the node \code{n}. We are now focusing on the third letter of the query \code{n}. Since \code{n == n}, we traverse down. 
+    \item We are now at the node \code{d}. We are focusing on the the fourth letter \code{d}. But, since \code{d == d} and this is the last letter of the query, we found it.  
+\end{itemize}
+
+\subsection{TST Insert Algorithm}
+The idea behind this algorithm is very similar in nature to the TST find algorithm. The notable differences are: 
+\begin{itemize}
+    \item If we need to traverse to a child that doesn't exist, simply create it and traverse. 
+    \item Make the last word in the traversal a word node. 
+\end{itemize}
+
+\subsection{TST Remove Algorithm}
+Again, the idea behind this algorithm is very similar in nature to the TST find algorithm. The only difference is: 
+\begin{itemize}
+    \item Make the last node in the traversal not a word node. 
+\end{itemize}
+
+\subsection{TST Time Complexity}
+The time complexity for a TST is: 
+\begin{itemize}
+    \item $O(n)$ worst case.
+    \item $O(\log n)$ average case. 
+\end{itemize}
+For instance, we can get the worst case if we inserted the words \code{AAA}, \code{BBB}, and \code{CCC} (in sorted order). The tree would look like: 
+\begin{verbatim}
+    A
+    |\ 
+    | \  
+    A  B 
+    |  |\ 
+    |  | \ 
+   [A] B  C
+       |  |
+       |  |
+      [B] C
+          |
+          |
+         [C]
+\end{verbatim}
+Which is essentially just a linked list. 
+
+\bigskip
+
+One thing to note is that a TST works extremely well if the words all have very similar prefixes. Suppose we have the words \code{AAA}, \code{AAB}, \code{AAC}, and \code{AAD}. Then, our TST would look like: 
+\begin{verbatim}
+    A
+    |
+    A
+    |
+   [A]
+    |
+   [B]
+     \ 
+     [C] 
+       \ 
+       [D] 
+\end{verbatim}
+
+
+
+
+
+
+
+
+
+\newpage 
+\section{Hashing, Hash Tables, Hash Maps, and Collisions}
+Now, we're going to talk about hash functions, hash tables and maps, and collisions.
+
+\subsection{Hash Functions}
+A hash function \textbf{takes in} an object $x$ and \textbf{returns} an integer representation of $x$. 
+
+\bigskip
+
+There are a few properties to consider:
+\begin{itemize}
+    \item \underline{\textbf{Property of Equality:}} If $x$ is equal to $y$, then $h(x)$ must equal $h(y)$.
+    \item \textbf{Property of Inequality:} If $x$ is not equal to $y$, then it would be nice (but not necessary) if $h(x)$ was not equal to $h(y)$. 
+\end{itemize}
+\textbf{Remark:} The only property that matters is the \underline{property of equality}. In other words, a valid hash function \emph{must} satisfy the property of equality, but not necessarily the property of inequality. \emph{In other words}, a valid hash function is one that satisfies the property of equality, but a good hash function is one that also satisfies the property of inequality. 
+
+\subsubsection{Example 1: Trivial Hash Function}
+Consider the hash function, where \code{s} is a string: 
+\begin{verbatim}
+    h(s):
+        return 0 
+\end{verbatim}
+For any word, we will always get back \code{0}. This is a \textbf{valid} hash function since it always satisfies the property of equality. However, this isn't very good because two different strings will give the same hash value. 
+
+\subsubsection{Example 2: Good Hash Function}
+Consider the hash function, where \code{s} is a string: 
+\begin{verbatim}
+    h(s):
+        out = 0
+        for c in s: 
+            out += ASCII value of c 
+        return out  
+\end{verbatim}
+This is a \textbf{valid} hash function since it always satisfies the property of equality. It's also better than the previous hash function since it does differentiate between some strings. However, if we gave the string $x_1 x_2 x_3$ and $x_2 x_3 x_1$ where $x_1$, $x_2$, and $x_3$ are arbitrary characters, we would get the same hash value. So, there's room for improvement. 
+
+\subsubsection{Example 3: Better Hash Function}
+Consider the hash function, where \code{s} is a string: 
+\begin{verbatim}
+    h(s):
+        out = 0
+        for c in s: 
+            out *= 31 
+            out += ASCII value of c 
+        return out 
+\end{verbatim}
+This is a \textbf{valid} hash function since it always satisfies the property of equality. This is also significantly better than the previous hash function because two different words with the same letters (shuffled around) will, in general, give us a different hash value. 
+
+\subsubsection{Example 4: Invalid Hash Function}
+\begin{verbatim}
+    h(s): 
+        return a random integer 
+\end{verbatim}
+This is an \textbf{invalid} hash function since it doesn't always satisfy the property of equality.
+
+\subsubsection{Example 5: Invalid Hash Function}
+\begin{verbatim}
+    h(s): 
+        return current time  
+\end{verbatim}
+This is an \textbf{invalid} hash function since it doesn't always satisfy the property of equality. 
+
+\subsection{Hash Tables}
+A \textbf{hash table} is essentially an array that can hold values. As the name implies, we make use of a hash function to determine where we put the values. 
+
+\bigskip
+
+Suppose we have the following hash table: 
+\begin{verbatim}
+    [_, _, _, _, _]     Array 
+     0  1  2  3  4      Index 
+\end{verbatim}
+
+And suppose $A$ has hash value $h(A) = 65$, $C$ has hash value $h(C) = 67$, and $G$ has hash value $h(G) = 71$. We can take the hash value and mod it by the length of the array to get the appropriate index. 
+
+\bigskip 
+
+For example, to insert $A$ to our hash table, take its hash ($h(A) = 65$) and mod it by 5 (the length of the array). This gives us 0, so: 
+\begin{verbatim}
+    [A, _, _, _, _]     Array 
+     0  1  2  3  4      Index 
+\end{verbatim}
+Now, to insert $C$ to our hash table, take its hash (67) and mod it by 5. This gives us 2, so:
+\begin{verbatim}
+    [A, _, C, _, _]     Array 
+     0  1  2  3  4      Index 
+\end{verbatim}
+
+To see if an element exists, we can use the hash function to get the hash, mod it by the length of the array to get the index, and then go to that index of the array and check if an element exists and if it's equal to our target element. We can use this same process to remove elements as well.
+
+\bigskip
+
+As a result, one can say that this implements the set ADT. 
+
+\subsection{Hash Maps}
+A hash map, like a hash table, is an array that can hold values. A hash map is like a map; instead of inserting individual elements, we can insert a key with a corresponding value. Instead of checking if an element exists, we can retrieve or remove an element associated with a key. 
+
+\bigskip
+
+A hash map has some array behind the scene. For example: 
+\begin{verbatim}
+    [_, _, _, _, _]     Array 
+     0  1  2  3  4      Index 
+\end{verbatim}
+Let's say this hash map will map student names to student grades. Suppose the hash values for \code{Niema} and \code{Ryan} are as follows: 
+\begin{verbatim}
+    h(Niema) % 5 = 2
+    h(Ryan) % 5 = 0
+    h(Felix) % 5 = 3
+\end{verbatim}
+
+Suppose we want to insert \code{Niema} with value \code{A+}. Then: 
+\begin{verbatim}
+    [_, _, Niema (A+), _, _]     Array 
+     0  1  2           3  4      Index 
+\end{verbatim}
+Suppose we now want to insert \code{Ryan} with value \code{A}. Then: 
+\begin{verbatim}
+    [Ryan (A), _, Niema (A+), _, _]     Array 
+     0         1  2           3  4      Index 
+\end{verbatim}
+
+Now, let's suppose we wanted to know \code{Ryan}'s grade. Take the hash of \code{Ryan}, mod it by the length of the array, and get the corresponding value. In our case, we would get \code{A}. 
+
+\bigskip
+
+Now, suppose we wanted to know \code{Felix}'s grade. Then, hashing \code{Felix} and modding it by the length of the array gives us \code{3}, but there's nothing at index 3 of the backing array. So, \code{Felix} must not exist. 
+
 
 
 \end{document}
