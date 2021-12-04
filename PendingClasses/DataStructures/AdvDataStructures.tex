@@ -8,7 +8,7 @@
 \pagestyle{fancy}
 \fancyhf{}
 \rhead{CSE 100}
-\chead{Octber 6th, 2021}
+\chead{December 4th, 2021}
 \lhead{Course Notes}
 \rfoot{\thepage}
 
@@ -4244,5 +4244,242 @@ Now, let's suppose we wanted to know \code{Ryan}'s grade. Take the hash of \code
 Now, suppose we wanted to know \code{Felix}'s grade. Then, hashing \code{Felix} and modding it by the length of the array gives us \code{3}, but there's nothing at index 3 of the backing array. So, \code{Felix} must not exist. 
 
 
+\subsection{Collisions}
+First, we talk about some basic probability review. 
+\[P(A) + P(A^C) = 1 \implies P(A) = 1 - P(A^C)\]
+Where $P(A)$ is the probability of an event $A$ happening and $P(A^C)$ is the probability of $A$-complement (i.e. $A$ not happening).
+\[P(A \text{ and } B) = P(A) \cdot P(B)\]
+Where $A$ and $B$ are independent events, i.e. their outcomes have no impact on one another. For example, flipping a coin twice are independent events; getting heads or tails the first time does not impact what you will get the second time. 
+\[P(A \text{ or } B) = P(A) + P(B)\]
+Where $A$ and $B$ are mutually exclusive events, i.e. if $A$ happens, then $B$ cannot happen (and vice versa). For example, rolling a \code{1} and a \code{2} on the same die are mutually exclusive events; you can roll one or the other, but not both. 
+
+\bigskip
+
+Suppose we have the hash table of $M$ total slots, and we wanted to insert $N$ keys (assuming uniform distribution from our hash function): 
+\begin{verbatim}
+    [_, _, _, _, _, _, _, _]     Array 
+     0  1  2  3  4, 5, 6, 7      Index 
+\end{verbatim}
+What is the probability that at least one collision will occur? While we can find $P_{(N, M)}(\geq 1 \text{ Collisions})$, this would be difficult. But, we know that: 
+\[P_{(N, M)}(\geq 1 \text{ Collisions}) = 1 - P_{(N, M)}(0 \text{ Collisions})\]
+Which is easier to calculate. Let's calculate $P_{(N, M)}(0 \text{ Collisions})$. When we insert the first element $a$, the probability of there being no collision is $1$:
+\begin{verbatim}
+    [a, _, _, _, _, _, _, _]     Array 
+     0  1  2  3  4, 5, 6, 7      Index 
+\end{verbatim}
+When we insert the second element $b$, the probability of there being no collision is $\frac{M - 1}{M}$ since there are $M - 1$ empty slots but $M$ total slots:
+\begin{verbatim}
+    [a, _, _, _, b, _, _, _]     Array 
+     0  1  2  3  4, 5, 6, 7      Index 
+\end{verbatim}
+When we insert the third element $c$, the probability of there being no collision is $\frac{M - 2}{M}$ as there are $M - 2$ empty slots but $M$ total slots. 
+\begin{verbatim}
+    [a, _, c, _, b, _, _, _]     Array 
+     0  1  2  3  4, 5, 6, 7      Index 
+\end{verbatim}
+Continuing this, we have that: 
+\[P_{(N, M)}(0 \text{ Collisions}) = 1 \cdot \frac{M - 1}{M} \cdot \frac{M - 2}{M} \cdot \dots \cdot \frac{M - N + 1}{M}\]
+So: 
+\[P_{(N, M)}(\geq 1 \text{ Collisions}) = 1 - \left(1 \cdot \frac{M - 1}{M} \cdot \frac{M - 2}{M} \cdot \dots \cdot \frac{M - N + 1}{M}\right)\]
+
+\subsection{The Birthday Paradox}
+Let's suppose we have a hash table with 365 slots, and we have $N$ keys. 
+\begin{itemize}
+    \item When $N = 10$, the probability of having at least one collision is $0.12$. 
+    \item When $N = 20$, the probability becomes $0.41$. 
+    \item When $N = 30$, the probability becomes $0.71$.
+    \item When $N = 40$, the probability becomes $0.89$. 
+    \item When $N = 50$, the probability becomes $0.97$. 
+    \item When $N = 60$, the probability becomes $\geq 0.99$. 
+\end{itemize}
+
+So, even though $N = 60$, or that only $16.44\%$ of all slots are filled, we still managed to hit a 99\% collision rate. Note that $16.44\%$ is our \textbf{load factor}; this is defined by: 
+\[\text{Load Factor} = \frac{N}{M}\]
+Where $N$ is the number of slots filled and $M$ is the total number of slots. 
+
+\bigskip
+
+Suppose we inserted an element $x_1$ into our hash table, and this was the only element. Then, the expected number of collisions on this element is $\frac{N - 1}{M}$. If we inserted a second element $x_2$, the expected number of collisions becomes $\frac{N - 2}{M}$. The total expected number of collisions is: 
+\[\sum_{i = 1}^{N - 1} \frac{i}{M} = \frac{N(N - 1)}{2M}\]
+If we wanted an average of one collision, we can simply solve an equation: 
+\[\sum_{i = 1}^{N - 1} \frac{i}{M} = \frac{N(N - 1)}{2M} = 1\]
+This gives us: 
+\[N = \sqrt{2M} \implies O(N^2) = 2M\]
+This implies that we would need $n^2$ slots to store $n$ elements so that we would have an average collision of 1 element, which is a lot. But, recall that the expected total number of collisions can be simplified to: 
+\[\frac{1}{2}\left(1 + \frac{1}{1 - \text{Load Factor}}\right)\]
+Plotting the load factor on the $x$-axis and the expected number of collisions on the $y$-axis, we would see an exponential function; from there, we can pick some load factor and see how many expected collisions there are. 
+
+\subsection{Collision Resolution Strategies}
+Here, we can talk about various collision resolution strategies. 
+
+\subsubsection{Open Addressing (Linear Probing)}
+Consider: 
+\begin{verbatim}
+    [_, _, _, _, _]     Array 
+     0  1  2  3  4      Index 
+\end{verbatim}
+And suppose we have the following hash values: 
+\[h(A) = 65\]
+\[h(F) = 70\]
+\[h(G) = 71\]
+When we insert $A$, we have the index 0 (\code{65 mod 5 = 0}): 
+\begin{verbatim}
+    [A, _, _, _, _]     Array 
+     0  1  2  3  4      Index 
+\end{verbatim}
+When we insert $F$, we also have the index 0 again. However, the 0th index is already taken by $A$. So, linear probing says that we just check the next slot. In that case:
+\begin{verbatim}
+    [A, F, G, _, _]     Array 
+     0  1  2  3  4      Index 
+\end{verbatim}
+Inserting $C$ would give us another collision (index 1), so we simply check the next slot over: 
+\begin{verbatim}
+    [A, F, G, _, _]     Array 
+     0  1  2  3  4      Index 
+\end{verbatim}
+Now, suppose $K$ had an index of 0 (from our hash function modded by the length). Although index 0, 1, and 2 already have elements, index 3 doesn't, so we can just put it there: 
+\begin{verbatim}
+    [A, F, G, K, _]     Array 
+     0  1  2  3  4      Index 
+\end{verbatim}
+If our \textbf{load factor} is too high, we can simply expand the hash table and reposition all the elements that were in the original hash table. 
+
+\bigskip
+
+The time complexity is $O(n)$ worst case and $O(1)$ average case. 
+
+
+\subsubsection{Closed Addressing (Separate Chaining)}
+Consider: 
+\begin{verbatim}
+    [_, _, _, _, _]     Array 
+     0  1  2  3  4      Index 
+\end{verbatim}
+
+The idea is, instead of probing across the array looking for an empty slot, we can treat each cell as a linked list. If a collision occurs, we can insert an element at the end of the linked list. So, really, our hash table would look like: 
+\begin{verbatim}
+    [_, _, _, _, _]     Array 
+     0  1  2  3  4      Index 
+
+    0 -> []
+    1 -> []
+    2 -> []
+    3 -> []
+    4 -> []
+\end{verbatim}
+Suppose $A$ was to be inserted in index 0. Then: 
+\begin{verbatim}
+    [_, _, _, _, _]     Array 
+     0  1  2  3  4      Index 
+
+    0 -> [A]
+    1 -> []
+    2 -> []
+    3 -> []
+    4 -> []
+\end{verbatim}
+Inserting $C$ (index 2) gives us: 
+\begin{verbatim}
+    [_, _, _, _, _]     Array 
+     0  1  2  3  4      Index 
+
+    0 -> [A]
+    1 -> []
+    2 -> [C]
+    3 -> []
+    4 -> []
+\end{verbatim}
+But, suppose $F$ needs to be inserted into index 0. Then: 
+\begin{verbatim}
+    [_, _, _, _, _]     Array 
+     0  1  2  3  4      Index 
+
+    0 -> [A, F]
+    1 -> []
+    2 -> [C]
+    3 -> []
+    4 -> []
+\end{verbatim}
+If we try to insert $F$ again, then we can simply stop since we do not allow duplicates. 
+
+\bigskip
+
+The time complexity is $O(n)$ worst case and $O(1)$ average case. 
+
+
+\subsection{Bloom Filters and Count-Min Sketches}
+Now, we'll talk about bloom filters and count-min sketches. 
+
+\subsection{Bloom Filters}
+A bloom filter is a \textbf{probabilistic} data structure which is memory efficient and has no false negatives. However, it does have false positives. In other words, it can tell you if an element does not exist, but it cannot tell you (guarantee) if an element does. 
+
+\bigskip
+
+Consider the following array: 
+\begin{verbatim}
+    [F, F, F, F, F]     Array 
+     0  1  2  3  4      Index
+\end{verbatim}
+We need to define multiple hash functions: 
+\[h_{1}(x) = a(x)\]
+\[h_{2}(x) = 2 + a(x)\]
+\[h_{3}(x) = 4 \cdot a(x)\]
+Where $a(x)$ is the ASCII value of $x$. 
+
+\bigskip
+
+To insert an element into our bloom filter, all we do is go through each hash function, get the appropriate hash value for our element, mod it by the number of slots available, and then toggle the values at those indices to \code{true} (or \code{1}).
+
+\bigskip
+
+Suppose we wanted to insert $B$. This has an ASCII value of 66, so $h_{1}(B) = 66$, $h_{2}(B) = 68$, and $h_{3}(B) = 264$. We know that 66 mod 5 = 1, 68 mod 5 is 3, and 264 mod 5 is 4. Then, our bloom filter would look like: 
+\begin{verbatim}
+    [F, T, F, T, T]     Array 
+     0  1  2  3  4      Index
+\end{verbatim}
+
+If we wanted to insert $L$. This has an ASCII value of 76, so $h_{1}(L) = 76$, $h_{2}(L) = 78$, and $h_{3}(L) = 304$. We know that 76 mod 5 = 0, 78 mod 5 is 2, and 304 mod 5 is 4. Then, our bloom filter would look like: 
+\begin{verbatim}
+    [F, T, F, T, T]     Array 
+     0  1  2  3  4      Index
+\end{verbatim}
+We notice that our bloom filter looks no different from the previous one. This is because we do not set the values at the corresponding indices to \code{false} (or \code{0}) if it is already set to \code{true} initially. But, if we never inserted $L$ and we tried looking for $L$, the bloom filter would tell us that $L$ does exist simply because $B$ has the same hash values as $L$. 
+
+\subsection{Count-Min Sketches}
+A count-min sketch is a \textbf{probabilistic} data structure which is memory efficient and provides an upper-bound on \emph{counts}.
+
+\bigskip
+
+Here, we're working with 2D arrays. Every row is associated with a hash function, and each element in this 2D array is the number of times we've hit that index. So, there should be $k$ rows for $k$ hash functions. Consider the following 2D array: 
+\begin{verbatim}
+    [0, 0, 0, 0, 0] h_1
+    [0, 0, 0, 0, 0] h_2
+    [0, 0, 0, 0, 0] h_3
+\end{verbatim}
+We need to define multiple hash functions as usual: 
+\[h_{1}(x) = a(x)\]
+\[h_{2}(x) = 2 + a(x)\]
+\[h_{3}(x) = 4 \cdot a(x)\]
+Where $a(x)$ is the ASCII value of $x$. 
+
+\bigskip
+
+Suppose we wanted to insert $B$. This has an ASCII value of 66, so $h_{1}(B) = 66$, $h_{2}(B) = 68$, and $h_{3}(B) = 264$. We know that 66 mod 5 = 1 (so index 1 of the row $h_1$ would be incremented), 68 mod 5 is 3 (so index 3 of the row $h_2$ would be incremented), and 264 mod 5 is 4 (so index 4 of the row $h_3$ would be incremented). Then, our count-min sketch would look like: 
+\begin{verbatim}
+    [0, 1, 0, 0, 0] h_1
+    [0, 0, 0, 1, 0] h_2
+    [0, 0, 0, 0, 1] h_3
+     0  1  2  3  4
+\end{verbatim}
+Now, we note that these three numbers that we incremented could be different (especially if we have hash collisions). Thus, to find the number of times we've inserted an element, we simply take the minimum of the three values at the index associated with each hash function; this would be the \textbf{upper-bound}. For example, if our count-min sketch looks like: 
+\begin{verbatim}
+    [0, 1, 0, 1, 2] h_1
+    [1, 0, 1, 3, 0] h_2
+    [0, 1, 0, 0, 2] h_3
+     0  1  2  3  4
+\end{verbatim}
+Then, to get the number of times we've inserted $B$, we would end up getting:
+\[\min\{1, 3, 2\} = 1\]
+Which would be the upper-bound in terms of the number of times we've inserted $B$. 
 
 \end{document}
