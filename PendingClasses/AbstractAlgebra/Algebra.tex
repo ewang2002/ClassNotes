@@ -1843,7 +1843,7 @@ Now that we proved the lemma, we can now prove the proposition.
 
 \newpage 
 \section{Cosets}
-There aree two types of cosets: \emph{left} cosets and \emph{right} cosets. 
+There are two types of cosets: \emph{left} cosets and \emph{right} cosets. 
 
 \subsection{Left Cosets}
 \begin{definition}{Left Coset}{}
@@ -3394,6 +3394,7 @@ Here, we will talk about several important topics. A lot of these will involve c
 \textbf{Remarks:}
 \begin{itemize}
     \item The centralizer of an element $g \in G$ is a \emph{subgroup} of $G$. 
+    \item The centralizer of an element $g \in G$ will always have $g$; that is, $g \in Z(g)$. 
     \item This should not be confused with the center of a group $Z(G)$, which is the set of elements that commute with every element of the group: 
     \[Z(G) = \{z \in G \mid zy = yz \text{ for all } y \in G\}\]
     \item Note that: 
@@ -3424,7 +3425,7 @@ If we number the conjugacy classes, writing them as $C_1, C_2, \dots, C_k$, then
 \[|G| = |C_1| + |C_2| + \dots + |C_k|\]
 A few facts to remember: 
 \begin{itemize}
-    \item The conjugacy class of the identity element $\id$ consists of that element alone, so it seems natural to list that class first. Thus, $|C_1| = 1$> 
+    \item The conjugacy class of the identity element $\id$ consists of that element alone, so it seems natural to list that class first. Thus, $|C_1| = 1$. 
     \item If there are any other occurrences of 1 on the right side of the class equation, then those correspond to the elements of the center $Z$ of $G$. 
     \item Each term on the right side divides the left side since it is the order of an orbit. In other words, the numbers on the right side of the class equation divide the order of the group. 
     \item At least one of the numbers on the right side must be equal to 1 (the identity conjugacy class). 
@@ -3543,5 +3544,187 @@ Rule out as many class equations for a group of order 10 as possible:
 \begin{theorem}{Fixed Point Theorem}{}
     Let $G$ be a $p$-group, and let $X$ be a finite set on which $G$ operates. If the order of $X$ is not divisible by $p$, then there is a fixed point for the operation of $G$ on $X$: an element $x$ whose stabilizer is the entire group. 
 \end{theorem}
+
+\begin{mdframed}
+    \begin{proposition}
+        Every group of order $p^2$ is abelian. 
+    \end{proposition}
+\end{mdframed}
+
+\begin{corollary}{}{}
+    A group of order $p^2$ is either cyclic, or the product of two cyclic groups of order $p$. 
+\end{corollary}
+
+
+\subsection{Simple Group}
+\begin{definition}{Simple Group}{}
+    A group $G$ is \textbf{simple} if it has no non-trivial normal subgroups. In other words, a group $G$ is simple if it is not the trivial group and if it contains no proper normal subgroup (no normal subgroup other than the trivial subgroup and the entire group $G$). 
+\end{definition}
+
+For example, $C_p$ (the cyclic group of order prime $p$) is simple for all prime $p$. We can use Lagrange's Theorem to show that this is the case. It turns out that these are the only abelian simple groups.
+
+\begin{lemma}{}{}
+    Let $N$ be a normal subgroup of a group $G$. 
+    \begin{enumerate}[(a)]
+        \item If $N$ contains an element $x$, then it contains the conjugacy class $C(x)$ of $x$. 
+        \item $N$ is a union of conjugacy classes. 
+        \item The order of $N$ is the sum of the orders of the conjugacy classes that it contains. That is: 
+        \[|N| = \sum_{\substack{\text{Conjugacy} \\ \text{Classes of $G$} \\ C_i \subseteq N}} |C_i|\]
+    \end{enumerate}
+\end{lemma}
+\textbf{Remark:} We discussed the second point in a previous section. 
+
+
+
+\subsection{Class Equation of the Icosahedral Group}
+Recall that $I$ is the icosahedral group of 60 rotational symmetries of a dodecahedron or an icosahedron. Here, we'll focus on a dodecahedron. Recall that a dodecahedron looks like: 
+\begin{center}
+    \includegraphics[scale=0.1]{assets/dodeca.jpg}
+\end{center}
+
+\begin{theorem}{}{}
+    The icosahedral group $I$ is a simple group. 
+\end{theorem}
+
+\begin{mdframed}
+    \begin{proof}
+        We begin by finding the class equation for $I$. 
+        \begin{itemize}
+            \item For a vertex $v$ of a dodecahedron and an angle $\theta = \frac{2\pi}{3}$, we have that $\rho_{(v, \theta)} \in I$ is fixing $v$ and is being rotated by $\theta$. Say that $\rho_{(v, \theta)}$ is conjugate to $\rho_{(v', \theta)}$. We know that the number of vertices on a dodecahedron is 20. Then, as there are 20 choices for $v$ but one choice for $\theta$, it follows that:
+            \[|C(\rho_{(v, \theta)})| = 20\]
+            \item We can use the same process above to talk about a rotation about a face. We know that there are 12 faces on a dodecahedron. So, it follows that: 
+            \[|C(\rho_{(v, \frac{2\pi}{5})})| = 12\]
+            \[|C(\rho_{(v, \frac{4\pi}{5})})| = 12\]
+            \item The same process can be used for edges. 
+            \[|C(\rho_{(v, \pi)})| = \frac{30}{2} = 15\]
+            We divide by 2 because $\rho_{(v, \pi)} = \rho_{(-v, \-pi)}$.
+        \end{itemize}
+
+        The class equation, then, for $I$ is: 
+        \[60 = 1 + 20 + 12 + 12 + 15\]
+        Now, take $N$ to be the normal subgroup of $I$. Then: 
+        \begin{enumerate}[(a)]
+            \item The identity $\id \in N$. 
+            \item By Lagrange, we know that $|N|$ divides $|I|$.
+            \item So, it follows that: 
+            \[|N| = \sum_{\substack{\text{Conjugacy} \\ \text{Classes $C_i \subseteq N$}}} |C_i|\]
+            If $x \in N$, then $gxg^{-1} \in N$. If we picked a single element from our conjugacy class, then every element in that conjugacy class must also be a part of our normal subgroup.
+        \end{enumerate}
+        So, some possible normal subgroups $N$ are: 
+        \begin{itemize}
+            \item $1$ (Valid, although trivial)
+            \item $1 + 20 = 21$ (Invalid, does not divide 60)
+            \item $1 + 12 = 13$ (Invalid, does not divide 60)
+            \item $1 + 15 = 16$ (Invalid, does not divide 60)
+            \item $1 + 20 + 12 = 33$ (Invalid, does not divide 60)
+            \item $1 + 20 + 15 = 36$ (Invalid, does not divide 60)
+            \item $1 + 12 + 12 = 25$ (Invalid, does not divide 60)
+            \item $1 + 12 + 15 = 28$ (Invalid, does not divide 60)
+            \item $1 + 20 + 12 + 12 = 45$ (Invalid, does not divide 60)
+            \item $1 + 12 + 12 + 15 = 40$ (Invalid, does not divide 60)
+            \item $1 + 20 + 12 + 15 = 48$ (Invalid, does not divide 60)
+            \item $1 + 20 + 12 + 12 + 15 = 60$ (Valid, although whole group)
+        \end{itemize}
+        From this, it follows that the icosahedral group only has two normal subgroup: the trivial and the whole group. Thus, it is simple. 
+    \end{proof}
+\end{mdframed}
+\textbf{Remark:} \url{https://www.youtube.com/watch?v=B-WI8JZR140} gives a good visualization of the class equation proof for the icosahedral group. 
+
+\begin{theorem}{}{}
+    \[I \cong A_5\]
+\end{theorem}
+
+\begin{mdframed}
+    \begin{proof}
+        The idea is to look for a set of five objects that $I$ operates on. $I$ operates on: 
+        \[S = \{\text{Set of Cubes Inscribed in Dodecahedron}\}\]
+        For instance, here is one cube that is inscribed in a dodecahedron: 
+        \begin{center}
+            \includegraphics[scale=0.3]{assets/dodeca_cube.png}
+        \end{center} 
+    \end{proof}
+    If we look at any particular pentagon, all but one edge is touching one of the vertices of the cube. This operation defines a homomorphism: 
+    \[\varphi: I \mapsto \sym(S) = S_5\]
+    We will use the first isomorphism theorem to show this. 
+    \begin{itemize}
+        \item \underline{Kernal:} We know that $\ker(\varphi)$ is a normal subgroup of $I$ (and this is true for any group). But, we know that there are two normal subgroups of $I$: the trivial subgroup and the entire group. If the kernal of the homomorphism was the entire group, then every rotational symmetry of the dodecahedron would have to fix the cube. However, if we pick a pentagon, then we can find a rotational symmetry that can move the cube. So, $I$ does not operate trivially on $S$ so the kernal must be trivial. 
+        \item \underline{Image:} We consider a composition of our homomorphism with the sign homomorphism (recall that the composition of two homomorphisms is a homomorphism). That is: 
+        \[\sgn \circ \varphi: I \mapsto \{\pm 1\}\]
+        So, $\ker(\sgn \circ \varphi)$ is normal to the domain; that is, $\ker(\sgn \circ \varphi)$ is a normal subgroup of $I$. So, it follows that $\ker(\sgn \circ \varphi)$ can either be the trivial subgroup of $I$. If we picked the trivial subgroup, then we would end up with an injective mapping from a set of order 60 to a set of order 2, which is impossible. Therefore, $\sgn \circ \varphi$ is not injective and so $\ker(\sgn \circ \varphi) = I$. This implies that $\im(\varphi) \subseteq \ker(\sgn) = A_5$. But, $|\im(\varphi)| = 60 = |A_5|$. So, $\im(\varphi) = A_5$. 
+    \end{itemize}
+    So, by the First Isomorphism Theorem, $I \cong A_5$. 
+\end{mdframed}
+
+
+\subsection{Conjugation in the Symmetric Group}
+Suppose we have the permutation $p = (134)(25)$ and $q = (1452)$. Let's suppose we conjugate $p$ by $q$. We get: 
+\[q \circ p \circ q^{-1} = (1452) \circ (134)(25) \circ (1254) = (435)(12) = p'\]
+There are several things to notice here. 
+\begin{itemize}
+    \item $q \circ p \circ q^{-1} = p'$ has the \underline{same cycle structure} as $p$, which implies that they have the same order. 
+    \item We can reconstruct $q$ from our $p$ and $p'$. For example, to obtain $p' = (435)(12)$ as a conjugacy of the permutation $p = (134)(25)$, we could write: 
+    \[(134)(25)\]
+    \[(435)(12)\]
+    The permutation $q$ can be obtained by reading this table down. In our case, we see that:
+    \[1 \mapsto 4 \qquad 3 \mapsto 3 \qquad 4 \mapsto 5 \qquad 2 \mapsto 1 \qquad 5 \mapsto 2\]
+    From which we can reconstruct $q$ by ``following the trail'':
+    \[1 \mapsto 4 \mapsto 5 \mapsto 2 \mapsto 1\]
+    \[q = (1452)\]
+\end{itemize}
+
+\begin{mdframed}
+    \begin{proposition}
+        Two permutations $p$ and $p'$ are conjugate elements of the symmetric group if and only if their cycle decompositions have the same orders. 
+    \end{proposition}
+\end{mdframed}
+For example, consider $S_4$. The cycle Decomposition of a permutation gives us a partition of the set $\{1, 2, 3, 4\}$. The orders of the subsets making a partition of four can be: 
+\[1, 1, 1, 1 \qquad 2, 1, 1 \qquad 2, 2 \qquad 3, 1 \qquad 4\]
+Where: 
+\begin{itemize}
+    \item $1, 1, 1, 1$ is the identity. There is 1 of these. 
+    \item $2, 1, 1$ is a transposition. There are 6 of these. 
+    \item $2, 2$ is the product of disjoint transpositions. There are 3 of these. 
+    \item $3, 1$ is the three-cycles. There are 8 of these. 
+    \item $4$ is the four-cycles. There are 6 of these. 
+\end{itemize}
+The class equation, then, is: 
+\[24 = 1 + 3 + 6 + 6 + 8\]
+
+\begin{theorem}{}{}
+    For every $n \geq 5$, the alternating group $A_n$ is a simple group. 
+\end{theorem}
+\textbf{Remarks}: 
+\begin{itemize}
+    \item $A_2$ is the trivial group. 
+    \item $A_3$ is the cyclic group of order 3. 
+    \item $A_4$ is not simple. 
+\end{itemize}
+
+\begin{lemma}{}{}
+    \begin{enumerate}[(a)]
+        \item For $n \geq 3$, the alternating group $A_n$ is generated by 3-cycles. 
+        \item For $n \geq 5$, the 3-cycles form a single conjugacy class in the alternating group $A_n$. 
+    \end{enumerate}
+\end{lemma}
+
+\begin{mdframed}
+    \begin{proof}
+        \begin{enumerate}[(a)]
+            \item We induct \emph{down} on the number of fixed points of $p \in A_n - \{\id\}$. 
+            \begin{itemize}
+                \item \underline{Base Case:} Let $p \in A_n - \{\id\}$. Here, we note that $p$ does not fix $n$, $n - 1$ (if we fix $n - 1$ points and we look at the last unfixed point, there's only one place we can send it to, and it's to itself; therefore, this is essentially the same thing as saying $n$ fixed points), or $n - 2$ (only transpositions fix $n - 2$ points, and a single transposition itself cannot be in $A_n$) points. So, $p$ fixes $n - 3$ points (as a permutation, it moves three points). So, there is only one option, and that is that $p$ is a 3-cycle as this is the only cycle type that moves three elements. 
+                \item \underline{Inductive Step:} Suppose $p \in A_n - \{\id\}$ fixes $m < n - 3$ points. Without loss of generality, suppose $1$ is not a fixed point. Then, either $p = (12 \dots k) \dots$ for $k \geq 3$ or $p = (12)(34) \dots$. Setting $q = (321)$ implies that $p \circ q$ fixes 1 and fixes all fixed points of $p \circ q$. So, $p \circ q$ has $m + 1$ fixed points which means $p \circ q$ is a product of 3-cycles. 
+            \end{itemize}
+
+            \item Suppose $n \geq 5$ and $q = (123)$. If $q'$ is a 3-cycle, then $p \circ q \circ p^{-1} = q'$ for some $p \in S_n$. There are several cases to consider: 
+            \begin{itemize}
+                \item \underline{Case 1:} If $p$ is even, then $p \in A_n$ and we are done. 
+                \item \underline{Case 2:} If $p$ is odd, then $p(45)$ is even. We note that: 
+                \[p(45) \circ q \circ (p(45))^{-1} = p(45) \circ q(45) \circ p^{-1} = p(45)(45) \circ q \circ p^{-1} = q'\]
+            \end{itemize}
+        \end{enumerate}
+        So, we are done. 
+    \end{proof}
+\end{mdframed}
 
 \end{document}
