@@ -4,6 +4,5 @@ These are notes for classes that I will be taking. The notes will most certainly
 ## Directories
 Below, I'll very briefly list the notes contained in these folders.
 
-### Fall 2021
-- `AbstractAlgebra`: Notes for **Math 100A** taught by Professor Brandon Alberts.
-- `AdvDataStructures`: Notes for **CSE 100** taught by Professor Niema Moshiri.
+### Winter 2022
+- Tentatively, I plan on having notes for Math 103B, CSE 101, and CSE 105.
