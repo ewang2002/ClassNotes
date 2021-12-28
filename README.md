@@ -1,4 +1,4 @@
-# Notes
+# ClassNotes
 These are course notes for some of the classes that I'm taking. Please note that they are not guaranteed to be accurate.
 
 Hopefully, I'll actually hold myself accountable for these.
