@@ -1,5 +1,5 @@
 \documentclass[letterpaper]{article}
-\input{../../preamble.tex}
+\input{{preamble}}
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 \usepackage{fancyhdr}
@@ -7,14 +7,14 @@
 
 \pagestyle{fancy}
 \fancyhf{}
-\rhead{COGS 108}
-\chead{Monday, January 03, 2022}
-\lhead{Lecture 1}
+\rhead{{class}}
+\chead{{date}}
+\lhead{{lec}}
 \rfoot{\thepage}
 
 \setlength{\parindent}{0pt}
 
 \begin{document}
-Waffle is bad.  
+TODO 
 
 \end{document}
