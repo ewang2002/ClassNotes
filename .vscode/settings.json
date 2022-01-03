@@ -1,0 +1,12 @@
+{
+    "files.exclude": {
+        "**/*.aux": true,
+        "**/*.fls": true,
+        "**/*.fdb_latexmk": true,
+        "**/*.log": true,
+        "**/*.out": true,
+        "**/*.synctex.gz": true,
+        "**/*.toc": true
+    },
+    "workbench.tree.indent": 32
+}
