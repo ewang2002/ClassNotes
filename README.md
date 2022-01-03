@@ -8,3 +8,4 @@ If you want to make any correction(s), please submit an [Issue](https://github.c
 ## Directories
 - The `PendingClasses` directory contains notes for the classes that I am currently taking, or will soon take.
 - The `CompletedClasses` directory contains notes for the classes that I have already completed.
+- The `Scripts` directory contains several random scripts (when needed) to make life slightly easier for me.
