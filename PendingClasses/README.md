@@ -5,4 +5,7 @@ These are notes for classes that I will be taking. The notes will most certainly
 Below, I'll very briefly list the notes contained in these folders.
 
 ### Winter 2022
-- Tentatively, I plan on having notes for Math 103B, CSE 101, and CSE 105.
+- `Math103B`: Modern Algebra II
+- `CSE101`: Algorithms
+- `CSE105`: Theory of Computability
+- `COGS108`: Data Science in Practice
