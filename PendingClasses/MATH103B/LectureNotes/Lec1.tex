@@ -16,13 +16,13 @@
 
 \begin{document}
 
-\section{Ring}
+\section{Introduction to Ring}
 Recall that a group is a set equipped with a binary operation. However, often times, a lot of sets are naturally endowed with \emph{two} binary operations: addition \emph{and} multiplication. In this case, we want to account for \emph{both} of them at the same time instead of having two groups with the same sets but different operations. To that, we introduce the \emph{ring}.
 
 \subsection{The Ring: Definition}
 
 \begin{definition}{Ring}{}
-    A ring $R$ is a set with two binary operations, addition (denoted by $a + b$) and multiplication (denoted by $ab$), such that for all $a, b, c \in R$:
+    A ring $R$ is a set with two \emph{binary operations} (meaning closed operations), addition (denoted by $a + b$) and multiplication (denoted by $ab$), such that for all $a, b, c \in R$:
     \begin{enumerate}
         \item \textbf{Commutative:} $a + b = b + a$
         \item \textbf{Associative:} $(a + b) + c = a + (b + c)$
@@ -101,6 +101,32 @@ From this, we can perform componentwise addition and multiplication; that is:
 
 \begin{definition}{Division}{}
     For $a, b \in R$, we say that $a$ \textbf{divides} $b$ and write $a | b$ if $b = ac$ for some $c \in R$.
+\end{definition}
+
+
+\section{Property of Rings}
+\begin{theorem}{}{}
+    For a ring $R$:
+    \[0a = a0 = 0 \forall a \in R\]
+\end{theorem}
+
+\begin{mdframed}[]
+    \begin{proof}
+        We know that $0a = (0 + 0)a$. Applying the distributive rule, we have: 
+        \[0a = (0 + 0)a = 0a + 0a\]
+        Then, adding the inverse of $0a$ to both sides gives: 
+        \[0a - 0a = 0a + (0a - 0a) \iff 0 = 0a\]
+        So, it follows that $0a = 0$. By symmetry, it follows that $a0 = 0$. 
+    \end{proof}
+\end{mdframed}
+
+\section{Division Rings and Fields}
+\begin{definition}{Division Ring}{}
+    A non-trivial ring $R$ is called a \textbf{division ring} if every nonzero element of $R$ is a unit in $R$; that is, if $R* = R \setminus \{0\}$. 
+\end{definition}
+
+\begin{definition}{Field}{}
+    A commutative division ring is called a \textbf{field}.
 \end{definition}
 
 
