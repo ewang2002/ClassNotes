@@ -445,6 +445,21 @@ Some example of alphabets are:
 \end{definition}
 For example, if we use $\Sigma_1$ as our alphabet, then \code{01001} is a \textbf{string} over $\Sigma_1$. Likewise, if we use $\Sigma_2$ as our alphabet, then \code{something} is a string over $\Sigma_2$. 
 
+\bigskip
+
+The set of all finite strings over $\Sigma$ (any general alphabet) is denoted by $\Sigma^*$. Here, this includes:
+\begin{itemize}
+    \item The empty string $\epsilon$.
+    \item Any \textbf{finite} combination of the symbols in this alphabet.
+\end{itemize}
+This does not include infinite sequences of symbols. It does have infinitely many elements. 
+
+\bigskip
+
+So, for example, $\Sigma_{1}^{*}$ would have strings like (and keep in mind that these are just examples): 
+\[\epsilon \in \Sigma_{1}^{*} \qquad \code{0} \in \Sigma_{1}^{*} \qquad \code{1} \in \Sigma_{1}^{*}\]
+\[\code{010101} \in \Sigma_{1}^{*} \qquad \code{1111} \in \Sigma_{1}^{*} \qquad \code{0000} \in \Sigma_{1}^{*}\]
+
 \begin{definition}{Length}{}
     If $w$ is a string over $\Sigma$, then the \textbf{length} of $w$, written $|w|$, is the number of symbols that it contains. 
 \end{definition}
@@ -491,8 +506,6 @@ So, \code{some} is a proper prefix of \code{something} while \code{something} is
 \begin{definition}{Prefix-Free}{}
     A language is \textbf{prefix-free} if no member is a proper prefix of another member.
 \end{definition}
-
-
 
 
 
@@ -583,6 +596,7 @@ As an example, suppose we give $M_1$ the input string \code{1101}. Then, the pro
     \item Read \code{1}. Transition from $q_3$ to $q_2$. 
     \item \code{ACCEPT} because $M_1$ is in an accept state $q_2$ at the end of the input. 
 \end{itemize}
+So, really, what matters is that we \emph{end up} at the accept state. 
 
 \subsection{Formal Definition of a Finite Automaton}
 A finite automaton has several parts.
@@ -630,7 +644,7 @@ Using the formal definition above, we can describe $M_1$ formally be writing $M_
 \end{itemize}
 
 \subsection{Machine and Language}
-If $A$ is the set of all strings (i.e. language) that machine $M$ accpets, we say that $A$ is the \textbf{language of machine} $M$, write $L(M) = A$, and say that $M$ recognizes $A$. 
+If $A$ is the set of all strings (i.e. language) that machine $M$ accepts, we say that $A$ is the \textbf{language of machine} $M$, write $L(M) = A$, and say that $M$ recognizes $A$. 
 
 \bigskip
 
