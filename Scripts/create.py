@@ -59,7 +59,7 @@ def get_path(c: str) -> str:
     """
     Returns the path to the given lecture.
     """
-    return os.path.join("..", "PendingClasses", *[c, "LectureNotes"] if CLASSES[c]['full'] else c)
+    return os.path.join("..", "PendingClasses", c, "LectureNotes") if CLASSES[c]['full'] else os.path.join("..", "PendingClasses", c)
 
 template, is_valid = validate_template()
 if not is_valid:
