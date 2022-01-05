@@ -8,4 +8,3 @@ Below, I'll very briefly list the notes contained in these folders.
 - `Math103B`: Modern Algebra II
 - `CSE101`: Algorithms
 - `CSE105`: Theory of Computability
-- `COGS108`: Data Science in Practice
