@@ -714,6 +714,51 @@ Likewise, if we start with \code{b}, we take the right branch to $r_1$. In the r
 In other words, for this automaton, a string that starts and ends with the same symbol is accepted. That is: 
 \[A = \{w \mid w \text{ starts and ends with the same symbol.}\}\]
 
-% STOPPED at page 39 (pg. 63 in PDF reader), example 1.13
+\subsubsection{Example 3: Complicated Finite Automaton}
+Sometimes, it is hard to describe a finite automaton by state diagram. In this case, we may end up using a formal description to specify the machine. Consider the following example with the alphabet: 
+\[\Sigma = \{\code{RESET, 0, 1, 2}\}\]
+Where \code{RESET} is treated as one symbol. For each $i \geq 1$, define $A_i$ to be the language of all strings where the sum of the numbers is a multiple of $i$, except that the sum is reset to 0 whenever the symbol \code{RESET} appears. For each $A_i$, we have a finite automaton $B_i$ which recognizes $A_i$. We define $B_i$ formally like so: 
+\[B_i = (Q_i, \Sigma, \delta_i, q_0, \{q_0\})\]
+Where $Q_i = \{q_0, q_1, q_2, \dots, q_{i - 1}\}$ and the transition function $\delta_i$ is defined so that for each $j$, if $B_i$ is in $q_j$ (i.e. $B_i$ is in state $q_j$), the running sum is $j$ modulo $i$. In other words, for each $q_j$ define: 
+\[\delta_{i}(q_j, \code{0}) = q_j\]
+\[\delta_{i}(q_j, \code{1}) = q_k \text{  where } k = j + 1 \text{ modulo } i\]
+\[\delta_{i}(q_j, \code{2}) = q_k \text{  where } k = j + 2 \text{ modulo } i\]
+\[\delta_{i}(q_j, \code{RESET}) = q_0\]
+
+\bigskip
+
+For example, suppose we have the following state machine $B_3$ which uses the same alphabet described above:
+\begin{center}
+    \includegraphics[scale=0.4]{../assets/finite_automaton_4.png}
+\end{center}
+The formal description of $B_3$ is as follows: 
+\[B_3 = (\{q_0, q_1, q_2\}, \{\code{RESET, 0, 1, 2}\}, \delta, q_0, \{q_0\})\]
+Where $\delta$ is defined by: 
+\begin{center}
+    \begin{tabular}{c|c c c c}
+              & \code{RESET} & \code{0} & \code{1} & \code{2} \\
+        \hline  
+        $q_0$ & $q_0$        & $q_0$    & $q_1$    & $q_2$    \\ 
+        $q_1$ & $q_0$        & $q_1$    & $q_2$    & $q_0$    \\
+        $q_2$ & $q_0$        & $q_2$    & $q_0$    & $q_1$
+    \end{tabular}
+\end{center}
+So, as an example, let's suppose we have the string \code{01212}. The sum of these numbers is:
+\[0 + 1 + 2 + 1 + 2 = 6 \implies 6 \equiv \boxed{0} \mod{3}\]
+We expect the automaton to finish at the accept state as 6 is a multiple of 3. Running through the automaton, we have: 
+\begin{itemize}
+    \item Input: \code{0}. Start at $q_0$, end at $q_0$.
+    \item Input: \code{1}. Start at $q_0$, end at $q_1$. So, our automaton is at state $q_1$.
+    \item Input: \code{2}. Start at $q_1$, end at $q_0$. So, our automaton is at state $q_0$.
+    \item Input: \code{1}. Start at $q_0$, end at $q_1$. So, our automaton is at state $q_1$.
+    \item Input: \code{2}. Start at $q_1$, end at $q_0$. So, our automaton is at state $q_0$.
+\end{itemize}
+Therefore, we are at an accept state as our string \code{01212} sums up to a multiple of 3. Of course, if there are any \code{RESET}s in our string, we can disregard everything up to and including the \emph{last} \code{RESET} as \code{RESET} puts us back at the start. That is, for instance, the string \code{0121 RESET 21011 RESET 01212} will put the state machine in the same state as \code{01212}.
+
+\bigskip
+
+So, it follows that our state machine recognizes the set $A_3$, which consists of all strings where all digits sum up to 0 modulo 3. That is: 
+\[A_3 = \left\{w \mid \sum_{\code{d} \in w} d = 0 \Mod{3}\right\}\]
+\emph{Note:} If any \code{RESET}s are in the string, we can omit everything in the string \emph{up to and including} the last \code{RESET}.
 
 \end{document}
