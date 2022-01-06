@@ -167,6 +167,12 @@ Recall that, with groups, we have objects called \emph{subgroups}. The same thin
 \begin{definition}{Subring}{}
     A nonempty subset $S$ of a ring $R$ is a \textbf{subring} of $R$ if $S$ itself is a ring with the operations of $R$.
 \end{definition}
+\textbf{Remarks:}
+\begin{itemize} 
+    \item If $R$ is commutative, then $S$ is commutative.
+    \item [100B] If $R$ is an integral domain, then $S$ is an integral domain. 
+    \item [100B] $R$ being a field does not imply that $S$ is a field. 
+\end{itemize}
 
 \subsection{Examples of Subrings}
 Below are some examples of subrings. 
@@ -243,5 +249,47 @@ If we are dealing with a lot of subrings, we can use a \emph{subring lattice} to
     \includegraphics[scale=0.5]{../assets/lattice.png}
 \end{center}
 We used some of the examples discussed above.
+
+
+
+
+\newpage 
+\section{[100B] Rings and Fields}
+Recall the following definitions.
+\begin{definition}{Division Ring}{}
+    A ring $R \neq 0$ (i.e. not the trivial ring) is called a \textbf{division ring} if every nonzero element of $R$ is a unit in $R$; that is, if $R^* = R \setminus \{0\}$.
+\end{definition}
+
+\begin{definition}{Field}{}
+    A commutative division ring is called a \textbf{field}. 
+\end{definition}
+For example, $\Q$, $\R$, and $\C$ are fields. In fact, if $p$ is prime, then $\Z_p$ is a field. However, $\Z$ is not a field. 
+
+\begin{definition}{}{}
+    Suppose $R$ is a ring. Then, $x \in R$ is called a \textbf{zero-divisor} if:
+    \begin{enumerate}
+        \item $x \neq 0$
+        \item There exists a $y \in R \setminus \{0\}$ such that $xy = 0$ or $yx = 0$. 
+    \end{enumerate}
+\end{definition}
+\textbf{Remark:} A unit cannot be a zero-divisor.
+
+\bigskip
+
+For example, in the ring $(\Z / 6\Z, +, \cdot)$:
+\[\overline{x} \cdot \overline{y} = \overline{xy}\]
+\[\overline{x} + \overline{y} = \overline{x + y}\]
+The zero-divisors are $\overline{2}, \overline{3} \in \Z / 6\Z$ because: 
+\[\overline{2} \cdot \overline{3} = \overline{6} = \overline{0}\]
+
+
+\begin{definition}{Integral Domain}{}
+    A commutative ring $R$ with no zero-divisors is called an \textbf{integral domain}.
+\end{definition}
+\textbf{Remark:} $R$ is an integral domain if $x \cdot y = 0 \implies x = 0 \text{ or } y = 0$.
+
+\bigskip
+
+An example of an \emph{integral domain} which is not a field is $(\Z, +, \cdot)$.
 
 \end{document}
