@@ -1,0 +1,89 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Math 103B}
+\chead{Friday, January 07, 2022}
+\lhead{Lecture 3}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\section{Integral Domains}
+\begin{definition}{Zero-Divisors}{}
+    A \textbf{zero-divisor} is a nonzero element $a$ of a commutative ring $R$ such that there is a nonzero element $b \in R$ with $ab = 0$. 
+\end{definition}
+
+\begin{definition}{Integral Domain}{}
+    An \textbf{integral domain} is a commutative ring with unity and no zero-divisors.
+\end{definition}
+\textbf{Remarks:}
+\begin{itemize}
+    \item Recall that a ring $R$ has \textbf{unity} if $1 \in R$ is a multiplicative identity; that is, $1a = a1 = a$. 
+    \item Essentially, in an integral domain, a product is 0 only when one of the facts is 0. That is, $ab = 0$ only when $a = 0$ or $b = 0$. 
+\end{itemize}
+
+\subsection{Examples}
+Here are some examples of integral domains. 
+
+\subsubsection{Example 1: The Integers}
+The ring of integers is an integral domain. 
+
+\subsubsection{Example 2: Gaussian Integers}
+The ring of Gaussian integers $Z[i] = \{a + bi \mid a, b \in \Z\}$ is an integral domain. 
+
+\subsubsection{Example 3: Ring of Polynomials}
+The ring $\Z[x]$ of polynomials with integer coefficients is an integral domain. 
+
+\subsubsection{Example 4: Square Root 2}
+The ring $\Z[\sqrt{2}] = \{a + b\sqrt{2} \mid a, b \in \Z\}$ is an integral domain. 
+
+\subsubsection{Example 5: Modulo Prime Integers}
+The ring $\Z / p\Z$ of integers modulo $a$ prime $p$ is an integral domain. 
+
+\subsubsection{Non-Example 1: Modulo Integers}
+The ring $\Z / n\Z$ of integers modulo $n$ is not an integral domain when $n$ is not prime.
+
+\subsubsection{Non-Example 2: Matrices}
+The ring $M_{2}(\Z)$ of $2 \times 2$ matrices over the integers is not an integral domain. 
+
+\subsubsection{Non-Example 3: Direct Product}
+$\Z \oplus \Z$ is not an integral domain. 
+
+
+\subsection{Properties of Integral Domains}
+\begin{theorem}{Cancellation}{}
+    Let $a$, $b$, and $c$ belong to an integral domain. If $a \neq 0$ and $ab = ac$, then: 
+    \[b = c\]
+\end{theorem}
+\begin{mdframed}[]
+    \begin{proof}
+        From $ab = ac$, we know that $a(b - c) = 0$. Since $a \neq 0$, it follows that $b - c = 0$.
+    \end{proof}
+\end{mdframed}
+
+\section{Fields}
+
+\begin{definition}{Field}{}
+    A \textbf{field} is a commutative ring with unity in which every nonzero element is a unit.
+\end{definition}
+\textbf{Remark:} To verify that every field is an integral domain, observe that if $a$ and $b$ belong to a field with $a \neq 0$ and $ab = 0$, we can multiply both sides of the last expression by $a^{-1}$ to obtain $b = 0$.
+
+\begin{theorem}{}{}
+    A finite integral domain is a field.
+\end{theorem}
+
+\begin{corollary}{}{}
+    For every prime $p$, $\Z / p \Z$, the ring of integers modulo $p$ is a field.
+\end{corollary}
+
+
+
+\end{document}
