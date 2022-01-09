@@ -125,5 +125,20 @@ Then:
     \end{proof}
 \end{mdframed}
 
+\subsection{Justifying DFAs}
+To prove that the DFA that we build, $M$, actually recognizes the language $L$, we ask the following questions: 
+\begin{enumerate}
+    \item Is every string accepted by $M$ in $L$?
+    \item Is every string from $L$ accepted by $M$?\footnote{The contrapositive version is: Is every string rejected by $M$ not in $L$?}
+\end{enumerate}
+A string is accepted by a DFA when: 
+\[ L(M) = \{ w \mid \delta^{*}(q_0, w) \in F \} \]
+Where $\delta^*$ is defined by: 
+\[\delta^{*}(q, w) = \begin{cases}
+    q & w = \epsilon \\ 
+    \delta(q, c) & w = c, c \in \Sigma \\ 
+    \delta^{*}(\delta(q, c), w') & w \subset w', c \in \Sigma, w' \in \Sigma^*
+\end{cases}\]
+
 
 \end{document}
