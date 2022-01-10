@@ -1,0 +1,67 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Math 103B}
+\chead{Monday, January 10, 2022}
+\lhead{Lecture 4}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\section{Characteristic of a Ring}
+Consider the ring $\Z_{3}[i]$, with the elements:
+\[\{0, 1, 2, i, 1 + i, 2 + i, 2i, 1 + 2i, 2 + 2i\}\]
+For any element $x$ in this ring, we have: 
+\[3x = x + x + x = 0\]
+For example:
+\begin{itemize}
+    \item $2i + 2i + 2i = 6i = 0i = 0$
+    \item $(1 + 2i) + (1 + 2i) + (1 + 2i) = 3 + 6i = 0$
+    \item And so on.
+\end{itemize}
+Similarly, in the ring $\{0, 3, 6, 9\} \subset \Z_{12}$, we have, for all $x$: 
+\[4x = x + x + x + x = 0\]
+
+\subsection{Characteristic of a Ring}
+\begin{definition}{Characteristic of a Ring}{}
+    The \textbf{characteristic} of a ring $R$ is the least positive integer $n$ such that $nx = 0$ for all $x \in R$. If no such integer exists, we say that $R$ has characteristic 0. The characteristic of $R$ is denoted by $\ch{R}$.    
+\end{definition}
+So, for example, the ring of integers $\Z$ has characteristic 0 and $\Z_n$ has characteristic $n$. For example, consider $\Z_{3} = \{0, 1, 2\}$. Then, we know that:
+\[3x = x + x + x = 0 \qquad \forall x\]
+So the characteristic of $\Z_{3}$ is \boxed{3}. Now, consider $\Z_{6}$. We know that:
+\[6x = x + x + x + x + x + x = 0 \qquad \forall x\]
+So, its characteristic is \boxed{6}.
+
+\subsection{Characteristic of a Ring with Unity}
+\begin{theorem}{Characteristic of a Ring with Unity}{}
+    Let $R$ be a ring with unity 1. If 1 has infinite order under addition, then the characteristic of $R$ is 0. If 1 has order $n$ under addition, then the characteristic of $R$ is $n$. 
+\end{theorem}
+
+\begin{mdframed}[]
+    \begin{proof}
+        Suppose 1 has infinite order. Then, there is no positive integer $n$ such that $n \cdot 1 = 0$, so $R$ must have characteristic 0. Now, let's suppose that 1 does have additive order $n$. Then, we know that $n \cdot 1 = 0$ and $n$ is the least positive integer with this property. So, for any $x \in R$, we have: 
+        \begin{equation*}
+            \begin{aligned}
+                n \cdot x &= \overbrace{x + x + \dots + x}^{n \text{ times}} \\ 
+                    &= \overbrace{1x + 1x + \dots + 1x}^{n \text{ times}} \\ 
+                    &= (\overbrace{1 + 1 + \dots + 1}^{n \text{ times}})x \\ 
+                    &= (n \cdot 1)x = 0x = 0
+            \end{aligned}
+        \end{equation*}
+        So, $R$ has characteristic $n$.
+    \end{proof}
+\end{mdframed}
+
+\begin{theorem}{Characteristic of an Integral Domain}{}
+    The characteristic of an integral domain is 0 or prime.
+\end{theorem}
+
+\end{document}
