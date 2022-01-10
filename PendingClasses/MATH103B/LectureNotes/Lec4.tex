@@ -38,12 +38,14 @@ So, for example, the ring of integers $\Z$ has characteristic 0 and $\Z_n$ has c
 \[3x = x + x + x = 0 \qquad \forall x\]
 So the characteristic of $\Z_{3}$ is \boxed{3}. Now, consider $\Z_{6}$. We know that:
 \[6x = x + x + x + x + x + x = 0 \qquad \forall x\]
-So, its characteristic is \boxed{6}.
+So, its characteristic is \boxed{6}. As a final example, $\{0\}$ has characteristic \boxed{1}.
 
 \subsection{Characteristic of a Ring with Unity}
+Occasionally, we might have more complicated rings where the above theorem may be hard to apply. 
 \begin{theorem}{Characteristic of a Ring with Unity}{}
     Let $R$ be a ring with unity 1. If 1 has infinite order under addition, then the characteristic of $R$ is 0. If 1 has order $n$ under addition, then the characteristic of $R$ is $n$. 
 \end{theorem}
+\textbf{Remark:} Here, suppose $(\R, +)$ is a group. Then, we say that $x \in \R$ has an additive order $n$ if $nx = 0$ and $n$ is the smallest positive number with this property. 
 
 \begin{mdframed}[]
     \begin{proof}
@@ -59,9 +61,48 @@ So, its characteristic is \boxed{6}.
         So, $R$ has characteristic $n$.
     \end{proof}
 \end{mdframed}
+For example, take $R = \Z / 6\Z \oplus \Z / 4\Z \oplus \Z / 10\Z$.
+\begin{enumerate}
+    \item \underline{Does this ring have unity?} Each member of this direct product ring has 1, so the unity would be $(1, 1, 1) \in R$. 
+    \item \underline{What is the characteristic of $R$?} The characteristic order of $R$ is the additive order of $(1, 1, 1) \in R$. Well, we have that: 
+    \[n(1, 1, 1) = (n1, n1, n1)\]
+    Consider the first element in the pair. When is $n1 \equiv 0 \Mod{6}$? This is when $6 | n$, or: 
+    \[n \in \{6, 12, 18, 24, \dots\}\]
+    For the third element in the pair, we need to know when $n1 \equiv 0 \Mod{10}$. This is when $10 | n$, or: 
+    \[n \in \{10, 20, 30, \dots\}\]
+    Here, it's clear that the answer is $\lcm(6, 4, 10) = 60$. 
+\end{enumerate}
+
+
 
 \begin{theorem}{Characteristic of an Integral Domain}{}
     The characteristic of an integral domain is 0 or prime.
 \end{theorem}
+
+\begin{mdframed}[]
+    \begin{proof}
+        It suffices to consider the additive order of 1. Suppose towards a contradiction that 1 has composite order $n$ and $1 < s$ and $t < n$ such that $n = st$. Then, we know that: 
+        \[0 = n1 = (st)1 = s(t1) = (s1)(t1)\]
+        But, $1 < s$ and $t < n$, so by minimality of $n$ being the order of 1, it must be that $s1, t1 \neq 0$ and are thus zero-divisors. But, this is a contradiction.
+    \end{proof}
+\end{mdframed}
+
+\subsection{Summary of Rings}
+\begin{center}
+    \begin{tabular}{c|c|c}
+        \textbf{Ring}   & \textbf{Characteristic} & \textbf{Integral Domain?} \\ 
+        \hline 
+        $\Z$            & 0                       & Yes \\ 
+        $M_{2}(\Z)$     & 0                       & No \\ 
+        $\Z \oplus \Z$  & 0                       & No \\ 
+        $\F_p$ ($\Z / p\Z$) & $p$                 & Yes \\ 
+        $\F_p \oplus \F_p$ & $p$                  & No \\ 
+        $\F_{p}[x]$     & $p$                     & Yes \\ 
+        $\Z / n\Z[i]$   & $n$                     & $\begin{cases}
+            \text{No} & n \text{ not prime.} \\ 
+            \text{Maybe} & n \text{ prime.}
+        \end{cases}$
+    \end{tabular}
+\end{center}
 
 \end{document}
