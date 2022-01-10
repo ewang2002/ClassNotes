@@ -15,6 +15,95 @@
 \setlength{\parindent}{0pt}
 
 \begin{document}
-TODO 
+
+\section{Directed Graphs}
+A directed graph an be thought of as a graph of dependencies. 
+
+\begin{definition}{Topological Ordering}{}
+    A \textbf{topological ordering} of a directed graph is an ordering of the vertices so that for each edge $(v, w)$, $v$ comes before $w$ in the ordering.
+\end{definition}
+
+\subsection{Cycles}
+\begin{definition}{Cycle}{}
+    A cycle in a directed graph is a sequence of vertices $v_1, v_2, \dots, v_n$ so that there are edges: 
+    \[(v_1, v_2), (v_2, v_3), \dots, (v_n, v_1)\]
+\end{definition}
+
+\subsubsection{Obstacle}
+\begin{proposition}
+    If $G$ is a directed graph with a cycle, then $G$ has no topological ordering.
+\end{proposition}
+
+\begin{mdframed}[]
+    \begin{proof}
+        Suppose we have a cycle $v_1, \dots, v_n$. Assume for the sake of contradiction taht we have an ordering. Then, we can find the earliest $v_i$ in the ordering. But, the $v_i$ comes before $v_{i - 1}$, in contradiction to the order property. 
+    \end{proof}
+\end{mdframed}
+
+\subsection{Directed Acyclic Graph (DAG)}
+\begin{definition}{}{}
+    A \textbf{directed acylic graph} (DAG) is a directed graph which contains no cycles. 
+\end{definition}
+
+The previous result said that only DAGs can be topologically ordered. However, is the reverse true? \textbf{Yes}. 
+
+\subsection{Existence of Orderings}
+\begin{theorem}{}{}
+    Let $G$ be a finite DAG. Then, $G$ has a topological ordering.
+\end{theorem}
+
+\begin{mdframed}[]
+    \begin{proof}
+        We consider the last vertex in the ordering. This must be a sink, or a vertex with no outgoing edges. So, once we find the sink, we can put the graph at the end of the topological graph, and then order the remaining vertices. 
+    \end{proof}
+\end{mdframed}
+
+\subsubsection{Sinks}
+\begin{lemma}{}{}
+    Every finite DAG contains at least one sink. 
+\end{lemma}
+
+\begin{mdframed}[]
+    \begin{proof}
+        Start at a vertex $v = v_1$. Then, we can ``follow the trail,'' or in other words follow the edges. Eventually, we will either find: 
+        \begin{itemize}
+            \item Some vertices repeat (which creates a cycle).
+            \item Gets stuck (found a sink).
+        \end{itemize}
+        So, we are done. 
+    \end{proof}
+\end{mdframed}
+
+\subsection{Algorithm}
+Suppose we want to design an algorithm that, given a DAG $G$, computes a topological ordering on G. We can use the proof to create a naive algorithm. 
+\begin{verbatim}
+    TopologicalOrdering(G)
+        If |G| = 0
+            Return {}
+        Let v in G 
+        While there is an edge (v, w)
+            v = w
+        Return (Ordering(G - v), v)
+\end{verbatim}
+The runtime is $O(|V|^2)$. This is because we need $|V|$ time to find each sink and have $|V|$ sinks. This is suboptimal, however.
+\begin{verbatim}
+    TopologicalOrdering(G)
+        Run DFS(G) w/ Pre/Post Numbers 
+        Return Vertices in Reverse Postorder
+\end{verbatim}
+This runs in $O(|V| + |E|)$.
+
+\subsection{Topological Sort}
+This is a particularly useful algorithm. 
+\begin{itemize}
+    \item Many graph algorithms are relatively easy to find the answer for $v$ if you've already found the answer for everything downstream of $v$. 
+    \begin{itemize}
+        \item We can topologically sort $G$. 
+        \item Then, solve for $v$ in reverse topological order.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Connectivity in Digraphs}
+In undirected graphs, we had a very clean description of reachability: $v$ was reachable from $w$ if and only if they were in the same connected component. Well, this no longer works for digraphs. 
 
 \end{document}
