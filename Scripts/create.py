@@ -1,4 +1,5 @@
 import os 
+import sys
 import datetime
 from typing import List, Tuple
 
@@ -56,13 +57,14 @@ def get_path(c: str) -> str:
     """
     return os.path.join("..", "PendingClasses", c, "LectureNotes") if CLASSES[c]['full'] else os.path.join("..", "PendingClasses", c)
 
+make_today = len(sys.argv) > 1 and sys.argv[1].lower() in ["today", "t"]
 template, is_valid = validate_template()
 if not is_valid:
     print("Template file is not valid!")
     exit(1)
 
 num_added = 0
-next_date = datetime.datetime.now() + datetime.timedelta(days=1)
+next_date = datetime.date.today() if make_today else datetime.datetime.now() + datetime.timedelta(days=1)
 for k in CLASSES:
     if DAY_OF_WEEK[next_date.weekday()] not in CLASSES[k]['schedule']:
         continue 
