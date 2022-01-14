@@ -15,7 +15,78 @@
 \setlength{\parindent}{0pt}
 
 \begin{document}
-TODO 
 
+\section{The Regular Operations (Continued)}
+We will review some of the regular operations. 
+
+\subsection{Concatenation}
+Recall that concatenation is defined by: 
+\[A \circ B = \{xy \mid x \in A \text{ and } y \in B\}\]
+How would this works for $A = \{a^n \mid n \geq 0\}$ and $B = \{b^m \mid m \geq 0\}$?
+\[A \circ B = \{a^n b^m \mid n, m \geq 0\}\]
+We can use NFAs to show that this is the case. 
+
+\section{Nondeterministic Finite Automata (1.2)}
+In a deterministic finite automata, when the machine was in a given state and reads the next input symbol, we knew that the next state is; that's why it's called \emph{determinstic}, because it was already determined. \textbf{However}, in a \emph{nondeterministic} machine, several choices may exist for the next state at any point. In general, nondeterminism is a \emph{generalization} of determinism; that is, every deterministic finite automaton is automatically a nondeterminism finite automaton.
+
+\subsection{The Differences Between DFA and NFA}
+\begin{center}
+    \includegraphics[scale=0.4]{../assets/nfa_1.png}
+    
+    \textbf{Figure:} The nondeterministic finite automaton $N_1$. 
+\end{center}
+
+\begin{center}
+    \begin{tabular}{p{3in}|p{3in}}
+        \textbf{DFA} & \textbf{NFA} \\ 
+        \hline 
+        \begin{itemize}
+            \item Every state of a DFA always has exactly one exiting transition arrow for each symbol in the alphabet.
+            \item There is a unique computation path for each input. 
+            \item Labels on the transition arrows are symbols from the alphabet. 
+        \end{itemize} 
+
+        & \begin{itemize}
+            \item Not every state in an NFA needs exactly one transition arrow for each symbol. In an NFA, a state may have zero, one, or many exiting arrows for each alphabet symbol.
+            \item We may allow several (or zero) alternative computations on the same input. 
+            \item NFAs may have arrows labeled with members of the alphabet or $\epsilon$. Zero, one, or many arrows may exit from each state with the label $\epsilon$. For example, the above figure has one transition arrow with $\epsilon$ as a label. 
+        \end{itemize}
+    \end{tabular}
+\end{center}
+
+\subsection{NFA Computation}
+How does an NFA compute? Suppose that we are running an NFA on an input string and come to a state with multiple ways to proceed. Suppose, in fact, that we use the NFA above: $N_1$. Additionally, suppose that we are at state $q_1$, and the next input symbol is \code{1}. 
+\begin{itemize}
+    \item After reading this symbol, the machine \textbf{splits into multiple copies of itself} and follows \emph{all} the possibilities in \emph{parallel}. In other words, each copy of the machine takes one of the possible ways to proceed and continues as before. 
+    \item If there are subsequent choices, the machine splits again. 
+    \item If the next input symbol doesn't appear on any of the arrows exiting the stae occupied by a copy of the machine, that copy of the machine dies.
+    \item If any one of these copies of the machine is in an accept state at the \underline{end of the input}, the NFA \emph{accepts} the input string.
+\end{itemize}
+What happens when we come across a state with an $\epsilon$ symbol on an exiting arrow? Well, without reading any input, the machine splits into \emph{multiple} copies, one following each of the exiting $\epsilon$-labeled arrows and one staying at the current state. The machine, then, proceeds nondeterministically as before. So, really, $\epsilon$ transitions allow the machine to \textbf{transition betweenstates spontaneously} without consuming any input symbols.
+
+\subsection{Formal Definition of NFA}
+\begin{definition}{Nondeterministic Finite Automaton}{}
+    A \textbf{nondeterministic finite automaton} is a 5-tuple $(Q, \Sigma, \delta, q_0, F)$ where: 
+    \begin{enumerate}
+        \item $Q$ is a finite set called the \textbf{states}.
+        \item $\Sigma$ is a finite set called the \textbf{alphabet}.
+        \item $\delta: Q \times \Sigma \cup \{\epsilon\} \mapsto \PowerSet(Q)$ is the \textbf{transition function}.
+        \item $q_0 \in Q$ is the \textbf{start state}.
+        \item $F \subseteq Q$ is the \textbf{set of accept states} (sometimes also called \emph{final states}).
+    \end{enumerate}
+\end{definition}
+\textbf{Remarks:}
+\begin{itemize}
+    \item $\Sigma \cup \{\epsilon\}$ is sometimes written as $\Sigma_{\epsilon}$.
+    \item We say that $\delta(q, c)$ returns a \textbf{set} of states; more precisely, a subset of $Q$. Here, $c \in \Sigma$ or $\epsilon$ and $q \in Q$.
+\end{itemize}
+
+\subsection{Acceptance in an NFA}
+We say that an NFA $(Q, \Sigma, \delta, q_0, F)$ accepts a string $w$ in $\Sigma^*$ if and only if we can write $w = y_1 y_2 \dots y_m$ where each $y_i \in \Sigma_{\epsilon}$ and \textbf{there is} a sequence of states $r_0, \dots, r_m \in Q$ such that: 
+\begin{enumerate}
+    \item $r_0 = q_0$
+    \item $r_{i + 1} \in \delta(r_i, y_{i + 1})$ for each $i = 0, 1, \dots, m - 1$
+    \item $r_m \in F$.
+\end{enumerate}
 
 \end{document}
