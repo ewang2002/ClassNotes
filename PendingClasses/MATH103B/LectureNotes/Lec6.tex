@@ -1,0 +1,103 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Math 103B}
+\chead{Friday, January 14, 2022}
+\lhead{Lecture 6}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\section{Prime Ideals and Maximal Ideals}
+
+\begin{definition}{Prime Ideals}{}
+    A \textbf{prime ideal} $A$ of a commutative ring $R$ is a proper ideal of $R$ such that $a, b \in R$ and $ab \in A$ imply $a \in A$ or $b \in A$. 
+\end{definition}
+Consider the following examples:
+\begin{itemize}
+    \item Consider $R = \Z$. The ideals of $\Z$ are $\{0\}$ and $n\Z$ for $n = 1, 2, \dots$. We know that $2\Z$ is prime. So, if $nm \in 2\Z$, then $nm = 2k$, which is even. This implies that one of $n$ or $m$ is even, so $n \in 2\Z$ or $m \in 2\Z$. 
+
+    \bigskip 
+    
+    This is true in general. If $p$ is prime, then $p\Z$ is a prime ideal. Recall that if $p | ab$, then $p | a$ or $p | b$ by Euclid's Lemma. 
+
+    \item Consider $6\Z$, which is not prime. We want to show that this is not a prime ideal. To do this, we want to find an $n, m \in \Z$ such that $nm \in 6\Z$ but $n, m \notin 6\Z$. An obvious example is $n = 2$ and $m = 3$. 
+    
+    \bigskip
+    
+    In general, if $n = st$ is composite, then $st \in n\Z$ but $s, t \notin n\Z$. 
+
+    \item Consider $R = \{0\}$. This is a prime ideal. Suppose $n, m \in \Z$ with $nm \in R$. Then, $nm = 0$ means that one of $n$ or $m$ is 0, which implies that $n \in R$ or $m \in R$. 
+\end{itemize}
+\textbf{Fact:} $\{0\} \subseteq R$ is a prime ideal if and only if $R$ is an integral domain. 
+
+\begin{definition}{Maximal Ideals}{}
+    A \textbf{maximal ideal} of a commutative ring $R$ is a proper ideal of $R$ such that, when $B$ is an ideal of $R$ and $A \subseteq B \subseteq R$, then $B = A$ or $B = R$. 
+    
+    \bigskip
+
+    Put it another way, a maximal ideal $I$ of a commutative ring $R$ is a proper ideal which is not contained in any other proper ideals, i.e. if $I \subseteq A \subseteq R$ for some ideal $A$, then $A = I$ or $A = R$. 
+\end{definition}
+
+\begin{theorem}{}{}
+    Let $R$ be a commutative ring with unity and $I \subseteq R$ an ideal. Then, $R / I$ is an integral domain if and only if $I$ is prime. 
+\end{theorem}
+
+\begin{mdframed}[]
+    \begin{proof}
+        Supose $R / I$ is an integral domain. Suppose then that $a, b \in R$ with $ab \in I$. Then, $ab + I = 0 + I$. This further implies that $(a + I)(b + I) = 0 + I$. This implies that $a + I = 0 + I$ \emph{or} $b + I = 0 + I$ by integral domain definition. By the definition of a coset, $a \in I$ or $b \in I$. Thus, $I$ is prime. 
+        
+        \bigskip
+
+        Suppose now that $I$ is prime. Suppose $a, b \in R$ with $(a + I)(b + I) = 0 + I$ with $ab + I = 0 + I$. This implies that $ab \in I$, which further means that $a \in I$ or $b \in I$ by prime. Thus, $a + I = 0 + I$ or $b + I = 0 + I$. Thus, $R / I$ is an integral domain.
+    \end{proof}
+\end{mdframed}
+
+\begin{theorem}{}{}
+    Let $R$ be a commutative ring with unity and $I \subseteq R$ an ideal. Then, $R / I$ is a field if and only if $I$ is maximal.
+\end{theorem}
+
+\begin{mdframed}[]
+    \begin{proof}
+        Suppose $R / I$ is a field. We want to show that if $I \subseteq A \subseteq R$, then $A = I$ or $A = R$.\footnote{We can prove the fact that $I \subseteq A \subseteq R$ and $A \neq I$ \emph{implies that} $A = R$.} Suppose $A \subseteq R$ is an ideal satisfying $I \subseteq A$ and $A \neq I$. The fact that $A \neq I$ implies that we can choose some $b \in A \setminus I$. This implies that $b + I \neq 0 + I$ and so $b + I \in R / I$ is a unit. This implies that there exists some $c + I \in R / I$ with $(b + I)(c + I) = 1 + I$, which further implies that $bc + I = 1 + I$. Thus, $\dots$. We know that $1 - bc \in A$, but $b \in A \setminus I \subseteq A$ so $bc \in A$ and thus $1 = (1 - bc) + bc \in A$. So, $R = R \cdot 1 \subseteq A$ so that $A = R$. Thus, $I$ is maximal. 
+
+        \bigskip 
+
+        Suppose that $I$ is maximal. We want to show that any $b + I \neq 0 + I$ is a unit in $R / I$. Choose some $b + I \in R / I$ with $b + I \neq 0 + I$, i.e. choose some $b \in R \setminus I$. Consider $B = \{rb + a \mid r \in R, a \in I\}$. Thus, $B = R$ by $I \subseteq B \subseteq R$ and $b \neq I$ ($b \in B, b \in I$).\footnote{Exercise: Show that $B$ is an ideal with contains $I$} From there, $1 \in B$ which means that $1 = rb + a$ for some $r \in R$ and $a \in I$, which finally implies that $1 + I = (r + I)(b + I)$.
+    \end{proof}
+    % TODO finish this proof
+\end{mdframed}
+
+\begin{corollary}{}{}
+    All maximal ideals are prime ideals.
+\end{corollary}
+
+\begin{mdframed}[]
+    \begin{proof}
+        Suppose $I \subseteq R$ is maximal.
+        \begin{equation*}
+            \begin{aligned}
+                R / I& \text{ is a field.} \\ 
+                    &\implies R / I \text{ is an integral domain.} \\ 
+                    &\implies R / I \text{ is prime.}
+            \end{aligned}
+        \end{equation*}
+        So, we are done.
+    \end{proof}
+\end{mdframed}
+
+\textbf{Remark:} The converse is not true. Consider $\cyclic{x} \subseteq \Z[x]$. This is not maximal by $\cyclic{x} \subset \cyclic{2, x} \subset \Z[x]$. 
+\[\Z[x] / \cyclic{x} \longleftrightarrow \Z\]
+\[f(x) + \cyclic{x} \longleftrightarrow f(0)\]
+\[f(x) + \cyclic{x} = h(x) + \cyclic{x} \iff f(x) - h(x) = g(x)x \text{ for some } g(x) \iff f(0) - h(0) = 0\]
+Thus, this ideal $\cyclic{x}$ is prime.
+
+\end{document}
