@@ -15,6 +15,137 @@
 \setlength{\parindent}{0pt}
 
 \begin{document}
-TODO 
+
+\section{Strongly Connected Components}
+The issue with our algorithm is that we recompute the postorder for every SCC we need to find. However, we don't need to do this; rather, after removing some strongly connected components to get $G'$, the largest postorder number of vertices in $G'$ is still in a sink component of $G'$. 
+
+\subsection{Better Algorithm}
+\begin{verbatim}
+    SCCs(G)
+        Run DFS(G^R), record postorders
+        Mark all vertices as unvisited 
+        For v in V in reverse postorder 
+            If v not in a component yet 
+                explore(v) on G-components found,
+                marking new component 
+\end{verbatim}
+
+So, really, this is just 2 DFSs, so the runtime is $O(|V| + |E|)$. 
+
+\section{Paths in Graphs}
+DFS and \code{explore} allow us to determine \emph{if} it is possible to get from one vertex to another, and using the DFS tree, you can also find a path. However, this is often not an efficient path. 
+
+\subsection{Goal}
+Given a graph $G$ with two vertices $s$ and $t$ in the same connected component, find the \emph{best} path from $s$ to $t$. What do we mean by the best? 
+\begin{itemize}
+    \item Least expensive. 
+    \item Best scenery.
+    \item Shortest.
+\end{itemize}
+For now, we want the fewest edges. 
+
+\subsection{Observation}
+If there is a path from $s$ to $v$ with length at most $d$, then there is some $w$ adjacent to $v$ with a length at most $\leq (d - 1)$ for a path from $s$ to $w$. 
+
+\subsection{Algorithm Idea}
+For each $d$, create a list of all vertices at distance $d$ from $s$.
+\begin{itemize}
+    \item For $d = 0$, this is just $\{s\}$.
+    \item For larger $d$, we want all new vertices adjacent to vertices at distance $d - 1$.
+\end{itemize}
+
+\begin{verbatim}
+1    ShortestPaths(G, s)
+2        Initialize Array A
+3        A[0] = {s}
+4        dist(s) = 0
+5        For d = 0 to n
+6            For u in A[d]
+7                For (u, v) in E
+8                    if dist(v) undefined
+9                        dist(v) = d + 1
+10                       add v to A[d + 1]
+\end{verbatim}
+
+How can we improve this?
+\begin{itemize}
+    \item What if \code{dist(v)} undefined at end? We can set the distances of all vertices to undefined. 
+    \item The algorithm goes through \code{A[0]}, \code{A[1]}, in order. We can just use a queue.
+    \begin{verbatim}
+        1    ShortestPaths(G, s)
+        2        Initialize Queue Q
+        +        Q.enqueue(s)
+        4        dist(s) = 0
+        +        While Q not empty
+        +        u = front(Q) 
+        7            For (u, v) in E
+        8                if dist(v) = infinity
+        9                    dist(v) = dist(u) + 1
+        10                   Q.enqueue(v)
+        \end{verbatim}
+
+    \item What if we want to keep track of the paths? 
+    \begin{verbatim}
+        1    ShortestPaths(G, s)
+        2        Initialize Queue Q
+        3        Q.enqueue(s)
+        4        dist(s) = 0
+        5        While Q not empty
+        6        u = front(Q) 
+        7            For (u, v) in E
+        8                if dist(v) = infinity
+        9                    dist(v) = dist(u) + 1
+        10                   Q.enqueue(v)
+        +                    v.prev = u
+        \end{verbatim}
+\end{itemize}
+
+\subsection{Breadth First Search}
+In our last change above, we note that we simply have BFS.
+\begin{verbatim}
+    BFS(G, s)
+        For v in V, dist(v) = infinity 
+        Initialize Queue Q
+        Q.enqueue(s)
+        dist(s) = 0
+        While Q is not empty
+            u = front(Q)
+            For (u, v) in E
+                If dist(v) = infinity
+                    dist(v) = dist(u) + 1
+                    Q.enqueue(v)
+                    v.prev = u
+\end{verbatim}
+The total runtime is $O(|V| + |E|)$.
+
+\subsection{DFS vs. BFS}
+\begin{itemize}
+    \item Similarities:
+    \begin{itemize}
+        \item The way both algorithms process vertices is the same (\code{visited} vs. \code{dist < infinity}).
+        \item For each vertex, process all unprocessed neighbors.
+    \end{itemize}
+    \item Differences:
+    \begin{itemize}
+        \item DFS uses a stack to store vertices waiting to be processed. 
+        \item BFS uses a queue.
+    \end{itemize}
+    \item Big Effect:
+    \begin{itemize}
+        \item DFS goes depth-first: very long path. Get a very ``skinny'' tree. 
+        \item BFS is breadth first: visits all side paths. Get a very shallow tree since we process all of the neighbors.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Edge Length}
+The number of edges in a path is not always the right measure of distance. Sometimes, taking several shorter steps is preferably to taking a few longer ones. 
+
+\bigskip 
+
+We can assign each edge $(u, v)$ a non-negative \underline{length} $\ell(u, v)$. The length of a path is the sum of the lengths of its edges.
+
+\subsection{Problem: Shortest Path}
+Coming soon!
+
 
 \end{document}

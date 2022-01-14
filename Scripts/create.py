@@ -48,7 +48,7 @@ def get_last_lec_num(c: str) -> int:
     if not os.path.isdir(dir):
         return -1
     # get all files in dir
-    files = [int(file.replace(".tex", "").replace("Lec", "")) for file in os.listdir(dir) if file.endswith(".tex")]
+    files = [int(file.replace(".tex", "").replace("Lec", "")) for file in os.listdir(dir) if file.endswith(".tex") and file.startswith("Lec")]
     return (0 if len(files) == 0 else max(files)) + 1
 
 def get_path(c: str) -> str:
