@@ -74,7 +74,6 @@ For example, take $R = \Z / 6\Z \oplus \Z / 4\Z \oplus \Z / 10\Z$.
 \end{enumerate}
 
 
-
 \begin{theorem}{Characteristic of an Integral Domain}{}
     The characteristic of an integral domain is 0 or prime.
 \end{theorem}
@@ -84,6 +83,27 @@ For example, take $R = \Z / 6\Z \oplus \Z / 4\Z \oplus \Z / 10\Z$.
         It suffices to consider the additive order of 1. Suppose towards a contradiction that 1 has composite order $n$ and $1 < s$ and $t < n$ such that $n = st$. Then, we know that: 
         \[0 = n1 = (st)1 = s(t1) = (s1)(t1)\]
         But, $1 < s$ and $t < n$, so by minimality of $n$ being the order of 1, it must be that $s1, t1 \neq 0$ and are thus zero-divisors. But, this is a contradiction.
+    \end{proof}
+\end{mdframed}
+
+\subsubsection{Problem 1: Field}
+Suppose $F$ is a field of order $3^n$. Show that $\ch{F} = 3$. 
+
+\begin{mdframed}[]
+    \begin{proof}
+        % F has unity so we can use this
+        We know that $\ch{F}$ has order $1$. Well, the order of 1 divides the order of $F$. The order of $F$ is $3^n$, so the order of 1 is potentially $1, 3^1, 3^2, \dots, 3^n$. But, the characteristic of an integral domain is prime, so the answer must be 3. 
+    \end{proof}
+\end{mdframed}
+
+\subsubsection{Problem 2: Field}
+Find the characteristic of $\Z / 4\Z \oplus 4\Z$. 
+
+\begin{mdframed}[]
+    \begin{proof}
+        We know that $\ch{4\Z} = 0$, so $\ch{\Z / 4\Z \oplus 4\Z} = 0$. If we pick $(1, 4) \in \Z / 4\Z \oplus 4\Z$, then for any positive integer $n$:
+        \[n(1, 4) = (n, 4n) \neq (0, 0)\]
+        So, we can't find one.
     \end{proof}
 \end{mdframed}
 
