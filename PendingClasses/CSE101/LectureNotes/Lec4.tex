@@ -39,6 +39,11 @@ Essentially, a directed graph can be thought of as a graph of dependencies. An e
 \begin{definition}{Topological Ordering}{}
     A \textbf{topological ordering} of a directed graph is an ordering of the vertices so that for each edge $(v, w)$, $v$ comes before $w$ in the ordering.
 \end{definition}
+\textbf{Remark:} There can be multiple different topological orderings for the same graph.
+
+\bigskip 
+
+\noindent
 A question that we might have is: does every directed graph have a topological ordering?
 \begin{itemize}
     \item No. Consider the classic counterexample:
@@ -134,7 +139,7 @@ Consider the following DAG which we will call $G$:
 \begin{center}
     \includegraphics[scale=0.4]{../assets/dag_ex.png}
 \end{center}
-Suppose we start at $A$.
+We start at $A$ since this is where the graph ``begins.''
 \begin{itemize}
     \item \underline{Using Algorithm 1:}
     \begin{itemize}
