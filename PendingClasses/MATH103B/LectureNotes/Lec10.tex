@@ -1,0 +1,139 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Math 103B}
+\chead{Wednesday, January 26, 2022}
+\lhead{Lecture 10}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\section{Polynomial Rings}
+
+\begin{definition}{Polynomial Ring}{}
+    Let $R$ be a commutative ring. The \textbf{polynomial ring} over $R$ in the indeterminate $x$ is defined by
+    \[R[x] = \{a_0 + a_1 x + a_2 x^2 + \dots + a_n x^n \mid a_0, a_1, \dots, a_n \in R, n \in \Z_{\geq 0}\}\]
+\end{definition}
+\textbf{Remark:} We say that the set represented by $R[x]$ is a set of ``formal symbols.'' In other words, these are things we can write down, not functions. 
+
+\begin{definition}{}{}
+    We say that
+    \[a_0 + a_1 x + a_2 x^2 + \dots + a_n x^n = b_0 + b_1 x + b_2 x^2 + \dots + b_m x^m\]
+    are equal if $a_i = b_i$ for all $i = 0, 1, 2, \dots$. Here, we define $a_i = 0$ if $i > n$, and $b_i = 0$ if $i > m$. 
+\end{definition}
+Consider $\F_{2}[x]$. Here, polynomials determine functions. Consider $f(x) = x$ and $g(x) = x^2$. Then, this determines a function: 
+\begin{center}
+    \begin{tabular}{p{3in}|p{3in}}
+        $f(x)$ & $g(x)$ \\ 
+        \hline 
+        $\varphi_{f}: \F_2 \mapsto \F_2$ defined by: 
+        \begin{itemize}
+            \item $\varphi_{f}(0) = 0$
+            \item $\varphi_{f}(1) = 1$
+        \end{itemize} & 
+        $\varphi_{g}: \F_2 \mapsto \F_{2}$ defined by: 
+        \begin{itemize}
+            \item $\varphi_{g}(0) = 0^2 = 0$
+            \item $\varphi_{g}(1) = 1^2 = 1$
+        \end{itemize}
+    \end{tabular}
+\end{center}
+Here, $f(x) \neq g(x)$ but they determine the same function $\F_{2} \mapsto \F_{2}$
+
+
+
+\begin{definition}{}{}
+    In $R[x]$, if
+    \[f(x) = a_0 + a_1 x + \dots + a_n x^n\]
+    \[g(x) = b_0 + b_1 x + \dots + b_m x^m\]
+    then
+    \[f(x) + g(x) = (a_0 + b_0) + (a_1 + b_1)x + \dots + (a_s + b_s) x^s\]
+    for $s = \max\{n, m\}$. Additionally,
+    \[f(x)g(x) = c_0 + c_1 x + \dots + c_{n + m} x^{n + m}\]
+    where 
+    \[c_0 = a_0 b_0\]
+    \[c_1 = a_1 b_0 + a_0 b_1\]
+    \[c_2 = a_2 b_0 + a_1 b_1 + a_0 b_2\]
+    \[c_k = a_k b_0 + a_{k - 1}b_1 + \dots + a_1 b_{k - 1} + a_0 b_k\]
+\end{definition}
+\textbf{Remark:} In practice, we use distributive law for multiplication.
+
+\begin{definition}{}{}
+    When $f(x) = a_0 + a_1 x + \dots + a_n x^n$ with $a_n \neq 0$, we say that: 
+    \begin{itemize}
+        \item $f(x)$ has \textbf{degree} $n$, written $\deg f(x) = n$. However\footnote{If $f(x)$ is degree 0, then $f(x) = a_0 x^0 = a_0$ for $a_0 \neq 0$.}, if $f(x) = 0$, then we say that $f(x)$ has \emph{no} degree \emph{or} $f(x)$ has degree $-\infty$. 
+        \item $a_n$ is the \textbf{leading coefficient} of $f(x)$. 
+        \item $f(x) = a_0$ is a \textbf{constant} polynomial.
+        \item If $a_n = 1$, we say that $f(x)$ is a \textbf{monic} polynomial.
+    \end{itemize}
+\end{definition}
+\textbf{Remarks:}
+\begin{itemize}
+    \item We omit terms like $0x^k$. For example, if our polynomial is $1 + 0x + 1x^2$, then we write $1 + 1x^2$.
+    \item We write $1x^k$ as just $x^k$. So, for example, we write $1 + 1x^2$ as $1 + x^2$. 
+    \item We write $\dots + (-a_k) x^k + \dots$ as $\dots - a_k x^k + \dots$. For example, $1 + (-1)x^2 = 1 - x^2$.
+\end{itemize}
+
+\subsection{Properties of Polynomial Rings}
+
+\begin{proposition}
+    Let $R$ be a commutative ring and $r \in R$. Then, the evaluation map 
+    \[\varphi_{r}: R[X] \mapsto R\]
+    \[f(x) \mapsto f(r) = a_0 + a_1 r + a_2 r^2 + \dots + a_n r^n\]
+    is a homomorphism.
+\end{proposition}
+
+\begin{mdframed}[]
+    \begin{proof}
+        The proof is straightforward. 
+        \begin{itemize}
+            \item \underline{Addition:}
+            \begin{equation*}
+                \begin{aligned}
+                    \varphi_{r}(f(x) + g(x)) &= \varphi_{r}((a_0 + b_0) + (a_1 + b_1)x + \dots + (a_s + b_s)x^s) \\ 
+                        &= (a_0 + b_0) + (a_1 + b_1) r + \dots + (a_s + b_s) r^s \\ 
+                        &= a_0 + a_1 r + \dots + a_n r^n + b_0 + b_1 r + \dots + b_m r^m \\ 
+                        &= \varphi_{r}(f(x)) + \varphi_{r}(g(x))
+                \end{aligned}
+            \end{equation*}
+
+            \item \underline{Multiplication:}
+            \begin{equation*}
+                \begin{aligned}
+                    \varphi_{r}(f(x) g(x)) &= \varphi_{r}(c_0 + c_1 x + \dots + c_{n + m} x^{n + m}) \\ 
+                        &= c_0 + c_1 r + \dots + c_{n + m} r^{n + m} \\ 
+                        &= (a_0 + a_1 r + \dots + a_n r^n)(b_0 + b_1 r + \dots + b_m r^m) \\ 
+                        &= \varphi_{r}(f(x)) \varphi_{r}(g(x))
+                \end{aligned}
+            \end{equation*}
+        \end{itemize}
+        This proves that this is a homomorphism. 
+    \end{proof}
+\end{mdframed}
+
+\textbf{Remark:} This is not an injective homomorphism, but it \textbf{is} a surjective homomorphism.
+
+\begin{theorem}{}{}
+    If $D$ is an integral domain, then $D[x]$ is an integral domain. 
+\end{theorem}
+
+\begin{mdframed}[]
+    \begin{proof}
+        $D[x]$ is commutative by definition. We know that $1 \in D$ so $f(x) = 1$ is the unity of $D[x]$. Suppose $f(x), g(x) \in D[x] \setminus \{0\}$ so that 
+        \[f(x) = a_0 + a_1 x + \dots + a_n x^n\]
+        \[g(x) = b_0 + b_1 x + \dots + b_m x^m\]
+        for $a_n \neq 0$ and $b_m \neq 0$. Then,
+        \[f(x) g(x) = a_0 b_0 + (a_1 b_0 + a_1 b_0) x + \dots + a_n b_m x^{n + m}\]
+        but, $a_n \neq 0$ and $b_m \neq 0$ which implies that $a_n b_m \neq 0$ by $D$ being an integral domain. Thus, $f(x) g(x) \neq 0$, so there are no zero-divisors and $D[x]$ is an integral domain. 
+    \end{proof}
+\end{mdframed}
+
+\end{document}
