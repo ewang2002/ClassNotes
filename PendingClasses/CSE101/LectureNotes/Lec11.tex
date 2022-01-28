@@ -15,6 +15,75 @@
 \setlength{\parindent}{0pt}
 
 \begin{document}
-TODO 
+
+\section{Divide and Conquer}
+The idea behind divide and conquer is as follows: 
+\begin{enumerate}
+    \item Break problems into similar pieces. 
+    \item Solve pirces recursively. 
+    \item Recombine the pieces to get an answer.
+\end{enumerate}
+
+\subsection{Integer Multiplication}
+Suppose we're given two $n$-bit numbers and are asked to find their product. 
+
+\subsubsection{Naive Algorithm}
+The naive algorithm is to do multiplication like we would from elementary school. This runs in $\BigO(n^2)$ time because we need to write down $\BigO(n^2)$ bits of numbers to add (addition is done in linear time and is omitted).
+
+\subsubsection{Improving the Algorithm: Two-Digit Multiplication}
+If we multiplied $ab \times cd$ digit-wise, we would get: 
+\[ab \times cd = (ac)(bc + ad)(bd)\]
+This requires 4 one-digit multiplications and one addition. The \textbf{trick} is to compute $ac$, $bd$, $(a + b)(c + d)$. We note that: 
+\[bc + ad = (a + b)(c + d) - ac - bd\]
+This requires \emph{3} one-digit multiplications and 4 addition/subtractions.
+
+% TODO 
+
+\subsection{Generalization}
+We will often get runtime recurrences with divide and conquer looking something like: 
+\[T(n) = \begin{cases}
+    O(1) & n = O(1) \\ 
+    aT\left(\frac{n}{b} + O(1)\right) + O(n^d) & \text{Otherwise}
+\end{cases}\]
+Here, the second line is saying $a$ subproblems of size $\frac{n}{b}$. 
+
+\subsubsection{Tracking Recursive Calls}
+We have: 
+\begin{itemize}
+    \item 1 recurisve calls of size $n$
+    \item $a$ recursive calls of size $n / b + O(1)$
+    \item $a^2$ recursive calls of size $n / b^2 + O(1)$
+    \item \dots
+    \item $a^k$ recursive calls of size $n / b^k + O(1)$
+\end{itemize}
+So, the total runtime is: 
+\begin{equation*}
+    \begin{aligned}
+        \text{Total Runtime } &= \sum_{k = 0}^{\log_{b}(n)} a^k O\left(\left(\frac{n}{b^k}\right)^d\right) \\ 
+            &= O(n^d) \sum_{k = 0}^{\log){b}(n)} \left(\frac{a}{b^d}\right)^k
+    \end{aligned}
+\end{equation*}
+
+There are several cases to consider. 
+\begin{enumerate}
+    \item $a > b^d$: The runtime would be $O(n^{\log){b}(a)})$.
+    \item $a < b^d$: The runtime is $O(n^d)$. 
+    \item $a = b^d$: The runtime is $O(n^d \log(n))$. 
+\end{enumerate}
+
+\subsubsection{Master Theorem}
+\begin{theorem}{Master Theorem}{}
+    Let $T(n)$ be given by the recurrence:
+    \[T(n) = \begin{cases}
+        O(1) & n = O(1) \\ 
+        aT\left(\frac{n}{b} + O(1)\right) + O(n^d) & \text{Otherwise}
+    \end{cases}\]
+    Then we have: 
+    \[T(n) = \begin{cases}
+        O(n^{\log_{b}(a)}) & a > b^d \\ 
+        O(n^d \log(n)) & a = b^d \\ 
+        O(n^d) & a < b^d
+    \end{cases}\]
+\end{theorem}
 
 \end{document}
