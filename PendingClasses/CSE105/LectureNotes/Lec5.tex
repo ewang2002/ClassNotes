@@ -167,6 +167,10 @@ There are several applications of this theorem.
     \end{proof}
 \end{mdframed}
 
+\begin{center}
+    \includegraphics[scale=0.5]{../assets/union_nfa.png}
+\end{center}
+
 
 \begin{theorem}{}{}
     The class of regular languages is closed under the concatenation operation.
@@ -183,9 +187,13 @@ There are several applications of this theorem.
     \end{proof}    
 \end{mdframed}
 
+\begin{center}
+    \includegraphics[scale=0.5]{../assets/concat_nfa.png}
+\end{center}
+
 
 \begin{theorem}{}{}
-    The class of regular languages is closed under the union operation.
+    The class of regular languages is closed under the star operation.
 \end{theorem}
 
 \begin{mdframed}[]
@@ -199,5 +207,9 @@ There are several applications of this theorem.
         By starting at the new start state, we can guarantee that $\epsilon$ will be accepted if it is the only thing to be read. Processing the string is as expected. However, once we reach the accept state, we need to \emph{go back} to the original start state to process the next ``word.'' This process keeps going until we no longer have any words to process. In this case, if we end off at any accept state with nothing left to read, then we accept. 
     \end{proof}
 \end{mdframed}
+
+\begin{center}
+    \includegraphics[scale=0.5]{../assets/star_nfa.png}
+\end{center}
 
 \end{document}
