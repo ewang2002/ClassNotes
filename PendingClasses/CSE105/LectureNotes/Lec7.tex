@@ -59,10 +59,23 @@ So, if we can show that a language doesn't have this property, then it must be t
 To prove that a language $L$ is not regular, we use the pumping lemma like so: 
 \begin{enumerate}
     \item Assume that $L$ is regular so that the Pumping Lemma holds.
-    \item Let $p$ be the pumping length for $K$ given by the lemma.
-    \item Find a string $s \in L$ such that $|s| \geq p$. \textbf{Warning:} Not every string in $L$ will work. 
+    \item Let $p$ be the pumping length for $L$ given by the lemma.
+    \item Find a string $s \in L$ such that $|s| \geq p$. Your $s$ must be parametrized by $p$. \textbf{Warning:} Not every string in $L$ will work. 
     \item By the Pumping Lemma, there are strings $x$, $y$, $z$ such that all three conditions hold. Pick a particular $i \geq 0$ (usually, $i = 0$ or $i = 2$ will suffice) and show that $xy^i z \notin L$, thus yielding a contradiction. 
 \end{enumerate}
+Several points to consider:
+\begin{itemize}
+    \item Your proof must show that, for an \underline{arbitrary} $p$, there is a \underline{particular} string $s \in L$ (long enough) such that for \underline{any} split of $xyz$ (satisfying the conditions), there is an $i$ such that $xy^i z \notin L$. In other words, you must: 
+    \begin{itemize}
+        \item Assume a general $p$. You \textbf{cannot} choose a particular $p$.
+        \item Find a concrete $s$. Your $s$ must be parametrized by $p$.
+        \item Consider a general split $x, y, z$. You \textbf{cannot} choose a particular split; you must show every possible split.
+        \item Show a particular $i$ for which the pumped word is not in $L$.  
+    \end{itemize}
+    \item The string $s$ does not need to be a random, representative member of $L$. It may come from a \emph{very specific} subset of $L$. For example, if your language is all strings with an equal number of \code{0}'s and \code{1}'s, your $s$ might be $0^p 1^p$.
+    \item Make sure your string is long enough so that the first $p$ characters have a very limited form. 
+    \item The vast majority of proofs use $i = 0$ or $i = 2$, but there are exceptions. 
+\end{itemize}
 
 \subsubsection{Example 1: Pumping Lemma Application}
 We will show that the language $B$ described above is not regular.
