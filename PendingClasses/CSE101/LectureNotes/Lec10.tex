@@ -8,7 +8,7 @@
 \pagestyle{fancy}
 \fancyhf{}
 \rhead{CSE 101}
-\chead{Wednesday, January 26, 2022}
+\chead{Friday, January 28, 2022}
 \lhead{Lecture 10}
 \rfoot{\thepage}
 
@@ -16,50 +16,74 @@
 
 \begin{document}
 
-\section{Fundamental Shortest Paths Formula}
-For any vertex $w$ that isn't the source, $w \neq s$,
-\[\text{dist}(w) = \min_{(v, w) \in E} \text{dist}(v) + \ell(v, w)\]
-We can use a system of equations to solve for the distances. When $\ell \geq 0$, Dijsktra gives an order to solve in.
+\section{Divide and Conquer}
+The idea behind divide and conquer is as follows: 
+\begin{enumerate}
+    \item Break problems into similar pieces. 
+    \item Solve pirces recursively. 
+    \item Recombine the pieces to get an answer.
+\end{enumerate}
 
-\subsection{Algorithm Idea}
-Instead of finding the shortest paths, which may not exist, we instead find the shortest paths of length at most $k$. So, for $w \neq s$, we have: 
-\[\text{dist}_{k}(w) = \min_{(v, w) \in E} \text{dist}_{k - 1}(v) + \ell(v, w)\]
+\subsection{Integer Multiplication}
+Suppose we're given two $n$-bit numbers and are asked to find their product. 
 
-\subsection{Algorithm}
-\begin{verbatim}
-    Bellman-Ford(G, s, l)
-        dist_{0}(v) = infinity for all v 
-        dist_{0}(s) = 0
-        For k = 1 to n
-            For w in V
-                dist_{k}(w) = min(dist_{k - 1}(v) + l(v, w))
-            dist_{k}(s) = min(dist_{k}(s), 0)
-\end{verbatim}
+\subsubsection{Naive Algorithm}
+The naive algorithm is to do multiplication like we would from elementary school. This runs in $\BigO(n^2)$ time because we need to write down $\BigO(n^2)$ bits of numbers to add (addition is done in linear time and is omitted).
 
-\subsection{Analysis}
-\begin{proposition}
-    If $n \geq |V| - 1$ and if $G$ has no negative weight cycles, then for all $v$,
-    \[\text{dist}(v) = \text{dist}_{n}(v)\]
-\end{proposition}
-In particular:
+\subsubsection{Improving the Algorithm: Two-Digit Multiplication}
+If we multiplied $ab \times cd$ digit-wise, we would get: 
+\[ab \times cd = (ac)(bc + ad)(bd)\]
+This requires 4 one-digit multiplications and one addition. The \textbf{trick} is to compute $ac$, $bd$, $(a + b)(c + d)$. We note that: 
+\[bc + ad = (a + b)(c + d) - ac - bd\]
+This requires \emph{3} one-digit multiplications and 4 addition/subtractions.
+
+% TODO 
+
+\subsection{Generalization}
+We will often get runtime recurrences with divide and conquer looking something like: 
+\[T(n) = \begin{cases}
+    O(1) & n = O(1) \\ 
+    aT\left(\frac{n}{b} + O(1)\right) + O(n^d) & \text{Otherwise}
+\end{cases}\]
+Here, the second line is saying $a$ subproblems of size $\frac{n}{b}$. 
+
+\subsubsection{Tracking Recursive Calls}
+We have: 
 \begin{itemize}
-    \item If there is a negative weight cycle, there is probably no shortest path. 
-    \item If not, we only need to run our algorithm for $|V|$ rounds, for a final runtime of $\BigO(|V||E|)$. 
+    \item 1 recurisve calls of size $n$
+    \item $a$ recursive calls of size $n / b + O(1)$
+    \item $a^2$ recursive calls of size $n / b^2 + O(1)$
+    \item \dots
+    \item $a^k$ recursive calls of size $n / b^k + O(1)$
 \end{itemize}
+So, the total runtime is: 
+\begin{equation*}
+    \begin{aligned}
+        \text{Total Runtime } &= \sum_{k = 0}^{\log_{b}(n)} a^k O\left(\left(\frac{n}{b^k}\right)^d\right) \\ 
+            &= O(n^d) \sum_{k = 0}^{\log){b}(n)} \left(\frac{a}{b^d}\right)^k
+    \end{aligned}
+\end{equation*}
 
-\subsection{Detecting Negative Cycles}
-\emph{If} there are no negative weight cycles, Bellman-Ford computes shortest paths (and they might not exist otherwise). Howe do we know whether or not there are any? 
+There are several cases to consider. 
+\begin{enumerate}
+    \item $a > b^d$: The runtime would be $O(n^{\log){b}(a)})$.
+    \item $a < b^d$: The runtime is $O(n^d)$. 
+    \item $a = b^d$: The runtime is $O(n^d \log(n))$. 
+\end{enumerate}
 
-\subsubsection{Cycle Detection}
-
-\begin{proposition}
-    For any $n \geq |V| - 1$, there are no negative weight cycles reachable from $s$ if and only if, for every $v \in V$:
-    \[\text{dist}_{n}(v) = \text{dist}_{n + 1}(v)\]
-\end{proposition}
-
-\subsection{Potential Function}
-Let 
-\[\ell'(v, w) = \ell(v, w) - d(v) + d(w) \geq 0\]
-Imagine someone lending you $d(w)$ when you arrive at $w$, but then you have to pay it back when you leave.
+\subsubsection{Master Theorem}
+\begin{theorem}{Master Theorem}{}
+    Let $T(n)$ be given by the recurrence:
+    \[T(n) = \begin{cases}
+        O(1) & n = O(1) \\ 
+        aT\left(\frac{n}{b} + O(1)\right) + O(n^d) & \text{Otherwise}
+    \end{cases}\]
+    Then we have: 
+    \[T(n) = \begin{cases}
+        O(n^{\log_{b}(a)}) & a > b^d \\ 
+        O(n^d \log(n)) & a = b^d \\ 
+        O(n^d) & a < b^d
+    \end{cases}\]
+\end{theorem}
 
 \end{document}

@@ -8,7 +8,7 @@
 \pagestyle{fancy}
 \fancyhf{}
 \rhead{CSE 101}
-\chead{Friday, January 28, 2022}
+\chead{Monday, January 31, 2022}
 \lhead{Lecture 11}
 \rfoot{\thepage}
 
@@ -17,73 +17,83 @@
 \begin{document}
 
 \section{Divide and Conquer}
-The idea behind divide and conquer is as follows: 
-\begin{enumerate}
-    \item Break problems into similar pieces. 
-    \item Solve pirces recursively. 
-    \item Recombine the pieces to get an answer.
-\end{enumerate}
-
-\subsection{Integer Multiplication}
-Suppose we're given two $n$-bit numbers and are asked to find their product. 
-
-\subsubsection{Naive Algorithm}
-The naive algorithm is to do multiplication like we would from elementary school. This runs in $\BigO(n^2)$ time because we need to write down $\BigO(n^2)$ bits of numbers to add (addition is done in linear time and is omitted).
-
-\subsubsection{Improving the Algorithm: Two-Digit Multiplication}
-If we multiplied $ab \times cd$ digit-wise, we would get: 
-\[ab \times cd = (ac)(bc + ad)(bd)\]
-This requires 4 one-digit multiplications and one addition. The \textbf{trick} is to compute $ac$, $bd$, $(a + b)(c + d)$. We note that: 
-\[bc + ad = (a + b)(c + d) - ac - bd\]
-This requires \emph{3} one-digit multiplications and 4 addition/subtractions.
-
-% TODO 
-
-\subsection{Generalization}
-We will often get runtime recurrences with divide and conquer looking something like: 
-\[T(n) = \begin{cases}
-    O(1) & n = O(1) \\ 
-    aT\left(\frac{n}{b} + O(1)\right) + O(n^d) & \text{Otherwise}
-\end{cases}\]
-Here, the second line is saying $a$ subproblems of size $\frac{n}{b}$. 
-
-\subsubsection{Tracking Recursive Calls}
-We have: 
+Recall from the previous lecture that the idea behind divide and conquer is to:
 \begin{itemize}
-    \item 1 recurisve calls of size $n$
-    \item $a$ recursive calls of size $n / b + O(1)$
-    \item $a^2$ recursive calls of size $n / b^2 + O(1)$
-    \item \dots
-    \item $a^k$ recursive calls of size $n / b^k + O(1)$
+    \item Split the problem into parts. 
+    \item Recursively solve each part. 
+    \item And then somehow recombine these parts to get the final answer. 
 \end{itemize}
-So, the total runtime is: 
-\begin{equation*}
-    \begin{aligned}
-        \text{Total Runtime } &= \sum_{k = 0}^{\log_{b}(n)} a^k O\left(\left(\frac{n}{b^k}\right)^d\right) \\ 
-            &= O(n^d) \sum_{k = 0}^{\log){b}(n)} \left(\frac{a}{b^d}\right)^k
-    \end{aligned}
-\end{equation*}
+We will now use this technique to solve several important problems. 
 
-There are several cases to consider. 
-\begin{enumerate}
-    \item $a > b^d$: The runtime would be $O(n^{\log){b}(a)})$.
-    \item $a < b^d$: The runtime is $O(n^d)$. 
-    \item $a = b^d$: The runtime is $O(n^d \log(n))$. 
-\end{enumerate}
+\section{Sorting}
+Given a list $L$ of numbers, return $L$ in sorted order.
 
-\subsubsection{Master Theorem}
-\begin{theorem}{Master Theorem}{}
-    Let $T(n)$ be given by the recurrence:
-    \[T(n) = \begin{cases}
-        O(1) & n = O(1) \\ 
-        aT\left(\frac{n}{b} + O(1)\right) + O(n^d) & \text{Otherwise}
-    \end{cases}\]
-    Then we have: 
-    \[T(n) = \begin{cases}
-        O(n^{\log_{b}(a)}) & a > b^d \\ 
-        O(n^d \log(n)) & a = b^d \\ 
-        O(n^d) & a < b^d
-    \end{cases}\]
-\end{theorem}
+\subsection{Algorithm Idea}
+An idea is to: 
+\begin{itemize}
+    \item Divide $L$ into two parts, $L_1$ and $L_2$. 
+    \item Sort $L_1$ and $L_2$. 
+    \item Finally, \emph{merge} both $L_1$ and $L_2$ together. 
+\end{itemize}
+
+\subsection{Merge Operation}
+One question we have is, how do we define the \emph{merge} operation? Well, suppose we have
+\[L_1 = [1, 3, 6, 10]\]
+\[L_2 = [2, 4, 5, 7, 8, 9]\]
+
+We can combine the two lists by comparing the two smallest elements an then putting the smaller of the two elements in the new list. So, for example, the first element in $L_1$ is 1 and the first element in $L_2$ is 2, so we can put $1$ into the final list and somehow point $L_1$ to the second element so we don't consider $1$ again. 
+
+\bigskip 
+
+The algorithm can be described like so: 
+\begin{verbatim}
+    Merge(A, B):
+        Let C be the list with the length being len(A) + len(B)
+        // Kane uses one-indexing instead of zero-indexing.
+        a = 1 
+        b = 1
+        for c = 1 to len(C):
+            if (a <= len(A) & (b > len(B) or A[a] < B[b])):
+                C[c] = A[a]
+                a++ 
+            else:
+                C[c] = B[b]
+                b++ 
+        Return C
+\end{verbatim}
+This runs in $\BigO(|A| + |B|)$ time. 
+
+\subsection{Merge Sort Algorithm}
+\begin{verbatim}
+    MergeSort(L):
+        // Every divide & conquer algorithm needs a base case 
+        if |L| = 1:
+            return L
+        
+        Split L into approx. equal lists L1, L2
+        return Merge(MergeSort(L1), MergeSort(L2))
+\end{verbatim}
+
+To analyze the runtime, note that the base case runs in $\BigO(1)$ time; this is obvious. We know that the \code{Merge} algorithm runs in linear time. Then, the two calls to \code{MergeSort} takes $2T(n / 2 + \BigO(1))$. We then have (by the Master Theorem):
+\[T(n) = \BigO(n) + 2T(n / 2)\]
+Therefore, the final runtime is given by the Master Theorem:
+\[\BigO(n\log n)\]
+
+\section{Order Statistics}
+Given a list of numbers $L$, find the \textbf{median} or the \textbf{largest element} or the \textbf{10th smallest} element of $L$. Essentially, you want to find something based on the order in some way. 
+
+\bigskip 
+
+Let's focus on one particular problem: Given $L$ and $k$, find the $k$th smallest element of $L$. 
+
+\subsection{Easy Algorithm}
+The easy algorithm is to sort $L$ and then return $L[k]$. The runtime is $\BigO(n \log n)$, but there are better ways to do this. 
+
+\subsection{Divide \& Conquer Algorithm}
+First, we pick a \emph{pivot} $x$, and we sort all elements in $L$ relative to $x$. That is, every element to the \emph{left} of $x$ is less than $x$, every element to the \emph{right} of $x$ is greater than $x$, and every element next to $x$ is equal to $x$. In this sense, we can sort these elements into categories in $\BigO(n)$ timme. 
+
+\bigskip 
+
+We note that the $k$th smallest element is less than $x$ if and only if $|L_{< x}| \geq k$. If this is the case, then the answer is the $k$th smallest element of $L_{< x}$. The answer is $x$ if and only if $|L_{< x}| < k$. % 41:46
 
 \end{document}
