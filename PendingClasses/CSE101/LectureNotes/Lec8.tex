@@ -17,19 +17,20 @@
 \begin{document}
 
 \section{Priority Queue Implementations}
-We will go through some prioriy queue implementations. 
+The implementation of Dijkstra's algorithm is very much dependent on the priority queue that we use. That is, depending on how we implement our priority queue, we may or may not see a change in performance. So, we will go through some prioriy queue implementations. 
 
 \subsection{Unsorted List}
 Store $n$ elements in an unsorted list. 
 
-\bigskip 
-
-\underline{Operations:}
-\begin{itemize}
-    \item \code{Insert}: $\BigO(1)$.
-    \item \code{DecreaseKey}: $\BigO(1)$.
-    \item \code{DecreaseMin}: $\BigO(1)$.
-\end{itemize}
+\begin{center}
+    \begin{tabular}{p{0.85in}|p{0.75in}|p{4.4in}}
+        \textbf{Operation} & \textbf{Runtime} & \textbf{Explanation} \\ 
+        \hline 
+        \code{Insert}      & $\BigO(1)$ & Add it at the end of the list. \\ 
+        \code{DecreaseKey} & $\BigO(1)$ & Assuming the operation comes with a pointer to where the element is stored in your data structure, take that element and decrease its key value. \\ 
+        \code{DecreaseMin} & $\BigO(n)$ & We need to potentially scan the entire list. \\ 
+    \end{tabular}
+\end{center}
 For Dijkstra, we would have $\BigO(|V|^2 + |E|)$. 
 
 \subsection{Binary Heap}
@@ -38,18 +39,19 @@ Store elements in a balanced binary tree with each element having smaller key va
 \begin{center}
     \includegraphics[scale=0.5]{../assets/bin_heap.png}
 
-    \textbf{Figure: A binary heap.}
+    \textbf{Figure:} A binary heap.
 \end{center}
 The smallest key is at the top (\code{0}) and there are $\log{n}$ levels. 
 
-\bigskip 
-
-\underline{Operations:}
-\begin{itemize}
-    \item \code{Insert}: Add the key at the bottom, then bubble the new key up until it's in the right place. This is done in $\BigO(\log(n))$ time. 
-    \item \code{DecreaseKey}: We need to change the key. Then, we might need to bubble up the changed key until it's in the right place. This is done in $\BigO(\log(n))$ time. 
-    \item \code{DecreaseMin}: We remove and then return the root node. Then, we move the bottom-most node to the root. After this, we might need to continuously bubble down the root node until it's in the right place. This is done in $\BigO(\log(n))$ time. 
-\end{itemize}
+\begin{center}
+    \begin{tabular}{p{0.85in}|p{0.75in}|p{4.4in}}
+        \textbf{Operation} & \textbf{Runtime} & \textbf{Explanation} \\ 
+        \hline 
+        \code{Insert}      & $\BigO(\log(n))$ & Add the key at the bottom, then bubble the new key up until it's in the right place. \\ 
+        \code{DecreaseKey} & $\BigO(\log(n))$ & We need to change the key. Then, we might need to bubble up the changed key until it's in the right place. \\ 
+        \code{DecreaseMin} & $\BigO(\log(n))$ & We remove and then return the root node. Then, we move the bottom-most node to the root. After this, we might need to continuously bubble down the root node until it's in the right place. \\ 
+    \end{tabular}
+\end{center}
 For Dijkstra, we would have $\BigO(\log(|V|)(|V| + |E|))$. 
 
 
@@ -58,35 +60,41 @@ This is like a binary heap, but each node has $d$ children.
 \begin{center}
     \includegraphics[scale=0.5]{../assets/dary_heap.png}
 
-    \textbf{Figure: A 4-ary heap.}
+    \textbf{Figure:} A 4-ary heap.
 \end{center}
 
-There are $\log(n) / \log(d)$ levels, so bubble up is faster. However, bubble down is slower since we need to compare more children. 
+There are $\frac{\log(n)}{\log(d)}$ levels, so bubble up is faster. However, bubble down is slower since we need to compare more children. 
 
-\bigskip 
-
-\underline{Operations:}
-\begin{itemize}
-    \item \code{Insert}: This is done in $\BigO(\log(n) / \log(d))$ time. 
-    \item \code{DecreaseKey}: This is done in $\BigO(\log(n) / \log(d))$ time. 
-    \item \code{DecreaseMin}: This is done in $\BigO(d\log(n) / \log(d))$ time. This is because, for bubble down, we need to consider the $d$ children. 
-\end{itemize}
-For Dijkstra, we would have $\BigO\left(\frac{\log(|V|)(d|V| +|E|)}{\log(d)}\right)$. 
+\begin{center}
+    \begin{tabular}{p{0.85in}|p{0.75in}|p{4.4in}}
+        \textbf{Operation} & \textbf{Runtime} & \textbf{Explanation} \\ 
+        \hline 
+        \code{Insert}      & $\BigO\left(\frac{\log(n)}{\log(d)}\right)$ & Same thing as binary heap, essentially. \\ 
+        \code{DecreaseKey} & $\BigO\left(\frac{\log(n)}{\log(d)}\right)$ & Same idea as binary heap, \emph{but} the bubbling up is a lot faster. \\ 
+        \code{DecreaseMin} & $\BigO\left(\frac{d\log(n)}{\log(d)}\right)$ & This is because, for bubble down, we need to compare more children; specifically, the $d$ children. \\ 
+    \end{tabular}
+\end{center}
+For Dijkstra, we would have $\BigO\left(\frac{\log(|V|)(d|V| +|E|)}{\log(d)}\right)$. If the number of edges is substantially greater than the number of vertices, this can potentially be an improvement. 
 
 
 \subsection{Fibonacci Heap}
-This is an advanced data structure that uses amortization\footnote{So, you might spend more time on a particular operation, but the overall runtime will be ``consistent.''}. 
+This is an advanced data structure that uses amortization\footnote{So, you might spend more time on a particular operation, but the overall runtime will be ``consistent.''}. We are not concerned with its implementation. 
 
-\bigskip 
+\begin{center}
+    \begin{tabular}{p{0.85in}|p{0.75in}}
+        \textbf{Operation} & \textbf{Runtime} \\ 
+        \hline 
+        \code{Insert}      & $\BigO(1)$ \\ 
+        \code{DecreaseKey} & $\BigO(1)$ \\ 
+        \code{DecreaseMin} & $\BigO(\log(n))$ \\ 
+    \end{tabular}
+\end{center}
+For Dijkstra, we would have $\BigO(|V|\log(|V|) + |E|)$. This is the most ideal runtime, and thus the runtime that we can assume. 
 
-\underline{Operations:}
-\begin{itemize}
-    \item \code{Insert}: This is done in $\BigO(1)$ time. 
-    \item \code{DecreaseKey}: This is done in $\BigO(1)$ time. 
-    \item \code{DecreaseMin}: This is done in $\BigO(\log(n))$ time. This is because, for bubble down, we need to consider the $d$ children. 
-\end{itemize}
-For Dijkstra, we would have $\BigO(|V|\log(|V|) + |E|)$. 
 
+
+
+\newpage 
 \section{Negative Edge Weights}
 So far, we've talked about non-negative lengths. However, depending on what we're representing as lengths, we might have \emph{negative} lengths. That being said, the problem statement is the same - find the path with the smallest sum of edge weight. 
 
