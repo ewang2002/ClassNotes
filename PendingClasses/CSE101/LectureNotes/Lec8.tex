@@ -100,7 +100,13 @@ So far, we've talked about non-negative lengths. However, depending on what we'r
 
 \bigskip 
 
-Right now, Dijkstra's algorithm doesn't actually work on negative edge values. 
+Right now, Dijkstra's algorithm doesn't actually work on negative edge values. To see why this is the case, consider the following visualization: 
+\begin{center}
+    \includegraphics[scale=0.3]{../assets/neg_bubble.png}
+\end{center}
+Here, the bubble represents all correctly assigned distances. In other words, here, $s$ and and $v$ has edge length $\text{dist}(v)$, the shortest distance between the two. Then, from $v$ (inside the bubble) to $w$ (outside the bubble), if we consider the edge length $\ell(v, w)$, it follows that this must be the shortest path. The point was that this must be the right distance to $w$; any other way to get to $w$ means that we would have to leave the bubble some other way (in our case, from $s$ to $v'$ to $w'$). Then, there has to be a path connecting $w'$ to $w$, of which we denote $P$. So, it follows that:  
+\[\text{dist}(v) + \ell(v, w) \leq \text{dist}(v') + \ell(v', w') + \ell(P)\]
+This correctly works if $\ell(P)$ is non-negative. However, if $\ell(P)$ is negative, we run into an issue. 
 
 \subsection{Negative Weight Cycle}
 \begin{definition}{}{}
@@ -111,6 +117,14 @@ Right now, Dijkstra's algorithm doesn't actually work on negative edge values.
     \item If $G$ has a negative weight cycle, then there are probably no shortest paths since we can go around the cycle over and over again. 
     \item For an undirected graph $G$, a single negative weight edge gives a negative weight cycle by going back and forth on it. So, we usually don't talk about the negative edge weight in the context of an undirected graph. 
 \end{itemize}
-
+For example, consider the following graph:
+\begin{center}
+    \includegraphics[scale=0.2]{../assets/neg_cycle_1.png}
+\end{center}
+Here, the shortest path length from $s$ to $t$ is as small as we like it to be. So, really, the shortest path length is $-\infty$. This graph\textbf{also} answers an important question:
+\begin{mdframed}[]
+    What stops us from adding a constant to every edge length so every edge length is non-negative, thus letting us run Dijkstra's algorithm? 
+\end{mdframed}
+Well, if we added a constant to every edge length so that every edge length is non-negative, then there would only be one answer. For example, if we added 1 to each edge length, the shortest path becomes $2 + 0 + 2 = 4$. But since we added 1 to each edge length and we went through three edges, our final answer is $1$. \emph{However}, this completely avoids the fact that we could just loop around the negative cycle many times. 
 
 \end{document}
