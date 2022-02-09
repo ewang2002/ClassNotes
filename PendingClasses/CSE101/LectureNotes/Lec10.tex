@@ -19,9 +19,9 @@
 \section{Divide and Conquer}
 The idea behind divide and conquer is as follows: 
 \begin{enumerate}
-    \item Break problems into similar pieces. 
-    \item Solve pirces recursively. 
-    \item Recombine the pieces to get an answer.
+    \item \underline{Divide:} Break the given problem into similar pieces (i.e. subproblems of same type). This step involves breaking the problem into smaller sub-problems. Sub-problems should represent a part of the original problem. This step generally takes a recursive approach to divide the problem until no sub-problem is further divisible.
+    \item \underline{Conquer:} Recursively solve these pieces (sub-problems). This step receives a lot of smaller sub-problems to be solved. Generally, at this level, the problems are considered 'solved' on their own.
+    \item \underline{Combine:} Appropriately combine the answers. When the smaller sub-problems are solved, this stage recursively combines them until they formulate a solution of the original problem.
 \end{enumerate}
 
 \subsection{Integer Multiplication}
