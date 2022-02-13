@@ -15,6 +15,91 @@
 \setlength{\parindent}{0pt}
 
 \begin{document}
-TODO 
+
+\section{More on Polynomial Rings}
+We now continue our discussion on polynomial rings. 
+
+\subsection{Zeros}
+\begin{theorem}{}{}
+    A polynomial of degree $n$ with coefficients in a field $F$ has at most $n$ zeros, counted with multiplicity. 
+\end{theorem}
+
+\begin{mdframed}[]
+    \begin{proof}
+        We use induction on $n$, the degree of the polynomial.
+        \begin{itemize}
+            \item \underline{Base Case:} Suppose $n = 0$. This means that the polynomial has degree zero, which clearly doesn't have any zeros.
+            \item \underline{Inductive Step:} Suppose this theorem is true for all polynomials of degree less than or equal to $n - 1$. Then, let $f(x)$ be a polynomial of degree $n$.
+            \begin{enumerate}
+                \item \underline{Case 1:} Suppose $f(x)$ has no roots\footnote{For example, consider $x^2 + 1 \in \R[x]$. This doesn't have any \emph{real} roots.}. Then, we have $0$ roots which is clearly less than $n$ roots, so we are done by $0 \leq n$. 
+                \item \underline{Case 2:} Suppose $a$ is a root of $f(x)$ of multiplicity $k \geq 1$. By definition, $f(x) =  (x - a)^k g(x)$, where $g(a) \neq 0$ by $k$ being maximal (or else we could add one more to $k$). If $b \neq a$ is a root of $f(x)$, then $0 = f(b) = (b - a)^k g(b)$, where $b - a$ is non-zero. Since $F$ is a field, it is an integral domain so
+                \[b - a \neq 0 \implies (b - a)^k \neq 0\]
+                and
+                \[0 = (b - a)^k g(b) \implies g(b) = 0\]
+                In other words, every other root must come from $g(x)$. Note that $\deg g(x) = n - k \leq n - 1$. So, by the inductive hypothesis, $g(x)$ has at most $n - k$ roots with multiplicity, so $f(x)$ has less than or equal to $k + n - k = n$ roots (where $k$ is the number of $a$ roots with multiplicity; and $n - k$, which are the roots of $g$ with multiplicity). 
+            \end{enumerate}
+        \end{itemize}
+        This completes the proof. 
+    \end{proof}
+\end{mdframed}
+
+\subsubsection{Example: Integers Modulo 6}
+Consider $x^2 - x \in \Z / 6\Z$. This is \emph{not} a field because it is not an integral domain. This polynomial has roots $0$, $1$, $3$, and $4$. 
+
+\bigskip 
+
+Note that this particular polynomial has \emph{4} zeros. The theorem we discussed above states that if the polynomial has coefficients in a \emph{field}, then we should not expect this to happen. 
+
+\subsection{Principal Ideal Domain}
+\begin{definition}{Principal Ideal Domain}{}
+    A \textbf{principal ideal domain} (PID) is an integral domain $R$ in which every ideal has the form $\cyclic{a}$ for some $a \in R$. 
+\end{definition}
+
+\subsubsection{Example: The Integers}
+$\Z$ is a PID with 
+\[n\Z = \cyclic{n}\]
+
+
+\subsection{PIDs and Polynomial Rings}
+\begin{theorem}{}{}
+    Let $F$ be a field. Then, $F[x]$ is a PID. 
+\end{theorem}
+
+\begin{mdframed}[]
+    \begin{proof}
+        We know $F[x]$ is an integral domain. Let $I \subseteq F[x]$ be an ideal. 
+        \begin{enumerate}
+            \item \underline{Case 1:} Consider $I = \{0\}$. This is a principal ideal since $I = \{0\} = \cyclic{0}$. 
+            \item \underline{Case 2:} Suppose $I \neq \{0\}$. Choose some $g(x) \in I \subseteq \{0\}$ of minimal degree. Clearly, $\cyclic{g(x)} = \{g(x) \cdot f(x) \mid f(x) \in F[x]\} \subseteq I$ by property of an ideal. Now, take any element $f(x) \in I$. Write $f(x) = g(x) q(x) + r(x)$ where $\deg r(x) < \deg g(x)$ by the division theorem. This implies that $r(x) = f(x) - g(x) q(x)$. Now, $f(x) \in I$ and $g(x) \in I$, and since ideals are closed it follows that $g(x) q(x) \in I$. Additionally, since ideals are closed under addition, $f(x) - g(x) q(x) \in I$ and thus $r(x) \in I$. Note that $r(x) \in I$ with $\deg r(x) < \deg g(x)$, so by $g(x) \in I \setminus \{0\}$ of minimal degree, $r(x) \notin I \setminus \{0\}$. This implies that $r(x) = 0$ so $f(x) = g(x) q(x) \in \cyclic{g(x)}$ and thus $I \subseteq \cyclic{g(x)}$. 
+        \end{enumerate}
+        This concludes the proof. 
+    \end{proof}
+\end{mdframed}
+
+\begin{corollary}{}{}
+    Let $F$ be a field and $I \subseteq F[x]$ a non-zero ideal. Then, $I = \cyclic{g(x)}$ if and only if $g(x) \in I \setminus \{0\}$ of minimal degree. 
+\end{corollary}
+
+\subsubsection{Example: Homomorphism}
+Consider the homomorphism
+\[\varphi: \R[x] \mapsto \C\]
+defined by the evaluation map 
+\[f(x) \mapsto f(i)\]
+By the first isomorphism theorem, 
+\[\R[x] / \ker \varphi \cong \varphi(\R[x])\]
+Note that 
+\[\varphi(\R[x]) = \C\]
+because 
+\[\varphi(a + bx) = a + bi \in \C \text{ for all } a + bi \in \C\]
+Additionally, note that 
+\[x^2 + 1 \in \ker \varphi\]
+because 
+\[\varphi(x^2 + 1) = i^2 + 1 = -1 + 1 = 0\]
+And so $\ker \varphi = \cyclic{x^2 + 1}$. This is specifically due to us trying every lower degree (from the proof above); that is: 
+\begin{itemize}
+    \item $0 \neq a \implies \varphi(2) = 2 \neq 0$, so degree 0 is not possible. 
+    \item $a + bx$, $b \neq 0 \implies \varphi(a + bx) = a + bi \neq 0$, so degree 1 is not possible. 
+    \item But, we have a quadratic polynomial that works. 
+\end{itemize}
 
 \end{document}
