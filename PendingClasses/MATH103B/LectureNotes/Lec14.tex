@@ -15,6 +15,108 @@
 \setlength{\parindent}{0pt}
 
 \begin{document}
-TODO 
+
+\section{Reducible and Irreducible Polynomials}
+The idea behind a reducible or irreducible polynomial is very similar in nature to factoring and finding zeros of a polynomial. 
+
+\subsection{Definition}
+\begin{definition}{}{}
+    Let $D$ be an integral domain. A polynomial $f(x)$ from $D[x]$ that is neither the zero polynomial nor a unit in $D[x]$ is said to be \textbf{irreducible} over $D$ if, whenever $f(x)$ is expressed as a product 
+    \[f(x) = g(x)h(x)\]
+    with $g(x), h(x) \in D[x]$, then $g(x)$ \emph{or} $h(x)$ is a unit in $D[x]$. A non-zero, non-unit element of $D[x]$ that is not irreducible over $D$ is called \textbf{reducible} over $D$.  
+\end{definition}
+\textbf{Fact:} If $F$ is a field, $f(x) \in F[x]$ is irreducible if and only if $f(x) = g(x) h(x)$ implies that one of $g(x)$ or $h(x)$ have degree 0. 
+
+\bigskip 
+
+We can try to make a similar definition for the integers to get a better idea of what this means. We can define an ``irreducible'' integer $n \in \Z$ is one such that 
+\[n = ab \implies a \in \{\pm 1\} \text{ or } b \in \{\pm 1\}\]
+So, in the integers, the only set of ``irreducible'' integers are $\pm p$ for primes $p$. 
+
+\subsubsection{Example 1: Polynomial}
+Consider the polynomial $f(x) = 2x^2 + 4$. 
+\begin{itemize}
+    \item This is \textbf{reducible} over $\Z$ since $2x^2 + 4 = 2(x^2 + 2)$ and neither 2 nor $x^2 + 2$ is a unit in $\Z[x]$. 
+    \item This is \textbf{irreducible} over $\Q$. If we use the same factorization described above, then note that $2$ has a unit in $Q[x]$. 
+    \item This is \textbf{reducible} over $\C$ since $2x^2 + 4 = 2(x - i\sqrt{2})(x + i\sqrt{2})$. Here, if $g(x) = 2(x - i\sqrt{2})$ and $h(x) = x + i\sqrt{2}$, then none of $g$ or $h$ are units. 
+\end{itemize}
+
+\subsection{Reducibility Test for Degrees 2 and 3}
+\begin{theorem}{}{}
+    Let $F$ be a field. If $f(x) \in F[x]$ and $\deg f(x)$ is 2 or 3, then $f(x)$ is reducible over $F$ if and only if $f(x)$ has a zero in $F$. 
+\end{theorem}
+
+\begin{mdframed}[]
+    \begin{proof}
+        We will prove the contrapositive; that is, $f(x)$ is reducible if and only if $f(x)$ has a root in $F$. 
+        \begin{itemize}
+            \item \underline{Backwards Direction:} Suppose $a \in F$ with $f(a) = 0$. This implies that $(x - a) | f(a)$ which implies that $f(x) = (x - a)g(x)$. Thus, $\deg g(x) = \deg f(x) - 1 \geq 1$. But, we found a factorization, so $f(x)$ is reducible. 
+            \item \underline{Forward Direction:} If $f(x)$ is reducible, then $f(x) = g(x) h(x)$ with $\deg g(x), \deg h(x) \neq 0$. The only options are 
+            \[\deg f(x) = \deg g(x) + \deg h(x)\]
+            So, we can brute-force the possible degrees: 
+            \begin{itemize}
+                \item 2 = 1 + 1
+                \item 3 = 1 + 2 or 3 = 2 + 1
+            \end{itemize}
+            Thus, there exists $ax + b \in F[x]$, $a \neq 0$, with $(ax + b) | f(x)$ which implies that $f(x) = (ax + b)q(x)$. This further implies that $f\left(-\frac{b}{a}\right) = 0 \cdot q\left(-\frac{b}{a}\right) = 0$. So, $f(x)$ has a root $-\frac{b}{a} \in F$. 
+        \end{itemize}
+        This concludes the proof. 
+    \end{proof}
+\end{mdframed}
+
+\subsubsection{Example 2: Polynomial}
+Consider the polynomial $f(x) = 2x^3 + 4$. 
+\begin{itemize}
+    \item Is $f(x)$ irreducible over $\Q$? Using the theorem above, we have 
+    \[2x^3 + 4 = 0 \implies 2x^3 = -4 \implies x^3 = -sqrt{2} \implies x = - \sqrt[3]{2}\]
+    But, $-\sqrt[3]{2} \notin \Q$ so this is \textbf{irreducible}.
+
+    \item This is \textbf{reducible} over $\R$. 
+\end{itemize}
+
+\subsubsection{Example 3: Polynomial}
+Consider the field $\F_{2}[x]$. Are the polynomials with coefficients in this field reducible?
+\begin{itemize}
+    \item \underline{Degree 0:} 
+    \begin{itemize}
+        \item $0$: Reducible.
+        \item $1$: Irreducible\footnote{This can be generalized to any non-zero constant polynomial.}.
+    \end{itemize}
+
+    \item \underline{Degree 1:}
+    \begin{itemize}
+        \item $x$: Irreducible\footnote{Cannot be factored since it is linear.}. 
+        \item $x + 1$: Irreducible\footnote{Cannot be factored since it is linear. In general, a degree 1 polynomial with coefficients in a field are always irreducible.}.
+    \end{itemize}
+
+    \item \underline{Degree 2:}
+    \begin{itemize}
+        \item $x^2 = xx$: Reducible. 
+        \item $x^2 + 1$: Reducible\footnote{Using the theorem, note that $1 \in F_3$ and $1^2 + 1 = 2 \equiv 0$.}.
+        \item $x^2 + x = x(x + 1)$: Reducible.
+        \item $x^2 + x + 1$: Irreducible.
+    \end{itemize}
+
+    \item \underline{Degree 3:}
+    \begin{itemize}
+        \item Left as an exercise. 
+    \end{itemize}
+\end{itemize}
+
+\subsection{Relation Between Integer Coefficient and Rational Coefficient Polynomials}
+\begin{theorem}{}{}
+    Let $f(x) \in \Z[x]$. $f(x)$ is reducible over $\Q \implies f(x)$ is reducible over $\Z$.
+\end{theorem}
+\textbf{Remark:} The contrapositive of this theorem is important. In particular, $f(x)$ is irreducible over $\Z \implies f(x)$ is irreducible over $\Q$. 
+
+\textbf{Warning:} The \emph{converse} of this theorem is not true. For an example, see $f(x) = 2x^2 + 4$. 
+
+\begin{definition}{Content}{}
+    The \textbf{content} of a non-zero polynomial $a_0 + a_1 x + \dots + a_n x^n \in \Z[x]$ is $\gcd(a_0, a_1, \dots, a_n)$. 
+\end{definition}
+
+\begin{definition}{Primitive Polynomial}
+    A \textbf{primitive polynomial} is an element of $\Z[x]$ with content 1. 
+\end{definition}
 
 \end{document}
