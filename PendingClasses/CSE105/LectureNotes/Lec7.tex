@@ -102,4 +102,16 @@ We will show that the language $B$ described above is not regular.
     \end{proof}
 \end{mdframed}
 
+
+\subsection{The Pumping Lemma for Context-Free Languages}
+\begin{theorem}{Pumping Lemma for Context-Free Languages}{}
+    If $A$ is a context-free language, then there is a number $p$ (the pumping length) where, if $s$ is any string in $A$ of length at least $p$, then $s$ may be divided into five pieces $s = uvxyz$ satisfying the conditions 
+    \begin{enumerate}
+        \item For each $i \geq 0$, $uv^i xy^i z \in A$.
+        \item $|vy| > 0$.
+        \item $|vxy| \leq p$. 
+    \end{enumerate}
+\end{theorem}
+\textbf{Remark:} When $s$ is being divided into $uvxyz$, condition 2 states that either $v$ or $y$ is not the empty string. Condition 3 states that the pieces $v$, $x$, and $y$ \emph{together} have length at most $p$.
+
 \end{document}
