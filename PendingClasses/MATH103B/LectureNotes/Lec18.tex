@@ -1,0 +1,121 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Math 103B}
+\chead{Friday, February 14, 2022}
+\lhead{Lecture 18}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\section{Divisibility in Integral Domains}
+We will continue our discussion on divisibility in integral domains.
+
+\subsection{Unique Factorization Domain}
+\begin{definition}{}{}
+    An integral domain $D$ is a \textbf{unique factorization domain} (UFD) if it satisfies two properties: 
+    \begin{enumerate}
+        \item Every non-zero, non-unit element of $D$ can be written as a product of irreducibles. 
+        \item Up to reordering and up to associates, this factorization is unique. 
+    \end{enumerate}
+\end{definition}
+
+\subsubsection{Example 1: The Integers}
+Show that $\Z$ is a UFD. 
+
+\begin{mdframed}[]
+    \begin{proof}
+        (Sketch.) We show existence and uniqueness. 
+        \begin{itemize}
+            \item \textbf{Existence:} We induct on the integer $N > 1$. 
+            \begin{itemize}
+                \item \underline{Base Case:} $N = 2$ is irreducible since it is prime. 
+                \item \underline{Inductive Step:} If $N$ is prime, it's already irreducible. Otherwise, $N = ab$ for $a, b < N$. But, by the inductive hypothesis, $a, b$ are products of irreducible, so $N$ is irreducible. 
+            \end{itemize}
+
+            \item \textbf{Uniqueness:} Suppose $p_1 p_2 \ldots p_n = q_1 q_2 \ldots q_m$. WLOG $n \leq m$, $p_1 | q_1 q_2 \ldots q_m$. By Euclid's lemma, we know that 
+            \[p_1|q_i\]
+            for some $i$. WLOG, $i = 1$. But, $q_i = \pm p_1$. We repeat this process until 
+            \[\pm 1 = q_{n + 1} \ldots q_m\]
+            but this isn't possible unless $n = m$, in which case you get $\pm 1 = 1$. 
+        \end{itemize}
+        This concludes this proof. 
+    \end{proof}
+\end{mdframed}
+
+\subsubsection{Example 2: Another Ring}
+Show that $\Z[\sqrt{-3}]$ is not a UFD. 
+
+\begin{mdframed}[]
+    \begin{proof}
+        This is not a UFD because 
+        \begin{itemize}
+            \item There are non-unique factorizations 
+            \[4 = 2 \cdot 2 = (1 + \sqrt{-3})(1 - \sqrt{-3})\]
+            \item And 2, $1 \pm \sqrt{-3}$ are irreducibles but not primes.
+        \end{itemize}
+        Which means we are done. 
+    \end{proof}
+\end{mdframed}
+
+\subsection{PIDs and UFDs}
+\begin{theorem}{}{}
+    Every PID is a UFD. 
+\end{theorem}
+
+\begin{lemma}{}{}
+    In a PID, any strictly ascending chain of ideals 
+    \[I_1 \subset I_2 \subset I_3 \subset \dots\]
+    must have finite length. 
+\end{lemma}
+
+\begin{mdframed}[]
+    \begin{proof}
+        We prove existence and uniqueness.
+        \begin{itemize}
+            \item \textbf{Existence:} Let $a_0 \in D$ be non-zero, non-unit. If $a_0$ is irreducible, we're done. Otherwise, write $a_0 = b_1 a_1$ for $b_1, a_1 \in D$ non-units. This implies that $\cyclic{a_0} \subset \cyclic{a_1}$. We can repeat this process over and over again (this part omitted), but note that this chain is finite, so it terminates at some $\cyclic{a_n}$ for an irreducible number, or that 
+            \[a_0 = (b_1 b_2 \dots b_r) a_r\]
+            i.e. $a_r$ is irreducible and $a_r | a_0$. Write $a_0 = c_1 p_1$ for $p_1$ irreducible. We can recursively define this process like so 
+            \begin{mdframed}[]
+                if $c_i$ is irreducible, stop. Otherwise, $c_i = c_{i + 1} p_{i + 1}$, where $p_{i + 1}$ is irreducible with $c_{i + 1}$ being a non-unit. This gives us
+                \[\cyclic{c_i} \subset \cyclic{c_{i + 1}}\]
+                Thus, $\cyclic{c_1} \subset \cyclic{c_2} \subset \cyclic{c_3} \subset \dots$. This chain has finite length, so it terminates at $\cyclic{c_s}$ for some integer $s$. This implies that $c_s$ is irreducible. Therefore, 
+                \[a_0 = \underbrace{p_1 p_2 p_3 p_4 \dots p_s}_{\text{Irreducible by construction}} c_s\]
+                and $c_s$ is irreducible. So, we wrote a product of irreducibles. 
+            \end{mdframed}
+
+            \item \textbf{Uniqueness:} Same idea as above. 
+        \end{itemize}
+        So, we are done. 
+    \end{proof}
+\end{mdframed}
+
+\begin{mdframed}[]
+    \begin{proof}
+        Let $I_1 \subset I_2 \subset \dots$ be a strictly ascending chain of ideals. Let
+        \[I = \bigcup_{k} I_k \subseteq D\]
+        where $I$ is itself an ideal. Since $D$ is a PID, there exists a $d \in D$ such that 
+        \[I = \cyclic{d}\]
+        but $d \in I = \bigcup_{k} I_k$. Thus, $d \in I_j$ for some $j$. This implies that $\cyclic{d} \subseteq I_j \subseteq I = \cyclic{d}$, so these are all equalities. But, $I_j$ must be the last element; otherwise, $I_j \subseteq I_{j + 1}$ since it is a strictly ascending chain, but this would imply that $I_j \subset I$. 
+    \end{proof}
+\end{mdframed}
+
+\subsubsection{Example 1: Polynomial Rings}
+If $\F$ is a field, then $\F[x]$ is a PID. This implies that $\F[x]$ is a UFD. 
+
+\subsubsection{Example 2: Chains}
+In $\Z$, consider the following ideals in our chain:
+\[\{0\} \subset \cyclic{2} \subset \Z\]
+since $\cyclic{2}$ is maximal. If we wanted a longer chain, we could have 
+\[\{0\} \subset \cyclic{100} \subset \cyclic{50} \subset \ldots \subset \Z\]
+Here, there are only a finite number of choices we can pick. 
+
+\end{document}
