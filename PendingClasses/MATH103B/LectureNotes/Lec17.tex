@@ -9,12 +9,156 @@
 \fancyhf{}
 \rhead{Math 103B}
 \chead{Friday, February 11, 2022}
-\lhead{Lecture 16}
+\lhead{Lecture 17}
 \rfoot{\thepage}
 
 \setlength{\parindent}{0pt}
 
 \begin{document}
-TODO 
+
+\section{Divisibility in Integral Domains}
+We now consider the notion of \emph{factoring} in a more abstract setting. 
+
+\subsection{Associates, Irreducibility, and Prime}
+\begin{definition}{}{}
+    Let $D$ be an integral domain. 
+    \begin{itemize}
+        \item We say that $a, b \in D$ are \textbf{associates} if $a = bu$ for some unit $u \in D$. 
+        \item Additionally, we say that a non-unit $a \in D$ is \textbf{irreducible} if, whenever $a = bc$ for $b, c \in D$, that $b$ or $c$ is a unit. 
+        \item An element $a \in D$ is \textbf{prime} if $a | bc \implies a | b$ or $a | c$. 
+    \end{itemize}
+\end{definition}
+\textbf{Fact:} $a \in D$ is \emph{prime} if and only if $\cyclic{a} \subseteq D$ is a prime ideal. 
+
+\subsubsection{Example 1: Ring Example}
+Consider $\Z[\sqrt{-3}] = \{a + b\sqrt{-3} \mid a, b \in \Z\}$. 
+\begin{itemize}
+    \item This ring has irreducible elements which are not prime. 
+    \item To show this, we define the \emph{norm} map  
+    \[N(a + b\sqrt{-3}) = a^2 + 3b^2\]
+    This is analogous to $|a + bi| = |a^2 + b^2|$. This respects multiplication, but not addition. 
+\end{itemize}
+\textbf{Fact:} $N(xy) = N(x)N(y)$ for all $x, y \in \Z[\sqrt{-3}]$.
+\begin{mdframed}[]
+    \begin{proof}
+        Left as an exercise. 
+    \end{proof}
+\end{mdframed}
+\textbf{Fact:} $x \in \Z[-\sqrt{3}]$ is a unit if and only if $N(x) = 1$. 
+\begin{mdframed}[]
+    \begin{proof}
+        If $x$ is a unit, then $xx^{-1} = 1$. This implies that 
+        \[N(x)N(x^{-1}) = N(1) = 1\]
+        This tells us that $N(x)$ is a unit in $\Z$ and $N(x) \geq 0$. This thus implies that $N(x) = 1$. 
+
+        \bigskip 
+
+        Suppose that $N(x) = 1$. Then, $N(x) = x x'$, where $x'$ is the conjugate of $x$, so $N(x) = 1 \implies \frac{1}{x} = x^{-1}$. 
+    \end{proof}
+\end{mdframed}
+
+\subsubsection{Example 2: Showing Irreducibility by Contradiction}
+Show that $1 + \sqrt{-3}$ (from the previous example) is irreducible. 
+
+\begin{mdframed}[]
+    \begin{proof}
+        Suppose, by way of contradiction, that this element is reducible. Then, let $1 + \sqrt{-3} = xy$ for non-units $x, y$. Then, 
+        \begin{equation*}
+            \begin{aligned}
+                N(1 + \sqrt{-3}) &= N(x)N(y) \\ 
+                    &\implies 4 = N(x)N(y) && \text{For } N(x), N(y) \neq 1 \\ 
+                    &\implies N(x) = N(y) = 2 && \text{Only possible integer solutions}
+            \end{aligned}
+        \end{equation*}
+        Write $x = a + b\sqrt{-3}$. Then 
+        \[N(x) = 2 \implies a^2 + 3b^2 = 2\]
+        which has no integer solutions. To check this, note that the range of $a^2 + 3b^2$ is $\{0, 1, 3, 4, \dots\}$ because 
+        \begin{itemize}
+            \item If $a = b = 0$, then we get 0.
+            \item If $a = 1$ and $b = 0$, then we get 1. 
+            \item If $a = 0$ and $b = 1$, then we get 3. 
+            \item If $a = b = 1$, then we get 4. 
+            \item As we keep increasing $a$ and $b$, we will only get larger numbers. 
+        \end{itemize}
+        The key is that we can't get 2, a contradiction. 
+    \end{proof}
+\end{mdframed}
+
+\subsubsection{Example 3: Showing Non-Primeness}
+Show that $1 + \sqrt{-3}$ (from the previous example) is not prime. 
+\begin{mdframed}[]
+    \begin{proof}
+        Note that $(1 + \sqrt{-3})(1 - \sqrt{-3}) = 2 \cdot 2$ (if we expand out the left-hand side, we get $4$, which can be broken up into 2 and 2). Then 
+        \[1 + \sqrt{-3} | 2 \cdot 2\]
+        but, we claim that $1 + \sqrt{-3} \nmid 2$. To do so, suppose towards a contradiction that $1 + \sqrt{-3} | 2$. Then, 
+        \begin{equation*}
+            \begin{aligned}
+                2 &= (1 + \sqrt{3})(a + b\sqrt{-3}) \\ 
+                    &\implies 2 = (a - 3b) + (a + b)\sqrt{-3} \\ 
+                    &\implies \begin{cases}
+                        2 = a - 3b \\ 
+                        0 = a + b
+                    \end{cases} \\ 
+                    &\implies a = \frac{1}{2} \text{ and } b = -\frac{1}{2}
+            \end{aligned}
+        \end{equation*}
+        A contradiction. 
+    \end{proof}
+\end{mdframed}
+
+\subsection{Prime Implies Irreducibility}
+\begin{theorem}{}{}
+    In an integral domain, every prime is irreducible. 
+\end{theorem}
+
+\begin{mdframed}[]
+    \begin{proof}
+        Let $p \in D$ be prime and suppose 
+        \[p = ab\]
+        This implies that 
+        \[p | ab\]
+        But since $p$ is prime, it follows that 
+        \[p | a \text{ or } p | b\]
+        WLOG, suppose $p | a$. Then, write $a = pk$. This implies that 
+        \[p = (pk)b\]
+        Since we're in an integral domain, we have multiplicative cancellation so that 
+        \[1 = kb\]
+        But this implies that $b$ is a unit. 
+    \end{proof}
+\end{mdframed}
+In particular, irreducible elements in $\F[x]$, where $\F$ is a field, are prime. Thus, they satisfy the property that 
+\[p(x) | a(x)b(x) \implies p(x) | a(x) \text{ or } p(x) | b(x)\]
+
+\subsection{PIDs and Irreducibility}
+\begin{theorem}{}{}
+    In a PID, an element is irreducible if and only if it is prime.
+\end{theorem}
+\textbf{Remark:} The ring $\Z[\sqrt{-3}]$ is not a PID because we were able to construct an element that was not prime. 
+\begin{mdframed}[]
+    \begin{proof}
+        If it is prime, then we already showed that it is irreducible. So, suppose that an $a \in D$ element is irreducible. Suppose $a | bc$. Let $I = \cyclic{a, b} = \{r_1 a + r_2 b \mid r_1, r_2 \in D\}$. $D$ is a PID, so there exists some element $d \in D$ such that 
+        \[I = \cyclic{d}\]
+        $a \in I$ tells us that $a = dr$. But, $d$ is a unit or $r$ is a unit. 
+        \begin{itemize}
+            \item \underline{Case 1:} Suppose $d$ is a unit. Then, $I = \cyclic{d} = D$. This in particular means that $1 \in I$ and so $1 = xa + yb$ for some $x, y \in D$. Then, we have 
+            \[c = xac + ybc\]
+            Both $xac$ and $ybc$ are divisible by $a$ so 
+            \[c = a(xc + yq) \implies a | c\]
+
+            \item \underline{Case 2:} If $r$ is a unit, then we claim that 
+            \[\cyclic{a} = \cyclic{d}\]
+            This is because 
+            \[a = dr \implies a \in \cyclic{d} \implies \cyclic{a} \subseteq \cyclic{d}\]
+            But as $r$ is a unit, we know that 
+            \[r^{-1}a = d \implies d \in \cyclic{a} \implies \cyclic{d} \subseteq \cyclic{a}\]
+            So, it follows that 
+            \[\cyclic{a} = \cyclic{d} = I = \cyclic{a, b}\]
+            and so 
+            \[b \in \cyclic{d} = \cyclic{a} \implies a | b\]
+        \end{itemize}
+        So, we are done. 
+    \end{proof}
+\end{mdframed}
+\textbf{Fact:} If $x, y \in D$ are associates, then $\cyclic{x} = \cyclic{y}$. 
 
 \end{document}
