@@ -203,5 +203,17 @@ For any given $\Sigma$, there is an enumerator whose language is the set of all 
 \end{mdframed}
 
 
+\subsection{Summary}
+Suppose $M$ is a Turing machine and $E$ is an enumerator. Suppose that $L$ is a language and $w$ is a string.
+\begin{center}
+    \begin{tabular}{p{0.5in}|p{1.5in}|p{1.5in}|p{1.5in}}
+            & $M$ Recognizes $L$ & $M$ Decides $L$ & $E$ Enumerates $L$ \\ 
+        \hline 
+        $w \in L$ & Accept & Accept. & Prints $w$ at some point. \\ 
+        $w \notin L$ & Reject or Loop. & Reject. & Never prints $w$. 
+    \end{tabular}
+\end{center}
+
+
 
 \end{document}
