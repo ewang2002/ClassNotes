@@ -88,11 +88,17 @@ In a rejecting configuration, the state of the configuration is $q_{\text{reject
 Accepting and rejecting configurations are halting configurations and do not yield further configurations. 
 
 \subsection{Deciders and Recognizers}
-\begin{itemize}
-    \item A language is \textbf{Turing-recognizable} if some Turoing machine recognizes it, i.e. if $L = L(M)$ for some Turing machine $M$. 
-    \item $M$ is a \textbf{decider} Turing machine if it halts on all inputs (i.e. never loops).
-    \item $L$ is \textbf{Turing-decidable} if some Turing machine that is a decider recognizes it. 
-\end{itemize}
+We now briefly talk about the difference between deciders and recognizers. 
+
+\subsubsection{Turing-Recognizable}
+A language is \textbf{Turing-recognizable} if some Turing machine recognizes it, i.e. if $L = L(M)$ for some Turing machine $M$. When we start a Turing machine on some input, the machine can either \emph{accept}, \emph{reject}, or \emph{loop}. However, sometimes we don't want the machine to loop. 
+
+\subsubsection{Turing-Decider}
+A Turing machine $M$ is a \textbf{decider} Turing machine (either Turing-decidable or decidable) if it halts on all inputs (i.e. never loops). 
+
+\bigskip 
+
+$L$ is \textbf{Turing-decidable} if some Turing machine that is a decider recognizes it. 
 
 
 \subsubsection{Example 1: Turing Machine}
@@ -123,7 +129,7 @@ Consider the language $L = \{w\code{\#}w \mid w \in \{\code{0}, \code{1}\}^*\}$,
     \end{mdframed}
 
     \item Draw the state diagram corresponding to the Turing machine. 
-    \begin{mdframed}[]
+    \begin{mdframed}[nobreak=true]
         \begin{center}
             \includegraphics[scale=0.7]{../assets/turing_1.png}
         \end{center}
