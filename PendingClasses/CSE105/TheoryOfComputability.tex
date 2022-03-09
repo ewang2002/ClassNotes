@@ -8,7 +8,7 @@
 \pagestyle{fancy}
 \fancyhf{}
 \rhead{CSE 105}
-\chead{March 6th, 2022}
+\chead{March 9th, 2022}
 \lhead{Course Notes}
 \rfoot{\thepage}
 
@@ -28,7 +28,10 @@
         Theory of Computability
             
         \vspace{1.5cm}
-            
+        
+        \begin{center}
+            \includegraphics[scale=0.5]{assets/genie.png}
+        \end{center}
         \vfill
             
         Winter 2022 \\
@@ -1436,6 +1439,19 @@ Suppose $u$, $v$, and $w$ are strings of variables and terminals.
 So, it follows that the \textbf{language of the grammar} is given by 
 \[\{w \in \Sigma^* \mid S \stackrel{*}{\implies} w\}\]
 
+\subsection{Closure Properties of CFGs}
+There are several closure properties which may be helpful. Suppose we have two CFGs $G_1$ and $G_2$, with start states $S_1$ and $S_2$, respectively. 
+\begin{itemize}
+    \item \underline{Union:} Suppose we wanted to generate a CFG for the language $L(G_1) \cup L(G_2)$. This is as simple as making a new start variable: 
+    \[S \mapsto S_1 \mid S_2\]
+
+    \item \underline{Concatenation:} Suppose we wanted to generate a CFG for the language $L(G_1) \circ L(G_2)$. This is as simple as making a new start variable:
+    \[S \mapsto S_1 S_2\]
+
+    \item \underline{Kleene Star:} Suppose we wanted to generate a CFG for the language $L(G_1)^*$. This is as simple as making a new start variable:
+    \[S \mapsto S S_1 \mid \epsilon\]
+\end{itemize}
+
 \subsubsection{Example 1: Identifying Language}
 Consider the grammar $G_3 = (\{S\}, \{\code{a}, \code{b}\}, R, S)$, with $R$ being the rule 
 \[S \mapsto \code{a}S\code{b} | SS | \epsilon\]
@@ -1920,6 +1936,58 @@ Consider the following language $L = \{\code{a}^i \code{b}^j \code{c}^k \mid i =
     \end{mdframed}
 \end{enumerate}
 
+
+\subsubsection{Example 3: PDA vs. CFGs}
+Consider the language 
+\[L = \{x\code{\#}w \mid x, w \in \{\code{0}, \code{1}\}^* \text{ and } w^R \text{ is a substring of } x\}\]
+
+\begin{enumerate}
+    \item Recall that a CFG is a 4-tuple $(V, \Sigma, R, S)$. Here, $\Sigma = \{\code{0}, \code{1}, \code{\#}\}$ and $S \in V$. What is $V$ and $R$?
+    \begin{mdframed}[]
+        Let's consider some example strings. 
+        \begin{itemize}
+            \item \code{\#}
+            \item \code{0\#0}
+            \item \code{1011\#110}
+            \item \code{0100101\#1010}
+        \end{itemize}
+        In particular, we note several things. 
+        \begin{itemize}
+            \item $|x| \geq |w|$. This means we can add some number of \code{0}'s or \code{1}'s to the left side of the \code{\#} without adding them to the right side. 
+            \item At some point, when we generate the string, we're just adding \code{0} (or \code{1}) to the ends of both sides. 
+        \end{itemize}
+        So, we can define $R$ like so: 
+        \begin{equation*}
+            \begin{aligned}
+                S &\mapsto \code{0}S \mid \code{1}S \mid A \\ 
+                A &\mapsto \code{0}A\code{0} \mid \code{1}A\code{1} \mid B\code{\#} \\ 
+                B &\mapsto \code{0}B \mid \code{1}B \mid \epsilon
+            \end{aligned}
+        \end{equation*}
+        Therefore, $V$ is given by 
+        \[V = \{S, A, B\}\]
+    \end{mdframed}
+
+    \item Give an informal description of a PDA that accepts all strings in this language. 
+    \begin{mdframed}[]
+        We're going to take a non-deterministic approach to this problem. Essentially, the idea is as follows: 
+        \begin{itemize}
+            \item The PDA pushes a \code{\$} to indicate the top of the stack. 
+            \item Then, it starts reading \code{0}'s and \code{1}'s without adding or removing anything from the stack. This accounts for the possibility where we added \code{0}'s or \code{1}'s to the string on the left-side of the \code{\#} without adding it to the right-side. 
+            \item Each time the PDA performs the previous step, it nondeterministically moves to the next state, where for each \code{1} it reads in, it pops a \code{1} from the stack. For each \code{0} it read in, it pops a \code{0} from the stack. 
+            \item Each time the PDA performs the previous step, it nondeterministically moves to the next state, where it starts reading \code{0}'s and \code{1}'s without adding or removing anything from the stack. This accounts for the possibility where we added \code{0}'s or \code{1}'s to the string on the left-side of the \code{\#} without adding it to the right-side.
+            \item When we see a \code{\#}, we move to the next state, where whenever we read in a \code{0} (or \code{1}), that \code{0} (or \code{1}) better be on top of the stack. 
+            \item Finally, when we see the \code{\$}, we read it in and move to the accept state. 
+        \end{itemize}
+    \end{mdframed}
+
+    \item Design a PDA that does exactly what you said in the previous step. 
+    \begin{mdframed}[]
+        \begin{center}
+            \includegraphics[scale=0.5]{assets/pda_3.png}
+        \end{center}
+    \end{mdframed}
+\end{enumerate}
 
 \subsection{Conventions for PDAs}
 \begin{itemize}
