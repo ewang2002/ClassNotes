@@ -26,11 +26,15 @@ For almost every problem that we've seen in this class, there's a (usually bad) 
 \end{itemize}
 Of course, for nearly every algorithm we've discussed in class thus far, we were able to come up with a clever solution that runs in polynomial time. However, it's not generally the case that such (clever) algorithms will exist. 
 
+\bigskip 
+
+Note that, in this class, we define an \emph{easy} problem to be one that can be solved in polynomial time and a \emph{hard} problem to be one that cannot be solved in polynomial time. 
+
 \subsection{Nondeterministic Polynomial (NP)}
 Such problems are said to be in \textbf{Nondeterministic Polynomial} time (NP). To think of this in a theoretical perspective, imagine some nondeterministic computer that can try every possibility in parallel and then return the best possible solution. This type of computer can solve these problems in polynomial time. For example, it is allowed to search for the shortest path by trying every single path in \emph{parallel} and seeing which one is the shortest. There are two types of NP problems.
 \begin{itemize}
-    \item \textbf{NP-Decision} problems ask if there is some object that satisfies a polynomial time-checkable property. For example, is there a path from $s$ to $t$? If you write down a path from $s$ to $t$, then it is easy for the computer to check, in polynomial time, whether this is actually a valid path from $s$ to $t$.
-    \item \textbf{NP-Optimization} problems ask for the object that maximizes (or minimizes) some polynomial time-computable objective. For example, chain matrix multiplication takes a sequence of matrices and, given the order of which to multiply these matrices, it's easy for the computer to compute how expensive the ordering is. 
+    \item \textbf{NP-Decision} problems ask if there is some object that satisfies a polynomial time-checkable property. For example, is there a path from $s$ to $t$? If you write down a path from $s$ to $t$, then it is easy for the computer to check, in polynomial time, whether this is actually a valid path from $s$ to $t$. So, effectively, a decision problem is one whose answer is either \underline{yes} or \underline{no}.
+    \item \textbf{NP-Optimization} problems ask for the object that maximizes (or minimizes) some polynomial time-computable objective. For example, instead of asking if there is a path from $s$ to $t$, you might instead ask what the shortest path from $s$ to $t$ is. So, effectively, an optimization problem is one whose answer is a minimum or maximum value. 
 \end{itemize}
 Essentially, $NP$ is the set of problems for which you can \emph{verify} the answer in polynomial time. Alternatively, it's the set of problems that can be solved in polynomial time by a \emph{nondeterministic} computer. 
 
@@ -129,7 +133,6 @@ To better understand this concept, consider the following statements:
         The same idea holds here. If we have two problems $X$ and $Y$ such that $X$ is no harder than (or at least as easy as) $Y$ and $X$ is hard, then $Y$ cannot be easier than $X$; $Y$ has to be \emph{as hard as, or harder than,} $X$. 
     \end{mdframed}
 \end{itemize}
-Note that, in this class, we define an \emph{easy} problem to be one that can be solved in polynomial time and a \emph{hard} problem to be one that cannot be solved in polynomial time. 
 
 
 
