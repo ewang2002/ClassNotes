@@ -119,8 +119,8 @@ We will show that 3-SAT is NP-Complete. This is done by reducing Circuit-SAT to 
             \item For each of the remaining rows, do the same thing. Combine the clauses with an \code{AND} operator. For example, with the second row, we would have $x \lor \overline{y} \lor z$. Then, we can combine this with the previous step by using the \code{AND} operator like so: 
             \[(x \lor y \lor \overline{z}) \land (x \lor \overline{y} \lor z)\]
             Eventually, you'll end up with the 3-SAT-equivalent of the above expression:
-            \[\underbrace{(x \lor y \lor \overline{z})}_{\text{1st Row}} \land \underbrace{(x \lor \overline{y} \lor z)}_{\text{2nd Row}} \land \underbrace{(\overline{x} \lor y \lor z)}_{\text{3rd Row}} \land \underbrace{(\overline{x} \lor \overline{y} \lor z)}_{\text{4th Row}}\]
-            \item Repeat this process for each of the clauses that need to be converted. 
+            \[\underbrace{(x \lor y \lor \overline{z})}_{\text{1st Row}} \land \underbrace{(x \lor \overline{y} \lor z)}_{\text{2nd Row}} \land \underbrace{(\overline{x} \lor y \lor z)}_{\text{3rd Row}} \land \underbrace{(\overline{x} \lor \overline{y} \lor z)}_{\text{4th Row}} = (z \iff x \lor y)\]
+            \item Repeat this process for each of the clauses that needs to be converted. 
         \end{itemize}
     \end{mdframed}
 
