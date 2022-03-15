@@ -203,36 +203,4 @@ Consider the graph we created in the previous section. If we select the followin
 Then, as long as $x = \text{False}$, $z = \text{True}$, and $y$ is arbitrary, then we found a satisfying assignment. 
 
 
-\subsection{Problem: Zero-One Equations}
-To prove more complicated reductions, it is helpful to have the correct problem to prove the reductions from. Sometimes, you might need to build intermediate problems that are nice to work with, mainly for convenience. 
-
-\bigskip 
-
-One convenient problem is the \textbf{zero-one equation}. Given a matrix $A$ with only \code{0}'s and \code{1}'s as entries and a vector $b$ of only \code{1}'s, determine whether or not there is an $x$ with \code{0} and \code{1} entries so that 
-\[Ax = b\]
-The problem is clearly in NP. We will show that is NP-complete. 
-
-\subsubsection{Example: Zero-One Equations}
-Find an $x_1, x_2, x_3$ such that 
-\[\begin{bmatrix}
-    1 & 0 & 1 \\ 1 & 1 & 0
-\end{bmatrix} \begin{bmatrix}
-    x_1 \\ x_2 \\ x_3
-\end{bmatrix} = \begin{bmatrix}
-    1 \\ 1
-\end{bmatrix}\]
-is satisfied. Equivalently, does there exist $x_1, x_2, x_3 \in \{0, 1\}$ such that 
-\[\begin{cases}
-    x_1 + x_3 = 1 \\ 
-    x_1 + x_2 = 1
-\end{cases}\]
-holds? 
-
-\begin{mdframed}[]
-    It's not hard to see that this holds.     
-\end{mdframed}
-
-Generally, this is what a zero-one equation looks like; a bunch of sets of $x_i$'s that need to add to \code{1}. 
-
-
 \end{document}
