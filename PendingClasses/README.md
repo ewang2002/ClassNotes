@@ -4,7 +4,8 @@ These are notes for classes that I will be taking. The notes will most certainly
 ## Directories
 Below, I'll very briefly list the notes contained in these folders.
 
-### Winter 2022
-- `Math103B`: Modern Algebra II
-- `CSE101`: Algorithms
-- `CSE105`: Theory of Computability
+### Spring 2022
+- `Math180A`
+- `CSE130`
+- `CSE110`
+- `Math155A`

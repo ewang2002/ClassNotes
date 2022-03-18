@@ -1,0 +1,178 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Math 103B}
+\chead{Friday, February 25, 2022}
+\lhead{Lecture 20}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\section{Vector Space}
+We now begin talking about \textbf{vector spaces}.
+
+\subsection{Definition of a Vector Space}
+\begin{definition}{Vector Space}{}
+    A set $V$ is said to be a \textbf{vector space} over a field $F$ if $V$ is an abelian group under addition (denoted by $+$) and, if for each $a \in F$ and $v \in V$, there is an element $av \in V$ such that the following conditions hold for all $a, b \in F$ and all $u, v \in V$.
+    \begin{enumerate}
+        \item $a(v + u) = av + au$
+        \item $(a + b)v = av + bv$
+        \item $a(bv) = (ab)v$
+        \item $1v = v$
+    \end{enumerate}
+\end{definition}
+\textbf{Remarks:}
+\begin{itemize}
+    \item The members of a vector space are called \emph{vectors}.
+    \item The members of the field are called \emph{scalars}.
+    \item The operations that combine a scalar $a$ and a vecotr $v$ to form the vector $av$ is called \emph{scalar multiplication}. 
+    \item In linear algebra, we generally worked with vector spaces over $\R$. In this class, we will work with vector spaces over $\R$, $\Q$, $\C$, $\F_p$, $\F[x] / \cyclic{f(x)}$ (where $\cyclic{f(x)}$ is irreducible), $\F_{3}[i]$, and so on.
+\end{itemize}
+
+\subsubsection{Example 1: Set of Matrices}
+Consider $M_{2}(\R)$. Recall that this is defined by 
+\[M_{2}(\R) = \left\{\begin{bmatrix}
+    a & b \\ c & d
+\end{bmatrix} \mid a, b, c, d \in \R\right\}\]
+If we take $2 \in \R$ and $\begin{bmatrix}
+    1 & 1 \\ 0 & 1
+\end{bmatrix} \in M_{2}(\R)$, then we have 
+\[2 \begin{bmatrix}
+    1 & 1 \\ 0 & 1
+\end{bmatrix} = \begin{bmatrix}
+    2 & 2 \\ 0 & 2
+\end{bmatrix} \in M_{2}(\R)\]
+
+\subsubsection{Example 2: Polynomial Ring over a Field}
+Consider $\F_{p}[x]$. This is a vector space over $\F_{p}$ because: 
+\begin{itemize}
+    \item Addition of a vector space forms an abelian group.
+    \item Scalar multiplication also works. If we think of $\F_p$ as the set of constant polynomials, then we can do something like 
+    \[3(x^2 + x + 2) = 3x^2 + 3x + 6\]
+    where 
+    \[3 \in \F_p \qquad 3x^2 + 3x + 6 \in \F_{p}[x]\]
+    \item The four properties described in the definition are satisfied. 
+\end{itemize}
+
+\subsubsection{Example 3: An Important Example}
+Let $E$ be a field, and let $F \subseteq E$ be a subfield. Then, $E$ is a vector space over $F$. 
+
+\bigskip 
+
+For example, $\C$ is an $\R$-vector space. For some $a + bi \in \C$ and $r \in \R$, we can do 
+\[r(a + bi) = ra + rbi \in \C\]
+Some other examples are 
+\begin{itemize}
+    \item $\Q \subseteq \Q[\sqrt{2}]$. Here, $\Q[\sqrt{2}]$ is a vector space over $\Q$.
+    \item $\F_3 \subseteq \F_{3}[i]$. Here, $\F_{3}[i]$ is a vector space over $\F_3$. 
+\end{itemize}
+
+
+\subsection{Definition of a Vector Subspace}
+\begin{definition}{Vector Subspace}{}
+    Let $V$ be a vector space over a field $F$ and let $U$ be a subset of $V$. We say that $U$ is a \textbf{subspace} of $V$ if $U$ is also a vector space over $F$ under the (same) operations of $V$.
+\end{definition}
+
+\subsubsection{Example 1: Diagonal Matrices}
+The diagonal matrices 
+\[\left\{\begin{bmatrix}
+    a & b \\ 0 & d 
+\end{bmatrix} \mid a, b, c \in \R \right\} \subseteq M_{2}(\R)\]
+is a subspace. 
+
+\subsubsection{Example 2: Quadratic Polynomials}
+The set of quadratic polynomials 
+\[\{a_0 + a_1 x + a_2 x^2 \mid a_0, a_1, a_2 \in \F_{p}\} \subseteq \F_{p}[x]\]
+is a subspace. A few notes to consider:
+\begin{itemize}
+    \item This is a subspace because if we take two quadratic polynomials and add them together, we get a quadratic polynomial. If we multiply any quadratic polynomial by a constant, then it's still going to be quadratic (or even 0).
+    \item This is \emph{not} a subring because it's not closed under multiplication. For example, $x^2$ is in this set, but $x^2 x^2 = x^4$ is not. 
+\end{itemize}
+
+\subsubsection{Example 3: Span}
+Consider $\text{Span}\{v_1, v_2, \dots, v_n\} \subseteq V$. Recall that the span is the set of all linear combinations 
+\[\{a_1 v_1 + a_2 v_2 + \dots + a_n v_n \mid a_1, a_2, \dots, a_n \in F\}\]
+Note that the textbook writes this as $\cyclic{v_1, v_2, \dots, v_n}$. In the context of vector spaces, this notation means the span. 
+
+\bigskip 
+
+If $\text{Span}\{v_1, v_2, \dots, v_n\} = V$, then we say that $\{v_1, v_2, \dots, v_n\}$ spans $V$. 
+
+
+\subsubsection{Example 4: Spanning Set}
+Consider the set of matrices 
+\[\left\{\begin{bmatrix}
+    1 & 0 \\ 0 & 0 
+\end{bmatrix}, \begin{bmatrix}
+    0 & 1 \\ 0 & 0 
+\end{bmatrix}, \begin{bmatrix}
+    0 & 0 \\ 1 & 0
+\end{bmatrix}, \begin{bmatrix}
+    0 & 0 \\ 0 & 1
+\end{bmatrix}\right\}\]
+This is a spanning set of $M_{2}(\R)$ because we can write these matrices as a linear combination
+\[a\begin{bmatrix}
+    1 & 0 \\ 0 & 0 
+\end{bmatrix} + b\begin{bmatrix}
+    0 & 1 \\ 0 & 0 
+\end{bmatrix} + c\begin{bmatrix}
+    0 & 0 \\ 1 & 0
+\end{bmatrix} + d\begin{bmatrix}
+    0 & 0 \\ 0 & 1
+\end{bmatrix}\]
+
+
+\subsection{Linear Independence}
+\begin{definition}{Linearly Independent/Dependent}{}
+    A set $S$ of vectors is said to be \textbf{linearly dependent} over a field $F$ if there are vectors $v_1, v_2, \dots, v_n$ from $S$ and elements $a_1, a_2, \dots, a_n$ from $F$, \emph{not all zero}, such that 
+    \[a_1 v_1 + a_2 v_2 + \dots + a_n v_n = 0\]
+    A set of vectors that is not linearly dependent over $F$ is called \textbf{linearly independent} over $F$.
+\end{definition}
+\textbf{Remarks:}
+\begin{itemize}
+    \item Put it another way, a set of vectors is linearly dependent over $F$ if there is a nontrivial linear combination of them over $F$ equal to 0. 
+    \item Essentially, this definition is about the redundancy in the representation of the span. For example, there might be two different linear combinations that give the same vector in the set. In this case, the vectors are linearly dependent. 
+\end{itemize} 
+
+\subsubsection{Example 1: Linearly Independent Spanning Set}
+Consider the spanning set 
+\[\left\{\begin{bmatrix}
+    1 & 0 \\ 0 & 0 
+\end{bmatrix}, \begin{bmatrix}
+    0 & 1 \\ 0 & 0 
+\end{bmatrix}, \begin{bmatrix}
+    0 & 0 \\ 1 & 0
+\end{bmatrix}, \begin{bmatrix}
+    0 & 0 \\ 0 & 1
+\end{bmatrix}\right\}\]
+This is linearly independent. If we take a linear combination and set it equal to zero, like so 
+\[a\begin{bmatrix}
+    1 & 0 \\ 0 & 0 
+\end{bmatrix} + b\begin{bmatrix}
+    0 & 1 \\ 0 & 0 
+\end{bmatrix} + c\begin{bmatrix}
+    0 & 0 \\ 1 & 0
+\end{bmatrix} + d\begin{bmatrix}
+    0 & 0 \\ 0 & 1
+\end{bmatrix} = \begin{bmatrix}
+    0 & 0 \\ 0 & 0
+\end{bmatrix}\]
+then clearly $a = b = c = d = 0$ is the only solution. 
+
+
+\subsubsection{Example 2: Linearly Dependent Spanning Set}
+Consider the following spanning set 
+\[\{x + 1, x^2, x^2 - 2, x\} \in \F_{p}[x]\]
+This is linearly dependent because
+\[(x^2 - 2) + (-1)x^2 + 2(x + 1) + (-2)x = 0\]
+
+
+\end{document}

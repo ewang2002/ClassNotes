@@ -1,0 +1,133 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Math 103B}
+\chead{Monday, January 03, 2022}
+\lhead{Lecture 1}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\section{Introduction to Ring}
+Recall that a group is a set equipped with a binary operation. However, often times, a lot of sets are naturally endowed with \emph{two} binary operations: addition \emph{and} multiplication. In this case, we want to account for \emph{both} of them at the same time instead of having two groups with the same sets but different operations. To that, we introduce the \emph{ring}.
+
+\subsection{The Ring: Definition}
+
+\begin{definition}{Ring}{}
+    A ring $R$ is a set with two \emph{binary operations} (meaning closed operations), addition (denoted by $a + b$) and multiplication (denoted by $ab$), such that for all $a, b, c \in R$:
+    \begin{enumerate}
+        \item \textbf{Commutative:} $a + b = b + a$
+        \item \textbf{Associative:} $(a + b) + c = a + (b + c)$
+        \item \textbf{Additive Identity:} There is an \underline{additive identity} $0 \in R$ such that $a + 0 = 0 + a = a$ for all $a \in R$.
+        \item \textbf{Additive Inverse:} There is an element $-a \in R$ such that $a + (-a) = (-a) + a = 0$. 
+        \item \textbf{Associative:} $a(bc) = (ab)c$. 
+        \item \textbf{Distributive Property:} $a(b + c) = ab + ac$ and $(b + c)a = ba + ca$.  
+    \end{enumerate}
+    We sometimes write this ring out as $(R, +, \cdot)$. 
+\end{definition}
+\textbf{Remarks:}
+\begin{itemize}
+    \item A ring is an \underline{abelian group} under addition, but also has an associative multiplication that is \emph{left and right distributive} over addition.
+    \item Multiplication does \textbf{not} have to be commutative. If it is commutative, we say that the ring is commutative.
+    \item A ring \emph{does not need to have} an identity under multiplication. A \textbf{unity} (or identity) in a ring is a \emph{nonzero element} that is an identity under multiplication.
+    \item A nonzero element of a \underline{commutative ring} with unity need not have a multiplicative inverse. When it does, we say that it is a \textbf{unit} of the ring. In other words, $a$ is a unit if $a^{-1}$ exists. 
+    \item If $a$ and $b$ belong to a commutative ring $R$ and $a$ is nonzero, then we say that $a$ \emph{divides} $b$ (or that $a$ is a factor of $b$) and write $a | b$ if there exists $c \in R$ such that $b = ac$. If $a$ does not divide $b$, we write $a \nmid b$.
+    \item If we need to deal with something like:
+    \[\underbrace{a + a + \dots + a}_{n \text{ times}}\]
+    Then, we will use $n \cdot a$ to mean this. 
+\end{itemize}
+
+
+\subsection{Basic Applications of the Ring}
+Here, we introduce several examples of rings. 
+
+\subsubsection{Example 1: Integer Rings}
+\[\Z = \{\dots, -2, -1, 0, 1, 2, \dots\}\]
+The set of integers under ordinary addition and multiplication is a commutative ring with unity 1. The \emph{units} of $\Z$ are 1 and -1.
+
+\subsubsection{Example 2: Integers Mod N}
+\[\Z / n\Z = \{0, 1, \dots, n - 1\}\]
+The set of integers modulo $n$ under addition and multiplication is also a commutative ring with unity 1. The set of \emph{units} is $U(n)$. Here, we define $U(n)$ to be the set of integers less than $n$ and relatively prime to $n$ under multiplication modulo $n$. 
+
+\bigskip 
+
+This can also be written as $\Z_n$. 
+
+\subsubsection{Example 3: Polynomial Rings}
+The set $\Z[x]$ of all polynomials in the variable $x$ with integer coefficients under ordinary addition and multiplication is a commutative ring with unity $f(x) = 1$. Here, we define: 
+\[\Z[x] = \{a_0 + a_1 x + a_2 x^2 + \dots + a_n x^n \mid a_i \in \Z\}\]
+So, for example, $x^2 + 4x + 5 \in \Z[x]$. 
+
+\subsubsection{Example 4: Matrix Rings}
+The set $M_{2}(\Z)$ of $2 \times 2$ matrices with integer entries is a \emph{noncommutative ring} with unity $\begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix}$.
+
+\subsubsection{Example 5: Even Integer Rings}
+The set $2\Z$ of even integers under ordinary addition and multiplication is a commutative ring \underline{without} unity. 
+
+\subsubsection{Example 6: Direct Sum}
+If $R_1, R_2, \dots, R_n$ are rings, then we can create a new ring: 
+\[R_1 \oplus R_2 \oplus \dots \oplus R_3 = \{(a_1, a_2, \dots, a_n) \mid a_i \in R_i\}\]
+From this, we can perform componentwise addition and multiplication; that is: 
+\[(a_1, a_2, \dots, a_n) + (b_1, b_2, \dots, b_n) = (a_1 + b_1, a_2 + b_2, \dots, a_n + b_n)\]
+\[(a_1, a_2, \dots, a_n)(b_1, b_2, \dots, b_n) = (a_1 b_1, a_2 b_2, \dots, a_n b_n)\]
+
+\subsection{More on Rings}
+\begin{definition}{Commutative Ring}{}
+    A ring $R$ is \textbf{commutative} if $ab = ba$ for all $a, b \in R$.
+\end{definition}
+
+\begin{definition}{Unity}{}
+    A ring $R$ has \textbf{unity} if $1 \in R$ is a multiplicative identity: 
+    \[1a = a1 = a\]
+\end{definition}
+
+\begin{definition}{Unit}{}
+    An element $a \in R$ is called a \textbf{unit} if it has a multiplicative inverse. In other words, $a$ is a unit if there exists an $a^{-1} \in R$ such that: 
+    \[a^{-1}a = aa^{-1} = 1\]
+\end{definition}
+\textbf{Remarks:}
+\begin{itemize}
+    \item $U(R) = \{\text{Units in } R\}$
+    \item $U(n) = \{\text{Units in } \Z / n\Z\}$
+\end{itemize}
+
+\begin{definition}{Division}{}
+    For $a, b \in R$, we say that $a$ \textbf{divides} $b$ and write $a | b$ if $b = ac$ for some $c \in R$.
+\end{definition}
+
+
+\section{Property of Rings}
+\begin{theorem}{}{}
+    For a ring $R$:
+    \[0a = a0 = 0 \forall a \in R\]
+\end{theorem}
+
+\begin{mdframed}[]
+    \begin{proof}
+        We know that $0a = (0 + 0)a$. Applying the distributive rule, we have: 
+        \[0a = (0 + 0)a = 0a + 0a\]
+        Then, adding the inverse of $0a$ to both sides gives: 
+        \[0a - 0a = 0a + (0a - 0a) \iff 0 = 0a\]
+        So, it follows that $0a = 0$. By symmetry, it follows that $a0 = 0$. 
+    \end{proof}
+\end{mdframed}
+
+\section{Division Rings and Fields}
+\begin{definition}{Division Ring}{}
+    A non-trivial ring $R$ is called a \textbf{division ring} if every nonzero element of $R$ is a unit in $R$; that is, if $R* = R \setminus \{0\}$. 
+\end{definition}
+
+\begin{definition}{Field}{}
+    A commutative division ring is called a \textbf{field}.
+\end{definition}
+
+
+\end{document}

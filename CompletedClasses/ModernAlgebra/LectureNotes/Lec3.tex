@@ -1,0 +1,173 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Math 103B}
+\chead{Friday, January 07, 2022}
+\lhead{Lecture 3}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\section{Integral Domains}
+Recall that rings do not have multiplicative cancellation. That is, $ab = ac$ does not imply that $b = c$. However, there are exceptions to this rule.
+
+\begin{definition}{Zero-Divisors}{}
+    A \textbf{zero-divisor} is a nonzero element $a$ of a commutative ring $R$ such that there is a nonzero element $b \in R$ with $ab = 0$. 
+\end{definition}
+For example, $2 \in \Z / 4 \Z$ is a zero divisor. That is: 
+\[2 \cdot 2 \equiv 0 \Mod{4}\]
+Another example is $M_{2}(\R)$. Take $A = \begin{bmatrix}
+    0 & 0 \\ 1 & 0 
+\end{bmatrix}$ and $B = \begin{bmatrix}
+    0 & 0 \\ 0 & 1
+\end{bmatrix}$. Then:
+\[A \cdot B = \begin{bmatrix}
+    0 & 0 \\ 0 & 0
+\end{bmatrix}\] 
+
+\begin{definition}{Integral Domain}{}
+    An \textbf{integral domain} is a commutative ring with unity and no zero-divisors.
+\end{definition}
+\textbf{Remarks:}
+\begin{itemize}
+    \item Recall that a ring $R$ has \textbf{unity} if $1 \in R$ is a multiplicative identity; that is, $1a = a1 = a$. 
+    \item Essentially, in an integral domain, a product is 0 only when one of the facts is 0. That is, $ab = 0$ only when $a = 0$ or $b = 0$. 
+\end{itemize}
+
+\subsection{Examples}
+Here are some examples of integral domains. 
+
+\subsubsection{Example 1: The Integers}
+The ring of integers is an integral domain. 
+
+\subsubsection{Example 2: Gaussian Integers}
+The ring of Gaussian integers $Z[i] = \{a + bi \mid a, b \in \Z\}$ is an integral domain. 
+
+\subsubsection{Example 3: Ring of Polynomials}
+The ring $\Z[x]$ of polynomials with integer coefficients is an integral domain. 
+
+\subsubsection{Example 4: Square Root 2}
+The ring $\Z[\sqrt{2}] = \{a + b\sqrt{2} \mid a, b \in \Z\}$ is an integral domain. 
+
+\subsubsection{Example 5: Modulo Prime Integers}
+The ring $\Z / p\Z$ of integers modulo $a$ prime $p$ is an integral domain. This is because:
+\[ab \equiv 0 \Mod{p} \iff p | ab \implies p | a \text{ or } p | b \implies a \equiv 0 \Mod{p} \text{ or } b \equiv 0 \Mod{p}\] 
+
+\subsubsection{Non-Example 1: Modulo Integers}
+The ring $\Z / n\Z$ of integers modulo $n$ is not an integral domain when $n$ is not prime. If we write $n = ab$, then $1 < a$ and $b < n$ implies that $ab \equiv 0 \Mod{b}$. 
+% TODO clarify 
+
+\subsubsection{Non-Example 2: Matrices}
+The ring $M_{2}(\Z)$ of $2 \times 2$ matrices over the integers is not an integral domain. 
+
+\subsubsection{Non-Example 3: Direct Product}
+$\Z \oplus \Z$ is not an integral domain. The reason why is because, for:
+\[\Z \oplus \Z = \{(x, y) \mid x, y \in \Z\}\]
+Take $(0, 1) \in \Z \oplus \Z$ and $(1, 0) \in \Z \oplus \Z$. Then:
+\[(0, 1) \cdot (1, 0) = (0, 0)\]
+
+
+\subsection{Properties of Integral Domains}
+\begin{theorem}{Cancellation}{}
+    Let $a$, $b$, and $c$ belong to an integral domain. If $ab = ac$, then: 
+    \[a = 0 \text{ or } b = c\]
+\end{theorem}
+\begin{mdframed}[]
+    \begin{proof}
+        From $ab = ac$, we know that $ab - ac = 0$. Then, we know that $a(b - c) = 0$. There are two cases to consider:
+        \begin{itemize}
+            \item If $a \neq 0$, it follows that $b - c = 0$.
+            \item Otherwise, $a = 0$ and it's trivial.
+        \end{itemize}
+        So, we are done. 
+    \end{proof}
+\end{mdframed}
+
+\section{Fields}
+
+\begin{definition}{Field}{}
+    A \textbf{field} is a commutative ring with unity in which every nonzero element is a unit (i.e. every nonzero element has a multiplicative inverse).
+\end{definition}
+\textbf{Remarks:} 
+\begin{itemize}
+    \item To verify that every field is an integral domain, observe that if $a$ and $b$ belong to a field with $a \neq 0$ and $ab = 0$, we can multiply both sides of the last expression by $a^{-1}$ to obtain $b = 0$.
+    \item In other words, you can never have an $x$ such that $0x = 1$. 
+\end{itemize}
+
+\subsection{Examples of Fields}
+Here are some examples and non-examples of fields.
+
+\subsubsection{Example 1: Infinite Sets}
+$\R$, $\C$, and $\Q$ are all fields. 
+
+\subsubsection{Non-Example 1: Integers}
+$\Z$ is not a field because 2 does not have a multiplicative inverse. 
+
+\subsubsection{Example 2: Matrices}
+$M_{2}(\R)$ is not a field because not all matrcies have an inverse. 
+
+\subsubsection{Non-Example 2: Polynomials}
+$\R[x]$ is not a field. This is because not all functions have a \emph{polynomial} inverse. For example, the inverse of $x + 3$ is $\frac{1}{x + 3}$, which isn't a polynomial. However, $\R[x]$ is an integral domain. 
+
+\subsection{Properties of Fields}
+
+\begin{theorem}{}{}
+    A finite integral domain is a field.
+\end{theorem}
+
+\begin{mdframed}[]
+    \begin{proof}
+        Let $R$ be a finite integral domain and suppose $a \in R \setminus \{0\}$. Consider the set: 
+        \[\{a, a^2, a^3, a^4, \dots\} \subseteq R\]
+        Because $R$ is finite, there must be some overlap, i.e. there exists two integers $j < i$ such that $a^j = a^i$. This implies that $a^j = a^{i - j} a^j$. Since we have an integral domain, we can perform multiplicative cancellation; so: 
+        \[1 = a^{i - j} \text{ for } i - j \geq 1\]
+        Then, $i - j - 1 \geq 0$ with $(a)(a^{i - j - 1}) = a^{i - j} = 1$. So, $a^{-1} = a^{i - j - 1}$ is a multiplicative inverse of $a$. 
+    \end{proof}
+\end{mdframed}
+
+\begin{corollary}{}{}
+    For every prime $p$, $\Z / p \Z$, the ring of integers modulo $p$ is a field.
+\end{corollary}
+\textbf{Remark:} This is often denoted $\F_p$ in this context. 
+
+\bigskip 
+
+Some other examples are: 
+\begin{itemize}
+    \item Fields with 9 elements: $\F_{3}[i] = \{0, 1, 2, i, 1 + i, 2 + i, 2i, 1 + 2i, 2 + 2i\}$. Recall that $i^2 = -1 \equiv 2 \Mod{3}$. 
+    \item Fields witih 4 elements: $\{0, 1, a, b\}$. 
+    \begin{center}
+        \begin{tabular}{c|c c c c}
+            $+$ & 0 & 1 & $a$ & $b$ \\  
+            \hline 
+            0   & 0 & 1 & $a$ & $b$ \\ 
+            1   & 1 & 0 & $b$ & $a$ \\
+            $a$ & $a$ & $b$ & 0 & 1 \\ 
+            $b$ & $b$ & $a$ & 1 & 0
+        \end{tabular}
+
+        \begin{tabular}{c|c c c c}
+            $\cdot$ & 0 & 1 & $a$ & $b$ \\ 
+            \hline 
+            0   & 0 & 0 & 0 & 0 \\ 
+            1   & 0 & 1 & $a$ & $b$ \\
+            $a$ & 0 & $a$ & $b$ & 1 \\ 
+            $b$ & 0 & $b$ & 1 & $a$
+        \end{tabular}
+    \end{center}
+    \item $\Q[\sqrt{5}] = \{a + b\sqrt{5} \mid a, b \in \Q\} \subseteq \R$ is a field. First, to show that it's a field, we need to show that every nonzero element has multiplicative inverses. Suppose $a + b\sqrt{5} \neq 0$. Then: 
+    \[a + b\sqrt{5} \neq 0 \iff b\sqrt{5} \neq a \iff (a, b) \neq (0, 0)\]
+    In other words, $a, b$ are not both zero. Note that since $\sqrt{5}$ is irrational, $\sqrt{5} \neq \frac{a}{b}$. So, $\frac{1}{a + b\sqrt{5}} \in \R$ by $a + b\sqrt{5}$ is not zero and $\R$ is a field. 
+\end{itemize}
+
+
+
+\end{document}

@@ -1,0 +1,113 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Math 103B}
+\chead{Wednesday, February 16, 2022}
+\lhead{Lecture 19}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\section{Divisibility in Integral Domains}
+We continue again with our discussion on this. 
+
+\subsection{Euclidian Domain}
+\begin{definition}{}{}
+    An integral domain is called a \textbf{Euclidian domain} (ED) if there exists a function 
+    \[d: D \setminus \{0\} \mapsto \Z_{\geq 0}\]
+    such that
+    \begin{enumerate}
+        \item $d(a) \leq d(ab)$ for all $a, b \in D \setminus \{0\}$.
+        \item If $a, b \in D$ with $b \neq 0$, then there exist $q, r \in D$ such that
+        \[a = bq + r\]
+        and either $r = 0$ or $d(r) < d(b)$. 
+    \end{enumerate}
+\end{definition}
+\textbf{Remark:} This is basically just long division. In other words, this is an ``abstraction'' of when long division exists. 
+
+\subsubsection{Example 1: The Integers}
+The integers, $\Z$, are an Euclidian domain with $d(a) = |a|$. 
+\begin{enumerate}
+    \item If $a, b \in \Z \setminus \{0\}$, then $|ab| = |a||b| \geq 1$. This implies that 
+    \[d(ab) \geq d(a)\]
+    \item Long division, specifically if $a, b \in \Z$ with $b \neq 0$, then 
+    \[a = bq + r\]
+    and 
+    \[r = 0 \text{ or } 0 < r < |b|\]
+    i.e. $d(r) < d(b)$. 
+\end{enumerate}
+
+\subsubsection{Example 2: A Field}
+Consider $\F[x]$, where $\F$ is a field. Then, this is an Euclidian domain with $d(f(x)) = \deg f(x)$. 
+\begin{enumerate}
+    \item $\deg(g(x)f(x)) = \deg g(x) + \deg f(x) \geq \deg g(x)$. This implies that 
+    \[d(f(x) g(x)) \geq d(g(x))\]
+
+    \item This is just long division. If $f(x), g(x) \in \F[x]$, then there exists $q(x), r(x) \in F[x]$ such that 
+    \[f(x) = g(x)q(x) + r(x)\]
+    and 
+    \[r(x) = 0 \text{ or } \deg r(x) < \deg g(x) \implies d(r(x)) < d(g(x))\]
+\end{enumerate}
+
+\subsubsection{Example 3: Gaussian Integers}
+Consider $\Z[i]$ with $d(a + bi) = a^2 + b^2$. 
+\begin{enumerate}
+    \item $d(xy) = d(x)d(y) \geq d(x)$ by $a^2 + b^2 \geq 1$ if $a + bi \neq 0 + 0i$. 
+    \item Let $x, y \in \Z[i]$ and $y \neq 0$. Then 
+    \[xy^{-1} \in \Q[i] \supseteq \Z[i]\]
+    We can then write $xy^{-1} = s + ti$ for $s, t \in \Q$. In other words, an integer part plus a small fractional part. Let $m$ be the closest integer to $s$ and let $n$ be the closest integer to $t$ such that 
+    \[|s - m| \leq \frac{1}{2}\]
+    \[|t - n| \leq \frac{1}{2}\]
+    So now we have 
+    \[xy^{-1} = m + ni + (s - m) + (t - n)i\]
+    so that 
+    \[x = \underbrace{(m + ni)y}_{\in \Z[i]} + ((s - m) + (t - n)i)y\]
+    But we know that 
+    \[((s - m) + (t - n)i)y = x - (m + ni)y \in \Z[i]\]
+    Either 
+    \[((s - m) + (t - n)i)y = 0\]
+    or 
+    \begin{equation*}
+        \begin{aligned}
+            d(((s - m) + (t - n)i)y) &= d((s - m) + (t - n)i) d(y) \\ 
+                &= ((s - m)^2 + (t - n)^2) d(y) \\ 
+                &\leq \left(\left(\frac{1}{2}\right)^2 + \left(\frac{1}{2}\right)^2\right) d(y) \\ 
+                &= \frac{1}{2} d(y) < d(y)
+        \end{aligned}
+    \end{equation*}
+\end{enumerate}
+
+\subsection{Euclidian Domain}
+\begin{theorem}{}{}
+    Every Euclidian domain is a PID. 
+\end{theorem}
+\begin{mdframed}[]
+    \begin{proof}
+        Let $D$ be an ED and $I \subseteq D$ a non-zero ideal. Choose $a \in I \setminus \{0\}$ with $d(a)$ minimal. If $b \in I$ then $b = aq + r$ with $r = 0$ or $d(r) < d(a)$. But, $r = b - aq \in I$ so by minimality, $r = 0$ or $d(r) \geq d(a)$, implying that $r = 0$ and thus $I = \cyclic{a}$. 
+    \end{proof}
+\end{mdframed}
+
+\textbf{Remarks:}
+\begin{itemize}
+    \item $\Z[i]$ is a PID and so a UFD.
+    \item $\Z[\sqrt{-3}]$ is not a PID and so not a ED. In particular, $\Z[\sqrt{-3}]$ with $N(a + b\sqrt{-3}) = a^2 + 3b^2$ fails the properties of ED. 
+    \item From this theorem, we now know that an integral domain being an ED implies that it is also a PID which implies that it is also a UFD; that is: 
+    \[\text{ED} \implies \text{PID} \implies \text{UFD}\]
+    The converse is \emph{not} true. 
+    \item There exists a UFD which is not a PID. 
+\end{itemize}
+
+\begin{theorem}{}{}
+    If $D$ is a UFD, then so is $D[x]$. 
+\end{theorem}
+\textbf{Remark:} In particular, $\Z[x]$ is a UFD and \emph{not} a PID. 
+
+\end{document}

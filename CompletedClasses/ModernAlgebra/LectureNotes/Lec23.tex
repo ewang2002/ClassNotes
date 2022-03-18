@@ -1,0 +1,123 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Math 103B}
+\chead{Friday, March 4, 2022}
+\lhead{Lecture 23}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\section{Extension Fields}
+We continue our discussion on extension fields. 
+
+
+\subsection{More on Extension Fields}
+\begin{corollary}{}{}
+    If $\alpha, \beta \in E$, which are both roots of an irreducible polynomial $p(x) \in F[x]$, then $F(\alpha) \cong F(\beta)$. 
+\end{corollary}
+
+\begin{mdframed}[]
+    \begin{proof}
+        We know that $F(\alpha) \cong F[x] / \cyclic{p(x)} \cong F(\beta)$. So, we're done. 
+    \end{proof}
+\end{mdframed}
+
+\subsubsection{Example 1: Polynomials}
+Consider $x^3 - 2 \in \Q[x]$. By Eisenstein's criterion, this is irreducible. Although there are no roots in $\Q$, we can find roots in other places. In particular, looking at the complex and real numbers, we know that a root is $\sqrt[3]{2}$. Now, 
+\[(x^3 - 2) = (x - \sqrt[2]{3})q(x)\]
+where $q(x)$ is quadratic. The other roots, then, are 
+\[\left(\frac{-1 + \sqrt{-3}}{2}\right) \sqrt[3]{2}, \left(\frac{-1 - \sqrt{-3}}{2}\right) \sqrt[3]{2}\]
+If we let $\zeta_3 = \frac{-1 + \sqrt{-3}}{2}$, then we know that $\zeta_3 \in \C$ such that 
+\[(\zeta_3)^3 = 1\]
+We have 
+\[\Q(\sqrt[3]{2}) \cong \Q(\zeta_3 \sqrt[3]{2}) \cong \Q(\zeta_{3}^2 \sqrt[3]{2})\]
+Now, notice that  
+\[\Q(\sqrt[3]{2}) = \{a + b 2^{\frac{1}{3}} + c2^{\frac{2}{3}} \mid a, b, c \in \Q\} \subseteq \R\]
+\[\Q(\zeta_3 \sqrt[3]{2}) = \{a + b \zeta_3 2^{\frac{1}{3}} + c \zeta_3 2^{\frac{2}{3}} \mid a, b, c \in \Q\} \not\subseteq \R\]
+
+\subsubsection{Example 2: Pi}
+Consider $\pi \in \R$, and suppose we look at $\Q(\pi)$. We note that $\pi$ is not a root of \emph{any} nonzero polynomial in $\Q[x]$. This kind of number is called \emph{transcendental} over $\Q$.
+
+
+\subsection{Splitting Field}
+\begin{definition}{Splitting Field}{}
+    Let $E$ be an extension field of $F$, and let $f(x) \in F[x]$. We say that $f(x)$ \emph{splits} in $E$ if 
+    \[f(x) = a(x - \alpha_1)(x - \alpha_2) \dots (x - \alpha_n)\]
+    for $a \in F$, $\alpha_i \in E$ for $1 \leq i \leq n$. We call $E$ a \textbf{splitting field} for $f(x)$ over $F$ if $E = F(\alpha_1, \alpha_2, \dots, \alpha_n)$. 
+\end{definition}
+
+\begin{theorem}{}{}
+    Let $F$ be a field and $f(x) \in F[x]$ a nonconstant polynomial. Then, there exists a splitting field for $f(x)$ over $F[x]$. 
+\end{theorem}
+
+\begin{mdframed}[]
+    \begin{proof}
+        We use induction on the degree of $f(x)$. 
+        \begin{itemize}
+            \item \underline{Base Case:} For $\deg f(x) = 1$, we have $f(x) = ax + b$. A polynomial of degree 1 will have one root; in this case, it's $-\frac{b}{a}$. So, this should already be split. So,
+            \[f(x) = ax + b = a\left(x - \left(-\frac{b}{a}\right)\right)\]
+            splits in $F$. 
+
+            \item \underline{Inductive Step:} Suppose that if $\deg g(x) = n - 1$, then $g(x)$ has a splitting field over $F$. Suppose $\deg f(x) = n$. There exists a field extension $E$ in which $f(x)$ has a root $\alpha \in E$. This implies that 
+            \[f(x) = (x - \alpha) g(x)\]
+            for $g(x) \in E[x]$. By the inductive hypothesis, there exists a splitting field $K$ for $g(x)$ over $E$. This implies that, for $a \in E$, $\alpha_1, \dots, \alpha_n \in K$ and so 
+            \[f(x) = a(x - \alpha_1)(x - \alpha_2) \dots (x - \alpha_n) = ax^n + \dots\]
+            but $a \in F$. Thus, $f(x)$ splits in $K$. So, $F(\alpha_1, \alpha_2, \dots, \alpha_n) \subseteq K$ is a splitting field. 
+        \end{itemize}
+        So, we are done. 
+    \end{proof}
+\end{mdframed}
+
+
+\subsubsection{Example 1: Polynomials}
+$x^3 - 2$ does not split over $\Q$ because it's irreducible. It does not split over $\Q(\sqrt[3]{2})$ because it does not contain the other two roots. 
+
+\bigskip 
+
+A splitting field is $\Q(\sqrt[3]{2}, \zeta_3 \sqrt[3]{2}, \zeta_{3}^2 \sqrt[3]{2})$. This is the same thing as writing $\Q(\sqrt[3]{2}, \zeta_3)$. This is because 
+\begin{itemize}
+    \item They both contain $\Q$. 
+    \item They both contain $\sqrt[3]{2}$. 
+    \item Since $\Q(\sqrt[3]{2}, \zeta_3)$ contains both $\sqrt[3]{2}$ and $\zeta_3$, and since it's a field, it must be closed under multiplication.
+\end{itemize}
+
+\subsection{Even More on Extension Fields}
+\begin{theorem}{}{}
+    Let $F$ be a field, $p(x) \in F[x]$ a irreducible polynomial, and an isomorphism 
+    \[\varphi: F \mapsto F'\]
+    Then, if $\alpha$ is a root of $p(x)$ and $\beta$ is a root $\varphi(p(x))$, then $F(\alpha) \cong F'(\beta)$. 
+\end{theorem}
+
+\begin{mdframed}[]
+    \begin{proof}
+        \[F(\alpha) \xrightarrow{\sim{}} F[x] / \cyclic{p(x)} \xrightarrow{\varphi} F'[x] / \cyclic{\varphi(p(x))} \xrightarrow{\sim{}} F'(\beta)\]
+        So 
+        \[\varphi(a_n x^n + \dots + a_0 + \cyclic{p(x)}) = \varphi(a_n) x^n + \dots + \varphi(a_0) + \cyclic{\varphi(p(x))}\]
+        And we are done. 
+    \end{proof}
+\end{mdframed}
+
+\begin{theorem}{}{}
+    Let $\varphi: F \mapsto F'$ be an isomorphism of fields, $f(x) \in F[x]$. If $E$ is a splitting field for $f(x)$ over $F$ and $E'$ is a splitting field for $\varphi(f(x))$ over $F'$, then there is an isomorphism $E \cong E'$ that agrees with $\varphi$ on $F$. 
+\end{theorem}
+
+\begin{corollary}{}{}
+    Any two splitting fields of $f(x) \in F[x]$ over $F$ are isomorphic. 
+\end{corollary}
+
+\begin{mdframed}[]
+    \begin{proof}
+        Let $F' = F$. We can define $\varphi: F \mapsto F$ the identity function by $a \mapsto a$. THen, we can apply the theorem.
+    \end{proof}
+\end{mdframed}
+
+\end{document}

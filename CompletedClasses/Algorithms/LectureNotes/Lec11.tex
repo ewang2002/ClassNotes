@@ -1,0 +1,169 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{CSE 101}
+\chead{Monday, January 31, 2022}
+\lhead{Lecture 11}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\section{Review}
+Here, we will briefly review the previous lecture. 
+
+\subsection{Divide and Conquer}
+Recall from the previous lecture that the idea behind divide and conquer is to:
+\begin{itemize}
+    \item Split the problem into parts. 
+    \item Recursively solve each part. 
+    \item And then somehow recombine these parts to get the final answer. 
+\end{itemize}
+We will now use this technique to solve several important problems. 
+
+\subsection{Master Theorem}
+\begin{theorem}{Master Theorem}{}
+    Let $T(n)$ be given by the recurrence:
+    \[T(n) = \begin{cases}
+        \BigO(1) & n = \BigO(1) \\ 
+        aT\left(\frac{n}{b} + \BigO(1)\right) + \BigO(n^d) & \text{Otherwise}
+    \end{cases}\]
+    Then we have: 
+    \[T(n) = \begin{cases}
+        \BigO(n^{\log_{b}(a)}) & a > b^d \\ 
+        \BigO(n^d \log(n)) & a = b^d \\ 
+        \BigO(n^d) & a < b^d
+    \end{cases}\]
+\end{theorem}
+
+\section{Sorting}
+Given a list $L$ of numbers, return $L$ in sorted order.
+
+\subsection{Algorithm Idea}
+An idea is to: 
+\begin{itemize}
+    \item Divide $L$ into two parts, $L_1$ and $L_2$. 
+    \item Sort $L_1$ and $L_2$. 
+    \item Finally, \emph{merge} both $L_1$ and $L_2$ together. 
+\end{itemize}
+
+\subsection{Merge Operation}
+One question we have is, how do we define the \emph{merge} operation? Well, suppose we have
+\[L_1 = [1, 3, 6, 10]\]
+\[L_2 = [2, 4, 5, 7, 8, 9]\]
+
+We can combine the two lists by comparing the two smallest elements an then putting the smaller of the two elements in the new list. So, for example, the first element in $L_1$ is 1 and the first element in $L_2$ is 2, so we can put $1$ into the final list and somehow point $L_1$ to the second element so we don't consider $1$ again. Then, we can consider $3$ in $L_1$ and $2$ in $L_2$; in this case, we put $2$ into the final list and point $L_2$ to the second element so we don't consider $2$ again. We can keep doing this until we go through every element in both parts of the list. 
+
+\bigskip 
+
+The algorithm can be described like so: 
+\begin{verbatim}
+    Merge(A, B):
+        Let C be the list with the length being len(A) + len(B)
+        // Kane uses one-indexing instead of zero-indexing.
+        a = 1 
+        b = 1
+        for c = 1 to len(C):
+            if b > len(B)
+                C[c] = A[a]
+                a++ 
+            else if a > len(A)
+                C[c] = B[b]
+                b++ 
+            else if A[a] < B[b]
+                C[c] = A[a]
+                a++ 
+            else 
+                C[c] = B[b]
+                b++ 
+        Return C
+\end{verbatim}
+This runs in $\BigO(|A| + |B|)$ time, particularly due to the \code{for}-loop. 
+
+\subsection{Merge Sort Algorithm}
+\begin{verbatim}
+    MergeSort(L):
+        // Every divide & conquer algorithm needs a base case 
+        if len(L) == 1:
+            return L
+        
+        Split L into approx. equal lists L1, L2
+        return Merge(MergeSort(L1), MergeSort(L2))
+\end{verbatim}
+
+To analyze the runtime, we note the following:
+\begin{itemize}
+    \item \underline{Base Case:} The base case runs in $\BigO(1)$ time; this is obvious (and is expected for any base case).
+    \item \underline{Divide \& Conquer:} The divide and conquer part comes in several steps. 
+    \begin{itemize}
+        \item \underline{Divide:} We divide our list $L$ into approximately equal-sized lists $L_1$ and $L_2$. We assume that this takes $\BigO(1)$ time. 
+        \item \underline{Conquer:} It takes $2T(n / 2 + \BigO(1))$ time to recursively solve two subproblems, each of size $\frac{n}{2}$. The $\BigO(1)$ is due to the possibility that one of the two lists may have unequal sizes (e.g. one sublist has size 5 and another sublist has size 6). At the end of the day, we can just simplify this down to $2T(n / 2)$. 
+        \item \underline{Combine:} Merging an $n$-element sublist takes $\BigO(n)$ time. This term absorbs the $\BigO(1)$ time from the divide part of the algorithm.  
+    \end{itemize}
+\end{itemize}
+We then have (by the Master Theorem):
+\[T(n) = 2T(n / 2) + \BigO(n)\]
+Note that $a = 2$, $b = 2$, and $d = 1$, so the final runtime is given by the Master Theorem:
+\[\BigO(n\log n)\]
+
+\section{Order Statistics}
+Given a list of numbers $L$, find the \textbf{median} or the \textbf{largest element} or the \textbf{10th smallest} element of $L$. Essentially, you want to find something based on the order in some way.
+
+\bigskip 
+
+Let's focus on one particular problem: Given $L$ and $k$, find the $k$th smallest element of $L$. 
+
+\subsection{Easy Algorithm}
+The easy algorithm is to sort $L$ and then return $L[k]$. The runtime is $\BigO(n \log n)$, but there are better ways to do this. 
+
+\subsection{The Idea for the Divide Step}
+First, we pick a \emph{pivot} $x \in L$ at random here, and we sort all elements in $L$ relative to $x$. That is, every element to the \emph{left} of $x$ is less than $x$, every element to the \emph{right} of $x$ is greater than $x$, and every element in the center is equal to $x$. In other words: 
+\begin{verbatim}
+                                           L = x
+                                        ------------
+    ------------------------------------            ------------------------------------
+            L < x                                                         L > x
+\end{verbatim}
+In this sense, we can sort these elements into categories in $\BigO(n)$ time. Then: 
+\begin{itemize}
+    \item We note that the $k$th smallest element is less than $x$ if and only if $|L_{< x}| \geq k$. If this is the case, then the answer is the $k$th smallest element of $L_{< x}$. 
+    \item The answer is $x$ if and only if $|L_{< x}| < k$ and $|L_{< x}| + |L_{= x}| \geq k$.
+    \item Otherwise, the answer is the $(k - |L_{< x}| - |L_{= x}|)$th smallest in $L_{> x}$. 
+\end{itemize}
+
+\subsection{Divide and Conquer Algorithm}
+\begin{verbatim}
+    OrderStats(L, k)
+        Pick x in L randomly 
+        Sort into L[<x], L[=x], L[>x]
+        If len(L[<x]) >= k
+            return OrderStats(L[<x], k)
+        else if len(L[<x]) + len(L[=x]) >= k
+            return x 
+        else 
+            return OrderStats(L[>x], k - len(L[<x]) - len(L[=x]))
+\end{verbatim}
+The idea is that we use randomization to improve our runtime. If we didn't pick a random $x \in L$, then it's very possible that the $x$ that we pick is the smallest or biggest $x$, which means we would essentially have to consider $n - 1$ elements, and thus we would have a divide algorithm that takes $T(n - 1)$ time (and so $\BigO(n^2)$ time). By randomly selecting an $x \in L$
+\begin{itemize}
+    \item There is a 50\% chance that $x$ is selected in the middle half. 
+    \item If so, no matter where the answer is, the recursive call is at most $3n / 4$. 
+    \item On average, we might need two tries to reduce calls. 
+\end{itemize}
+The idea behind the $3n / 4$ is that, when we pick this $x$, we either recurse on everything bigger than $x$ or smaller than $x$. Because $x$ is in this middle half, there are at least $n / 4$ elements on either sides: 
+\begin{verbatim}
+        n / 4                             n / 2                                 n / 4  
+    -----------------|--------x---------------------------------------|-----------------
+\end{verbatim}
+So, we have the runtime 
+\[T(n) = \BigO(n) + T(3n / 4)\]
+By the Master Theorem, we get the \emph{expected}  
+\[\BigO(n)\]
+
+\end{document}
