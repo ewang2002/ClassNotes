@@ -7,5 +7,5 @@ Below, I'll very briefly list the notes contained in these folders.
 ### Spring 2022
 - `Math180A`
 - `CSE130`
-- `CSE110`
+- `POLI28`
 - `Math155A`
