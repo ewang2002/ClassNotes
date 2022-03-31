@@ -163,6 +163,30 @@ glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*) 0);\e
     This tells the shader program to render the triangle.  
 \end{enumerate}
 
+\section{Smooth \& Flat Shading}
+By default, OpenGL uses what we call \emph{smooth shading}. This means that we average colors across the triangles. This is very similar to what we talked about earlier with the shading of the pixels based on the position of the pixel. \emph{Note} that the vertex shader and fragment shader program that we talked above above is the same here. 
 
+\bigskip 
+
+Flat shading is a bit different: the color of the \emph{last vertex} is used throughout the triangle. The vertex shader and fragment shader programs are a bit different; in particular, it's shown like so, respectively: 
+\begin{verbatim}
+    #version 330 core 
+    layout(location = 0) in vec3 vertPos; 
+    layout(location = 1) in vec3 vertColor;
+    flat out vec3 theColor; // The change 
+    main() {
+        gl_Position = vec4(vertPos, 1);
+        theColor = vertColor;
+    }
+\end{verbatim}
+and 
+\begin{verbatim}
+    #version 330 core 
+    flat in vec3 theColor; 
+    out vec4 pixelColor; 
+    main() {
+        pixelColor = theColor; 
+    }
+\end{verbatim}
 
 \end{document}
