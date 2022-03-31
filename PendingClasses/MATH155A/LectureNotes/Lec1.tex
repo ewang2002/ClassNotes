@@ -155,4 +155,130 @@ Then we get something like:
 The way to think about this is that you have your ``base'' triangle with vertices $\{v_0, v_1, v_2\}$. Then, $v_3$ is facing the edge formed between $v_1$ and $v_2$. Likewise, the vertex $v_4$ is facing the edge formed between $v_2$ and $v_3$ of the triangle with vertices $\{v_1, v_2, v_3\}$. 
 
 
+
+
+
+
+\section{Culling, Hidden Surfaces, Animation}
+Suppose you have a 3D scene, typically rendered as triangles. These will also typically be rendered with a view, i.e. camera, which has a position and direction.
+
+\subsection{Culling}
+Note that a triangle could be \emph{behind} the viewer. Or, maybe, the triangle is \emph{inside} the sphere. This gives us a definition. 
+\begin{definition}{Cull}{}
+    Meaning the same thing as discard, a \textbf{cull} is simply the triangles that are not visible to the viewer. 
+\end{definition}
+When rendering closed, solid, objects' surfaces, we can also cull back faces. 
+
+\bigskip 
+
+We can use the following OpenGL commands to enable cull back faces:
+\begin{verbatim}
+    glEnable(GL_CULL_FACE);\end{verbatim}
+We can also specify which faces are culled. By default, the faces that are culled are the back faces. That is, the following is the default setting: 
+\begin{verbatim}
+    glCullFace(GL_BACK); // Default\end{verbatim}
+We can also use the following commands: 
+\begin{verbatim}
+    glCullFace(GL_FRONT); // Cull front faces. 
+    glCullFace(GL_FRONT_AND_BACK); // Cull all faces. \end{verbatim}
+To disable culling, we can use: 
+\begin{verbatim}
+    glDisable(GL_CULL_FACE);\end{verbatim}
+We can also change the conventions on counter-clockwise vs. clockwise, like so: 
+\begin{verbatim}
+    glFrontFace(GL_CCW); // Default \end{verbatim}
+We can change this convention to make the opposite face the front face; that is, by using the following command: 
+\begin{verbatim}
+    glFrontFace(GL_CW);\end{verbatim}
+Note that:
+\begin{itemize}
+    \item \code{CCW} means counter-clockwise.
+    \item \code{CW} means clockwise.
+\end{itemize}
+
+\subsection{Hidden Surfaces Methods}
+Here, the idea is that if there are some triangles that are in front of the other triangles, the other triangles are hidden. There are three methods for this. 
+\begin{enumerate}
+    \item \underline{Geometric Analysis:} Consider all pairs of triangles in the scene, figure out how they overlap with each other, and then render only the visible parts.  
+    
+    \bigskip 
+
+    For example, suppose we have a green and red triangle, where the red triangle is partially in front of the green triangle. We would get something like in figure 1.
+    \begin{center}
+        \includegraphics[scale=0.5]{../assets/hidden1.png}
+    \end{center}
+    With geometric analysis, the bottom part of the green triangle would be broken up into two triangles; in other words, the green triangle would be broken up into three pieces. 
+
+    \bigskip 
+
+    It's not hard to see that there are some significant disadvantages here. In particular: 
+    \begin{itemize}
+        \item You need to know \emph{all} of the triangles ahead of time. 
+        \item You need a sophisticated algorithm. 
+        \item You need to redo this process when the viewer moves. 
+    \end{itemize}
+
+
+    \item \underline{Painter's Algorithm:} The idea is that you \emph{sort} the triangles so that the furthest triangles from the camera/viewpoint get rendered first, and then you successively render the closer triangles, thus letting the closer triangles overwrite the farther triangles. The algorithm can roughly be written like so: 
+    \begin{verbatim}
+        Sort triangles in (reverse) order from viewpoint.
+            Farthest triangles from view are first in list of triangles 
+            Closest triangles from view are last in list of triangles 
+        Render farther triangles first and closer ones last. 
+            The closer ones overwrite the portions of the ones they hide.\end{verbatim}
+    For example, suppose we have three triangles where the green triangle is the farthest from the viewer, the red triangle is the next farthest, and the blue triangle is the closest. 
+    \begin{center}
+        \includegraphics[scale=0.4]{../assets/hidden2.png}
+    \end{center}
+    Figure 3 shows the green triangle being rendered first. Figure 4 shows the red triangle being rendered next, thus hiding portions of the green triangle's pixels. Figure 5 shows the blue triangle being rendered next, hiding portions of the green and red triangle's pixels. 
+
+    \bigskip 
+
+    One obvious advantage is that it's elegant. All you need to do is sort and render. However, like with Geometric Analysis, there are some disadvantages:
+    \begin{itemize}
+        \item You need to know \emph{all} of the triangles ahead of time so you can sort them. 
+        \item You need to redo this process when the viewer moves. 
+        \item It may not be possible to sort consistently by distance. In particular, suppose you have interleaved triangles, like seen in figure 6. 
+        \begin{center}
+            \includegraphics[scale=0.4]{../assets/hidden3.png}
+        \end{center}
+    \end{itemize}
+
+
+
+    \item \underline{Depth Buffer:} This takes advantages of the fact that we're drawing into pixels. The idea is that you give each pixel two values; you give the pixel a color value \underline{and} a \textbf{depth} value, or (essentially) the distance from the viewer. A rough algorithm is as follows: 
+    \begin{verbatim}
+        Render triangles to pixels in any order. For each triangle: 
+            Compare its depth to the previously written depth. 
+            Keep the closer pixel color/depth values. 
+    \end{verbatim}
+
+    The advantages are: 
+    \begin{itemize}
+        \item It's simple. 
+        \item You can render triangles in any order (so no need to sort).
+        \item This can be done in parallel. Amenable to parallel computing.
+    \end{itemize}
+
+    The disadvantages are: 
+    \begin{itemize}
+        \item You need extra memory for the depth values\footnote{Memory is cheap, so this isn't too bad.}. 
+        \item Aliasing problems.  
+    \end{itemize}
+\end{enumerate}
+
+
+\subsection{Animations}
+To give the appearance of motion, we show a succession of still images changing very rapidly.
+
+\bigskip 
+
+In OpenGL, we maintain two frame buffers\footnote{A buffer where we write an image.}:
+\begin{itemize}
+    \item \underline{Front buffer:} The current image being displayed. 
+    \item \underline{Back buffer:} The next image to be displayed.  
+\end{itemize} 
+So, while the user is watching the front buffer, the back buffer is being processed (the next image that is being created). Then, you can just swap the buffers to switch the back buffer and the front buffers. 
+
+
 \end{document}
