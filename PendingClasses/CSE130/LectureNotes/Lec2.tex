@@ -4,7 +4,6 @@
 \usepackage[english]{babel}
 \usepackage{fancyhdr}
 \usepackage[hidelinks]{hyperref}
-\newcommand{\bsttt}[1]{\string\ \hspace{-4pt}#1{}}
 
 \pagestyle{fancy}
 \fancyhf{}
@@ -28,12 +27,13 @@ Most programming languages have modern features like
     \item And so on\dots
 \end{itemize}
 
-However the smallest universal language doesn't need \emph{any of these} at all. \textbf{What is the smallest universal language?}
+However the smallest universal language doesn't need \emph{any of these} at all.
 
 \subsection{The Smallest Universal Language}
+What is the smallest universal language?
 
 \subsubsection{What is Computable?}
-Before the 1930s, therw was the informal notion of an \emph{effectively calculable} function. That is, it can be computed by a human with pen and paper, followed by an algorithm. 
+Before the 1930s, there was the informal notion of an \emph{effectively calculable} function. That is, it can be computed by a human with pen and paper, followed by an algorithm. 
 
 \bigskip 
 
@@ -63,80 +63,70 @@ We're interested in two things:
 \end{itemize}
 
 \subsubsection{Syntax}
-We have one syntaxtical category: expressions (also called $\lambda$-terms).
+We have one syntactical category: expressions (also called $\lambda$-terms).
 \[\underbrace{\code{E}}_{\text{Expression}}\]
 What can this expression expand to? 
 \[\code{E ::= } \underbrace{\code{x}}_{\text{Variable}} \code{ | } \overbrace{\code{\bsttt{x} -> E}}^{\text{Abstraction}} \code{ | } \underbrace{\code{E1 E2}}_{\text{Application}}\]
-Note that \code{x} can be any variable, e.g. \code{y} or \code{z} or even something like \code{apple}. 
 
-\bigskip 
-
-We should think of variables as mathematical variables (immutable). It does not change its value over time; it's like a variable in math where all it does is holds its value. 
-
-\bigskip 
-
-We can think of \code{x -> E} in the following mathematical way: 
-\[f(x) = E\]
-This is, specifically, a nameless function that takes in input $x$ and returns an expression $E$. 
-
-\bigskip 
-
-For calling functions, in math, we do something like $f(5)$. In Lambda Calculus, we do \code{f 5}. 
-
+The expression $E$ can be one of three kinds: 
+\begin{itemize}
+    \item \underline{Variables:} \code{x} can be any variable, e.g. \code{y} or \code{z} or even something like \code{apple}. We should think of variables as mathematical variables (immutable). It does not change its value over time; it's like a variable in math where all it does is holds its value. 
+    
+    \item \underline{Abstraction:} We can think of \code{\bsttt{x} -> E} in the following mathematical way: 
+    \[f(x) = E\]
+    This is, specifically, a \textbf{nameless function} that takes in input $x$ (i.e. formal parameter) and returns an expression $E$ (i.e. the body).
+    
+    \item \underline{Application:} Here, \code{E1} is the function and \code{E2} is the argument. We can think of this as \code{E1(E2)} in any programming language. In mathematics, we might write $f(5)$. In Lambda Calculus, this would be \code{f 5}. 
+\end{itemize}
+Note that \code{E}, \code{E1}, and \code{E2} can itself be a variable, abstraction, or application. 
 
 \subsubsection{Examples}
-Consider the following program. 
-\begin{verbatim}
-    apple
-\end{verbatim}
-This does nothing, but is a syntaxtically value program in Lambda Calculus.
+We will now go over some examples. 
+\begin{itemize}
+    \item Consider the following program. 
+    \begin{verbatim}
+        apple
+    \end{verbatim}
+    This does nothing, but is a syntactically value program in Lambda Calculus.
 
-\bigskip 
+    \item Consider the following program. 
+    \begin{verbatim}
+        apple banana
+    \end{verbatim}
+    This is an \emph{application} of the variable \code{apple} to the variable \code{banana}.
 
-Consider the following program. 
-\begin{verbatim}
-    apple banana
-\end{verbatim}
-This is an \emph{application} of the variable \code{apple} to the variable \code{banana}.
+    \item Consider the following program. 
+    \begin{verbatim}
+        \x -> x
+    \end{verbatim}
+    The identity function, which says that \emph{for any \code{x}, compute \code{x}}. This is the first program which is meaningful for us; it is a \emph{very} important function. 
 
-\bigskip 
+    \item Consider the following program.
+    \begin{verbatim}
+        (\x -> x) apple
+    \end{verbatim}
+    This (whole program) is an application of the identity function to the variable \code{apple}. The result of this program will be \code{apple}. Note that \code{()} is not in the grammar that we described above; the grammar is known as an \emph{abstract syntax}, which simply describes what the programming language should have. In other words, the parenthesis are ignored. Note that if we have 
+    \begin{verbatim}
+        \x -> x apple 
+    \end{verbatim}
+    which is a different program. Here, \code{x apple} is the body. 
 
-Consider the following program.
-\begin{verbatim}
-    \x -> x
-\end{verbatim}
-The identity function, which says that \emph{for any \code{x}, compute \code{x}}. This is the first program which is meaningful for us; it is a \emph{very} important function. 
+    \item Consider the following program.
+    \begin{verbatim}
+        \x -> (\y -> y)
+    \end{verbatim}
+    Here, we introduce another variable \code{y}. This takes one argument \code{x}, completely ignores \code{x}, and returns the identity function. Comparing this to the previous example, all we're doing is changing the name of the formal parameter. 
+    
+    \item Consider the following program.
+    \begin{verbatim}
+        \f -> f (\x -> x)
+    \end{verbatim}
+    All this does is takes a argument \code{f}, and applies that argument to the identity function.
+\end{itemize}
 
-\bigskip 
-
-Consider the following program.
-\begin{verbatim}
-    (\x -> x) apple
-\end{verbatim}
-This (whole program) is an application of the identity function to the variable \code{apple}. The result of this program will be \code{apple}. Note that \code{()} is not in the grammar that we described above; the grammar is known as an \emph{abstract syntax}, which simply describes what the programming language should have. In other words, the parenthesis are ignored. Note that if we have 
-\begin{verbatim}
-    \x -> x apple 
-\end{verbatim}
-which is a different program. Here, \code{x apple} is the body. 
-
-\bigskip 
-
-Consider the following program.
-\begin{verbatim}
-    \x -> (\y -> y)
-\end{verbatim}
-Here, we introduce another variable \code{y}. This takes one argument \code{x}, completely ignores \code{x}, and returns the identity function. Comparing this to the previous example, all we're doing is changing the name of the formal parameter. 
-
-\bigskip 
-
-Consider the following program.
-\begin{verbatim}
-    \f -> f (\x -> x)
-\end{verbatim}
-All this does is takes a argument \code{f}, and applies that argument to the identity function. 
 
 \subsubsection{Two Input Arguments}
-Suppose you wanted a function that takes arguments \code{x} and \code{y} and returns \code{y}? 
+Suppose you wanted a function that takes arguments \code{x} and \code{y} and returns \code{y}. How would you implement this? 
 
 \bigskip 
 
@@ -147,11 +137,7 @@ Consider the following program.
 Here, this function returns the identity function. This is the same thing as a function that takes two arguments and returns the second one. 
 
 \subsubsection{Applying Function to Two Arguments}
-For example, how do we apply 
-\begin{verbatim}
-    \x -> (\y -> y)
-\end{verbatim}
-to \code{apple} and \code{banana}?
+For example, how do we apply \code{\bsttt{x} -> (\bsttt{y} -> y)} to \code{apple} and \code{banana}?
 
 \bigskip 
 
@@ -162,39 +148,17 @@ We can do something like
 This first applies \code{apple} and then applies to \code{banana}. 
 
 
-\subsubsection{Syntatical Sugar}
+\subsubsection{Syntactical Sugar}
+The following are syntactical sugar for common operations. 
 
-\begin{itemize}
-    \item Instead of 
-    \begin{verbatim}
-        \x -> (\y -> (\z -> E))
-    \end{verbatim}
-    we can write 
-    \begin{verbatim}
-        \x -> \y -> \z -> E
-    \end{verbatim}
-
-    \item Instead of 
-    \begin{verbatim}
-        \x -> \y -> \z -> E
-    \end{verbatim}
-    we can write 
-    \begin{verbatim}
-        \x y z -> E
-    \end{verbatim}
-
-    \item Instead of 
-    \begin{verbatim}
-        (((E1 E2) E3) E4)
-    \end{verbatim}
-    we can write 
-    \begin{verbatim}
-        E1 E2 E3 E4
-    \end{verbatim}
-\end{itemize}
-
-
-
-
+\begin{center}
+    \begin{tabular}{p{3in} | p{3in}}
+        \textbf{Instead of} & \textbf{We can write} \\ 
+        \hline 
+        \code{\bsttt{x} -> (\bsttt{y} -> (\bsttt{z} -> E))} & \code{\bsttt{x} -> \bsttt{y} -> \bsttt{z} -> E} \\ 
+        \code{\bsttt{x} -> \bsttt{y} -> \bsttt{z} -> E} & \code{\bsttt{x} y z -> E} \\ 
+        \code{(((E1 E2) E3) E4)} & \code{E1 E2 E3 E4}
+    \end{tabular}
+\end{center}
 
 \end{document}
