@@ -15,6 +15,129 @@
 \setlength{\parindent}{0pt}
 
 \begin{document}
-TODO 
+
+\section{The Lambda Calculus (Continued)}
+
+\subsection{Semantics: What Programs Mean}
+In particular, how do you run or execute a $\lambda$-term? 
+
+\bigskip 
+
+Unlike programming languages like Java or Python, where code runs sequentially, one can \emph{think} of running a Lambda Calculus program as middle-school algebra.  
+\begin{verbatim}
+    (x + 2) * (3x - 1)
+        => 3x^2 - x + 6x - 2    -- multiply polynomials
+        => 3x^2 + 5x - 2        -- add monomials
+                                -- no more rules apply
+\end{verbatim}
+Essentially, rewrite step-by-step following simple rules until no more rules apply. 
+
+\subsection{Scope of Variables}
+The scope of a variable is simply where, in a program, the variable is visible. In the expression \code{\bsttt{x} -> E}:
+\begin{itemize}
+    \item \code{x} is the newly introduced variable. 
+    \item \code{E} is the \textbf{scope} of \code{x}.
+    \item any occurrence of \code{x} in \code{\bsttt{x} -> E} is \textbf{bound} (by the \textbf{binder} \code{\bsttt{x}}). 
+\end{itemize}
+
+For example, \code{x} is bound in:
+\begin{verbatim}
+    \x -> x 
+    \x -> (\y -> x)     -- The 'x' in the abstraction is bound by \x 
+                        -- Same thing as: \x y -> x
+\end{verbatim}
+
+We say that an occurrence of \code{x} in \code{E} is \textbf{free} if it's not bound by an enclosing abstraction. For example: 
+\begin{verbatim}
+    x y                     -- No binders at all 
+    \y -> x y               -- No \x binder 
+    (\x -> \y -> y) x       -- x is outside of the scope of the \x binder
+                            -- It's not "the same" 'x'
+                            -- The outer x is not in the abstraction 
+\end{verbatim}
+
+Consider the expression \code{(\bsttt{x} -> x) x}. Here, there are two occurrences\footnote{A use of the variable.} of \code{x}; The \code{\bsttt{x}} is a parameter (i.e. declaration) of which the second \code{x} is the first occurrence. The third \code{x} is another occurrence. So, the very last \code{x} is a free occurrence and the second \code{x} (the one after the arrow) is bound to \code{\bsttt{x}}. 
+
+\subsubsection{Free Variables}
+A variable \code{x} is \textbf{free} in \code{E} if there exists a free occurrence of \code{x} in \code{E}. We can formally define the set of all free variables in a term using this function: 
+\[FV(\code{Exp}) = \begin{cases}
+    \{\code{x}\} & \text{If } \code{Exp = x} \\ 
+    FV(\code{E}) \setminus \{\code{x}\} & \text{If } \code{Exp = \bsttt{x} -> E} \\ 
+    FV(\code{E1}) \cup FV(\code{E2}) & \text{If } \code{Exp = E1 E2} 
+\end{cases}\]
+Here, \code{Exp} is some arbitrary expression. 
+
+%We can formally define the set of all free variables in a term like so: 
+%\begin{verbatim}
+%    FV(x)       =   {x}
+%    FV(\x -> E) =   FV(E) \ {x}
+%    FV(E1 E2)   =   FV(E1) u FV(E2)
+%\end{verbatim}
+
+\subsubsection{Closed Expressions}
+If \code{E} has no free variables, it is said to be \textbf{closed}. Closed expressions are also called \textbf{combinators}. 
+
+\bigskip 
+
+The shortest closed expression is just 
+\[\code{\bsttt{x} -> x}\]
+since \code{x} is bound to by \code{\bsttt{x}}. 
+
+
+
+\subsection{The Rewrite Rules of Lambda Calculus}
+
+\subsubsection{Semantics: Beta Step}
+$\beta$-step is known as calling a function, or \textbf{function calls}. Formally, we write this as 
+\[\code{(\bsttt{x} -> E1) E2 =b> E1[x := E2]}\]
+where \code{E1[x := E2]} means that \code{E1} with all \emph{free} occurrences of \code{x} is replaced with \code{E2}. Effectively, the computation is done by search-and-replace: 
+\begin{itemize}
+    \item If you see an abstraction applied to an argument, take the body of the abstraction and replace all free occurrences of the formal by that argument. 
+\end{itemize}
+Thus, the above formal definition is saying that \code{(\bsttt{x} -> E1) E2} $\beta$-steps to \code{E1[x := E2]}.
+
+\bigskip 
+
+A few other examples are: 
+\begin{itemize}
+    \item Consider \code{(\bsttt{f} -> f (\bsttt{x} -> x)) (give apple)}. The idea is: 
+    \begin{itemize}
+        \item We take the body of the abstraction, i.e. \code{f (\bsttt{x} -> x)}.
+        \item We replace all instances of \code{f} (the formal parameter) in the body with \code{(give apple)}.
+        \item This gives us \code{(give apple) (\bsttt{x} -> x)}.
+    \end{itemize}
+
+    \item Consider \code{(\bsttt{x} -> (\bsttt{y} -> y)) apple}. The idea is: 
+    \begin{itemize}
+        \item We take the body of the abstraction, i.e. \code{(\bsttt{y} -> y)}.
+        \item We replace all instances of \code{x}, the formal parameter, in the body with \code{apple}.
+        \item This gives us \code{\bsttt{y} -> y} (nothing has changed).  
+    \end{itemize}
+
+%    \item Consider \code{(\bsttt{x} -> x (\bsttt{x} -> x)) apple}. The idea is: 
+ %   \begin{itemize}
+5        \item We take the body of the abstraction, i.e. \code{x (\bsttt{x} -> x)}. Note that there is another abstraction with the same parameter name as the original formal parameter name. 
+%        \item x
+%    \end{itemize}
+
+    \item \code{(\bsttt{x} -> x) y} becomes \code{y}.
+    \item \code{(\bsttt{a} b c -> b) d} becomes \code{(\bsttt{b} c -> b)}.
+    \item \code{(\bsttt{b} c -> b) e} becomes \code{(\bsttt{c} -> e)}.
+    \item \code{(\bsttt{a} b c -> b) d e} becomes \code{(\bsttt{c} -> e)}.
+    \item \code{(\bsttt{x} y z -> z y x) y z x} cannot be reduced; instead, we need to use what's known as an $\alpha$-step. 
+\end{itemize}
+
+\subsubsection{Alpha Step}
+$\alpha$-step is known as \textbf{renaming formals}. That is, we can rename a formal parameter and replace all its occurrences in the body.
+
+\bigskip 
+
+For example: 
+\begin{verbatim}
+    (\x y z -> z y x) y z x 
+    =a> (\x a z -> z a x) y z x
+\end{verbatim}
+
+
 
 \end{document}

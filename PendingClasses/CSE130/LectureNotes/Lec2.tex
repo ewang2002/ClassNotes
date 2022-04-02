@@ -16,7 +16,7 @@
 
 \begin{document}
 
-\section{Lambda Calculus}
+\section{The Lambda Calculus}
 Most programming languages have modern features like 
 \begin{itemize}
     \item Assignments
@@ -35,8 +35,6 @@ What is the smallest universal language?
 \subsubsection{What is Computable?}
 Before the 1930s, there was the informal notion of an \emph{effectively calculable} function. That is, it can be computed by a human with pen and paper, followed by an algorithm. 
 
-\bigskip 
-
 \subsubsection{Formalization of a Language}
 \textbf{Alan Turing} introduced the \emph{Turing Machine}, which is an infinite tape with some symbols, a head that can read from and write to the tape. To actually interact with a Turing machine, it has a state machine which has a bunch of states, along with a transition function, which tells it how to move around and what to do. The programming language is essentially the transition function of the Turing machine. 
 
@@ -48,7 +46,7 @@ Before the 1930s, there was the informal notion of an \emph{effectively calculab
 
 \textbf{Peter Landin} used the Lambda Calculus to formalize the notion of a programming language. Lambda Calculus was influential in the creation of many modern programming languages, especially functional programming languages like Haskell. 
 
-\subsection{The Lambda Calculus}
+\subsubsection{The Lambda Calculus}
 It has one feature: \emph{functions}. It does not have assignments, primitive types, control flow, recursion, etc. It literally only has \emph{functions}. Specifically, you can
 \begin{itemize}
     \item define a function. 
@@ -62,7 +60,7 @@ We're interested in two things:
     \item Semantics: what do programs mean? Specifically, \emph{operational semantics}, or the idea of how programs execute step-by-step. 
 \end{itemize}
 
-\subsubsection{Syntax}
+\subsection{Syntax}
 We have one syntactical category: expressions (also called $\lambda$-terms).
 \[\underbrace{\code{E}}_{\text{Expression}}\]
 What can this expression expand to? 
@@ -78,9 +76,13 @@ The expression $E$ can be one of three kinds:
     
     \item \underline{Application:} Here, \code{E1} is the function and \code{E2} is the argument. We can think of this as \code{E1(E2)} in any programming language. In mathematics, we might write $f(5)$. In Lambda Calculus, this would be \code{f 5}. 
 \end{itemize}
-Note that \code{E}, \code{E1}, and \code{E2} can itself be a variable, abstraction, or application. 
+Note that \code{E}, \code{E1}, and \code{E2} can itself be a variable, abstraction, or application. Additionally, note that application binds stronger than abstractions\footnote{This will be important later on when we have syntactical sugar.}. 
 
-\subsubsection{Examples}
+\bigskip 
+
+Effectively, in Lambda Calculus, functions are \emph{first-class}: we can apply functions to other functions, and a function can return another function. 
+
+\subsection{Examples}
 We will now go over some examples. 
 \begin{itemize}
     \item Consider the following program. 
@@ -105,7 +107,7 @@ We will now go over some examples.
     \begin{verbatim}
         (\x -> x) apple
     \end{verbatim}
-    This (whole program) is an application of the identity function to the variable \code{apple}. The result of this program will be \code{apple}. Note that \code{()} is not in the grammar that we described above; the grammar is known as an \emph{abstract syntax}, which simply describes what the programming language should have. In other words, the parenthesis are ignored. Note that if we have 
+    This (whole program) is an application of the identity function to the variable \code{apple}. The result of this program will be \code{apple}. Note that \code{()} is not in the grammar that we described above; the grammar is known as an \emph{abstract syntax}, which simply describes what the programming language should have. In other words, the parentheses are ignored. Note that if we have 
     \begin{verbatim}
         \x -> x apple 
     \end{verbatim}
@@ -125,7 +127,7 @@ We will now go over some examples.
 \end{itemize}
 
 
-\subsubsection{Two Input Arguments}
+\subsection{Two Input Arguments}
 Suppose you wanted a function that takes arguments \code{x} and \code{y} and returns \code{y}. How would you implement this? 
 
 \bigskip 
@@ -148,7 +150,7 @@ We can do something like
 This first applies \code{apple} and then applies to \code{banana}. 
 
 
-\subsubsection{Syntactical Sugar}
+\subsection{Syntactical Sugar}
 The following are syntactical sugar for common operations. 
 
 \begin{center}
@@ -160,5 +162,12 @@ The following are syntactical sugar for common operations.
         \code{(((E1 E2) E3) E4)} & \code{E1 E2 E3 E4}
     \end{tabular}
 \end{center}
+Additionally, the following are equivalent: 
+\begin{verbatim}
+    \a -> (\b -> b)
+    \a -> \b -> b
+    \a b -> b
+\end{verbatim}
+The parentheses are applied starting from the right side.
 
 \end{document}
