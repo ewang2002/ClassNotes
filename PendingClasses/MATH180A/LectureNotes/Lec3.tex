@@ -15,6 +15,85 @@
 \setlength{\parindent}{0pt}
 
 \begin{document}
-TODO 
+
+\section{Continuous Probability Densities}
+In the previous lectures, we discussed probability distributions on discrete sample spaces (set of possible values). Now, we will discuss the case where there is a continuum of possible values that a RV can take. For example, rather than discrete choices like 1, 2, 3, 4, 5, we will instead he dealing with things like the time until the first customer appears at a store, or the lifetime of a lightbulb. 
+
+\subsection{A Spinner}
+Imagine we have a unit circle of circumference 1, and we mark one of the points on the circle to be the origin. Imagine that we have an arrow that points to the origin. Then, imagine we ``flick'' this arrow with our finger. Let $X$ denote the position (measured counter-clockwise from 0) of the arrow when it comes to rest. One thing is for sure, $X$ is a continuous random variable on the sample space $\Omega = [0, 1)$.
+
+\bigskip 
+
+Assuming that we flick the arrow hard enough, it's reasonable to assume that the arrow should end up landing in a uniformly random position, i.e. that the chance of landing in some sub-interval is proportional to its length irrespective of where it is positioned along the circle. In other words, we have 
+\[P(a < X < b) = b - a\]
+for $a < b \in [0, 1)$. We note that 
+\[\int_a^b 1dx = b - a.\]
+Therefore, in this example, $f(x) = 1$ for $x \in [0, 1)$ is the \textbf{probability density function} (PDF) of $X$. Note that the \textbf{probability density function} is the function $f$ such that integrating it from $a$ to $b$ gives us the probability of the random variable being between $a$ and $b$. 
+
+
+\subsection{Monte Carlo Integration}
+We can use probability to estimate things which are very difficult, or even impossible, to compute/measure precisely. For example, recall that the integral 
+\[\int_a^b f(x) dx\]
+is the area under the curve $y = f(x)$ between the points $x = a$ and $x = b$. Note that some integrals can be difficult, if not impossible, to compute. 
+
+\bigskip 
+
+For example, consider the integral 
+\[\int_0^1 x^2 dx = \frac{1}{3}.\]
+The area in the unit square that is under the curve $y = x^2$ is equal to $\frac{1}{3}$. 
+
+\bigskip 
+
+Now, suppose we pick a uniformly random point $(X, Y)$ in the unit square, then we should have $P(Y^2 < X) = \frac{1}{3}$. We could do this by getting two uniformly random numbers in $[0, 1]$ on the computer, and then let one be $X$ and the other be $Y$. 
+
+\bigskip 
+
+So, in order to estimate the integral 
+\[\int_0^1 x^2 dx\]
+is, select a sequence of random points in the unit square
+\[(X_1, Y_1), \dots, (X_n, Y_n).\]
+Then, let $P_n$ be the proportion of these points that are under the curve $y = x^2$. Then, by the \emph{Law of Large Numbers}, if $n$ is large, then 
+\[P_n \approx \int_0^1 x^2 dx.\]
+
+
+\subsection{Buffon's Needle}
+Suppose we have a table and we put a table cloth on top of the table. Then, we draw parallel lines on the table that are unit distance apart. Then, suppose we have a needle of unit length. Suppose we drop the needle on the table somewhere. What we're interested in is the probability that the needle lands on one of the lines. 
+
+\bigskip 
+
+To simulate this experiment: 
+\begin{itemize}
+    \item Let $0 \leq D \leq \frac{1}{2}$ be the distance from the center of the needle to the nearest line.
+    \item Note that the line determined by the needle makes some acute angle $0 \leq \theta \leq \frac{\pi}{2}$ with respect to the parallel line. In other words, when the needle lands, consider the angle it makes relative to the parallel line and let $\theta$ be the smaller of the two angles. 
+    \item Then, we just need to select a uniformly random point $(\theta, D)$ from the rectangle $\left[0, \frac{\pi}{2}\right] \times \left[0, \frac{1}{2}\right]$. 
+\end{itemize}
+Note that the needle intersects one of the parallel lines (the one that its center is closest to) if and only if the hypotenuse of the triangle defined by angle $\theta$ and the opposite side $D$ is of length $H < \frac{1}{2}$. 
+
+\bigskip 
+
+Let $H$ be the length of the hypotenuse, noting that 
+\[\sin \theta = \frac{D}{H}.\]
+Therefore, the needle intersects one of the parallel lines if and only if 
+\[H = \frac{D}{\sin \theta} \leq \frac{1}{2}.\]
+So, the probability of the needle intersecting a line on the table is $\frac{I}{A}$, where 
+\begin{itemize}
+    \item $A = \frac{\pi}{4}$ is the area of the rectangle $\left[0, \frac{\pi}{2}\right] \times \left[0, \frac{1}{2}\right]$. 
+    \item $I = \int_0^{\frac{\pi}{2}} \frac{\sin\theta}{2} d\theta = \frac{1}{2}$ is the area in this rectangle that is under the curve $d = \frac{\sin \theta}{2}$. 
+    \item Therefore, the probability of the needle intersecting a line on the table is 
+    \[\frac{2}{\pi} \approx 63.7\%.\]
+\end{itemize}
+
+\subsection{Adding Random Numbers}
+Suppose we select two uniformly random numbers $M, N$ in the unit interval $[0, 1]$. Let 
+\[X = M + N\]
+be their sum. When the experiment is repeated many times, we get the sum 
+\[X_1 = M_1 + N_1, \dots, X_n = M_n + N_n.\]
+When displaying the results of this experiment, we notice that we end up with what appears to be some sort of a bell-curve. In particular, we can map this with the piecewise function 
+\[f(x) = \begin{cases}
+    x & 0 \leq x \leq 1 \\ 
+    2 - x & 1 < x \leq 2
+\end{cases}.\]
+So, for instance, it would seem that when two uniformly random numbers in $[0, 1]$ are added together, the chance that the sum is between $\frac{1}{2}$ and $\frac{3}{2}$ is 
+\[P\left(\frac{1}{2} \leq X \leq \frac{3}{2}\right) = \int_{\frac{1}{2}}^1 xdx + \int_1^{\frac{3}{2}} (2 - x)dx = \frac{3}{4}.\]
 
 \end{document}
