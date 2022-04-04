@@ -1,0 +1,59 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{CSE 130}
+\chead{Monday, April 04, 2022}
+\lhead{Lecture 4}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\section{The Lambda Calculus (Continued)}
+
+\subsection{Normal Forms}
+A \textbf{redux} is a $\alpha$-term of the form 
+\begin{verbatim}
+    (\x -> E1) E2
+\end{verbatim}
+An $\alpha$-term is in \textbf{normal form} if it contains no reduxes. In normal form, you cannot apply more $\beta$-steps.
+
+\subsection{Semantics: Evaluation}
+A $\lambda$-term \code{E} evalutes to \code{E'} if 
+\begin{enumerate}
+    \item There is a sequence of steps 
+    \begin{verbatim}
+        E =?> E1 =?> ... =?> EN =?> E'
+    \end{verbatim}
+    where each \code{=?>} is either \code{=a>} or \code{=b>} and $N \geq 0$.
+
+    \item \code{E'} is in normal form. 
+\end{enumerate}
+
+As an example, consider the following evaluation: 
+\begin{verbatim}
+    eval test :
+        (\x -> x x) (\x -> x)
+        =a> (\x -> x x) (\z -> z)
+        =b> (\z -> z) (\z -> z)
+        =b> (\z -> z)
+\end{verbatim}
+
+\subsection{Non-Terminating Evaluation}
+Consider the following program: 
+\begin{verbatim}
+    (\x -> x x) (\x -> x x)
+    =a> (\x -> x x) (\y -> y y)
+    =b> (\y -> y y) (\y -> y y)
+    =a> (\x -> x x) (\x -> x x)
+\end{verbatim}
+This program can actually loop back to itself and thus reduce to a normal form. This combinator is called $\Omega$. 
+
+\end{document}

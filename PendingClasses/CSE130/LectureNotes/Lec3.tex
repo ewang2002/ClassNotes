@@ -138,6 +138,19 @@ For example:
     =a> (\x a z -> z a x) y z x
 \end{verbatim}
 
-
+Formally, we write this as: 
+\begin{verbatim}
+    \x -> E     =a>     \y -> E[x := y]         where not (y in FV(E))
+\end{verbatim}
+In particular, we note that the following expressions are $\alpha$-equivalent: 
+\begin{verbatim}
+    \x -> x     =a>     \y -> y     =a>     \z -> z
+\end{verbatim}
+Consider the following invalid examples.
+\begin{itemize}
+    \item \code{\bsttt{f} -> fx    =a>    \bsttt{x} -> x x}: Changing \code{f} to \code{x} introduces a conflict with the other \code{x}.
+    \item \code{(\bsttt{x} -> \bsttt{y} -> y) y    =a>    (\bsttt{x} -> \bsttt{z} -> \bsttt{z}) z}: When changing \code{y} to \code{z}, we also changed the \code{y} that's outside the scope of the inner body function; this is not allowed. 
+    \item \code{\bsttt{x} -> \bsttt{y} -> x y    =a>    \bsttt{apple} -> \bsttt{orange} -> apple orange}: There's no issue here, although it might be ideal to do one $alpha$-reduction at a time instead of two at a time. 
+\end{itemize}
 
 \end{document}
