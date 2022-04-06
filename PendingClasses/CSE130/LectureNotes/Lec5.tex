@@ -1,0 +1,181 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{CSE 130}
+\chead{Wednesday, April 06, 2022}
+\lhead{Lecture 5}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\section{Lambda Calculus}
+
+\subsection{Programming in Lambda Calculus}
+How do we encode features like
+\begin{itemize}
+    \item Booleans
+    \item Records
+    \item Numbers
+    \item Recursion
+\end{itemize}
+and more? 
+
+\subsubsection{Booleans}
+How can we encode Boolean values, like \code{TRUE} or \code{FALSE}, as functions? 
+
+\bigskip 
+
+To answer this question, we ask another one: what \emph{do} we do with a Boolean \code{b}? Making a binary choice is one: 
+\begin{verbatim}
+    if b then E1 else E2
+\end{verbatim}
+We want to define three functions 
+\begin{verbatim}
+    let TRUE = ??? 
+    let FALSE = ??? 
+    let ITE = \b x y -> ???         -- if b then x else y
+\end{verbatim}
+such that 
+\begin{verbatim}
+    ITE TRUE apple banana =~> apple 
+    ITE FALSE apple banana =~> banana
+\end{verbatim}
+Our implementation is as follows: 
+\begin{verbatim}
+    let TRUE = \x y -> x        -- Returns the first argument
+    let FALSE = \x y -> y       -- Returns the second argument 
+    let ITE = \b x y -> b x y   -- Applies condition to branch
+\end{verbatim}
+To see how this works, suppose we want to evaluate \code{ITE TRUE egg ham}, which should resolve to \code{egg}. We have:  
+\begin{verbatim}
+    eval ite_true: 
+        ITE TRUE egg ham
+        =d> (\b x y -> b x y) TRUE egg ham      -- Expand ITE 
+        =b> (\x y -> TRUE x y) egg ham          -- Beta-step on TRUE 
+        =b> (\y -> TRUE egg y) ham              -- Beta-step on egg 
+        =b> TRUE egg ham                        -- Beta-step on ham 
+        =d> (\x y -> x) egg ham                 -- Expand TRUE 
+        =b> (\y -> egg)                         -- Beta-step on egg 
+        =b> egg                                 -- Beta-step on ham
+\end{verbatim}
+
+\subsubsection{Boolean Operators}
+Now that we have \code{TRUE}, \code{FALSE}, and \code{ITE}, we can define other Boolean operators like: 
+\begin{verbatim}
+    let NOT = \b     -> ??? 
+    let AND = \b1 b2 -> ???
+    let OR  = \b1 b2 -> ???
+\end{verbatim}
+Recall that: 
+\[\text{NOT}(b) = \begin{cases}
+    \code{FALSE} & b \text{ is \code{TRUE}} \\ 
+    \code{TRUE} & b \text{ is \code{FALSE}}
+\end{cases}\]
+\[\text{AND}(b_1, b_2) = \begin{cases}
+    \code{TRUE} & b_1 \text{ is \code{TRUE} and } b_2 \text{ is \code{TRUE}} \\ 
+    \code{FALSE} & \text{Otherwise}
+\end{cases}\]
+\[\text{OR}(b_1, b_2) = \begin{cases}
+    \code{TRUE} & b_1 \text{ is \code{TRUE} or } b_2 \text{ is \code{TRUE}} \\ 
+    \code{FALSE} & \text{Otherwise}
+\end{cases}\]
+
+The implementation is as follows:
+\begin{verbatim}
+    let NOT = \b        -> ITE b FALSE TRUE 
+                        -> b FALSE TRUE 
+
+    let AND = \b1 b2    -> ITE b1 (ITE b2 TRUE FALSE) FALSE 
+                        -> ITE b1 b2 FALSE
+                        -> b1 b2 FALSE  
+
+    let OR = \b1 b2     -> ITE b1 TRUE b2
+                        -> b1 TRUE b2 
+\end{verbatim}
+
+\subsubsection{Records}
+A record (tuple) is a way to bundle multiple values together and then access them. The simplest kind of a record is a \textbf{pair}, which holds two values. In particular, a pair can: 
+\begin{itemize}
+    \item Pack two items into a pair. 
+    \item Get the first item. 
+    \item Get the second item. 
+\end{itemize}
+
+We need to implement the following functions: 
+\begin{verbatim}
+    let MKPAIR = \x y -> ???        -- Makes a pair with elements x and y
+    let FST    = \p   -> ???        -- Returns the first element of the pair p 
+    let SND    = \p   -> ???        -- Returns the second element of the pair p 
+\end{verbatim}
+The functions work like so: 
+\begin{verbatim}
+    FST (MKPAIR apple banana) =~> apple 
+    SND (MKPAIR apple banana) =~> banana 
+\end{verbatim}
+One thing to notice is that we can use a \emph{boolean} value to indicate whether we want the first or second element. So, creating a pair is the same thing as creating a function which returns value $x$ or $y$ based on whether \code{TRUE} or \code{FALSE} is passed in.
+\begin{verbatim}
+    let MKPAIR = \x y -> (\b -> ITE b x y)
+    let FST    = \p -> p TRUE               -- Returns the first element 
+    let SND    = \p -> p FALSE              -- Returns the second element
+\end{verbatim}
+Now, suppose we want to make a triple $(x, y, z)$. The idea is that we can make use of two pairs, like so: $((x, y), z)$. We can define our implementation like so: 
+\begin{verbatim}
+    let MKTRIPLE = \x y z -> MKPAIR (MKPAIR x y) z
+    let FST3     = \t     -> FST (FST t)
+    let SND3     = \t     -> SND (FST t)                -- Apply FST to t first 
+                                                        -- and then apply SND to FST t
+    let TRD3     = \t     -> SND t
+\end{verbatim}
+Alternatively, if we have $(x, (y, z))$, our implementation will be: 
+\begin{verbatim}
+    let MKTRIPLE = \x y z -> MKPAIR x (MKPAIR y z)
+    let FST3     = \t     -> FST t
+    let SND3     = \t     -> FST (SND t)
+    let TRD3     = \t     -> SND (SND t)
+\end{verbatim}
+
+\subsubsection{Numbers}
+Let us start with natural numbers $\{0, 1, 2, \dots\}$. What can we do with natural numbers? 
+\begin{itemize}
+    \item We can count them: \code{0}, \code{inc}. 
+    \item Arithmetic: \code{dec}, \code{+}, \code{-}, \code{*}.
+    \item Comparisons: \code{==}, \code{<=}, etc. 
+\end{itemize}
+We need to define the following: 
+\begin{itemize}
+    \item A family of \textbf{numerals}: \code{ZERO}, \code{ONE}, \code{TWO}, \code{THREE}.
+    \item Arithmetic functions: \code{INC}, \code{DEC}, \code{ADD}, \code{SUB}, \code{MULT}.
+    \item Comparisons: \code{IS\_ZERO}, \code{EQ}.
+\end{itemize}
+Where they respect all regular laws of arithmetic; for example: 
+\begin{verbatim}
+    IS_ZERO ZERO        =~> TRUE 
+    IS_ZERO (INC ZERO)  =~> FALSE 
+    INC ONE             =~> TWO 
+        .
+        . 
+        .
+\end{verbatim}
+How do we implement numerals? We can define a numeral as the number of times we can apply a function. In particular, we define a \textbf{church numeral} as a number $N$ which is encoded as an combinator that calls a function on an argument $N$ times. 
+\begin{verbatim}
+    let ZERO  = \f x -> x
+    let ONE   = \f x -> f x
+    let TWO   = \f x -> f (f x)
+    let THREE = \f x -> f (f (f x))
+    let FOUR  = \f x -> f (f (f (f x)))
+    let FIVE  = \f x -> f (f (f (f (f x))))
+    let SIX   = \f x -> f (f (f (f (f (f x)))))
+        .
+        .
+        .
+\end{verbatim} 
+
+\end{document}
