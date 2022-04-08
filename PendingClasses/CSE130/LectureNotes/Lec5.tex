@@ -177,5 +177,19 @@ How do we implement numerals? We can define a numeral as the number of times we 
         .
         .
 \end{verbatim} 
+Suppose we want to increment a number; that is, add \emph{one} to some given number. How would we do this? 
+\begin{verbatim}
+    let INC = \n -> (\f x -> f (n f x))
+    let INC = \n -> (\f x -> n f (f x))
+\end{verbatim}
+Now that we have this, how do we implement \code{ADD}? Suppose we wanted to add $n$ and $m$. This is the same thing as adding $n$ $m$ times. So, one way to do this is: 
+\begin{verbatim}
+    let ADD = \n m -> n INC m
+\end{verbatim}
+How do we implement \code{MULT} now? The answer is 
+\begin{verbatim}
+    let MULT = \n m -> n (ADD m) ZERO 
+\end{verbatim}
+
 
 \end{document}

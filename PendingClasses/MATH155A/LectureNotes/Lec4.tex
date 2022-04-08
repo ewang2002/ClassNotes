@@ -1,0 +1,84 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{MATH 155A}
+\chead{Tuesday, April 05, 2022}
+\lhead{Lecture 3}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+% 2.5, 3.4, 3.5, 3.6, 3.7
+
+\section{Graphics Pipeline, Linear \& Affine Transformations in \texorpdfstring{$\R^2$}{R2}}
+
+\subsection{Inverses of Linear and Affine Transformations}
+We begin with a definition. 
+\begin{definition}{}{}
+    Let $A$ and $B$ be transformations of $\R^2$. We say that $B$ is the \textbf{inverse} of $A$, written $B = A^{-1}$, if: 
+    \begin{enumerate}
+        \item $A \circ B = I$. 
+        \item $B \circ A = I$. 
+    \end{enumerate}
+\end{definition}
+
+\subsubsection{Finding Inverses of Linear Transformations}
+How do we compute inverses? One way to do so is to do it by matrices. Let $A: \R^2 \mapsto \R^2$ be represented by the matrix $M = \begin{bmatrix}
+    a & b \\ c & d
+\end{bmatrix}$. Then, $A^{-1}$ is represented by $M^{-1}$, where 
+\[M^{-1} = \begin{bmatrix}
+    d & -b \\ 
+    -c & a
+\end{bmatrix} \frac{1}{ad - bc}.\]
+
+\subsubsection{Finding Inverses of Affine Transformations}
+Let $A(\mathbf{x})$ be defined by 
+\[A(\mathbf{x}) = B(\mathbf{x}) + \mathbf{u},\]
+where $B$ is linear and $\mathbf{u} \in \R$ so that $A$ is affine. How do we compute its inverse? Now, to find $A^{-1}$, we need to solve 
+\[\mathbf{y} = B(\mathbf{x}) + \mathbf{u}\]
+to get $\mathbf{x}$ in terms of $\mathbf{y}$. Now, we have 
+\begin{equation*}
+    \begin{aligned}
+        \mathbf{y} &= B(\mathbf{x}) + \mathbf{u} \\ 
+            &\implies B(\mathbf{x}) = \mathbf{y} - \mathbf{u} \\ 
+            &\implies \mathbf{x} = B^{-1}(\mathbf{y} - \mathbf{u}) \\ 
+            &\implies \mathbf{x} = B^{-1}(\mathbf{y}) - B^{-1}(\mathbf{u}) \\ 
+            &\implies \mathbf{x} = \underbrace{B^{-1}(\mathbf{y})}_{\text{Linear Part}} + \overbrace{(-B^{-1}(\mathbf{u}))}^{\text{Translation Part}}.
+    \end{aligned}
+\end{equation*}
+
+\subsection{Homogeneous Coordinates}
+We can represent points in $\R^2$ with triples $\cyclic{x, y, u}$; this represents $\cyclic{\frac{x}{u}, \frac{y}{u}}$ for $u \neq 0$. 
+
+\begin{mdframed}[]
+    (Example.) Some examples of homogeneous coordinates for $\cyclic{2, 1} \in \R^2$ are: 
+    \begin{itemize}
+        \item $\cyclic{2, 1, 1}$. 
+        \item $\cyclic{4, 2, 2}$. 
+        \item $\cyclic{8, 4, 4}$. 
+        \item $\cyclic{-2, -1, -1}$. 
+    \end{itemize}
+\end{mdframed}
+
+If $f: \R^2 \mapsto \R^2$ and if
+\[f(\mathbf{x}) = \begin{bmatrix}
+    a & b \\ c & d
+\end{bmatrix} \mathbf{x} + \begin{bmatrix}
+    e \\ f 
+\end{bmatrix},\]
+then $f$ -- acting in homogeneous coordinates -- is represented by the $3 \times 3$ matrix 
+\[\begin{bmatrix}
+    a & b & e \\ c & d & f \\ 0 & 0 & 1
+\end{bmatrix}.\]
+
+
+
+\end{document}

@@ -1,0 +1,66 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{CSE 130}
+\chead{Friday, April 08, 2022}
+\lhead{Lecture 6}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+\section{Lambda Calculus}
+\subsection{Programming in Lambda Calculus}
+\subsubsection{Recursion}
+Suppose we want to implement a function in Lambda Calculus that sums up the natural numbers up to $n$, e.g. $0 + 1 + 2 + \dots + n$.
+
+\bigskip 
+
+In Python, we might do something like: 
+\begin{verbatim}
+    def sum(n):
+        if n == 0:
+            return 0
+        else 
+            return n + sum(n - 1)
+\end{verbatim}
+In Lambda Calculus, we don't have named functions. The idea, then, is: 
+\begin{itemize}
+    \item We want to call a function on \code{DEC n}.
+    \item And it needs to be the same function.
+\end{itemize}
+First, we need to pass in the function to call ``recursively'':
+\begin{verbatim}
+    let STEP = 
+        \rec -> \n -> ITE (ISZ n)
+                        ZERO 
+                        (ADD n (rec (DEC n))) -- Call some rec 
+\end{verbatim}
+We now need to do something clever to \code{STEP} so that the function is passed as \code{rec} itself. To do this, we want a \textbf{fixpoint combinator} \code{FIX} such that \code{FIX STEP} calls \code{STEP} with itself as the first argument; that is: 
+\begin{verbatim}
+    FIX STEP 
+    =*> STEP (FIX STEP)
+\end{verbatim}
+Once we have this, we can define 
+\begin{verbatim}
+    let SUM = FIX STEP 
+\end{verbatim}
+Then, by the property of \code{FIX}, we have 
+\begin{verbatim}
+    SUM *> STEP SUM -- (1)
+\end{verbatim}
+To see this: 
+\begin{verbatim}
+    eval sum_one: 
+        SUM ONE 
+        =*> STEP SUM ONE 
+        =~> ONE 
+\end{verbatim}
+
+\end{document}
