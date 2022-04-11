@@ -15,6 +15,140 @@
 \setlength{\parindent}{0pt}
 
 \begin{document}
-TODO 
+
+\section{Chapter 5: Combinatorics}
+We will be studying various counting techniques. In probability, we are often interested in the probability of a certain event. Finding such a probability usually involves considering/counting all of the different ways in which it could possibly occur. 
+
+\subsection{Basic Principle of Counting}
+Suppose that an experiment involves $r$ independent stages, i.e. stages that have no effect on each other. Suppose that, in each stage $1 \leq i \leq r$, there are $n_i$ possible outcomes. Then, the total number of possible outcomes of the full experiment is the product $n_1 n_2 \dots n_r$. 
+
+\begin{mdframed}[]
+    (Example.) A menu consists of 2 appetizers, 5 main dishes, and 2 desserts. Then, there are $2(5)(2) = 20$ possible meals to choose from. In particular: 
+    \begin{itemize}
+        \item There are 2 appetizers that we can pick. 
+        \item For each appetizers, there are 5 dishes that we can pick.
+        \item For each appetizers, there are 2 desserts we can pick. 
+    \end{itemize}
+\end{mdframed}
+
+\begin{mdframed}[]
+    (Example: Birthday Problem.) How many people do we need to have in a room so that it is likely (e.g. more than 50 percent) that two people will have the same birthday? 
+
+    \bigskip 
+
+    Assume that everyone is equally likely to be born on any one of the 365 days in a year. We note that the uniform probability assumption is not so realistic (less likely to be born on weekends, some months more likely than others, etc.). However, our calculation gives a good \emph{upper bound} on the number of people needed in the room, since if the probabilities are non-uniform then the probability of having two people with the same birthday increases. 
+
+    \bigskip 
+
+    Suppose that there are $r$ people in the room. Then, there are $(365)^r$ possible birthdays: there are 365 choices for the first person, 365 choices for the second person, \dots, and 365 choices for the $r$th person. \emph{However}, there are only $(365)(364) \dots (365 - r + 1)$ possible ways that they could all have different birthdays. In particular: 
+    \begin{itemize}
+        \item There are 365 options for the first person. 
+        \item THere are 364 options for the second person. 
+        \item \dots 
+        \item There are $365 - (r - 1)$ options for the $r$th person. 
+    \end{itemize}
+    The probability that two people will have the same birthday when there are $r$ people in the room is 
+    \[1 - \frac{(365)_r}{(365)^r}.\]
+    The probability that no one will have the same birthday is $\frac{(365)_r}{(365)^r}$ because $(365)^r$ is the total number of possibilities for all the birthdays, and $(365)_r$ is the total number of possibilities where everyone has different birthdays. Then, by the complement rule, the above value is the probability that at least two people with the same birthday. By plotting this function, we have that $r > 23$. 
+
+    \bigskip 
+
+    This is sometimes referred to as the \textbf{Birthday Paradox}. Despite this, it is not a paradox. This is because the total number of \emph{pairs} of people is given by 
+    \[\frac{23(22)}{2} = 253.\]
+    To see why this is the case, we have: 
+    \begin{itemize}
+        \item 23 ways to pick the first person for the pair. 
+        \item 22 ways to pick the second person for the pairs. 
+    \end{itemize}
+    We then divide by 2 because a pair $(A, B)$ is the same thing as $(B, A)$. That being said, this is much more comparable to 365, and all we need is for \emph{one} of these pairs to be a match. 
+\end{mdframed}
+
+\begin{definition}{}{}
+    Let $0 \leq r < n$ be integers. Then, 
+    \[(n)_r = n(n - 1) \dots (n - r - 1)\]
+    is known as the \textbf{falling factorial}.
+\end{definition}
+
+\begin{definition}{}{}
+    We denote $(n)_n = n(n - 1) \dots 1$ as $n!$, and $0! = 1$, and denote this as $n$ \textbf{factorial}.
+\end{definition}
+We note that $n!$ is the total number of possible ways to permute (order) a list of $n$ distinguishable objects. 
+
+\begin{mdframed}[]
+    (Example.) There are $3! = 3(2)(1)$ possible ways to arrange three people in a line.
+    \begin{itemize}
+        \item There are 3 ways to pick the first person to be at the front of the line. 
+        \item There are 2 ways to pick the second person to be next in line. 
+        \item Finally, there is only 1 way to pick the one line person to be last in line. 
+    \end{itemize}
+\end{mdframed}
+
+\subsubsection{Permutations}
+
+\begin{definition}{}{}
+    A \textbf{permutation} of a finite set $A$ is a bijective mapping from $A$ to $A$. 
+\end{definition}
+\textbf{Remarks:}
+\begin{itemize}
+    \item We often, but not always, use the Greek letters $\pi$ or $\sigma$ to denote permutations. 
+    \item Note that any set $A$ of size $|A| = n$ is in bijective correspondence with $[n] = \{1, 2, \dots, n\}$. That is, we can enumerate $A = \{a_1, \dots, a_n\}$. So, we will usually only discuss permutations of $[n]$. 
+\end{itemize}
+
+\begin{mdframed}[]
+    (Example.) Consider the permutation of $\sigma$ of $[4] = \{1, 2, 3, 4\}$ such that 
+    \[\sigma = \begin{pmatrix}
+        1 & 2 & 3 & 4 \\ 
+        2 & 1 & 4 & 3
+    \end{pmatrix}.\]
+    Here, 
+    \[\sigma(1) = 2\]
+    \[\sigma(2) = 1\]
+    \[\sigma(3) = 4\]
+    \[\sigma(4) = 3.\]
+    In particular, the top row is a list of elements, and the bottom is the \textbf{rearrangement} of them given by $\sigma$. So, in this example, 2 becomes the first element, 1 becomes the second element, and so on.
+
+    \bigskip 
+
+    Occasionally, we might just write $\sigma = 2143$. 
+\end{mdframed}
+
+\begin{definition}{}{}
+    Let $S_n$ denote the set of all permutations of $[n]$, sometimes known as the \textbf{symmetric group} of degree $n$.
+\end{definition}
+\textbf{Remark:} $|S_n| = n!$.
+
+\begin{mdframed}[]
+    (Example.) The 6 permutations of $[3]$ are: 
+    \begin{itemize}
+        \item 123
+        \item 132
+        \item 213
+        \item 231
+        \item 312
+        \item 321
+    \end{itemize}
+\end{mdframed}
+
+\begin{theorem}{Stirling's Approximation}{}
+    As $n \mapsto \infty$, we have 
+    \[\frac{n!}{\sqrt{2\pi n} \left(\frac{n}{e}\right)^n} \mapsto 1.\]
+\end{theorem}
+\textbf{Remark:} Hence, for large $n$, we have $n! \approx \sqrt{2\pi n} \left(\frac{n}{e}\right)^n$. 
+
+\bigskip 
+
+Recall that a \textbf{fixed point} $x$ of a function $f$ is a point for which $f(x) = x$. Suppose we select a uniformly random permutation of $[n]$. What is the probability $p_{k}(n)$ that it will have exactly $k$ fixed points? Put it differently, if we put $n$ books on a shelf randomly, what is the probability that $k$ of them will happen to end up in their proper place on the shelf? In a future lecture, we will see that $p_{0}(n) \approx \frac{1}{e}$. 
+
+\bigskip 
+
+\begin{definition}{}{}
+    Let $\sigma$ be a permutation of $[n]$. We call $i \in [n]$ a \textbf{record} if $\sigma(i) > \sigma(j)$ for all $j < i$. 
+\end{definition}
+\textbf{Remarks:}
+\begin{itemize}
+    \item Informally, $i$ is a record if $\sigma(i)$ is larger than all of the previous values of $\sigma$. 
+    \item Trivially, $i = 1$ is a record.
+\end{itemize}
+
 
 \end{document}
