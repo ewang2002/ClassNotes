@@ -1,0 +1,54 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{MATH 155A}
+\chead{Tuesday, April 12, 2022}
+\lhead{Lecture 5}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\section{Moving to \texorpdfstring{$\R^3$}{Three-Dimensions}}
+In $\R^3$, we often have that $y$ is facing towards us. However, in this course, $y$ will be facing upwards while $z$ is facing towards us. 
+
+\bigskip 
+
+Let $f(\mathbf{x}) = M\mathbf{x}$, where $M$ is a $3 \times 3$ matrix. Here, $M$ is denoted by 
+\[\begin{bmatrix}
+    f(\mathbf{i}) & f(\mathbf{j}) & f(\mathbf{k})
+\end{bmatrix}.\]
+Additionally, note that the unit vectors in $\R^3$ are given by 
+\[\mathbf{i} = \begin{bmatrix}
+    1 \\ 0 \\ 0
+\end{bmatrix} \qquad \mathbf{j} = \begin{bmatrix}
+    0 \\ 1 \\ 0
+\end{bmatrix} \qquad \mathbf{k} = \begin{bmatrix}
+    0 \\ 0 \\ 1
+\end{bmatrix}.\]
+
+\subsection{Scaling}
+For $\alpha \in \R$, we say that $S_{\alpha}(\mathbf{x}) = \alpha \mathbf{x}$ is known as \emph{uniform scaling}.
+
+\bigskip 
+
+Now, for $a, b, c \in \R$, we say that $S_{\cyclic{a, b, c}}(\cyclic{x_1, x_2, x_3}) =\cyclic{ax_1, bx_2, bx_3}$ is known as \emph{non-uniform scaling}.
+
+
+\begin{mdframed}[]
+    (Example.) Suppose we have $S = S_{\cyclic{1/2, 1, 1}}$ and $R = R_{90^{\circ}, \mathbf{j}}$. Find the following: 
+    \begin{itemize}
+        \item $S \circ R$.
+        \item $R \circ S$. 
+    \end{itemize}
+\end{mdframed}
+
+
+\end{document}
