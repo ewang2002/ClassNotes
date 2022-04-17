@@ -46,34 +46,98 @@ While the Haskell compiler can infer types, you should still annotate your bindi
 Note that we can use the GHCi command \code{:t} to inspect types. For example, 
 \begin{verbatim}
     > :t if x then 'a' else 'b'             -- Char 
+\end{verbatim}
+
+\subsubsection{Function Types}
+Functions have arrow types. That is, 
+\begin{itemize}
+    \item \code{\bsttt{x} -> e} has type \code{A -> B}. 
+    \item In other words, \code{e} has type \code{B} if \code{x} has type \code{A}.
+\end{itemize}
+For example, 
+\begin{verbatim}
     > :t \b -> if b then 'a' else 'n'       -- Bool -> Char 
 \end{verbatim}
 Note that we can also have functions with mulitple parameters; that is:
 \begin{verbatim}
     pair :: String -> (String -> (Bool -> String))  
     pair :: String -> String -> Bool -> String      -- Same as above. 
-    pair x y z = if b then x else y                 -- Definition of function.
+    pair x y b = if b then x else y                 -- Definition of function.
 \end{verbatim}
 
-\section{Lists}
+\begin{mdframed}[]
+    (Quiz.) With \code{pair :: String -> String -> Bool -> String}, what would GGHCi say to 
+    \begin{verbatim}
+        > :t pair "apple" "orange"
+    \end{verbatim}
+
+    \begin{enumerate}[(a)]
+        \item Syntax error 
+        \item The term is ill-typed. 
+        \item \code{String}
+        \item \code{Bool -> String}
+        \item \code{String -> String -> Bool -> String}
+    \end{enumerate}
+
+    \begin{mdframed}[]
+        The answer is \textbf{D}. Recall that the annotation given is just syntactic sugar for 
+        \begin{verbatim}
+            pair :: String -> (String -> (Bool -> String)).\end{verbatim}
+        So, if we pass in two \code{String}s, we get back a \code{Bool -> String}.
+    \end{mdframed}
+\end{mdframed}
+
+Like with general variables, function bindings should be annotated. 
+
+
+
+\subsection{Lists}
 A list is either: 
 \begin{itemize}
     \item An empty list
     \begin{verbatim}
         []              -- pronounced "nil"\end{verbatim}
 
-    \item Or a head element attached to a tail list.
+    \item Or, a head element attached to a tail list.
     \begin{verbatim}
         x:xs            -- pronounced "x cons xs"\end{verbatim}
+    \textbf{Remarks:}
+    \begin{itemize}
+        \item Note that this is pronounced \code{cons} for historical element. 
+        \item The head element is just the first element. The \emph{tail} list is everything after the head element (not the last element).
+    \end{itemize}
 \end{itemize}
-So, for example, we have: 
+
+\subsubsection{Example List Declarations}
 \begin{verbatim}
     []                              -- A list with 0 elements. 
+
     1:[]                            -- A list with 1 element. 
-    (:) 1 []                        -- Same thing 
-    1:(2:(3:(4:([]))))              -- A list with 4 elements. 
-    1:2:3:4:[]                      -- Same thing (: is right associative)
-    [1, 2, 3, 4]                    -- Same thing (syntactic sugar)
+                                    -- This is essentially just a cons of a head 
+                                    -- which is the number 1, followed by an empty 
+                                    -- list.
+
+    (:) 1 []                        -- Same thing as above. Any infix operator 'op' in 
+                                    -- Haskell can be transformed into a regular 
+                                    -- function which can be called in infix notation
+                                    -- by putting it in parentheses ('op'). 
+
+    1:(2:(3:(4:[])))                -- A list with 4 elements. 
+
+    1:2:3:4:[]                      -- Same thing (cons, :, is right associative).
+
+    [1, 2, 3, 4]                    -- Same thing (syntactic sugar for 
+                                    -- 1:(2:(3:(4:[]))) ).
 \end{verbatim}
+\textbf{Remark:} With regards to the infix operator in the third example, this is not just exclusive to lists. For example, \code{2 + 3} can be equivalently written as \boxed{\code{(+) 2 3}}. Likewise, \code{cmpSquare 2 3} can be equivalently written\footnote{Using backticks to denote the function name.} as \boxed{\code{2 `cmpSquare` 3}}.
+
+\subsubsection{Constructors and Values}
+\code{[]} and \code{(:)} are known as the list \textbf{constructors}. We've seen constructors before; for example, 
+\begin{itemize}
+    \item \code{True} and \code{False} are both \code{Bool} constructors. 
+    \item \code{0}, \code{1}, \code{2}, and so can be \emph{thought of} as \code{Int} constructors.
+    \item These constructors didn't take any parameters; so, we call then \emph{values}.
+\end{itemize}
+In general, a \textbf{value} is a constructor applied to other values. The list examples above are list \emph{values}. 
 
 \end{document}

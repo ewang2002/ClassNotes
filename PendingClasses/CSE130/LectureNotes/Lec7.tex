@@ -213,7 +213,7 @@ pair x y False = y  \end{verbatim}
 \end{mdframed}
 
 \subsubsection{Equation with Guards}
-Guards are another way of giving \emph{multiple definitions} for a function. We can use guards as opposed to using different patterns when your definition depends on something that cannot be expressed as a pattern.
+Guards are another way of giving \emph{multiple definitions} for a function. We can use guards as opposed to using different patterns when your definition depends on something that cannot be expressed as a pattern. Then, \emph{each guard} is an expression.
 
 \bigskip 
 
@@ -265,7 +265,7 @@ As a warning, Haskell is indentation-sensitive; that is, the following is \emph{
         else n + sum(n - 1)
 \end{verbatim}
 
-\subsubsection{Scope of Variables}
+\subsubsection{Scope of Variables \& \code{let}-Expressions \& \code{where}-Clause}
 There are two scope types. 
 \begin{itemize}
     \item \textbf{Global:} Top-level variables have \textbf{global} scope, so you can write: 
@@ -276,31 +276,66 @@ There are two scope types.
         
         -- Notice how 'haskellIsAwesome' is defined below where it's being used.
         -- This is because 'haskellIsAwesome' has a global scope.
-        haskellIsAwesome = True 
-    \end{verbatim}
+        haskellIsAwesome = True \end{verbatim}
     Here, global scope means that it is available in the \emph{whole module}.
 
     
     \item \textbf{Local:} Consider the following code: 
     \begin{verbatim}
         sum 0 = 0
-        sum n = let n' = n - 1 in n + sum n'
+        sum n = let n' = n - 1 in n + sum n'\end{verbatim}
+    Here, the \code{let} keyword defines a new local variable. So, \code{let n'} defines a new variable \code{n'}, and \code{= n - 1} is the definition of \code{n'}. Now, this is known as a \code{let}-expression, and its scope is both its definition and its body; that is, 
+    \begin{verbatim}
+                          Body (Any Expression)
+                          ----------
+        let n' = n - 1 in n + sum n' 
+                 -----
+                 Definition 
     \end{verbatim}
-    Here, the \code{let} keyword defines a new local variable. So, \code{let n'} defines a new variable \code{n'}, and \code{= n - 1} is the definition of \code{n'}. Now, this is known as a \code{let}-expression, and its scope is whatever is after the \code{in} keyword (in reality, see below). Here, anything after the \code{in} is the \emph{body of the \code{let}-expression} and can use the local variable.
-
-    \bigskip 
-
+    Here, anything after the \code{in} is the \emph{body of the \code{let}-expression} and can use the local variable. So, the following is also valid (and this is so because we could have a recursive definition that relies on the definition)\footnote{Although it will cause a stack overflow.}:
+    \begin{verbatim}
+        sum 0 = 0
+        sum n = let n' = n' - 1 in n + sum n'\end{verbatim}
     Note that the following code segment is invalid: 
     \begin{verbatim}
         sum 0 = 0
-        sum n = (let n' = n - 1 in n + sum n') + n'
-    \end{verbatim}
-    This is because the last \code{n'} doesn't have an associated definition. However, note that the following is \emph{valid} because this is needed in case of a recursive definition. 
+        sum n = (let n' = n - 1 in n + sum n') + n'\end{verbatim}
+    This is because the last \code{n'} doesn't have an associated definition. 
+
+    \bigskip 
+
+    Now, following up with our discussion of \code{let}-expressions, the following is also valid: 
     \begin{verbatim}
         sum 0 = 0
-        sum n = let n' = n' - 1 in n + sum n'
+        sum n = let n' = n - 1
+                in (let r = sum n' in n + r)\end{verbatim}
+    This gets a bit cumbersome, so we can actually do: 
+    \begin{verbatim}
+        sum 0 = 0
+        sum n = let
+                    n' = n - 1
+                    r = sum n'
+                in n + r\end{verbatim}
+    We can also make use of the \code{where}-clause. For example, the above can be rewritten like so: 
+    \begin{verbatim}
+        sum 0 = 0
+        sum n = n + r
+            where 
+                r = sum n' 
+                n' = n - 1
     \end{verbatim}
-    So, actually, the \textbf{scope of a local variable} is \underline{its definition and its body}.
+    \code{where} is not an expression, but is a declaration. To see why this is important, consider the \code{cmpSquare} example: 
+    \begin{verbatim}
+        cmpSquare x y   | x > y*y   = "bigger :)"
+                        | x == y*y  = "same :|"
+                        | otherwise = "smaller :("\end{verbatim}
+    Here, if we wanted to refactor this code so \code{y*y} is put into a variable, we can't use a \code{let}-expression since we have two different expression (one for \code{bigger} and one for \code{same}). But, we can use a guard, like so: 
+    \begin{verbatim}
+        cmpSquare x y   | x > sqr   = "bigger :)"
+                        | x == sqr  = "same :|"
+                        | otherwise = "smaller :("
+            where
+                sqr = y*y\end{verbatim}
 \end{itemize}
 
 \end{document}
