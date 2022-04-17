@@ -1,0 +1,306 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{CSE 130}
+\chead{Monday, April 11, 2022}
+\lhead{Lecture 7}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\section{The Lambda Calculus}
+
+\subsection{Fixpoint Combinator}
+We want a combinator \code{FIX} such that \code{FIX STEP} calls \code{STEP} with itself as the first argument; that is, 
+\begin{verbatim}
+    FIX STEP 
+    =*> STEP (FIX STEP)
+\end{verbatim}
+
+
+\subsubsection{The Y Combinator}
+Recall that we had 
+\begin{verbatim}
+    (\x -> x x) (\x -> x x)
+    =b> (\x -> x x) (\x -> x x)
+\end{verbatim}
+Note that this is \emph{self-replicating} code. Now, in order to do recursion, we need something like this, but a bit more involved. 
+
+\bigskip 
+
+This beings us to the \emph{Y Combinator}. Discovered by Haskell Curry, we can define \code{FIX} like so: 
+\begin{verbatim}
+    let FIX = \stp -> (\x -> stp (x x)) (\x -> stp (x x))
+\end{verbatim}
+Here, \code{stp} is the \emph{step}. To see how this works, consider the following reductions: 
+\begin{verbatim}
+    eval fix_step:
+        FIX STEP 
+        =d> (\stp -> (\x -> stp (x x)) (\x -> stp (x x))) STEP 
+        =b> (\x -> STEP (x x)) (\x -> STEP (x x))
+        =b> STEP (\x -> STEP (x x)) (\x -> STEP (x x))              -- The fix step 
+\end{verbatim}
+With this beta reduction, it duplicated itself but also prepended itself. This gives us the ability to do another beta reduction, thus repeating everything again.
+
+
+\newpage 
+\section{Haskell}
+A typed, lazy, \emph{purely functional} programming language. Essentially, Haskell is just $\lambda$-calculus with: 
+\begin{itemize}
+    \item Better syntax. 
+    \item Types. 
+    \item Built-in features like: 
+    \begin{itemize}
+        \item Booleans, numbers, and characters. 
+        \item Records (tuples).
+        \item Lists. 
+        \item Recursion. 
+        \item And much more. 
+    \end{itemize}
+\end{itemize}
+Haskell programs tend to be concise and correct, which is why we're primarily interested in learning it. 
+
+
+\subsection{Similarities: Haskell vs. Lambda Calculus}
+We will begin by looking at some similarities.
+
+\subsubsection{Programs}
+A program is an \textbf{expression}, not a sequence of statements. It \textbf{evaluates} to a value (it does \emph{not} perform actions).
+\begin{itemize}
+    \item In Lambda Calculus, a program might look like: 
+    \begin{verbatim}
+        (\x -> x) apple         -- apple 
+    \end{verbatim}
+    \item In Haskell, a program might look like: 
+    \begin{verbatim}
+        (\x -> x) "apple"       -- "apple"
+    \end{verbatim}
+    Note that we used the \emph{string} \code{apple} because, like many other programming languages, using an undefined variable would result in errors. 
+\end{itemize}
+
+\subsubsection{Functions}
+Like Lambda Calculus, functions are \emph{first-class} values. They can be 
+\begin{itemize}
+    \item passed as arguments to other functions. 
+    \item returned as results from other functions. 
+    \item partially applied (arguments passed one at a time).
+\end{itemize}
+But, unlike Lambda Calculus, not everything is a function. Consider the following program: 
+\begin{verbatim}
+    (\f x -> f (f x)) (\z -> z + 1) 0
+\end{verbatim}
+First, we note that we have the built-in \code{0} and \code{1}! Second, notice that we're incrementing in terms of the built-in integers, not in terms of Churchill numerials. The above program evalutes to: 
+\begin{verbatim}
+    (\f x -> f (f x)) (\z -> z + 1) 0
+    => (\x -> (\z -> z + 1) ((\z -> z + 1) x)) 0
+    => (\z -> z + 1) ((\z -> z + 1) 0)
+    => (\z -> z + 1) 1
+    => 2
+\end{verbatim}
+
+\subsubsection{Top-Level Bindings}
+Like in \emph{Elsa}, we can name terms to use them later. For example, we have: 
+\begin{verbatim}
+    let T       = \x y -> x
+    let F       = \x y -> y 
+    let PAIR    = \x y -> \b -> ITE b x y 
+    let FST     = \p -> p T 
+    let SND     = \p -> p F 
+
+    eval fst: 
+        FST (PAIR apple orange)
+        =~> apple 
+\end{verbatim}
+In Haskell, we have: 
+\begin{verbatim}
+    haskellIsAwesome = True 
+
+    pair = \x y -> \b -> if b then x else y 
+    fst = \p -> p haskellIsAwesome
+    snd = \p -> p False 
+
+    -- In GHCi (the Haskell interpreter/compiler)
+    > fst (pair "apple" "orange")               -- "apple"
+\end{verbatim}
+Note that the \textbf{names} are called \textbf{top-level variables}. Their \textbf{definitions} are called \textbf{top-level bindings}.
+
+\subsection{Differences: Haskell vs. Lambda Calculus}
+We will begin by looking at some differences. 
+
+\subsubsection{Better Syntax: Equations and Patterns}
+We can define function bindings using \textbf{equations}. For example,
+\begin{verbatim}
+    pair x y b = if b then x else y             -- Same as: pair = \x y b -> ... 
+    fst p      = p True                         -- Same as: fst = \p -> ... 
+    snd p      = p False                        -- Same as: snd = \p -> ...
+\end{verbatim}
+The parameters are put on the left of the equal sign, thus omitting the lambda part. One way to think about this is that if you see anything on the left-hand side of the equal sign, you can replace it with everything on the right-hand side. 
+
+\bigskip 
+
+A single function binding can have multiple equations with different \textbf{patterns} of parameters. For example (\textbf{A}),
+\begin{verbatim}
+    pair x y True  = x      -- If the 3rd argument evaluates to True,
+                            -- then use this equation. 
+
+    pair x y False = y      -- If the 3rd argument evaluates to False,
+                            -- then use this equation. 
+\end{verbatim}
+At runtime, the first equation whose pattern matches the actual arguments is chosen. For now, we can define a \textbf{pattern} to be: 
+\begin{itemize}
+    \item A \emph{variable} (matches any value)
+    \item A \emph{value} (matches only that value)
+\end{itemize}
+The above equations from (A) can be written like so (\textbf{B}): 
+\begin{verbatim}
+    pair x y True  = x      -- If the 3rd argument evaluates to True,
+                            -- then use this equation. 
+
+    pair x y b     = y      -- Otherwise, use this equation 
+\end{verbatim}
+To see how this works, let's consider the following expression (where \code{haskellIsAwesome} is \code{True}): 
+\begin{verbatim}
+    > pair "apple" "banana" (not haskellIsAwesome)
+\end{verbatim}
+Informally, the evaluation of the above expression works like so: 
+\begin{itemize}
+    \item Since variables match anything, \code{"apple"} and \code{"banana"} match the first two variables in the above definitions (\code{pair x y}, where \code{x} is \code{"apple"} and \code{y} is \code{"banana"}).
+    \item Note that \code{not haskellIsAwesome} is \code{False}. Since this doesn't match the first definition (as the first definition expects \code{True} as the last argument), then this will match the second definition (since its last argument, \code{b}, takes in anything that isn't \code{True}).
+\end{itemize}
+The reason why (B) is equivalent to (A) is because \code{b} can only be \code{False} (since the first definition expects \code{True} for the third parameter). The reason why this is the case is because Haskell is, indeed, a \emph{typed} language (which we'll see later).
+
+\bigskip 
+
+Now, we also have that (B) is the same as (\textbf{C}): 
+\begin{verbatim}
+    pair x y True  = x      
+    pair x y _     = y      -- Wilcard pattern. '_' is like a variable,
+                            -- but cannot be used on the right. \end{verbatim}
+In other words, \code{\_} just says that you don't actually need said value. 
+
+\begin{mdframed}[]
+    (Quiz.) Which of the following definitions of \code{pair} is \textbf{not the same} as the original? 
+    \begin{verbatim}
+        pair = \x y -> \b -> if b then x else y \end{verbatim} 
+
+    \begin{enumerate}[(a)]
+        \item \code{pair x y = \bsttt{b} -> if b then x else y}.
+        \item \begin{verbatim}
+pair x _ True = x 
+pair _ y _    = y\end{verbatim}
+        \item \code{pair x \_ True = x}
+        \item \begin{verbatim}
+pair x y b     = x
+pair x y False = y  \end{verbatim}
+        \item C and D 
+    \end{enumerate}
+
+    \begin{mdframed}[]
+        The answer is \textbf{E}. 
+        \begin{itemize}
+            \item C is incorrect because the \code{False} case is never covered. In other words, the pattern matching is non-exhaustive. 
+            \item D is incorrect because patterns are evaluted \emph{in order}. Remember, ``\emph{the first equation whose pattern matches the actual arguments is chosen}''. So, everything will be matched against the first case, not the second.
+        \end{itemize}
+    \end{mdframed}
+\end{mdframed}
+
+\subsubsection{Equation with Guards}
+Guards are another way of giving \emph{multiple definitions} for a function. We can use guards as opposed to using different patterns when your definition depends on something that cannot be expressed as a pattern.
+
+\bigskip 
+
+Consider the following code: 
+\begin{verbatim}
+    cmpSquare x y   | x > y*y   = "bigger :)"
+                    | x == y*y  = "same :|"
+                    | x < y*y   = "smaller :("\end{verbatim}
+This is the same thing (and is more preferred) as:
+\begin{verbatim}
+    cmpSquare x y   | x > y*y   = "bigger :)"
+                    | x == y*y  = "same :|"
+                    | otherwise = "smaller :("\end{verbatim}
+This case (the one with the \code{otherwise}\footnote{\code{otherwise} is a variable in the standard library that literally is just \code{True}.} case) is preferred to the one above (the one without the \code{otherwise} case), as we have a ``catch-all'' case (i.e. a case that will be executed when the other cases do not suffice). Roughly speaking, this example looks like the cases in math; that is: 
+\[\text{cmpSquare}(x, y) = \begin{cases}
+    \code{"bigger :)"} & x > y \cdot y \\ 
+    \code{"same :|"} & x = y \cdot y \\ 
+    \code{"smaller :("} & \text{otherwise}
+\end{cases}.\]
+
+\subsubsection{Recursion}
+Unlike in Lambda Calculus, recurison is built-in; there is no need for a fixpoint combinator. For example, the following program is valid Haskell:
+\begin{verbatim}
+    sum = \n -> if n == 0 
+                    then 0 
+                    else n + sum(n - 1)
+\end{verbatim}
+Which is the same thing as writing: 
+\begin{verbatim}
+    sum n = if n == 0 
+                then 0 
+                else n + sum(n - 1)
+\end{verbatim}
+A more idiomatic way would be using equations and pattern matching\footnote{If you can use patterns, then use patterns.}, like so:
+\begin{verbatim}
+    sum 0 = 0
+    sum n = n + sum(n - 1)
+\end{verbatim}
+A slightly less idiomatic way would be using guards: 
+\begin{verbatim}
+    sum n | n == 0      = 0
+          | otherwise   = n + sum(n - 1)
+\end{verbatim}
+
+As a warning, Haskell is indentation-sensitive; that is, the following is \emph{invalid} (your \emph{then} and \emph{else} should at least line up with the \code{if}):
+\begin{verbatim}
+    sum n = if n == 0 
+        then 0 
+        else n + sum(n - 1)
+\end{verbatim}
+
+\subsubsection{Scope of Variables}
+There are two scope types. 
+\begin{itemize}
+    \item \textbf{Global:} Top-level variables have \textbf{global} scope, so you can write: 
+    \begin{verbatim}
+        message = if haskellIsAwesome 
+                    then "I love CSE 130"
+                    else "I'm dropping CSE 130"
+        
+        -- Notice how 'haskellIsAwesome' is defined below where it's being used.
+        -- This is because 'haskellIsAwesome' has a global scope.
+        haskellIsAwesome = True 
+    \end{verbatim}
+    Here, global scope means that it is available in the \emph{whole module}.
+
+    
+    \item \textbf{Local:} Consider the following code: 
+    \begin{verbatim}
+        sum 0 = 0
+        sum n = let n' = n - 1 in n + sum n'
+    \end{verbatim}
+    Here, the \code{let} keyword defines a new local variable. So, \code{let n'} defines a new variable \code{n'}, and \code{= n - 1} is the definition of \code{n'}. Now, this is known as a \code{let}-expression, and its scope is whatever is after the \code{in} keyword (in reality, see below). Here, anything after the \code{in} is the \emph{body of the \code{let}-expression} and can use the local variable.
+
+    \bigskip 
+
+    Note that the following code segment is invalid: 
+    \begin{verbatim}
+        sum 0 = 0
+        sum n = (let n' = n - 1 in n + sum n') + n'
+    \end{verbatim}
+    This is because the last \code{n'} doesn't have an associated definition. However, note that the following is \emph{valid} because this is needed in case of a recursive definition. 
+    \begin{verbatim}
+        sum 0 = 0
+        sum n = let n' = n' - 1 in n + sum n'
+    \end{verbatim}
+    So, actually, the \textbf{scope of a local variable} is \underline{its definition and its body}.
+\end{itemize}
+
+\end{document}
