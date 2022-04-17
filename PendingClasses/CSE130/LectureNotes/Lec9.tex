@@ -1,0 +1,177 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{CSE 130}
+\chead{Friday, April 15, 2022}
+\lhead{Lecture 9}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\section{Haskell: An Introduction}
+\subsection{Lists}
+\subsubsection{The Type of a List}
+A list has type \code{[A]} if each one of its elements has type \code{A}. Thus, Haskell lists are homogeneous -- you cannot put elements of different types in the same list. For example, 
+\begin{itemize}
+    \item The following is a list of \code{Int} elements. 
+    \begin{verbatim}
+        myList :: [Int]
+        myList = [1, 2, 3, 4]\end{verbatim}
+
+    \item The following is a list of \code{Char} elements.  
+    \begin{verbatim}
+        myList :: [Char]
+        myList = ['h', 'e', 'l', 'l', 'o']\end{verbatim}
+    As a side note, a list of \code{Char}s is the same thing as a \code{String}; that is, the following will work: 
+    \begin{verbatim}
+        myList :: String
+        myList = ['h', 'e', 'l', 'l', 'o']\end{verbatim}
+    This is the same thing as (\textbf{A}): 
+    \begin{verbatim}
+        myList :: String
+        myList = "hello"\end{verbatim}
+    Note that \code{[Char]} being the same thing as \code{String} is an example of \textbf{type synonyms}. We can actually define our own type synonyms\footnote{Note that all type names must start with a captial letter.} like so: 
+    \begin{verbatim}
+        type Apple = [Char]\end{verbatim}
+    And then we can use it like so (\textbf{B}): 
+    \begin{verbatim}
+        myList :: Apple
+        myList = ['h', 'e', 'l', 'l', 'o']\end{verbatim}
+
+    \textbf{Remark:} If you define a type synonym for some variable $x$ and then ask GHCi what type $x$ is, GHCi will give you the type synonym. However, if you don't have a type synonym, then GHCi will give you the underlying type. So, for example, in (A), GHCi would say that \code{myList} is a \code{[Char]}; for (B), GHCi would say that \code{myList} is an \code{Apple}.
+
+
+    \item The following is not allowed in Haskell. 
+    \begin{verbatim}
+        myList = [1, 'h']\end{verbatim}
+    Here, \code{myList} has two elements of different types. 
+
+    \item You need to specify a type, but that type can be anything. 
+    \begin{verbatim}
+        myList :: [Char]
+        -- or 
+        myList :: [[Char]]
+        -- or 
+        myList :: [Int]
+        -- ... 
+        myList = []\end{verbatim} 
+    What would the \emph{best} type for this be? We can use polymorphism (also known as parametric polymorphism). So, we would define this like so: 
+    \begin{verbatim}
+        myList :: [a]
+        myList = []\end{verbatim}
+    Here, \code{a} is the type variable\footnote{We know that it's a type variable because it's lowercase.}. So, literally, it's a variable that can stand for a type. \emph{In actuality}, we don't need to specify a type at all; that is, we can just have 
+    \begin{verbatim}
+        myList = []\end{verbatim}
+    GHCi will infer that \code{myList} is of type \code{[a]}.
+\end{itemize}
+
+\subsubsection{Functions on List}
+We will now implement some basic functions. One thing to keep in mind is that functions on lists in Haskell will most likely be recursive. Generally, you will have 
+\begin{itemize}
+    \item A base case: for a function that produces a list, the base case will most likely be the empty list. 
+    \item The recursive case: for a function that produces a list, this will most likely produce a non-empty list by \emph{cons}ing an element to a list.
+\end{itemize}
+Now, let's implement some functions (without using library functions).
+\begin{itemize}
+    \item \textbf{Range:} Given a lower $l$ and upper bound $u$, this returns a list of integers between $l$ and $u$. For example, \code{upto 1 3} returns \code{[1, 2, 3]}. 
+    \begin{verbatim}
+        upto :: Int -> Int -> [Int]
+        upto lo up 
+            | lo > up       = [] 
+            | otherwise     = lo : upto (lo + 1) up \end{verbatim}
+    To see how this works, consider a simple example \code{upto 1 3}; roughly speaking, the steps taken to produce the final list might look like: 
+    \begin{verbatim}
+        upto 1 3
+        => 1 : upto 2 3
+        => 1 : (2 : upto 3 3)
+        => 1 : (2 : (3 : upto 4 3))
+        => 1 : (2 : (3 : ([])))\end{verbatim}
+    \textbf{Remark:} Because this function is often used, this function is actually built-in. Indeed, you can do something like \code{[1..10]} to get \code{[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}. You can also do something like \code{[1,3..10]} to get \code{[1, 3, 5, 7, 9]}.
+
+    \item \textbf{Length:} Given a list $\ell$, find the length of $\ell$, i.e. the number of elements in $\ell$.
+    
+    \bigskip 
+
+    The idea is that: 
+    \begin{itemize}
+        \item If the list is empty, then return \code{0}.
+        \item Otherwise, return the length of the tail plus 1. 
+    \end{itemize}
+    So, implementing this idea, we have: 
+    \begin{verbatim}
+        length :: [a] -> Int 
+        length []       = 0
+        length (_ : xs) = 1 + length xs \end{verbatim}
+    Here, we can destruct the list into two components; the head and the tail. 
+
+    \bigskip 
+
+    With this in mind, we can redefine what a pattern is. In particular, a pattern is either: 
+    \begin{itemize}
+        \item A variable, including \code{\_}.
+        \item \emph{Or}, a constructor applied to other \emph{patterns}.
+    \end{itemize}
+    Pattern matching attempts to match values against patterns and, if desired, binds variables to successful matches.
+
+    \begin{mdframed}[]
+        (Quiz.) Which of the following is \textbf{not} a pattern? 
+        \begin{enumerate}[(a)]
+            \item \code{(1:xs)}
+            \item \code{(\_:\_:\_)}
+            \item \code{[x]}
+            \item \code{[1+2,x,y]}
+            \item All of the above.
+        \end{enumerate}
+
+        \begin{mdframed}[]
+            The answer is \textbf{D}. 
+            \begin{itemize}
+                \item \textbf{A} matches any list that start with 1.
+                \item \textbf{B} matches any list with at least 2 elements. We can rewrite B as \code{x:(y:z)}. 
+                \item \textbf{C} matches a list with one element. We can rewrite C as \code{x:[]}.
+                \item \textbf{D} is invalid. Remember that you can only use a constructors and variables in a pattern. \code{+} is not a constructor; it is a function that computes something. Now, if you wrote \code{[3,x,y]}, then this would match a list with exactly 3 elements where the first element is 3. 
+            \end{itemize}
+        \end{mdframed}
+    \end{mdframed}
+\end{itemize}
+
+\subsubsection{Library Functions}
+These are some useful library functions for lists just to\footnote{As the professor said.} ``tell you that you aren't allowed to use them on the homework.''
+
+\begin{itemize}
+    \item \underline{Checking if List is Empty:} You can use the function \code{null} to see if a function is empty. 
+    \begin{verbatim}
+        null :: [t] -> Bool \end{verbatim}
+
+    \item \underline{Get Head of List:} You can use the function \code{head} to get the head of a list. 
+    \begin{verbatim}
+        head :: [t] -> t\end{verbatim}
+    \textbf{Warning:} This is a partial function; they can produce a runtime error on some inputs. In this case, the empty list \code{[]} will cause said runtime error.
+    
+    \item \underline{Get Tail of List:} You can use the function \code{tail} to get the tail of a list. 
+    \begin{verbatim}
+        tail :: [t] -> [t]\end{verbatim}
+    \textbf{Warning:} This is a partial function; they can produce a runtime error on some inputs. In this case, the empty list \code{[]} will cause said runtime error.
+    
+    \item \underline{Get Length of List:} You can use the function \code{length} to get the length of a list. 
+    \begin{verbatim}
+        length :: [t] -> Int \end{verbatim}
+
+    \item \underline{Append Two Lists:} You can use the function \code{(++)} to append two lists. 
+    \begin{verbatim}
+        (++) :: [t] -> [t] -> [t]\end{verbatim}
+
+    \item \underline{Check if Two Lists are Equal:} You can use the function \code{(==)} to see if two lists are equal. 
+    \begin{verbatim}
+        (==) :: [t] -> [t] -> Bool\end{verbatim}
+\end{itemize}
+
+\end{document}
