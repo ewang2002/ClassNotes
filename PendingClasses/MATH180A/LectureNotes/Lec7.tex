@@ -1,0 +1,48 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{MATH 180A}
+\chead{Wednesday, April 13, 2022}
+\lhead{Lecture 7}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+\section{Chapter 5: Combinatorics}
+\subsection{Permutations \& Fixed Points}
+Recall the problem of fixed points in permutations mentioned at the end of Lecture 5. In particular, recall that a fixed point in a permutation $\sigma$ of $[n]$ is a point $i \in [n]$ for which $\sigma(i) = i$; that is, $i$ maintains its order under $\sigma$. It was claimed that the probability $p_{0}^n$ of no fixed points in a uniformly random permutation is approximately $\frac{1}{e}$. 
+
+\bigskip 
+
+Recall that $\PR(A \cup B) = \PR(A) + \PR(B) - \PR(A \cap B)$. More generally, we have the \textbf{inclusion-exclusion} principle. In particular, if $A_1, \dots, A_n$ are events, then 
+\[\PR\left(\bigcup_{i = 1}^{n} A_i\right) = \sum_{i = 1}^{n} \PR(A_i) - \sum_{1 \leq i < j \leq n} \PR(A_i \cap A_j) + \sum_{1 \leq i < j < k \leq n} \PR(A_i \cap A_j \cap A_k) - \dots + (-1)^{n - 1} \PR\left(\bigcap_{i = 1}^{n} A_i\right).\]
+Using Inclusion-Exclusion, we can now find the probability $p_0(n)$ that a random permutation has no fixed points. Instead of finding the probability that there are no fixed points, we instead find the probability that there is at least one fixed point, and then subtract this from 1 to get $p_0(n)$ (this is by the complement rule).
+
+\bigskip 
+
+So, let $A_i$ be the event that $i$ is a fixed point in a uniformly random permutation. We want to find $\PR\left(\bigcup_{i = 1}^{n} A_i\right)$, i.e. the probability of at least one fixed point, since this is equal to $1 - p_0(n)$. Now, 
+\[\PR(A_i) = \frac{(n - 1)!}{n!},\]
+since $i$ must be fixed but the other $n - 1$ elements in $[n] \setminus \{i\}$ can be freely permuted. Likewise, all 
+\[\PR(A_i \cap A_j) = \frac{(n - 2)!}{n!}.\]
+Hence, by Inclusion-Exclusion, we have 
+\[\PR\left(\bigcup_{i = 1}^{n} A_i\right) = \sum_{k = 1}^{n} (-1)^{k - 1} \binom{n}{k} \frac{(n - k)!}{n!} = \sum_{k = 1}^{n} \frac{(-1)^{k - 1}}{k!}.\]
+Hence, the probability of no fixed points is given by 
+\[p_0(n) = 1 - \sum_{k = 1}^{n} \frac{(-1)^{k - 1}}{k!} = \sum_{k = 0}^{n} \frac{(-1)^{k - 1}}{k!}.\]
+Now, recall that the Taylor expansion of $e^x$ is given by $e^x = \sum_{k = 0}^{n} \frac{x^k}{k!}$. Hence, $p_0(n) \approx \frac{1}{e}$ for large $n$. In fact, once $n \geq 10$, the approximation is quite accurate. 
+
+\begin{mdframed}[]
+    (Example: The Hat Check Problem.) Suppose that $n$ people check their hats upon arriving to a party. The hat-check attendant misplaces their tickets, so decides to give everyone a random hat at the end of the night as they are leaving. Then, with probability $1 - \frac{1}{e} \approx 63\%$, at least one person will get their hat back. 
+
+    \bigskip 
+
+    If you think of this problem as a fixed point in a permutation, then there's a uniformly random permutation that determines who gets which hat. If $\sigma(i) = i$, then the $i$th person will get their own hat back (even after everything is randomized).
+\end{mdframed}
+
+\end{document}
