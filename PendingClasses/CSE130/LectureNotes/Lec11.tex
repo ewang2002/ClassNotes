@@ -1,0 +1,161 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{CSE 130}
+\chead{Wednesday, April 20, 2022}
+\lhead{Lecture 11}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\section{Haskell}
+
+\subsection{What is Haskell?}
+\subsubsection{Haskell is Purely Functional}
+\begin{itemize}
+    \item Functional: functions are \emph{first-class values}.
+    \item Pure: a program is an expression that evaluates to a value. 
+    \begin{itemize}
+        \item There are \emph{no} side effects. 
+        \item In other words, a function \code{T1 -> T1} computes a single \code{T1} output from a single \code{T1} input and does nothing else. 
+    \end{itemize}
+    \item Referential Transparency: The same expression always evaluates to the same value. More precisely, in a scope where \code{x1, ..., xn} are defined, all occurrences of \code{e} with $FV(\code{e}) = \{\code{x1}, \dots, \code{xn}\}$ have the same values. 
+\end{itemize}
+This is all good because it:
+\begin{itemize}
+    \item is easier to reason about. 
+    \item enables compiler optimizations. 
+    \item is great for parallelization. 
+\end{itemize}
+
+\subsubsection{Haskell is Lazy}
+An expression is evaluated only when its result is needed. Most programming languages are \emph{eager}; that is, expressions are computed when seen. 
+
+\bigskip
+
+To see what is meant by \emph{lazy}, consider the following code:
+\begin{verbatim}
+    take :: Int -> [a] -> [a]
+    take 0 _        = []
+    take _ []       = []
+    take n (x:xs)   = x:(take (n - 1) xs)
+
+    take 2 (upto 1 (factorial 100))
+\end{verbatim}
+Here, an eager language would compute \code{factorial 100} and generate a list -- which would take forever -- and \emph{then} take the first 2 elements. In Haskell, this is done immediately.
+
+\bigskip 
+
+This is good because: 
+\begin{itemize}
+    \item We can implement things like infinite lists: \code{[1..]}. 
+    \begin{verbatim}
+        -- first n pairs of co-primes 
+        take n [(i, j) | i <- [1..],
+                         j <- [1..i],
+                         gcd i j == 1]\end{verbatim}
+        
+    \item Encourages simple, general solutions.
+\end{itemize}
+It also has problems. Some of them are: 
+\begin{itemize}
+    \item Reasoning about the performance is hard -- you never know what part of your program will execute.
+    \item It makes debugging hard -- unlike other non-lazy languages, there isn't a stack trace. 
+\end{itemize}
+
+
+
+
+\newpage 
+\section{Data Types \& Recursion}
+When talking about Haskell, we talked about some built-in data types and writing functions using pattern matching and recursion. Now, we'll talk more about recursion and user-defined data types. 
+
+\subsection{Recursion}
+Recursion lets us define solutions for big problems from solutions for smaller problems (i.e. sub-problems). In particular, we have: 
+\begin{itemize}
+    \item \underline{The Base Case:} What is the simplest version of this problem and how do I solve it? 
+    \item \underline{Inductive Strategy:} How do I break down this problem into sub-problems? 
+    \item \underline{Inductive Case:} How do I solve the problem given the solutions for subproblems? 
+\end{itemize}
+
+\subsubsection{Benefits of Recursion}
+Recurison is often -- but not always -- simpler and cleaner than loops. It forces you to factor code into reusable units (i.e. recursive functions).
+
+\subsubsection{Downsides of Recursion}
+It can be \emph{slow}, and it can cause stack overflow. In particular, every time we call a function, we allocate a frame on the call stack, which is expensive, not to mention that the stack has a finite size. 
+
+\subsection{Tail Recursion}
+No computations are allowed on the recursively returned value. In other words, the value returned by the recursive call is equal to the value returned by the function. 
+
+\begin{mdframed}[]
+    (Quiz.) Is this function tail recursive?
+    \begin{verbatim}
+        fac :: Int -> Int 
+        fac n 
+            | n <= 1        = 1
+            | otherwise     = n * fac(n - 1)
+    \end{verbatim}
+
+    \begin{mdframed}[]
+        No. After making a recursive call, we do one more computation on said recursion call. 
+    \end{mdframed}
+\end{mdframed}
+
+
+\subsubsection{Tail Recursive Factorial}
+To convert a recursive function to a tail recursive function, you want to introduce an axillary function that will accumulate the result of the recursive calls. 
+
+\bigskip 
+
+Your axillary function will essentially take in one more argument than the original: 
+\begin{itemize}
+    \item An accumulator -- the value holding the partial results of the recursive calls. Your initial accumulated value would be the base case.
+    \item The original arguments -- remember that you're still doing the recursion on your original input(s).
+\end{itemize}
+
+So, the rewritten factorial function would look like: 
+\begin{verbatim}
+    facTR :: Integer -> Integer 
+    facTR n = loop 1 n  
+        where 
+            loop :: Integer -> Integer -> Integer
+            loop acc n 
+                | n <= 1        = acc 
+                | otherwise     = loop (acc * n) (n - 1)
+\end{verbatim}
+Now, the idea is that, for the base case, we can just return the result generated by the accumulation of the function calls. 
+
+\bigskip 
+
+At the end of the day, the idea behind tail recursion is that you're calculating the entire result as you make your way down to the bottom of the recursion tree.
+
+% 2:40pm
+
+\subsubsection{Why Tail Recursion?}
+The compiler can transform your tail recursive function to a \textbf{loop}. For example, the above code would translate to something like: 
+\begin{verbatim}
+    function facTR(n) {
+        let acc = 1;
+        while (true) {
+            if (n <= 1) { return acc; }
+            else        { acc = acc * n; n = n - 1; }
+        }
+    }
+\end{verbatim}
+Thus, no stack frames are needed.
+
+
+
+
+
+
+
+\end{document}
