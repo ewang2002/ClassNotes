@@ -1,0 +1,194 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{CSE 130}
+\chead{Wednesday, April 20, 2022}
+\lhead{Lecture 11}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\section{Haskell}
+
+\subsection{Tuples}
+We now begin by discussing tuples.
+
+\subsubsection{Pairs}
+Recall that, in Lambda Calculus, we created our own pairs that could be used to store different things. In Haskell, we could use the Lambda Calculus encoding of pairs, \emph{or} we can use the built-in pair. For example: 
+\begin{verbatim}
+    myPair :: (String, Int)     -- Pair of String and Int 
+    myPair = ("apple", 3)\end{verbatim}
+Here, \code{(,)} is the pair constructor. 
+
+\subsubsection{Accessing Fields}
+How do we access the entries of a pair? One way is by using library functions:
+\begin{verbatim}
+    whichFruit = fst myPair         -- "apple"
+    howMany    = snd myPair         -- 3 \end{verbatim}
+However, you don't need to use \code{fst} or \code{snd}. To see what is meant, consider the following definition: 
+\begin{verbatim}
+    isEmpty :: (String, Int) -> Bool 
+    isEmpty p = (fst p == "") || (snd p == 0)\end{verbatim}
+This syntax looks a bit verbose. However, we can use \emph{pattern matching} to make it look better.
+\begin{verbatim}
+    isEmpty (s, n) = s == "" || n == 0\end{verbatim}
+Note that this is the same thing as writing: 
+\begin{verbatim}
+    isEmpty = \(s, n) -> s == "" || n == 0\end{verbatim}
+Or, we can do: 
+\begin{verbatim}
+    isEmpty p = let (s, n) = p in s == "" || n == 0\end{verbatim}
+Let's suppose now that you want to have both the pair and the components; then, we can either use the example above or we can do 
+\begin{verbatim}
+    isEmpty p@(s, n) = s == "" || n == 0\end{verbatim}
+Note that, with equations and patterns, we can have multiple equations with multiple patterns. However, with \code{let}-patterns and lambda patterns, you can only have one. In particular, we can do this with equations: 
+\begin{verbatim}
+    isEmpty ("", _)     = True 
+    isEmpty (_, 0)      = True 
+    isEmpty _           = False
+\end{verbatim}
+
+\begin{mdframed}[]
+    (Quiz.) Suppose you have the following function definition and implementation: 
+    \begin{verbatim}
+        f :: String -> [(String, Int)] -> Int 
+        f _ []      = 0
+        f x ((k, v) : ps)
+            | x == k        = v
+            | otherwise     = f x ps \end{verbatim}
+    What happens if the function is called with input \code{f "hi" [("hi", 5), ("apple", 10)]}?
+    \begin{enumerate}[(a)]
+        \item Syntax error. 
+        \item Type error. 
+        \item First pattern matches. 
+        \item Second pattern matches and binds
+        \begin{verbatim}
+            x -> "hi", k -> ("hi", 5), v -> ("apple", 10)\end{verbatim}
+        \item Second pattern matches and binds 
+        \begin{verbatim}
+            x -> "hi", k -> "hi", v -> 5, ps -> [("apple", 10)]\end{verbatim}
+    \end{enumerate}
+
+    \begin{mdframed}[]
+        The answer is \textbf{E}. Since the list is non-empty, we know that the second equation must be executed. 
+        \begin{itemize}
+            \item Now, it should be obvious that \code{"hi"} binds to \code{x}. 
+            \item We also note that the \code{((k, v) : ps)} means that we're taking the head element (a tuple) and destructuring it into \code{k} and \code{v}; additionally, \code{ps} is the tail list (i.e. the list without the head). Therefore, \code{"hi"} binds to \code{k} and \code{5} binds to \code{v}.
+            \item Finally, since \code{((k, v) : ps)} breaks down the head element into its components and \code{ps} is the tail list (the list without the head element), it follows that \code{ps} must just be \code{[("apple", 10)]}. 
+        \end{itemize}
+    \end{mdframed}
+\end{mdframed}
+
+\subsubsection{Triples \& More}
+Of course, we can implement triples like in $\lambda$-calculus. However, Haskell has support for triples as well. In fact, Haskell has native support for $n$-tuples. 
+\begin{verbatim}
+    -- Pair
+    myPair  :: (String, Int)
+    myPair = ("apple", 3)
+
+    -- Triple 
+    myTriple :: (Bool, Int, [Int])
+    myTriple = (True, 1, [1, 2, 3])
+
+    -- 4-Tuple 
+    my4Tuple :: (Float, Float, Float, Float)
+    my4Tuple = (pi, sin pi, cos pi, sqrt 2)
+
+    ... \end{verbatim}
+One thing to note is that a one-tuple doesn't exist. While we could ``define'' one, it'll just be the same as the type itself. That is, \code{(a)} is the same thing as \code{a} for a type \code{a}.
+
+\bigskip
+
+A tuple with 0 elements, however, does make sense. A zero-tuple is known as an \emph{unit}\footnote{Because it has no value.}. It is defined like so: 
+\begin{verbatim}
+    myUnit :: ()
+    myUnit = ()\end{verbatim}
+
+
+\begin{mdframed}[]
+    (Quiz.) Assume that 
+    \begin{verbatim}
+        (+) :: Int -> Int -> Int.\end{verbatim}
+    Which of the following terms is \emph{ill-typed}?
+    
+    \begin{enumerate}[(a)]
+        \item \begin{verbatim}
+(\(x, y, z) -> x + y + z) (1, 2, True)\end{verbatim}
+        \item \begin{verbatim}
+(\(x, y, z) -> x + y + z) (1, 2, 3, 4)\end{verbatim}
+        \item \begin{verbatim}
+(\(x, y, z) -> x + y + z) [1, 2, 3]\end{verbatim}
+        \item \begin{verbatim}
+(\x y z -> x + y + z) (1, 2, 3)\end{verbatim}
+        \item All of the above. 
+    \end{enumerate}
+
+    \begin{mdframed}[]
+        The answer is \textbf{E}. To see why this is the case, we note that: 
+        \begin{itemize}
+            \item A is ill-typed because we cannot add an \code{Int} to a \code{Bool}. Note that this function takes in a triple of \code{Int}s because of the addition being performed on each component.
+            \item B is ill-typed because we're trying to pass a four-tuple as an argument to a function that accepts a triple.
+            \item C is ill-typed because we're trying to pass a list of three elements as an argument to a function that accepts a triple. A list is \emph{not} a tuple. 
+            \item D is ill-typed because we're trying to pass a triple as an argument to a function that accepts three arguments.
+        \end{itemize}
+    \end{mdframed}
+\end{mdframed}
+
+\subsection{List Comprehension}
+List comprehension is a conveninent way to construct lists from other lists. To get an idea of what we mean, suppose we want to convert a string $s$ to its uppercase form (e.g. \code{abc} becomes \code{ABC}). Using list comprehension, we can do: 
+\begin{verbatim}
+    comp1 s = [toUpper c | c <- s]\end{verbatim}
+Here, note that \code{toUpper} is a library function on characters that converts a character to uppercase. So, this is basically saying: call \code{toUpper} on \code{c} for each character \code{c} in the string \code{s}. In Python, we can write: 
+\begin{verbatim}
+    [c.upper() for c in "hello"]\end{verbatim}
+We say that the part on the right (i.e. to the right of the pipe) is called the \textbf{generator}. We can also have multiple generators! For example, consider the following expression (which uses multiple generators where one generator depends on the other):
+\begin{verbatim}
+    comp2 = [(i, j) | i <- [1..3],
+                      j <- [1..i]]\end{verbatim}
+Essentially, this is saying that we're creating (ordered) pairs $(i, j)$ such that $j \leq i$ for all $i \in \{1, 2, 3\}$. Mathematically, this means 
+\[\code{comp2} = \{(i, j) \mid i \in \{1, 2, 3\}, j \in \{1, \dots, i\}\}.\]
+Thus, \code{comp2} will contain the list:
+\begin{verbatim}
+    [(1, 1), (2, 1), (2, 2), (3, 1), (3, 2), (3, 3)]\end{verbatim}
+Another example is: 
+\begin{verbatim}
+    comp3 = [(i, j) | i <- [0..5],
+                      j <- [0..5],
+                      i + j == 5]
+\end{verbatim}
+Here, \code{comp3} is the list of all (ordered) pairs $(i, j)$ where $i + j = 5$ and $i, j \in \{0, 1, 2, 3, 4, 5\}$. Mathematically, this means 
+\[\code{comp3} = \{(i, j) \mid i, j \in \{0, \dots, 5\}, i + j = 5\}.\]
+So, \code{comp3} would contain the list:
+\begin{verbatim}
+    [(0, 5), (1, 4), (2, 3), (3, 2), (4, 1), (5, 0)]\end{verbatim}
+
+\subsubsection{Quicksort}
+A quicksort implementation is as follows: 
+\begin{verbatim}
+    sort :: [Int] -> [Int]
+    -- Base Case
+    sort []         = [] 
+    -- Otherwise, let 'x' be the pivot, since we conveninently have it.
+    -- Then, we want to sort the list with respect to the pivot. 
+    -- In particular, we have a list 'ls' which contains all elements 
+    -- smaller than or equal to the pivot, and a list 'rs' which contains  
+    -- all elements bigger than the pivot. 
+    sort (x : xs)   = sort ls ++ [x] ++ sort rs 
+        where 
+            -- We use list comprehension to create the sublists based 
+            -- on the pivot values (as described above).
+            ls      = [l | l <- xs, l <= x]
+            rs      = [r | r <- xs, x < r]
+\end{verbatim}
+
+
+
+\end{document}
