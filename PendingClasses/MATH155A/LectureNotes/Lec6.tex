@@ -1,0 +1,62 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{MATH 155A}
+\chead{Thursday, April 14, 2022}
+\lhead{Lecture 6}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\section{Moving to \texorpdfstring{$\R^3$}{Three-Dimensions}}
+\subsection{Rigid \& Orientation-Preserving Transformations}
+
+\subsubsection{Rigid, Orientation-Preserving Transformations in \texorpdfstring{$\R^2$}{Two-Dimensions}}
+\begin{theorem}{}{}
+    Let $A$ be a rigid, orientation-preserving map on $\R^2$. 
+    \begin{enumerate}
+        \item If $A(\mathbf{0}) = \mathbf{0}$, then $A$ is a rotation $R_{\theta}$ for some $\theta$. 
+        \item If $A(\mathbf{u}) = \mathbf{u}$, then $A$ is a generalized rotation $R_{\theta}^{\mathbf{u}}$. 
+        \item \emph{In general}, $A$ is either a translation $T_{\mathbf{u}}$ or a generalized rotation $R_{\theta}^{\mathbf{u}}$ for some $\mathbf{u}$ (and some $\theta$).
+    \end{enumerate}
+\end{theorem}
+
+The proof for this theorem depends on this lemma:
+\begin{lemma}{}{}
+    Suppose $\mathbf{x} \neq \mathbf{y}$. Then, $A$ is uniquely determined by $\mathbf{u} = A(\mathbf{x})$ and $\mathbf{v} = A(\mathbf{y})$. 
+\end{lemma}
+
+\subsubsection{Euler's Theorem on Rotations in 3-Space}
+\begin{theorem}{}{}
+    Let $A: \R^3 \mapsto \R^3$ be a linear, orientation-preserving and rigid map. Then, $A$ is a rotation $R_{\theta, \mathbf{u}}$ for some $\theta$, $\mathbf{u}$ where $\mathbf{u} \neq 0$. 
+\end{theorem}
+
+\begin{lemma}{}{}
+    Suppose $A(\mathbf{u}) = \mathbf{u}$ for some $\mathbf{u}$ such that $||\mathbf{u}|| = 1$. Then, $A$ is a rotation $R_{\theta, \mathbf{u}}$ for some $\theta$. 
+\end{lemma}
+
+What if $A$ is rigid, orientation-preserving, but $A(\mathbf{0}) \neq \mathbf{0}$? This is sometimes known as a glide rotation (or a screw motion).
+
+\subsubsection{Finding the Center of Generalized Rotation}
+Consider the following transformation:
+\begin{center}
+    \includegraphics[scale=0.4]{../assets/gener.png}
+\end{center}
+Here, we have that $A(\mathbf{x}) = R_{90^{\circ}}(\mathbf{x}) + \begin{bmatrix}
+    3 \\ 0
+\end{bmatrix}$. In other words, $A = T_{\cyclic{3, 0}} \circ R_{90^{\circ}}$. Our goal is to express $A$ as a generalized rotation; that is, $A = R_{\theta}^{\mathbf{u}}$. It should be obvious that $\theta = 90^{\circ}$. Then, we need to find a $\mathbf{u}$ such that $A(\mathbf{u}) = \mathbf{u}$. 
+
+\bigskip 
+
+First, we want to choose a point $\mathbf{v}$ where $A(\mathbf{v}) \neq \mathbf{v}$. Let $\mathbf{w} = A(\mathbf{v})$.
+
+
+\end{document}
