@@ -1,0 +1,247 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{CSE 130}
+\chead{Friday, April 22, 2022}
+\lhead{Lecture 12}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\section{Representing Complex Data}
+
+\subsection{Building Data Types}
+There are three ways to build complex types/values: 
+\begin{itemize}
+    \item \textbf{Product Types} (each-of): a value of \code{T} contains a value of \code{T1} and a value of \code{T2}.
+    \item \textbf{Sum Type} (one-of): a value of \code{T} contains a value of \code{T1} \emph{or} a value of \code{T2}.
+\end{itemize}
+
+\subsubsection{Product Type}
+Suppose we wanted to represent a date as a tuple of \code{Int}s. 
+\begin{verbatim}
+    deadlineDate :: (Int, Int, Int)
+    deadlineDate = (4, 29, 2022)
+
+    deadlineTime :: (Int, Int, Int)
+    deadlineTime = (11, 59, 59)
+
+    -- Deadline date extended by one day
+    extendedDate :: (Int, Int, Int) -> (Int, Int, Int)\end{verbatim}
+There are a few issues here.
+\begin{itemize}
+    \item This is verbose and unreadable.
+    \begin{mdframed}[]
+        A \textbf{type synonym} for \code{T} is a name that can be used interchangeably with \code{T}. For example, 
+        \begin{verbatim}
+    type Date = (Int, Int, Int)
+    type Time = (Int, Int, Int)
+    
+    deadlineDate :: Date
+    deadlineDate = (4, 29, 2022)
+    
+    deadlineTime :: Time
+    deadlineTime = (11, 59, 59)
+    
+    -- | Deadline date extended by one day
+    extendedDate :: Date -> Date
+        \end{verbatim}
+    \end{mdframed}
+    \item You can put the time into the \code{extendedDate} function.
+    \begin{mdframed}[]
+        We want \code{extendedDate deadlineTime} to fail at compile-time. A solution is to construct two different \textbf{datatypes}.
+        \begin{verbatim}
+    data Date = Date Int Int Int
+    data Time = Time Int Int Int 
+    -- constructor ^ ^^^^^^^^^^^ parameter types
+    deadlineDate :: Date 
+    deadlineDate = Date 4 29 2022 
+
+    deadlineTime :: Time 
+    deadlineTime = Time 11 59 59
+        \end{verbatim}
+        
+    \end{mdframed}
+\end{itemize}
+
+\begin{mdframed}[]
+    (Quiz.) Consider the following datatype. 
+    \begin{verbatim}
+        data Date = Date Int Int Int \end{verbatim}
+    What would GHCi say to the following?  
+    \begin{verbatim}
+        >:t Date 4 29 2022\end{verbatim}
+    
+    \begin{enumerate}[(a)]
+        \item Syntax error. 
+        \item Type error. 
+        \item \code{(Int, Int, Int)}
+        \item \code{Date}
+        \item \code{Date Int Int Int}
+    \end{enumerate}
+
+    \begin{mdframed}[]
+        The answer is \textbf{D}. 
+    \end{mdframed}
+\end{mdframed}
+
+\subsubsection{Record Syntax}
+Consider the following datatype: 
+\begin{verbatim}
+    data Date = Date Int Int Int \end{verbatim}
+It might be hard for us to tell what each \code{Int} means. So, we can use Haskell's \textbf{record syntax} to name the constructor parameters:
+\begin{verbatim}
+    data Date = Date {
+        month   :: Int, 
+        day     :: Int, 
+        year    :: Int 
+    }\end{verbatim}
+Then, we can do:
+\begin{verbatim}
+    deadlineDate = Date { month = 4, date = 29, year = 2022 }\end{verbatim}
+To extract a field value, we can treat the name as a function: 
+\begin{verbatim}
+    deadlineMonth = month deadlineDate\end{verbatim}
+
+
+\subsubsection{Sum Type}
+Suppose I want to represent a \emph{text document} with simple markup. Each paragraph is either 
+\begin{itemize}
+    \item Plain text (\code{String}).
+    \item Heading: level and text (\code{Int} and \code{String}).
+    \item List: whether it is ordered and items (\code{Bool} and \code{[String]}).
+\end{itemize}
+Now, let's suppose we store all paragraphs in a list: 
+\begin{verbatim}
+    doc = [
+        (1, "Notes from 130"),                                        -- Level 1 heading 
+        "There are two types of languages:",                          -- Plain text
+        (True, ["those people complain about", "those no one uses"])  -- Ordered list
+    ]
+\end{verbatim}
+This won't work because lists need to have one type only. The solution is to use \textbf{sum types} -- construct a new type that is a sum of (one-of) the three operations: 
+\begin{verbatim}
+    data Paragraph = PText String 
+        | PHeading Int String 
+        | PList Bool [String]
+\end{verbatim}
+
+\begin{mdframed}[]
+    (Quiz.) Consider the following datatype:
+    \begin{verbatim}
+        data Paragraph = PText String | PHeading Int String | PList Bool [String]\end{verbatim}
+    What would GHCi say to 
+    \begin{verbatim}
+        >:t PText "Hey there!"\end{verbatim}
+    
+    \begin{enumerate}[(a)]
+        \item Syntax error 
+        \item Type error 
+        \item \code{PText}
+        \item \code{String}
+        \item \code{Paragraph}
+    \end{enumerate}
+
+    \begin{mdframed}[]
+        Tha answer is \textbf{E}. Here, the type of \code{PText} is 
+        \begin{verbatim}
+            PText :: String -> Paragraph\end{verbatim}
+    \end{mdframed}
+\end{mdframed}
+So, to construct a sum type, we use the notation 
+\begin{verbatim}
+    data T = C1 T11 .. T1k 
+        | C2 T21 .. T2l 
+        | .. 
+        | Cn Tn1 .. Tnm \end{verbatim}
+Here, \code{T} is the new datatype and \code{C1 .. Cn} are the constructors of \code{T}. A value of type \code{T} is either 
+\begin{itemize}
+    \item \code{C1 v1 .. vk} with \code{v1 :: T1i}
+    \item or \code{C2 v1 .. vl} with \code{vi :: T2i}
+    \item ... 
+    \item or \code{Cn v1 .. vm} with \code{vi :: Tni}
+\end{itemize}
+How would we actually interpret a sum type? Using pattern matching!
+\begin{verbatim}
+    html :: Paragraph -> String 
+    html (PText str)        = ... 
+    html (PHeading lvl str) = ...
+    html (PList ord items)  = ...
+\end{verbatim}
+
+\subsubsection{Dangers of Pattern Matching}
+\begin{itemize}
+    \item Consider the following: 
+    \begin{verbatim}
+        html :: Paragraph -> String 
+        html (PText str)        = ... 
+        html (PList ord items)  = ... \end{verbatim}
+\end{itemize}
+
+\subsubsection{Pattern Matching Syntax}
+We can also use pattern-matching in a program using the \code{case} expression. For example, 
+\begin{verbatim}
+    html :: Paragraph -> String 
+    html p = 
+        case p of 
+            PText str           -> ...
+            PHeading lvl str    -> ... 
+            PList ord items     -> ... \end{verbatim}
+
+\begin{mdframed}[]
+    (Quiz.) Consider the following datatype:
+    \begin{verbatim}
+        data Paragraph = PText String | PHeading Int String | PList Bool [String]\end{verbatim}
+    What is the type of the following?
+    \begin{verbatim}
+        case PText "Hey there!" of 
+            PText _      -> 1
+            PHeading _ _ -> 2
+            PList _ _    -> 3\end{verbatim}
+    
+    \begin{enumerate}[(a)]
+        \item Syntax error 
+        \item Type error 
+        \item \code{Paragraph}
+        \item \code{Int}
+        \item \code{Paragraph -> Int}
+    \end{enumerate} 
+
+    \begin{mdframed}[]
+        The answer is \textbf{D}. Here, we passed in an value \code{PText "Hey there!"}, which matches with the first branch and returns \code{1}.
+    \end{mdframed}
+\end{mdframed}
+
+\begin{mdframed}[]
+    (Quiz.) Consider the following datatype:
+    \begin{verbatim}
+        data Paragraph = PText String | PHeading Int String | PList Bool [String]\end{verbatim}
+    What is the type of the following? 
+    \begin{verbatim}
+        case PText "Hey there!" of 
+            PText str       -> str 
+            PHeading lvl _  -> lvl 
+            PList ord _     -> ord \end{verbatim}
+
+    \begin{enumerate}[(a)]
+        \item Syntax error
+        \item Type error 
+        \item \code{String}
+        \item \code{Paragraph}
+        \item \code{Paragraph -> String}
+    \end{enumerate}
+
+    \begin{mdframed}[]
+        The answer is \textbf{B}. The \code{case} expression takes in a \code{Paragraph} and appear to return either a \code{String} (the first branch) or an \code{Int} (the second branch) or a \code{Bool} (the third branch). However, it is required that the return type is the same across all branches. 
+    \end{mdframed}    
+\end{mdframed}
+
+\end{document}
