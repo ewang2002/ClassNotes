@@ -5,7 +5,6 @@ These are notes for classes that I will be taking. The notes will most certainly
 Below, I'll very briefly list the notes contained in these folders.
 
 ### Spring 2022
-- `Math180A`
-- `CSE130`
-- `POLI28`
-- `Math155A`
+- `Math180A`: Introduction to Probability
+- `CSE130`: Programming Languages
+- `POLI28`: Ethics & Society II (probably won't maintain it).
