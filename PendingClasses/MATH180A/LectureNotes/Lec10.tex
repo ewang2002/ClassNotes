@@ -1,0 +1,144 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{MATH 180A}
+\chead{Wednesday, April 20, 2022}
+\lhead{Lecture 10}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\section{Conditional Probability: Continuous Case}
+Conditional probability is slightly different in the ``world'' of continuous random variables. Most of the same definitions carry over from the discrete case, but since we're dealing with \emph{PDFs}\footnote{Remember, PDFs are not probabilities; they are densities. They allow us to get a probability by integrating, but they're not probabilities.} $f(x)$ instead of PMFs $p(x) = \PR(X = x)$ (which are probabilities, unlike PDFs).
+
+\bigskip 
+
+Recall that if $\PR(\omega)$ is a discrete probability distribution and $\PR(B) > 0$, then the distribution $\PR(\omega | B) = \frac{\PR(\omega)}{\PR(B)}$ is a probability distribution on $B$.
+\begin{definition}{}{}
+    Let $X$ be a continuous random variable with PDF $f$. Suppose that $B$ is an event with $\PR(B) > 0$. Then, the conditional PDF of $X$, given $B$, is 
+    \[f(x | B) = \begin{cases}
+        \frac{f(x)}{\PR(B)} & x \in B \\ 
+        0 & x \notin B
+    \end{cases}.\]
+\end{definition}
+We note that $f(x) \geq 0$ and 
+\[\int_{-\infty}^{\infty} f(x | B) dx = \frac{1}{\PR(B)} \int_{B} f(x) dx = \frac{1}{\PR(B)} \PR(B) = 1.\]
+Note that the integration over a region gives us the probability of being in that region, i.e. integrating $f(x)$ over the region $B$ gives us just $\PR(B)$. Therefore, $f(x | B)$ is indeed a probability density on $B$. 
+
+\begin{mdframed}[]
+    (Example.) Recall the spinner example. The location of the spinner, when it eventually comes to rest, is uniform on the unit circle; thus, 
+    \[f(x) = 1 \text{ for } x \in [0, 1).\]
+    Suppose that the spinner comes to rest in the upper-half of the circle, i.e. in $[0, 1/2]$. What is the (conditional) probability with which it lands in the region $[1/6, 2/3]$?
+
+    \begin{mdframed}[]
+        The probability of $B$ occurring (the event that the spinner lands in the upper-half of the circle) is $\frac{1}{2}$ since it is uniform from $[0, 1)$.
+
+        \bigskip 
+
+        Normally, we would integrate from $\frac{1}{6}$ to $\frac{2}{3}$. However, since we know that the spinner lands in the region $[0, 1/2]$, we know that there is no density \emph{outside} of this region. Since $x$ is outside of the region for $\frac{1}{2} \leq x \leq \frac{2}{3}$, we don't need to consider it. Instead, we only need to consider the region $[1/6, 1/2]$. Hence,
+        \[\int_{\frac{1}{6}}^{\frac{1}{2}} \frac{1}{1/2} dx = \frac{2/6}{1/2} = \frac{2}{3}.\]
+    \end{mdframed}
+\end{mdframed}
+
+Recall that the CDF of a continuous random variable is the function 
+\[F(x) = \PR(X \leq x) = \int_{-\infty}^{x} f(u) du.\]
+
+\begin{definition}{}{}
+    A sequence of random variables $X_1, \dots, X_n$ is said to be \textbf{mutually independent} if their joint CDF is the product of the individual CDF. That is, if 
+    \[F(x_1, \dots, x_n) = \PR(X_1 \leq x_1, \dots, X_n \leq x_n) = \prod_{i = 1}^{n} F_{i}(x_i)\]
+    for \emph{all} $x_1, \dots, x_n$. 
+\end{definition}
+By calculus, we can find the joint PDF of a sequence of continuous random variables by differentating: 
+\[f(x_1, \dots, x_n) = \frac{\partial^n}{\partial x_1, \dots, \partial x_n} F(x_1, \dots, x_n).\]
+From this, we have the following theorem: 
+\begin{theorem}{}{}
+    $X_1, \dots, X_n$ are mutually independent if and only if their joint PDF is the product of the individual PDFs, $f(x_1, \dots, x_n) = \prod_{i = 1}^{n} f_{i}(x_i)$. 
+\end{theorem}
+Additionally, consider the following theorem: 
+\begin{theorem}{}{}
+    If $X_1, \dots, X_n$ are mutually independent, and $f$ is a continuous function, then $f(X_1), \dots, f(X_n)$ are mutually independent.
+\end{theorem}
+
+\begin{mdframed}[]
+    (Example.) Suppose that $X_1$ and $X_2$ are independent exponential random variables with rates $\lambda_1$ and $\lambda_2$. Find the PDF of $M = \min\{X_1, X_2\}$. 
+
+    \begin{mdframed}[]
+        Recall that if $X$ is an exponential rate $\lambda$ random variable if and only if its survival function is 
+        \[S(x) = 1 - F(x) = P(X > x) = e^{-\lambda x}.\]
+        Since $X_1, X_2$ are independent, their joint PDF is the product (from differentating)
+        \[f(x_1, x_2) = f_{1}(x_1) f_{2}(x_2) = \lambda_1 e^{-\lambda_1 x_1} \cdot \lambda_2 e^{-\lambda_2 x_2}.\]
+        Also, note that $M = \min\{X_1, X_2\} > m$ if and only if $X_1 > m$ and $X_2 > m$. Hence,
+        \begin{equation*}
+            \begin{aligned}
+                \PR(M > m) &= \int_{m}^{\infty} \int_{m}^{\infty} f(x_1, x_2) dx_1 dx_2 \\ 
+                    &= \left(\int_{m}^{\infty} \lambda_1 e^{-\lambda_1 x_1} dx_1\right) \left(\int_{m}^{\infty} \lambda_2 e^{-\lambda_2 x_2} dx_2\right) \\ 
+                    &= \PR(X_1 > m) \PR(X_2 > m) \\ 
+                    &= e^{-\lambda_1 m} e^{-\lambda_2 m} \\ 
+                    &= e^{-(\lambda_1 + \lambda_2)m}.
+            \end{aligned}
+        \end{equation*}
+        Therefore, $M = \min\{X_1, X_2\}$ is an exponential random variable with rate $\lambda_1 + \lambda_2$ (the sum of the rates of $X_1$ and $X_2$). 
+    \end{mdframed}
+\end{mdframed}
+
+\subsection{Memoryless Property of Exponential Variables}
+\begin{theorem}{}{}
+    Suppose $X$ is exponential with rate $\lambda$. Then, $X$ has no memory, in the sense that for any $t, s > 0$, 
+    \[\PR(X > s + t | X > s) = \PR(X > t).\]
+\end{theorem}
+That is, given the \emph{survival} of $X$ to time $s$, it then behaves like a ``brand new'' exponential rate $\lambda$ random variable. 
+
+\begin{mdframed}[]
+    \begin{proof}
+        Note that $\PR(X > x) = e^{-\lambda x}$ for any $x > 0$. Hence, 
+        \[\PR(X > s + t | X > s) = \int_{s + t}^{\infty} \frac{\lambda e^{-\lambda x}}{e^{-\lambda s}} dx = e^{\lambda s} \PR(X > s + t) = e^{\lambda s} e^{-\lambda (s + t)} = e^{-\lambda t}.\]
+        Hence, this is equal to $\PR(X > t)$ as claimed. 
+    \end{proof}
+\end{mdframed}
+
+\begin{mdframed}[]
+    (Example: Beta Distribution.) The $\text{Beta}(\alpha, \beta)$ random variable, with parameters $\alpha, \beta > 0$, has PDF 
+    \[f(x) = B(\alpha, \beta, x) = \frac{x^{\alpha - 1}(1 - x)^{\beta - 1}}{B(\alpha, \beta)}\]
+    for $x \in [0, 1]$ (and $f(x) = 0$ otherwise), where 
+    \[B(\alpha, \beta) = \int_{0}^{1} x^{\alpha - 1}(1 - x)^{\beta - 1} dx\]
+    is the beta integral. Now, when $\alpha, \beta$ are integers, then 
+    \[B(\alpha, \beta) = \frac{(\alpha - 1)!(\beta - 1)!}{(\alpha + \beta - 1)!}.\] 
+    Note that when $\alpha = \beta = 1$, then $B(\alpha, \beta, x) = 1$. Thus, $\text{Beta}(1, 1)$ is uniform on $[0, 1]$. 
+\end{mdframed}
+The beta distribution is used in \textbf{Bayesian statistics}. 
+\begin{mdframed}[]
+    (Example: Drug Testing.) Suppose that a drug has an unknown probability $X$ of being effective. Therefore, the first time it is administered, it would be quite natural to assume that the distribution of $X$ is uniform on $[0, 1]$. However, as time goes on, and more data is collected, we might want to update this distribution. For example, if it is successful in all except 6 of the first 100 trials, a uniform distribution would no longer seem appropriate. 
+
+    \bigskip 
+
+    Suppose that we given this drug to $n$ patients. Assuming independence, we can model this as a series of $n$ Bernoulli trials with (unknown) success probability $X$. If $X = x$, then the probability that the $i$ trials will be successful is the binomial probability 
+    \[b(n, x, i) = \binom{n}{i} x^i (1 - x)^{n - i}.\]
+    Hence, the conditional PMF is $p(i | x) = b(n, x, i)$. 
+
+    \bigskip 
+
+    If $X$ is uniform on $[0, 1]$, which has PDF of 1 on $[0, 1]$, then the $i$ of the $n$ trials will be successful with probability
+    \[\int_0^1 1 \cdot p(i | x) dx = \int_0^1 b(n, x, i)dx = \binom{n}{i} \int_0^1 x^i (1 - x)^{n - i} dx.\]
+    We note that 
+    \[\int_0^1 x^i (1 - x)^{n - i} dx = B(i + 1, n - i + 1).\]
+    Hence, the PMF is given by 
+    \[p(i) = \binom{n}{i} B(i + 1, n - i + 1).\]
+    Now, still assuming that $X$ is uniform, note that the joint distribution is given by $f(x, i) = p(i | x) \cdot 1 = b(n, x, i)$. So, the conditional PDF is 
+    \[f(x | i) = \frac{f(x, i)}{p(i)} = \frac{b(n, x, i)}{\binom{n}{i} B(i + 1, n - i + 1)} = \frac{x^i (1 - x)^{n - i}}{B(i + 1, n - i + 1)},\]
+    which is the PDF of a $\text{Beta}(i + 1, n - i + 1)$ random variable.
+
+    \bigskip 
+
+    In fact, we could continue to update this distribution as we go along and continue to collect more data. So, for the first patient, we have seen 0 successes and 0 failures (no data yet). So, we assume that the probability of success on the first patient is distributed as a $\text{Beta}(1, 1) = \text{Uniform}[0, 1]$ random variable. 
+\end{mdframed}
+
+
+\end{document}
