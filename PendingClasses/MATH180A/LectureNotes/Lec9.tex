@@ -1,0 +1,70 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{MATH 180A}
+\chead{Monday, April 18, 2022}
+\lhead{Lecture 9}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\section{Conditional Probability}
+\subsection{Bayes' Formula}
+Bayes' Formula is a powerful -- and very famous -- application of the conditional probability formula. Often, it can be difficult to calculate a conditional probability $\PR(A | B)$ of interest. However, the other way around, $\PR(B | A)$, could be easier to find. Bayes' Formula gives us a way of finding $\PR(A | B)$, provided that we know $\PR(A)$, $\PR(B)$, and $\PR(B | A)$. Recall that the conditional probability formula is given by 
+\[\PR(A | B) = \frac{\PR(A \cap B)}{\PR(B)}.\]
+We also know that 
+\[\PR(B | A) = \frac{\PR(A \cap B)}{\PR(A)}.\]
+So, solving for $\PR(A \cap B)$, we have 
+\[\PR(A \cap B) = \PR(A | B) \PR(B) \qquad \PR(A \cap B) = \PR(B | A) \PR(A).\]
+Then, setting these terms equal to each other, we have 
+\[\PR(A | B) \PR(B) = \PR(B | A) \PR(A).\]
+Thus, we get 
+\[\boxed{\PR(A | B) = \frac{\PR(A) \PR(B | A)}{\PR(B)}}.\]
+It is often useful to apply the conditional Law of Total Probability in the denominator; that is,
+\[\PR(B) = \PR(A) \PR(B | A) + \PR(A^C) \PR(B | A^C).\]
+So, sometimes, Bayes' Rule is stated like so:
+\[\boxed{\PR(A | B) = \frac{\PR(A) \PR(B | A)}{\PR(A) \PR(B | A) + \PR(A^C) \PR(B | A^C)}}.\]
+Now, there is a general version of Bayes' Rule; suppose that $B \subset \Omega$ is an event and $A_1, \dots, A_n$ partitions the sample space $\Omega$. Then, for each $1 \leq j \leq n$, we have 
+\[\boxed{\PR(A_j | B) = \frac{\PR(A_j) \PR(B | A_j)}{\sum_{i = 1}^{n} \PR(A_i) \PR(B | A_i)}}.\]
+Here\footnote{In this course, we aren't expected to memorize these.}, 
+\begin{itemize}
+    \item The $\PR(A_j)$ are called \textbf{prior probabilities}.
+    \item The $\PR(A_j | B)$ are called \textbf{posterior probabilities}.
+    \item The events $A_j$ are called \textbf{hypotheses}.
+    \item The event $B$ is called the \textbf{evidence}.
+\end{itemize}
+Often, we want to see which hypothesis is more likely given the evidence.
+
+\begin{mdframed}[]
+    (Example.) Suppose that a doctor gives a patient a test for cancer. Before the test, all we know is that, on average, 1 in every 1000 women develop this cancer. According to the manufacturer, this test is $99\%$ accurate at detecting the cancer, when it is there. However, there is a $5\%$ chance it will show positive when the cancer is not there (i.e. there is a $1\%$ chance of a false negative, and a $5\%$ chance of a false positive). To make things more clear:
+    \begin{itemize}
+        \item If she has the cancer, there's a $1\%$ chance the test will incorrectly say negative, and a $99\%$ chance the test will correctly say positive. 
+        \item If she does not have the cancer, there's a $5\%$ chance the test will incorrectly say positive.
+    \end{itemize}
+    Now, suppose that the patient tests positive. \emph{With what probability does she actually have the cancer?}
+
+    \begin{mdframed}[]
+        Let $C$ be the event that she has this cancer. Let $P$ be the event that this test is positive. We want to find $\PR(C | P)$. We know that 
+        \[\PR(C) = 0.001 \qquad \PR(P | C) = 0.99 \qquad \PR(P | C^C) = 0.05.\]
+        By Bayes' Rule, we have 
+        \[\PR(C | P) = \frac{\PR(C) \PR(P | C)}{\PR(C) \PR(P | C) + \PR(C^C) \PR(P | C^C)} = \frac{0.001(0.99)}{0.001(0.99) + 0.999(0.05)} \approx 1.94\%.\]
+    \end{mdframed}
+\end{mdframed}
+\textbf{Remark:} Given that the test is supposed to be $99\%$ accurate and that the patient tested positive, one would think that the patient has the cancer; so, a near $2\%$ probability that the patient has cancer is quite surprising. However, there are a few reasons why this may be the case.
+\begin{enumerate}
+    \item Even though the test is fairly accurate when you do have the cancer, when you don't have the cancer there is a decent chance ($5\%$) that it will be incorrect.
+    \item This cancer is \emph{extremely} rare; it's so rare that there is a much better chance that this test will incorrectly read positive than if you actually have cancer. 
+\end{enumerate}
+Now, without any additional information (i.e. without the test), we could only assume that the patient had this cancer with probability $0.1\%$. After testing positive, this probability increases by quite a bit, but it is still only $1.94\%$. This example demonstrates that it is very difficult to design an accurate test for a rare disease; in this example, the probability of a false positive is much more likely than the patient actually having cancer.
+
+% tree diagram 24:00
+
+\end{document}
