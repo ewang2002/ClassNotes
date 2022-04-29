@@ -1,0 +1,138 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{CSE 130}
+\chead{Friday, April 29, 2022}
+\lhead{Lecture 15}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+\section{Higher-Order Functions}
+
+\subsection{Map Function}
+Consider the function, \code{shout}, which takes in a \code{[Char]} and returns a \code{[Char]} where each element is uppercase. 
+\begin{verbatim}
+    shout :: [Char] -> [Char]
+    shout []        = [] 
+    shout (x:xs)    = toUpper x : shout xs\end{verbatim}
+Now consider the function \code{squares}, which takes in a \code{[Int]} and returns a \code{[Int]} where each element is squared.
+\begin{verbatim}
+    squares :: [Int] -> [Int]
+    squares []        = [] 
+    squares (x:xs)    = x * x : squares xs\end{verbatim}
+Notice that these two functions do nearly the same thing -- they go through each element and \emph{transform} (i.e. \emph{map}) each element to another element. This introduces the \emph{map} pattern, where we can do something like 
+\begin{verbatim}
+    map []          = []
+    map (x:xs)      = f x : map f xs\end{verbatim}
+Here, we can rewrite \code{shout} and \code{squares} like so: 
+\begin{verbatim}
+    shout   = map (\x -> toUpper x)
+    squares = map (\x -> x * x)\end{verbatim}
+\begin{mdframed}[]
+    (Quiz.) What is the type of \code{map}?
+    
+    \begin{enumerate}[(a)]
+        \item \code{(Char -> Char) -> [Char] -> [Char]}
+        \item \code{(Int -> Int) -> [Int] -> Int}
+        \item \code{(a -> a) -> [a] -> [a]}
+        \item \code{(a -> b) -> [a] -> [b]}
+        \item \code{(a -> b) -> [c] -> [d]}
+    \end{enumerate}
+
+    \begin{mdframed}[]
+        The answer is \textbf{D}. Keep in mind that you can \emph{map} one type to another type (including the original type). For example, you could map an \code{[Int]} to a \code{[Char]} by mapping each integer to its string representation (e.g. \code{10 -> "10"}).
+    \end{mdframed}
+\end{mdframed}
+The type essentially says it all. The only meaningful thing a function of this type can do is apply its first argument to elements of the list.
+
+\subsection{Folding Right}
+Recall that the length of the list can be found by 
+\begin{verbatim}
+    len :: [a] -> Int 
+    len []      = 0
+    len (x:xs)  = 1 + len xs \end{verbatim}
+Recall that summing a list can be done by 
+\begin{verbatim}
+    sum :: [Int] -> Int 
+    sum []      = 0
+    sum (x:xs)  = x + sum xs \end{verbatim}
+Recall that string concatenation can be done by  
+\begin{verbatim}
+    cat :: [String] -> String 
+    cat []      = ""
+    cat (x:xs)  = x ++ cat xs \end{verbatim}
+This is an example of the \emph{fold-right} pattern. We can generalize this to the function 
+\begin{verbatim}
+    foldr f b []        = b
+    foldr f b (x:xs)    = f x (foldr f b xs)\end{verbatim}
+Here, \code{b} is the base value. The general pattern is to recurse on the list, combining the result with the head using some binary operation. So, the above functions can be rewritten like so: 
+\begin{verbatim}
+    len = foldr (\x n -> 1 + n) 0
+    sum = foldr (\x n -> x + n) 0 
+    cat = foldr (\x s -> x ++ s) ""\end{verbatim}
+
+\begin{mdframed}[]
+    (Quiz.) What does this evaluate to? 
+    \begin{verbatim}
+        foldr f b []        = b
+        foldr f b (x:xs)    = f x (foldr f b xs)
+
+        quiz = foldr (:) [] [1, 2, 3]\end{verbatim}   
+        
+    \begin{enumerate}[(a)]
+        \item Type error.
+        \item \code{[1, 2, 3]}
+        \item \code{[3, 2, 1]}
+        \item \code{[[3], [2], [1]]}
+        \item \code{[[1], [2], [3]]}
+    \end{enumerate}
+
+    \begin{mdframed}[]
+        The answer is \textbf{B}. Recall that \code{(:)} is the \emph{cons} operator. In particular, recall that \code{1:(2:(3:[])) => [1, 2, 3]}. Running through this example, we have 
+        \begin{verbatim}
+            foldr (:) [] [1,2,3]
+            ==> (:) 1 (foldr (:) [] [2, 3])
+            ==> (:) 1 ((:) 2 (foldr (:) [] [3]))
+            ==> (:) 1 ((:) 2 ((:) 3 (foldr (:) [] [])))
+            ==> (:) 1 ((:) 2 ((:) 3 []))
+            ==  1 : (2 : (3 : []))
+            ==  [1,2,3]\end{verbatim}
+        thus giving us the desired answer. 
+    \end{mdframed}
+\end{mdframed}
+
+To see the pattern, consider a more general example: 
+\begin{verbatim}
+    foldr f b [x1, x2, x3, x4]
+    ==> f x1 (foldr f b [x2, x3, x4])
+    ==> f x1 (f x2 (foldr f b [x3, x4]))
+    ==> f x1 (f x2 (f x3 (foldr f b [x4])))
+    ==> f x1 (f x2 (f x3 (f x4 (foldr f b []))))
+    ==> f x1 (f x2 (f x3 (f x4 b)))
+\end{verbatim}
+The reason why it's called \emph{fold-right} is because it processes the elements from the \emph{right} -- that is, it combines the base value $b$ with the last element, and then combines the second-to-last value with the now modified last value, and so on. 
+
+\begin{mdframed}[]
+    (Quiz.) Using the definition of \code{foldr}, what is the most general type? 
+    \begin{enumerate}[(a)]
+        \item \code{(a -> a -> a) -> a -> [a] -> a}
+        \item \code{(a -> a -> b) -> a -> [a] -> b}
+        \item \code{(a -> b -> a) -> b -> [a] -> b}
+        \item \code{(a -> b -> b) -> b -> [a] -> b}
+        \item \code{(b -> a -> b) -> b -> [a] -> b}
+    \end{enumerate}
+
+    \begin{mdframed}[]
+        The answer is \textbf{D}.
+    \end{mdframed}
+\end{mdframed}
+
+\end{document}

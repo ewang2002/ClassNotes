@@ -1,0 +1,35 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{CSE 130}
+\chead{Wednesday, April 27, 2022}
+\lhead{Lecture 14}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\section{Representing Complex Data}
+\subsection{Trees}
+\subsubsection{Functions on Trees}
+We will now write some functions on trees. One common function is finding the \emph{height}\footnote{Height of the \emph{nodes}, not the leaves.} of the tree. 
+\begin{verbatim}
+    height :: Tree -> Int 
+    height Leaf             = 0 
+    height (Node _ l r)     = 1 + max (height l) (height r)
+\end{verbatim}
+
+% generalized trees? 
+
+\newpage 
+\section{Higher-Order Functions}
+
+
+\end{document}
