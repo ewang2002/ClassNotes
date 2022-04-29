@@ -145,4 +145,45 @@ Now, how do we write said function to evaluate an expression?
     eval (Mul e1 e2)    = (eval e1) * (eval e2)
 \end{verbatim}
 
+
+\subsection{Trees}
+We can think of lists as \emph{unary trees}. 
+\begin{verbatim}
+     Cons 
+      1  
+        \
+         \ 
+          \ 
+          Cons 
+           2
+             \ 
+              \ 
+               \ 
+               Nil 
+\end{verbatim}
+
+In particular, we can represent lists using the following datatype:
+\begin{verbatim}
+    data List = Null | Cons Int List\end{verbatim}
+How do we represent binary trees? Generally, a binary tree is just a bunch of nodes that can either have more nodes or leaves. 
+
+\begin{mdframed}[]
+    (Quiz.) What is a Haskell datatype that can represent this binary tree?
+    \begin{center}
+        \includegraphics[scale=0.4]{../assets/tree-data-node.png}
+    \end{center}
+
+    \begin{enumerate}[(a)]
+        \item \code{data Tree = Leaf | Node Int Tree}
+        \item \code{data Tree = Leaf | Node Tree Tree}
+        \item \code{data Tree = Leaf | Node Int Tree Tree}
+        \item \code{data Tree = Leaf Int | Node Tree Tree}
+        \item \code{data Tree = Leaf Int | Node Int Tree Tree}
+    \end{enumerate}
+
+    \begin{mdframed}[]
+        The answer is \textbf{C}. Note that each \code{Node} has an \code{Int} value associated with it, but each \code{Leaf} doesn't. Also note that each \code{Node} -- which has two \code{Tree}s, hence the name -- can just be a \code{Leaf}.
+    \end{mdframed}
+\end{mdframed}
+
 \end{document}
