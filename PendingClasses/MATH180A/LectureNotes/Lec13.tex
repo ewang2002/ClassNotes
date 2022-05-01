@@ -1,0 +1,76 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{MATH 180A}
+\chead{Wednesday, April 27, 2022}
+\lhead{Lecture 13}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\section{Distributions and Densities}
+
+\subsection{CDF/PDF Transformations}
+We can use the distributions that we've talked about to build more \emph{complex} distributions. 
+
+\begin{theorem}{CDF Transformation Theorem}{}
+    Let $X$ be a continuous random variable and $\Phi$ is a strictly monotone function. Then, the random variable 
+    \[Y = \Phi(X)\]
+    has CDF
+    \begin{enumerate}
+        \item $F_{Y}(y) = F_{X}(\Phi^{-1}(y))$, if $\Phi$ is increasing. 
+        \item $F_{Y}(y) = 1 - F_{X}(\Phi^{-1}(y))$, if $\Phi$ is decreasing. 
+    \end{enumerate}
+\end{theorem}
+\begin{mdframed}[]
+    \begin{proof}
+        Suppose that $\Phi$ is strictly increasing. Then, the inverse function $\Phi^{-1}$ exists and is increasing. Therefore, \[\Phi(X) \leq y\] if and only if \[\Phi^{-1}(\Phi(X)) = X \leq \Phi^{-1}(y).\] Hence, \[F_{Y}(y) = \PR(Y \leq y) = \PR(\Phi(X) \leq y) = \PR(X \leq \Phi^{-1}(y)) = F_{X}(\Phi^{-1}(y)),\] as claimed. The strictly decreasing case is similar. 
+    \end{proof}
+\end{mdframed}
+Note that, by differentiating using the Calculus Chain Rule, we obtain the following corollary. 
+
+\begin{corollary}{PDF Transformation Theorem}{}
+    Let $X$ be a continuous random variable and $\Phi$ a strictly monotone function. Then, the random variable $Y = \Phi(X)$ has PDF
+    \[f_{Y}(y) = f_{X}(\Phi^{-1}(y)) \left|\frac{d}{dy} \Phi^{-1}(y)\right|.\]
+\end{corollary}
+Note that there is a transformation theorem in the case of discrete random variables, but it is much easier. In particular, the PMF of a random variable $Y = \Phi(X)$ is simply the function 
+\[p_{Y}(y) = \sum_{x: \Phi(x) = y} p_{X}(x).\]
+
+\begin{mdframed}[]
+    (Example.) Let $U$ be Uniform on $[0, 1]$. Then, consider the transformed version \[V = 1 - U,\] which is also uniform on $[0, 1]$. Note that \[\Phi(u) = 1 - u\] is decreasing, and $\Phi^{-1}(v) = 1 - v$. Therefore, by the CDF Transformation Theorem, we have 
+    \[F_{V}(v) = 1 - F_{U}(\Phi^{-1}(v)) = 1 - F_{U}(1 - v) = 1 - (1 - v) = v.\]
+    Hence, $V$ is Uniform on $[0, 1]$. 
+\end{mdframed}
+
+\begin{mdframed}[]
+    (Example.) Let $X$ be a standard Normal$(0, 1)$. Consider \[Y = X^2.\] Recall that $X$ has PDF \[\frac{1}{\sqrt{2\pi}} e^{-x^2 / 2}.\] The function \[\Phi(x) = x^2\] is not either only increasing or only decreasing; rather, it is decreasing when $x < 0$ and increasing when $x > 0$. Therefore, we cannot apply the Transformation Theorem as is, but we can still apply the idea of its proof. 
+
+    \bigskip 
+
+    Note that \[F_{Y}(y) = \PR(X^2 \leq y) = \PR(-\sqrt{y} \leq X \leq \sqrt{y}) = F_{X}(\sqrt{y}) - F_{X}(-\sqrt{y}).\] So, differentiating (to get the PDF), we find \[f_{Y}(y) = \frac{f_{X}(\sqrt{y}) + f_{X}(-\sqrt{y})}{2\sqrt{y}} = \frac{1}{\sqrt{2\pi y}} e^{-y / 2}.\]
+    Note that this is known as the \textbf{Chi-squared} distribution.
+\end{mdframed}
+
+\begin{mdframed}[]
+    (Example.) Select a random point $(X, Y)$ in the two-dimensional plane $\R$, by selecting two independent standard Normal$(0, 1)$ random variables $X$ and $Y$. Let \[R = \sqrt{X^2 + Y^2}\] be the distance from the origin $(0, 0)$. How is $R$ distributed? 
+
+    \bigskip 
+
+    Note that $X^2$ and $Y^2$ both have Chi-Squared distribution; in particular,
+    \[f_{X^2}(s) = \frac{1}{\sqrt{2\pi s}} e^{-s / 2}\]
+    for $s > 0$ and 
+    \[f_{Y^2}(s) = \frac{1}{\sqrt{2\pi t}} e^{-t / 2}\]
+    for $t > 0$. Since $X$ and $Y$ are independent, $X^2$ and $Y^2$ are also independent. So, if $R^2 = X^2 + Y^2 = r$, then we need $X^2 = s$ for some $s \geq 0$ and then $Y^2 = r - s \geq 0$. Hence, 
+    \[f_{R^2}(r) = \int_0^r f_{X^2}(s) f_{Y^2}(r - s) ds = \frac{1}{2\pi} \int_0^r \frac{e^{-s / 2}}{\sqrt{s}} \frac{e^{-(r - s) / 2}}{\sqrt{r - s}} ds = \frac{e^{-r / 2}}{2}.\]
+    Finally, we apply the Transformation Theorem one more time to obtain the PDF of $R = \sqrt{R^2}$; in particular, $f_{R}(r) = re^{-r^2 / 2}$ for $r > 0$. This is called the \textbf{Rayleigh} distribution. 
+\end{mdframed}
+
+\end{document}
