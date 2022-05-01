@@ -1,0 +1,106 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{MATH 180A}
+\chead{Monday, April 25, 2022}
+\lhead{Lecture 12}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\section{Distributions and Densities}
+\subsection{Types of Continuous Probability Distributions}
+The following are some of the most important continuous probability distributions, some of which we've seen before. 
+\begin{itemize}
+    \item Uniform 
+    \item Exponential 
+    \item Gamma 
+    \item Normal 
+    \item Cauchy 
+\end{itemize}
+
+\subsubsection{Uniform Distribution}
+\begin{definition}{Uniform Distribution}{}
+    $U$ has \textbf{Uniform}$[a, b]$ distribution, for $a < b$, if its PDF is 
+    \[f(u) = \frac{1}{b - a}\]
+    for $a \leq u \leq b$. 
+\end{definition}
+\textbf{Remark:} Note that $b - a$ is the \emph{length} of $[a, b]$. 
+
+\textbf{Note:} There are also higher-dimensional uniform distributions, but then we replace length with area of volume. 
+
+\subsubsection{Exponential Distribution}
+\begin{definition}{Exponential Distribution}{}
+    $X$ is Exponential($\lambda$) with rate $\lambda > 0$ if its PDF is 
+    \[f(x) = \lambda e^{-\lambda x}\]
+    for $x > 0$. 
+\end{definition}
+Note that there is an important connection between the Exponential and the Poisson, which we will now describe. 
+\begin{mdframed}[]
+    (Example: Busy Server.) Suppose that a single server queue (e.g. call center, bank, etc.) is very busy, so that there is always someone in the queue. Suppose that service times are independent and Exponential($\lambda$)\footnote{As you wait longer, the time that you wait ``decays,'' or decreases.}. As soon as someone has been served, the next person in the queue starts being served immediately. Let $X_1, X_2, \dots$ be an IID sequence of Exponential($\lambda$) random variables. Then, the time $T_n$ at which the point the $n$th person has been served is distributed as \[\sum_{i = 1}^{n} X_i.\] This sum of $n$ IID Exponential($\lambda$) random variables has a special distribution, called the \textbf{Gamma}($n, \lambda$) distribution. This has PDF\footnote{When $n = 1$, this reduces to $\lambda e^{-\lambda x}$, the PDF of a single Exponential($\lambda$).} 
+    \[g(x) = \lambda e^{-\lambda x} \frac{(\lambda x)^{n - 1}}{(n - 1)!}\]
+    for $x > 0$.
+\end{mdframed}
+The Poisson distribution arises when we ask: What is the distribution for the number $N_t$ of people served by time $t > 0$? At any given time $t > 0$, we will (with probability 1, since the service times are continuous) be in the middle of serving someone. This person does not count towards $N_t$. 
+
+\bigskip 
+
+Note that $(N_t : t > 0)$ is called the \textbf{Poisson process}\footnote{This is a fascinating mathematical object with many properties and applications, which won't be covered here.}. This is a \emph{collection}, indexed by time, of random variables\footnote{Such an object is called a \textbf{stochastic process}.} In particular, the random variable $N_t$ has the Poisson($\lambda t$) distribution.
+
+\begin{mdframed}[]
+    \begin{proof}
+        Note that $N_t = k$ if and only if the $k$th person is served at some time $T_k = s \leq t$, and then the next service $X_{k + 1} > t - s$. In other words, we need to have finished serving $k$ people and be in the middle of serving the ($k + 1$)th person. Since \[T_k = \sum_{i = 1}^{k} X_i\] and $X_{k + 1}$ are independent, it follows that 
+        \[\PR(N_t = k) = \int_{0}^t f_{T_k}(s) [1 - F_{X_{k + 1}} (t - s)] ds.\]
+        Since $T_k$ is Gamma($k, \lambda$) and $X_{k + 1}$ is Exponential($\lambda$), it follows that 
+        \begin{equation*}
+            \begin{aligned}
+                \PR(N_t = k) &= \int_{0}^t f_{T_k}(s) [1 - F_{X_{k + 1}} (t - s)] ds \\ 
+                    &= \int_{0}^{t} \lambda e^{-\lambda s} \frac{(\lambda s)^{k - 1}}{(k - 1)!} \cdot e^{-\lambda (t - s)} ds \\ 
+                    &= e^{-\lambda t} \frac{\lambda^k}{(k - 1)!} \int_{0}^{t} s^{k - 1} ds \\ % TODO how? 
+                    &= e^{-\lambda t} \frac{(\lambda t)^k}{k!}.
+            \end{aligned}
+        \end{equation*}
+        Hence, this is the PMF of a Poisson, as claimed. 
+    \end{proof}
+\end{mdframed}
+
+\subsubsection{Normal/Gaussian Distribution}
+Recall that a Binomial converges to a Poisson if 
+\[p = \lambda / n \mapsto 0\]
+as \[n \mapsto \infty.\]
+On the other hand, if $p$ is \emph{fixed} (not converging to 0), the Binomial approaches a different distribution as $n \mapsto \infty$ called the \textbf{Normal} or \textbf{Gaussian} distribution. Indeed, as $n$ goes to infinity, we see a bell-shaped curve. 
+\begin{definition}{Normal Distribution}{}
+    $X$ is \textbf{Normal}($\mu, \sigma^2$) if its PDF is 
+    \[\frac{1}{\sigma \sqrt{2\pi}} e^{-\frac{(x - \mu)^2}{2 \sigma^2}}\]
+    for $-\infty < x < \infty$. 
+\end{definition}
+When $\mu = 0$ and $\sigma^2 = 1$, $X$ is called a standard normal, and its PDF is given the special notation 
+\[\Phi(x) = \frac{1}{\sqrt{2\pi}} e^{-x^2 / 2}.\]
+If $X$ is not standard, then you can ``standardize'' by taking $Z = (X - \mu) / \sigma$. Then, $X$ is Normal($\mu, \sigma^2$) if and only if $Z$ is Normal($0, 1$).
+
+\subsubsection{Cauchy Distribution}
+Now, suppose that $X$ and $Y$ are two independent standard Normal random variables. A very interesting distribution arises if we consider the ratio \[Z = X / Y.\] Since $X$ and $Y$ are independent, \[f_{Z}(z) = \int_{S_z} f_{X, Y}(x, y) dx dy,\] where $S_z = \{\{(x, y) \mid x / y = z\}$. We make a change of variables $x = uz$ and $y = u$. Then, as $u$ varies over $\R$, we get the whole set $S_z$. The Jacobian of this transformation is $|u|$, so 
+\[f_{Z}(z) = \int_{S_z} f_{X, Y}(x, y) dxdy = \int_{-\infty}^{\infty} |u| f_{X, Y}(uz, u) du.\]
+This is the same as 
+\[2\left(\frac{1}{\sqrt{2\pi}}\right)^2 \int_{0}^{\infty} ue^{-(uz)^2 / 2 - u^2 / 2} du.\]
+It can be shown that 
+\[\int_0^{\infty} xe^{-cx^2} dx = \frac{1}{2c}.\]
+Hence,
+\[f_{Z}(z) = \frac{1}{\pi} \int_0^{\infty} ue^{-\frac{u^2 (1 + z^2)}{2}} du = \frac{1}{\pi (1 + z^2)}.\]
+A random variable with this PDF is called a (standard) \textbf{Cauchy} random variable. 
+
+\bigskip 
+
+Note that the Cauchy distribution has some interesting properties. In partivular, it has no expected/average value. So, if you take an IID sequence $X_1, X_2, \dots$ of Cauchy random variables, the limit 
+\[\lim_{n \mapsto \infty} \frac{1}{n} \sum_{i = 1}^n X_i\]
+does not exist. 
+
+\end{document}
