@@ -38,20 +38,33 @@ We think of $m(\omega_i)$ as the \textbf{probability} that outcome $\omega_i$ oc
 \subsection{Studying Probability}
 When studying random experiments, we often use something called a \textbf{random variable} (\emph{RV} for short). Formally, a RV $X$ is a function from the sample space $\Omega$ to the set of real numbers $\R$; that is,
 \[X: \Omega \mapsto \R.\]
+\begin{mdframed}[]
+    (Example.) Suppose we want to flip a fair coin. It's obvious that the sample space $\Omega$ is just Heads or Tails. We can define the random variable $X$ like
+    \[X = \begin{cases}
+        1 & \text{If Heads} \\ 
+        0 & \text{If Tails}
+    \end{cases}.\]
+    We could also define the random variable like 
+    \[X = \begin{cases}
+        100 & \text{If Heads} \\ 
+        703 & \text{If Tails}
+    \end{cases}.\]
+    The point is that your random variable maps your outcomes (from your sample space) to numbers. In other words, you are quantifying your outcomes. 
+\end{mdframed}
 If the outcome $\omega \in \Omega$ has a \textbf{random} occurrence, then the value $X(\omega)$ is also random; this is due to this random experiment. For example, suppose we have a random variable which takes some value depending on the roll of a die. For instance, if our random variable indicates whether we roll an even or odd number, then $X$ will take the value 1 if we roll an even number or 0 if we roll an odd number. So, while $X$ will either only take the values 0 or 1, which of the two values it takes is random because it depends on the random roll of the die. 
 
 \bigskip 
 
-The collection of probabilities $P(X = x)$ is called the \textbf{probability distribution} of $X$. We say that $P(X = x)$ is the \emph{sum} of the masses $m(\omega)$ over all $\omega$ that would make $X(\omega) = x$. So, in the example that we just talked about, the probability distribution would just be $\frac{1}{2}$ and $\frac{1}{2}$. 
+The collection of probabilities $\PR(X = x)$ is called the \textbf{probability distribution} of $X$. We say that $\PR(X = x)$ is the \emph{sum} of the masses $m(\omega)$ over all $\omega$ that would make $X(\omega) = x$. So, in the example that we just talked about, the probability distribution would just be $\frac{1}{2}$ and $\frac{1}{2}$. 
 
 \begin{mdframed}[]
     (Example.) Suppose we're rolling a fair die. Then, we might let $X(i) = i$ if we roll an $i$. In other words, $X$ is the value of the die roll. It follows that 
-    \[P(X = i) = m(1) = \frac{1}{6} \text{ for all } 1 \leq i \leq 6.\]
+    \[\PR(X = i) = m(1) = \frac{1}{6} \text{ for all } 1 \leq i \leq 6.\]
 \end{mdframed}
 
 \begin{mdframed}[]
     (Example.) Suppose we're rolling a fair die, and suppose we have the random variable $Y$ that takes the value 1 if $\omega \in \{1\}$ and the value 0 if $\omega \in \{2, 3, 4, 5, 6\}$. Then, $X = 1$ if we roll a 1 and $X = 0$ otherwise. Then,
-    \[P(X = 1) = m(1) = \frac{1}{6} \text{ and } P(X = 0) = m(2) + \dots + m(6) = \frac{5}{6}.\]
+    \[\PR(X = 1) = m(1) = \frac{1}{6} \text{ and } \PR(X = 0) = m(2) + \dots + m(6) = \frac{5}{6}.\]
 \end{mdframed}
 
 We can use RVs to make more complicated RVs. Similarly, we can often decompose complicated RVs into several simpler ones. 
@@ -59,7 +72,7 @@ We can use RVs to make more complicated RVs. Similarly, we can often decompose c
 \begin{mdframed}[]
     (Example.) Suppose we roll a die 3 times in a row. Let $X$ be the number of 1's that we roll. Then, 
     \[X = X_1 + X_2 + X_3\]
-    where each $X_i$ has the same distribution, i.e. $P(X_i = 1) = \frac{1}{6}$ and $P(X_i = 0) = \frac{5}{6}$ for each $i \in [1, 3]$. 
+    where each $X_i$ has the same distribution, i.e. $\PR(X_i = 1) = \frac{1}{6}$ and $\PR(X_i = 0) = \frac{5}{6}$ for each $i \in [1, 3]$. 
 \end{mdframed}
 
 \begin{mdframed}[]
@@ -82,7 +95,7 @@ We can use RVs to make more complicated RVs. Similarly, we can often decompose c
             1 x 1.\end{verbatim}
     \end{enumerate}
     Putting this together, we have: 
-    \[P(X \leq 2) = \binom{3}{0} \left(\frac{5}{6}\right)^3 + \binom{3}{1} \left(\frac{1}{6}\right) \left(\frac{5}{6}\right)^2 + \binom{3}{2}\left(\frac{1}{6}\right)^2 \left(\frac{5}{6}\right)\]
+    \[\PR(X \leq 2) = \binom{3}{0} \left(\frac{5}{6}\right)^3 + \binom{3}{1} \left(\frac{1}{6}\right) \left(\frac{5}{6}\right)^2 + \binom{3}{2}\left(\frac{1}{6}\right)^2 \left(\frac{5}{6}\right)\]
 \end{mdframed}
 
 \subsection{Simulating Discrete Probability Distributions}
@@ -116,7 +129,7 @@ then we will be close to $p$.
     Instead of calculating this probability, de Mere probably rolled 4 dice as many times as possible on his own, and noticed that at least one 6 would come up \emph{slightly} more often than not.
 \end{mdframed}
 
-\begin{mdframed}[]
+\begin{mdframed}[nobreak=true]
     (Example: Coin Flip ``Random Walk.'') Suppose Peter and Paul gamble with a fair coin. If it lands ``Heads,'' then Peter must give \$1 to Paul; if it lands ``Tails,'' then Paul must give \$1 to Peter. Suppose they flip the coin 40 times. In each game, Peter's winnings will either increase by \$1 or decrease by \$1, with probability $\frac{1}{2}$. This is known as a unbiased random walk. 
 
     \bigskip 
