@@ -1,0 +1,174 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{CSE 130}
+\chead{Wednesday, May 4, 2022}
+\lhead{Lecture 16}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+\section{Higher-Order Functions}
+\subsection{Tail-Recursive Versions}
+Let's write a tail-recursive version of \code{sum}. In particular,
+\begin{verbatim}
+    sumTR :: [Int] -> Int 
+    sumTR xs = helper 0 xs 
+        where 
+            helper :: Int -> [Int] -> Int 
+            helper acc []       = acc 
+            helper acc (x:xs)   = helper (acc + x) xs \end{verbatim}
+
+Let us now write a tail-recursive \code{cat} function. Note that this is very similar to what we have above. Its implementation is
+\begin{verbatim}
+    catTR :: [String] -> String 
+    catTR xs = helper "" xs 
+        where 
+            helper :: String -> [String] -> String 
+            helper acc []       = acc 
+            helper acc (x:xs)   = helper (acc ++ x) xs \end{verbatim}
+
+Note that there is an apparent pattern here, which can be extracted to the \emph{fold-left} pattern: 
+\begin{verbatim}
+    foldl :: (b -> a -> b) -> b -> [a] -> b
+    foldl f b xs = helper b xs 
+        where 
+            helper acc []       = acc 
+            helper acc (x:xs)   = helper (f acc x) xs \end{verbatim}
+In general, the pattern is: 
+\begin{itemize}
+    \item Use a helper function with an extra accumulator argument.
+    \item To compute the new accumulator, combine the current accumulator with the head using some binary operation.
+\end{itemize}
+
+\begin{mdframed}[nobreak=true]
+    (Quiz.) What does this evaluate to? 
+    \begin{verbatim}
+        foldl f b []     = b
+        foldl f b (x:xs) = foldl f (f b x) xs
+
+        quiz = foldl (:) [] [1,2,3]\end{verbatim}
+    \begin{enumerate}[(a)]
+        \item Type error.
+        \item \code{[1, 2, 3]}
+        \item \code{[3, 2, 1]}
+        \item \code{[[3], [2], [1]]}
+        \item \code{[[1], [2], [3]]}
+    \end{enumerate}
+
+    \begin{mdframed}[]
+        The answer is \textbf{A}. Note that \code{a} is an \code{Int} and \code{b} is an \code{[Int]}. So, our accumulator function is of type \code{[Int] -> Int -> [Int]}. But, keep in mind that \code{(:)} (the cons operator) takes an \code{Int} followed by a \code{[Int]}. This is a type error since the accumulator function types disagree. 
+    \end{mdframed}
+\end{mdframed}
+
+\begin{mdframed}[nobreak=true]
+    What does this evaluate to? 
+    \begin{verbatim}
+        foldl f b []     = b
+        foldl f b (x:xs) = foldl f (f b x) xs
+
+        quiz = foldl (\xs x -> x : xs) [] [1,2,3]
+    \end{verbatim}
+
+    \begin{enumerate}[(a)]
+        \item Type error. 
+        \item \code{[1,2,3]}
+        \item \code{[3,2,1]}
+        \item \code{[[3], [2], [1]]}
+        \item \code{[[1],[2],[3]]}
+    \end{enumerate}
+
+    \begin{mdframed}[]
+        The answer is \textbf{C}. To see why this is the case, consider the following work: 
+        \begin{verbatim}
+    foldl f []                           [1,2,3]
+        ==> foldl f (1 : [])               [2,3]
+        ==> foldl f (2 : (1 : []))           [3]
+        ==> foldl f (3 : (2 : (1 : [])))      []
+        ==> 3 : (2 : (1 : []))
+        = [3,2,1]\end{verbatim}
+    \end{mdframed}
+\end{mdframed}
+
+\subsubsection{Fold Left vs. Right}
+Too see the difference between the two fold functions, consider the following: 
+\begin{verbatim}
+    foldl f b [x1, x2, x3]  ==> f (f (f b x1) x2) x3  -- Left
+    foldr f b [x1, x2, x3]  ==> f x1 (f x2 (f x3 b))  -- Right\end{verbatim}
+As an example, we have: 
+\begin{verbatim}
+    foldl (+) 0 [1, 2, 3]  ==> ((0 + 1) + 2) + 3  -- Left
+    foldr (+) 0 [1, 2, 3]  ==> 1 + (2 + (3 + 0))  -- Right\end{verbatim}
+As for their types: 
+\begin{verbatim}    
+    foldl :: (b -> a -> b) -> b -> [a] -> b  -- Left
+    foldr :: (a -> b -> b) -> b -> [a] -> b  -- Right\end{verbatim}
+
+
+\subsection{Useful Higher-Order Functions}
+Consider the function:
+\begin{verbatim}
+    foldl (\xs x -> x : xs) [] [1,2,3]\end{verbatim}
+This is the same thing as:
+\begin{verbatim}
+    foldl (flip (:)) [] [1,2,3]\end{verbatim}
+Its type signature is given by: 
+\begin{verbatim}
+    flip :: (a -> b -> c) -> (b -> a -> c)\end{verbatim}
+
+There is also the \emph{compose} function. So, instead of writing 
+\begin{verbatim}
+    map (\x -> f (g x)) ys\end{verbatim}
+we can write 
+\begin{verbatim}
+    map (f . g) ys\end{verbatim}
+Its type signature is given by: 
+\begin{verbatim}
+    --     f           g           f . g
+    (.) :: (a -> b) -> (c -> a) -> (c -> b)\end{verbatim}
+
+
+
+\newpage 
+\section{Environments and Closures}
+We will now begin the process of \emph{implementing} a functional language. In this section, we will discuss how to evaluate a program given its abstract syntax tree (AST), and also prove properties about our interpreter.
+
+\bigskip 
+
+We will implement the Nano programming language. Its features include
+\begin{enumerate}
+    \item Arithmetic
+    \item Variables
+    \item Let-bindings
+    \item functions
+    \item Recursion
+\end{enumerate}
+Generally, the idea is, given a string containing the program, it will be converted to its AST (abstract syntax tree) form\footnote{This process is known as parsing.}. From there, it can be evaluated to the desired result. 
+
+\subsection{Nano: Arithmetic}
+A grammar of arithmetic expressions can be represented like so: 
+\begin{verbatim}
+    e :: n 
+        | e1 + e2 
+        | e1 - e2 
+        | e1 * e2\end{verbatim}
+We can represent this by the following datatype: 
+\begin{verbatim}
+    data Expr = Num Int 
+            | Add Expr Expr 
+            | Sub Expr Expr 
+            | Mul Expr Expr\end{verbatim}
+
+
+
+
+
+
+\end{document}
