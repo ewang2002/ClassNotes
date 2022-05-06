@@ -166,9 +166,61 @@ We can represent this by the following datatype:
             | Sub Expr Expr 
             | Mul Expr Expr\end{verbatim}
 
+\subsubsection{Evaluating Arithmetic Expressions}
+We can now write a Haskell function to evaluate an expression. 
+\begin{verbatim}
+    eval :: Expr -> Value
+    eval (Num n)     = n
+    eval (Add e1 e2) = eval e1 + eval e2
+    eval (Sub e1 e2) = eval e1 - eval e2
+    eval (Mul e1 e2) = eval e1 * eval e2\end{verbatim}
+However, we can refactor this. 
 
+\subsubsection{Alternative Representation}
+Rather than writing out each operation (e.g. \code{Add}, \code{Sub}, and so on), thus repeating ourselves, we can extract that into a datatype itself.
+\begin{verbatim}
+    data Binop = Add | Sub | Mul 
+    data Expr = Num Int 
+            | Bin Binop Expr Expr \end{verbatim}
 
+Hence, we can structure the \code{eval} code like so: 
+\begin{verbatim}
+    eval :: Expr -> Value
+    eval (Num n)            = n 
+    eval (Bin op e1 e2)     = evalOp op (eval e1) (eval e2)\end{verbatim}
+Here, we made use of an \code{evalOp} helper function.
 
+\begin{mdframed}[]
+    (Quiz.) Consider the evaluator for the alternative representation.
+    \begin{verbatim}
+    eval :: Expr -> Value
+    eval (Num n)        = n
+    eval (Bin op e1 e2) = evalOp op (eval e1) (eval e2)\end{verbatim} 
 
+    What is a suitable type for \code{evalOp}? 
+    \begin{enumerate}[(a)]
+        \item \code{Binop -> Value}
+        \item \code{Binop -> Value -> Value -> Value}
+        \item \code{Binop -> Expr -> Expr -> Value}
+        \item \code{BInop -> Expr -> Expr -> Expr}
+        \item \code{Binop -> Expr -> Value}
+    \end{enumerate}
+
+    \begin{mdframed}[]
+        The answer is \textbf{B}. Note that \code{eval} returns a \code{Value}, so it follows that \code{(eval e1)} and \code{(eval e2)} both returns \code{Value}. Finally, the helper function itself is supposed to return a \code{Helper} since we're using the helper function to evaluate \code{eval}, and \code{eval} again returns \code{Value}.
+    \end{mdframed}
+\end{mdframed}
+
+Now that we know the type of \code{evalOp}, we can declare it. 
+\begin{verbatim}
+    evalOp :: Binop -> Value -> Value -> Value 
+    evalOp Add v1 v2    = v1 + v2 
+    evalOp Sub v1 v2    = v1 - v2 
+    evalOp Mult v1 v2   = v1 * v2 \end{verbatim}
+Note that a shorter way to do this is: 
+\begin{verbatim}
+    evalOp Add  = (+)
+    evalOp Sub  = (-)
+    evalOp Mult = (*)\end{verbatim}
 
 \end{document}

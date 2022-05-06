@@ -1,0 +1,236 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{CSE 130}
+\chead{Friday, May 6, 2022}
+\lhead{Lecture 17}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+\section{Environments and Closures}
+\subsection{Nano: Variables}
+We now need to add variables. Hence, we modify the grammar like so: 
+\begin{verbatim}
+    e :: n 
+        | e1 + e2 
+        | e1 - e2 
+        | e1 * e2 
+        | x             -- New \end{verbatim}
+This can be represented by the datatype\footnote{We don't plan on introducing tyoe checking here.}: 
+\begin{verbatim}
+    type Id = String 
+    data Expr = Num Int             -- Number 
+        | Bin Binop Expr Expr       -- Binary Expression
+        | Var Id                    -- Variable \end{verbatim}
+
+We now need to extend the evaluation function.
+
+\begin{mdframed}[]
+    (Quiz.) What should the following expression evaluate to? 
+    \begin{verbatim}
+        x + 1\end{verbatim}
+    \begin{enumerate}[(a)]
+        \item \code{0}
+        \item \code{1}
+        \item Runtime Error.
+    \end{enumerate}
+
+    \begin{mdframed}[]
+        The answer is \textbf{C}. We don't know what the value of \code{x} is.
+    \end{mdframed}
+\end{mdframed}
+Clearly, variables aren't useful unless we can somehow map variable names to values. 
+
+\subsubsection{Environment}
+An expression is evaluated in an \textbf{environment}. It's like a phone book that maps variables to values. 
+\begin{verbatim}
+    ["x" := 0, "y" := 12, ...]\end{verbatim}
+
+We can represent an environment using the following type: 
+\begin{verbatim}
+    type Env = [(Id, Value)]\end{verbatim}
+
+\subsubsection{Evaluation in an Environment}
+We can write 
+\begin{verbatim}
+    eval env expr => value \end{verbatim}
+to mean that evaluating \code{expr} in the \emph{environment} \code{env} should return \code{value}.
+
+\begin{mdframed}[]
+    (Quiz.) What should the result of the following code be? 
+    \begin{verbatim}
+        eval ["x" := 0, "y" := 12, ...] (x + 1)\end{verbatim}
+    
+    \begin{enumerate}[(a)]
+        \item \code{0}
+        \item \code{1}
+        \item Runtime Error.
+    \end{enumerate}
+
+    \begin{mdframed}[]
+        The answer is \textbf{B}.
+    \end{mdframed}
+\end{mdframed}
+
+To evaluate a variable, we can just look up its value in the environment.
+
+\subsubsection{Evaluating Variables}
+We now need to update our evaluation function to take the environment as an argument. 
+\begin{verbatim}
+    eval :: Env -> Expr -> Value 
+    eval env (Num n)            = n
+    eval env (Binop op e1 e2)   = evalOp op (eval env e1) (eval env e2)
+    eval env (Var x)            = lookup x env \end{verbatim}
+
+Now that we have variables, we now need to find some way of \emph{adding} variables to the environment. In other words, how do variables get into the environment? 
+
+\subsection{Nano: Let-Bindings}
+We now need to add \code{let}-bindings. Our grammar needs to be updated:
+\begin{verbatim}
+    e :: n 
+        | e1 + e2 
+        | e1 - e2 
+        | e1 * e2 
+        | x 
+        | let x = e1 in e2 \end{verbatim}
+
+For example, if our environment is \code{[]} and our expression is \code{let x = 2 + 3 in x * 2}, then we would end up with \code{10}. Notice that \code{x} isn't in our environment; rather, we introduced \code{x}  through a let-binding. Hence, we need to extend the representation of expressions, or the datatype. 
+\begin{verbatim}
+    data Expr = Num Int             -- Number 
+            | Bin Binop Expr Expr   -- Binary Expression
+            | Var Id                -- Variable 
+            | Let Id Expr Expr      -- Let-binding \end{verbatim}
+
+But, how do we extend the \code{eval} function to account for let-bindings? 
+
+\begin{mdframed}[]
+    (Quiz.) What should this evaluate to? 
+    \begin{verbatim}
+        let x = 5
+        in 
+            x + 1\end{verbatim}
+    \begin{enumerate}[(a)]
+        \item \code{1}
+        \item \code{5}
+        \item \code{6}
+        \item Error: unbound variable \code{x}
+        \item Error: unbound variable \code{y}
+    \end{enumerate}
+
+    \begin{mdframed}[]
+        The answer is \textbf{C}. \code{x} is bound to the value \code{5}, so \code{5 + 1} gives us \code{6}.
+    \end{mdframed}
+\end{mdframed}
+
+\begin{mdframed}[]
+    (Quiz.) What should the following evaluate to? 
+    \begin{verbatim}
+        let x = 5
+        in 
+            let y = x + 1
+            in 
+                x * y \end{verbatim}
+    \begin{enumerate}[(a)]
+        \item \code{5}
+        \item \code{6}
+        \item \code{30}
+        \item Error: unbound variable \code{x}
+        \item Error: unbound variable \code{y}
+    \end{enumerate}
+
+    \begin{mdframed}[]
+        The answer is \textbf{C}. Once again, we've bound \code{x} to 5, then bound \code{y} to \code{5 + 1}. Thus, we get the value \code{5 * (6 + 1)}, which is 30.
+    \end{mdframed}
+\end{mdframed}
+
+\begin{mdframed}[]
+    (Quiz.) What should the following evaluate to? 
+    \begin{verbatim}
+        let x = 0 
+        in
+            (let x = 100 
+            in
+                x + 1
+            ) + x\end{verbatim}
+    \begin{enumerate}[(a)]
+        \item \code{1}
+        \item \code{101}
+        \item \code{201}
+        \item \code{2}
+        \item Error: multiple definitions of \code{x}.
+    \end{enumerate}
+
+    \begin{mdframed}[]
+        The answer is \textbf{B}. Here, we note that the inner \code{x} is shadowing the outer \code{x}. Hence, the inner \code{x + 1} is \code{101}. 
+    \end{mdframed}
+\end{mdframed}
+
+\subsubsection{Principle: Static (Lexical) Scoping}
+Every variable use (occurrence) gets its value from its most \emph{local definition} (binding). In a pure language, the value never changes once defined, thus it's easier to tell by looking at a program where the variable's value came from. 
+
+\subsubsection{Implementing Lexical Scoping}
+How would we implement this? 
+
+\begin{mdframed}[]
+    (Example.) Consider 
+    \begin{verbatim}
+        let x = 5
+        in 
+            x + 1\end{verbatim}
+    Note that its environment is given by 
+    \begin{verbatim}
+        let x = 5       -- []
+        in              -- | [x := 5]
+            x + 1       -- | \end{verbatim}
+\end{mdframed}
+
+\begin{mdframed}[]
+    (Example.) Consider
+    \begin{verbatim}
+        let x = 5           -- []
+        in                  -- | [x := 5]
+            let y = x + 1   -- | 
+            in              -- | | [y := 6, x := 5]
+                x * y       -- | |\end{verbatim}
+\end{mdframed}
+
+\begin{mdframed}[]
+    (Example.) Consider 
+    \begin{verbatim}
+        let x = 0           -- []
+        in                  -- | [x := 0]
+            (let x = 100    -- | [x := 0]
+            in              -- | | [x := 100, x := 0]
+                x + 1       -- | | 
+            ) + x           -- |\end{verbatim}
+
+ \end{mdframed}
+
+\subsubsection{Evaluating \code{let} Expressions}
+To evaluate \code{let x = e1 in e2} in \code{env}, we need to do the following. 
+\begin{enumerate}
+    \item Evaluate \code{e1} in \code{env} to \code{val}.
+    \item \emph{Extend} \code{env} with a mapping \code{["x" := val]}.
+    \item Evaluate \code{e2} in this extended environment.
+\end{enumerate}
+So, we can now extend the \code{eval} function like so: 
+\begin{verbatim}
+    eval :: Env -> Expr -> Value
+    eval env (Num n)          = n
+    eval env (Bin op e1 e2)   = evalOp op (eval e1) (eval e2)
+    eval env (Var x)          = lookup x env
+    eval env (Let x e1 e2)    = eval env' e2
+        where
+            val  = eval env e1
+            env' = (x, val) : env    
+\end{verbatim}
+
+\end{document}
