@@ -1,0 +1,118 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{MATH 180A}
+\chead{Monday, May 2, 2022}
+\lhead{Lecture 15}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\section{Expected Value and Variance}
+\subsection{Examples of Finding Expected Value and Variance}
+
+\begin{mdframed}[]
+    (Example.) If $X$ is Bernoulli($p$), then $\mu = p$ and $\sigma^2 = pq$, where $q = 1 - p$. Then, 
+    \[\mathbb{E}(X) = 1 \cdot p + 0 \cdot q = p.\]
+    Note that $X^2$ has the same distribution as $X$, since $X$ only takes the values $0 = 0^2$ and $1 = 1^2$. Hence, $\mathbb{E}(X^2) = \mathbb{E}(X) = p$. Hence, 
+    \[\text{Var}(X) = p - p^2 = p(1 - p) = pq.\]
+\end{mdframed}
+
+\begin{mdframed}[]
+    (Example.) If $X$ is Binomial($n, p$), then it is the sum of $n$ independent Bernoulli($p$) trials. By the Linearity of Expectation, we know that 
+    \[\mathbb{E}(X) = np.\]
+    Since the trials are \emph{independent}, we have that 
+    \[\text{Var}(X) = npq.\]
+\end{mdframed}
+Note that this is the special case of the following fact. 
+\begin{theorem}{}{}
+    Suppose that $X_1, \dots, X_n$ are IID with mean $\mu$ and variance $\sigma^2$. Then, their sum $S_n = \sum_{k = 1}^{n} X_k$ has mean $\mathbb{E}(S_n) = n\mu$ and variance $\text{Var}(S_n) = n\sigma^2$. 
+\end{theorem}
+
+\begin{mdframed}[]
+    (Example.) If $X$ is Geometric($p$), then $\mathbb{E}(X) = \frac{1}{p}$. So, if $p$ is really small, then we should expect to wait a while before our first success; likewise, if $p$ is large, then we may not need to wait long before our first success. This is intuitive; in particular, the probability of success is $p$, so we should expect about 1 success in every $p$ trials. But, intuition aside, there are several ways to compute this.
+    \begin{itemize}
+        \item Approach 1.
+        \begin{mdframed}[]
+            \[\mathbb{E}(X) = \sum_{k = 1}^{\infty} kpq^{k - 1} = p\sum_{k = 1}^{\infty} kq^{k - 1}.\]
+            Recall that this is a \emph{geometric} random variable, so we will use the geometric series; in particular, 
+            \[\sum_{k = 0}^{\infty} q^k = \frac{1}{1 - q}\]
+            and 
+            \[\sum_{k = 1}^{\infty} kq^{k - 1} = \frac{d}{dq} \sum_{k = 0}^{\infty} q^k.\]
+            Hence,
+            \[\mathbb{E}(X) = p \frac{d}{dq} \frac{1}{1 - q} = p\frac{1}{(1 - q)^2} = \frac{p}{p^2} = \frac{1}{p}.\] 
+            Similarly, we can show that $\text{Var}(X) = \frac{q}{p^2}$. 
+        \end{mdframed}
+
+        \item Approach 2. 
+        \begin{mdframed}[]
+            Let $X$ be the number of trials until the first success. Then, we have 
+            \[\mathbb{E}(X) = 1p + (1 + \mathbb{E}(X))q.\]
+            Solving for $\mathbb{E}(X)$ gives us the desired solution.
+        \end{mdframed}
+    \end{itemize}
+\end{mdframed}
+
+\begin{mdframed}[]
+    (Example.) A Poisson($\lambda$) has mean and variance $\mu = \sigma^2 = \lambda$. So, 
+    \[\mathbb{E}(X) = \sum_{k = 0}^{\infty} ke^{-\lambda} \frac{\lambda^k}{k!} = \sum_{k = 1}^{\infty} e^{-\infty} \frac{\lambda^k}{(k - 1)!} = \lambda \sum_{k = 0}^{\infty} e^{-\lambda} \underbrace{\frac{\lambda^k}{k!}}_{1} = \lambda.\]
+    Similarly, you can show that $\mathbb{E}(X^2) = \lambda(1 + \lambda)$ so that $\text{Var}(X) = \lambda(1 + \lambda) - \lambda^2 = \lambda$. 
+\end{mdframed}
+
+\begin{mdframed}[]
+    (Example.) An Exponential($\lambda$) has $\mu = \frac{1}{\lambda}$ and $\sigma^2 = \frac{1}{\lambda^2}$. For this computation, the theorem following this example will be useful. 
+
+    \bigskip 
+    
+    If $X$ is Exponential($\lambda$), then it is non-negative and $\PR(X > x) = e^{-\lambda x}.$ Hence, 
+    \[\mathbb{E}(X) = \int_{0}^{\infty} e^{-\lambda x} dx = \frac{1}{\lambda}.\]
+\end{mdframed}
+
+\begin{theorem}{Expectation Tail Sum for Non-Negative Random Variables}{}
+    If $X$ is a non-negative random variable (i.e., $\PR(X \geq 0) = 1$), then 
+    \begin{enumerate}
+        \item If $X$ is discrete, then 
+        \[\mathbb{E}(X) = \sum_{k = 0}^{\infty} \PR(X > k).\]
+
+        \item If $X$ is continuous, then 
+        \[\mathbb{E}(X) = \int_{0}^{\infty} \PR(X > x) dx.\]
+    \end{enumerate}
+\end{theorem}
+
+\begin{mdframed}[]
+    \begin{proof}
+        (Discrete.) Just note that 
+        \begin{equation*}
+            \begin{aligned}
+                \mathbb{E}(X) &= \sum_{k = 0}^{\infty} kp(k) \\ 
+                    &= p(1) + (p(2) + p(2)) + (p(3) + p(3) + p(3)) + \dots \\ 
+                    &= (p(1) + p(2) + p(3) + \dots) + (p(2) + p(3) + \dots) + (p(3) + \dots) + \dots \\
+                    &= \PR(X > 0) + \PR(X > 1) + \PR(X > 2) + \dots
+            \end{aligned}
+        \end{equation*}
+        Hence, we're done.
+    \end{proof}
+\end{mdframed}
+
+\begin{mdframed}[]
+    (Example.) If $X$ is Normal($\mu, \sigma^2$), then, indeed, $\mu$ is the mean and $\sigma^2$ is its variance. To see why this is the case, see lecture slides.
+\end{mdframed}
+
+\begin{mdframed}[]
+    (Example.) If $X$ is Cauchy, then $\mathbb{E}(X)$ does not exist. Recall that a (standard) Cauchy has PDF 
+    \[f(x) = \frac{1}{\pi(1 + x^2)}.\]
+    Note that 
+    \[\int_{-\infty}^{\infty} \frac{x}{\pi (1 + x^2)}dx\]
+    diverges, since
+    \[\int_{0}^{\infty} \frac{x}{1 + x^2}dx = \infty.\]
+\end{mdframed}
+
+\end{document}
