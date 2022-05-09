@@ -1,0 +1,75 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{MATH 180A}
+\chead{Wednesday, May 4, 2022}
+\lhead{Lecture 16}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\section{Expected Value and Variance}
+\subsection{Conditional Expectation: Discrete Case}
+Recall that if $X$ is a discrete random variable with PMF $p$, and $B$ is an event with $\PR(B) > 0$, then 
+\[p(x | B) = \frac{p(x)}{\PR(B)}\]
+is a probability distribution on $B$. This is the PMF of the random variable $X$, given $B$. 
+
+\begin{definition}{}{}
+    Let $X$ be a random variable with PMF $p$. Suppose that $\PR(B) > 0$. Then, the conditional expectation of $X$ given $B$ is 
+    \[\mathbb{E}(X | B) = \sum_{x} xp(x | B).\]    
+\end{definition}
+
+
+\subsubsection{Law of Total Expectation}
+Just like how there is a Law of Total Probability, there is also a Law of Total Expectation. 
+\begin{theorem}{Law of Total Expectation}{}
+    Let $X$ be a random variable on sample space $\Omega$. Suppose that $B_1, \dots, B_n$ is a partition $\Omega$. Then, 
+    \[\mathbb{E}(X) = \sum_{i = 1}^{n} \mathbb{E}(X | B_i) \PR(B_i).\]
+\end{theorem}
+This is useful because, often, $\mathbb{E}(X)$ is sometimes difficult to find directly. However, if we condition on a well-chosen $B_i$, then it becomes manageable. 
+
+\begin{mdframed}[]
+    (Example.) In the gambling game ``craps,'' a player makes a bet and then rolls a pair of dice. If the sum is 7 or 11, the player wins. If it is 2, 3, or 12, the player loses. If the sum is any other number $s$, the player continues to roll until either another $s$ (they win) or 7 (they lose) occurs (7 is lucky the first time). Now, let $R$ be the number of rolls in a single game of craps.
+    \begin{enumerate}
+        \item Find $\mathbb{E}(R)$. 
+    \end{enumerate}
+
+    \begin{mdframed}[]
+        \begin{enumerate}
+            \item By the Law of Total Expectation, we have 
+            \[\mathbb{E}(R) = \sum_{x = 2}^{12} \mathbb{E}(R | X = x)\PR(X = x),\]
+            where $X$ is the initial sum. Note that if 
+            \[x \in \{2, 3, 7, 11, 12\},\]
+            then \[\mathbb{E}(R | X = x) = 1\]
+            since the game is immediately over if we get one of those numbers. In particular,
+            \begin{itemize}
+                \item There is 1 way to get a 2 (11).
+                \item There are 2 ways to get a 3 (12, 21).
+                \item There are 6 ways to get a 7 (16, 61, 25, 52, 43, 34).
+                \item There are 2 ways to get a 11 (56, 65).
+                \item There is 1 way to get a 12 (66).
+            \end{itemize}
+            Hence, 
+            \[\sum_{x \in \{2, 3, 7, 11, 12\}} \mathbb{E}(R | X = x) \PR(X = x) = \frac{12}{36}.\]
+            Now, if \[x \in \{4, 5, 6, 8, 9, 10\},\] then by a similar argument to the one above, we have 
+            \[\sum_{x \in \{2, 3, 7, 11, 12\}} \mathbb{E}(R | X = x)\PR(X = x) = \frac{24}{36}.\]
+        \end{enumerate}
+    \end{mdframed}
+\end{mdframed}
+% 16:00 
+
+\subsection{Conditional Expectation: Continuous Case}
+The situation is similar in the continuous case, but we instead have a conditional PDF 
+\[f(x | B) = \frac{f(x)}{\PR(B)}\]
+and the conditional expectation is given by  
+\[\mathbb{E}(X | B) = \int_{-\infty}^{\infty} xp(x | B).\]    
+
+\end{document}

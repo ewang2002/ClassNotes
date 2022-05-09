@@ -4,11 +4,6 @@ import datetime
 from typing import List, Tuple
 
 CLASSES = {
-    'POLI28': {
-        'full': True,
-        'schedule': ['M', 'W'],
-        'class': 'POLI 28'
-    },
     'MATH180A': {
         'full': True,
         'schedule': ['M', 'W', 'F'],
