@@ -165,6 +165,9 @@ We can represent this by the following datatype:
             | Add Expr Expr 
             | Sub Expr Expr 
             | Mul Expr Expr\end{verbatim}
+We can represent arithmetic values as a type: 
+\begin{verbatim}
+    type Value = Int \end{verbatim}
 
 \subsubsection{Evaluating Arithmetic Expressions}
 We can now write a Haskell function to evaluate an expression. 

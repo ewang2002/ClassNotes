@@ -15,6 +15,231 @@
 \setlength{\parindent}{0pt}
 
 \begin{document}
-TODO 
+\section{Environments and Closures}
+\subsection{Nano: Functions}
+We now want to add functions. In particular, we want to add 
+\begin{itemize}
+    \item Lambda abstractions (i.e., function definitions).
+    \item Applications (i.e., function calls).
+\end{itemize}
+Our grammar would look something like
+\begin{verbatim}
+    e :: n 
+        | e1 + e2 
+        | e1 - e2 
+        | e1 * e2 
+        | x 
+        | let x = e1 in e2
+        | \x -> e               -- abstraction
+        | e1 e2                 -- application \end{verbatim}
+
+\begin{mdframed}[]
+    (Quiz.) What should this evaluate to? 
+    \begin{verbatim}
+        let inc = \x -> x + 1 
+        in 
+            inc 10 \end{verbatim}
+    \begin{enumerate}[(a)]
+        \item Undefined variable \code{x}
+        \item Undefined variable \code{inc}
+        \item \code{1}
+        \item \code{10}
+        \item \code{11}
+    \end{enumerate}
+
+    \begin{mdframed}[]
+        The answer is \textbf{E}. The idea is that we're binding \code{inc 10} to the \code{let}-binding, so \code{inc 10} would call \code{inc}, which would return \code{11}.
+    \end{mdframed}
+\end{mdframed}
+How would we represent functions? 
+\begin{verbatim}
+    data Expr = Num Int             -- n
+            | Bin Binop Expr Expr   -- e1 op e2 
+            | Var Id                -- x
+            | Let Id Expr Expr      -- let x = e1 in e2 
+            | Lam ???               -- \x -> e 
+            | App ???               -- e1 e2\end{verbatim}
+
+For the lambda expression, we would have \code{Lam Id Expr}, since we want a new variable with an expression. For application, we would have \code{App Expr Expr} since we want two expressions. Thus, our final definition would be 
+\begin{verbatim}
+    data Expr = Num Int             -- n
+            | Bin Binop Expr Expr   -- e1 op e2 
+            | Var Id                -- x
+            | Let Id Expr Expr      -- let x = e1 in e2 
+            | Lam Id Expr           -- \x -> e 
+            | App Expr Expr         -- e1 e2\end{verbatim}
+
+\begin{mdframed}[]
+    (Example.) Suppose we want to represent the expression 
+    \begin{verbatim}
+        let inc = \x -> x + 1 
+        in 
+            inc 10 \end{verbatim}
+    using our definition of \code{Expr} above. This can be done like so: 
+    \begin{verbatim}
+        fun1 = Let "inc"
+                (Lam "x" (Bin Add (Var "x") (Num 1)))
+                (App (Var "inc") (Num 10))\end{verbatim}
+\end{mdframed}
+
+We now want to implement functions in our \code{eval}.
+\begin{verbatim}
+    eval :: Env -> Expr -> Value
+    eval env (Num n)          = n
+    eval env (Bin op e1 e2)   = evalOp op (eval e1) (eval e2)
+    eval env (Var x)          = lookup x env
+    eval env (Let x e1 e2)    = eval env' e2
+        where
+            val  = eval env e1
+            env' = (x, val) : env
+    eval env (Lam x e)        = ??? 
+    eval env (App e1 e2)      = ???\end{verbatim}
+Recall that, when we have a \code{let}-body, we put a binding of the variable to its definition that it evaluates to in the environment. So far, all of the values that we've been using are \emph{integers}; however, we cannot store our function as an integer. 
+
+\subsubsection{Rethinking Values}
+Until now, we said that a program evaluates to an integer, or fails. However, programs like 
+\begin{verbatim}
+    \x -> x + 1
+    => Increment Function
+
+    let f = \x y -> x + y 
+    in 
+        f 1
+    => Increment Function\end{verbatim}
+will not work, since these are all \emph{functions}. Therefore, we want a program that evaluates to an \textbf{integer or a function}, or fails. Thus, we need to change our definition of values. 
+\begin{verbatim}
+    data Value = VNum Int 
+                | VFun Id Expr \end{verbatim}
+So, the value of a function is its code. Hence, our grammar for values is defined by 
+\begin{verbatim}
+    v ::= n 
+        | <x, e>        -- formal + body\end{verbatim}
+We can now try to implement this. But, note that we changed \code{Value}, so it follows that we need to make some adjustments in our code. 
+\begin{verbatim}
+    eval :: Env -> Expr -> Value
+    eval env (Num n)          = VNum n                              -- Changed This 
+    ...\end{verbatim}
+Likewise, for \code{evalOp} (the helper function), we need to do:
+\begin{verbatim}
+    evalOp :: Binop -> Value -> Value -> Value 
+    evalOp Add  (VNum n1) (VNum n2)    = VNum (v1 + v2) 
+    evalOp Sub  (VNum n1) (VNum n2)    = VNum (v1 - v2)
+    evalOp Mult (VNum n1) (VNum n2)    = VNum (v1 * v2) 
+    evalOp _    _         _            = error "Unsupported operation" \end{verbatim}
+This way, we can compute any values of type \code{VNum} while throwing an error if we end up with a \code{VFun} somehow. 
+
+
+\subsubsection{Evaluating Lambdas}
+Now, we will deal with how to evaluating a lambda. 
+\begin{verbatim}
+    ...
+    eval env (Lam x e)        = ??? \end{verbatim}
+
+A lambda should just evaluate to itself. So, we have:
+\begin{verbatim}
+    ...
+    eval env (Lam x e)        =  VFun x e\end{verbatim}
+
+\subsubsection{Evaluating Applications}
+Now, we need to deal with the application case. To motivate this, consider again 
+\begin{verbatim}
+    let inc = \x -> x + 1 
+    in 
+        inc 10 \end{verbatim}
+To evaluate \code{inc 10}, we want to 
+\begin{enumerate}
+    \item Evaluate \code{inc}, get \code{<x, x + 1>}
+    \item Evaluate \code{10}, get \code{10}
+    \item Evaluate \code{x + 1} in an environment \emph{extneded} with \code{[x := 10]}
+\end{enumerate}
+
+Thus, 
+\begin{verbatim}
+    ... 
+    eval env (App e1 e2)      = eval env' body 
+        where 
+            -- You should do pattern matching in a helper function (like with 'evalOp'),
+            -- esp. since you can handle any possible errors yourself instead of getting 
+            -- a cryptic error message. 
+            (VFun x body)   = eval env e1 
+            v2              = eval env e2 
+            env'            = (x, v2) : env\end{verbatim}
+
+\begin{mdframed}[]
+    (Quiz.) What should this evaluate to? 
+    \begin{verbatim}
+        let c = 1
+        in 
+            let inc = \x -> x + c 
+            in 
+                inc 10 \end{verbatim}
+    \begin{enumerate}[(a)]
+        \item Undefined variable \code{x}
+        \item Undefined variable \code{c}
+        \item \code{1}
+        \item \code{10}
+        \item \code{11}
+    \end{enumerate}
+
+    \begin{mdframed}[]
+        The answer is \textbf{E}.
+    \end{mdframed}
+\end{mdframed}
+\textbf{Remark:} This example is slightly more involved than previous examples since we introduce the function definition appears after a variable definition. Although this example is still simple, the next example will be slightly more complicated.
+
+\begin{mdframed}[]
+    (Quiz.) What should this evaluate to? 
+    \begin{verbatim}
+        let c = 1
+        in 
+            let inc = \x -> x + c 
+            in 
+                let c = 100
+                in 
+                    inc 10 \end{verbatim}
+    \begin{enumerate}[(a)]
+        \item Error: multiple definitions of \code{c}
+        \item \code{11}
+        \item \code{110}
+    \end{enumerate}
+
+    \begin{mdframed}[]
+        The answer is \textbf{B}. By the time we define the \code{inc} function, there is only one \code{c} in our environment (when \code{c} is \code{1}).s
+
+        \bigskip 
+
+        The answer is not A because we allow multiple definitions.
+    \end{mdframed}
+\end{mdframed}
+\textbf{Remark:} This is a classic example of static vs. dynamic scoping. 
+\begin{itemize}
+    \item For static (or lexical) scoping, which is what this example highlights, each occurrence of a variable refers to the most recent binding in the program text. The definition of each variable is unique and known statically. And, finally, it guarantees referential transparency\footnote{The same expression must always evaluate to the same value. In particular, a function must always return the same output for a given input.}. 
+    \item For dynamic scoping, each occurrence of a variable refers to the most \textbf{recent} binding during program execution. Thus, we can't tell where a variable is defined just by looking at the function body. Hence, this violates referential transparency. 
+\end{itemize}
+
+\begin{mdframed}[]
+    (Quiz.) Which scoping does our \code{eval} function, specifically \code{Lam} and \code{App}, implement?
+    \begin{enumerate}[(a)]
+        \item Static 
+        \item Dynamic 
+        \item Neither 
+    \end{enumerate} 
+
+    \begin{mdframed}[]
+        The answer is \textbf{B}. To see why this is the case, consider the following example:
+        \begin{verbatim}
+    let c = 1                   -- []
+    in                          -- ["c" := 1]
+        let inc = \x -> x + c   -- 
+        in                      -- ["inc" := <x, x + c>, "c" := 1]
+            let c = 100         --
+            in                  -- ["c" := 100, "inc" := <x, x + c>, "c" := 1]
+                inc 10 \end{verbatim}
+        So, what ends up happening is that, when we evaluate \code{inc 10}, we shave our \emph{extended environment}
+        \begin{verbatim}
+            ["x" := 10, "c" := 100, "inc" := <x, x + c>, "c" := 1]\end{verbatim}
+        and then the first \code{c} will be found first (so \code{c} is 100).
+    \end{mdframed}
+\end{mdframed}
 
 \end{document}

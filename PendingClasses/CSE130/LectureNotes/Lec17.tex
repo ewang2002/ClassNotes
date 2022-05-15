@@ -24,7 +24,7 @@ We now need to add variables. Hence, we modify the grammar like so:
         | e1 - e2 
         | e1 * e2 
         | x             -- New \end{verbatim}
-This can be represented by the datatype\footnote{We don't plan on introducing tyoe checking here.}: 
+This can be represented by the datatype\footnote{We don't plan on introducing type checking here.}: 
 \begin{verbatim}
     type Id = String 
     data Expr = Num Int             -- Number 
@@ -232,5 +232,17 @@ So, we can now extend the \code{eval} function like so:
             val  = eval env e1
             env' = (x, val) : env    
 \end{verbatim}
+
+\begin{mdframed}[nobreak=true]
+    (Example.) Let's suppose we wanted to represent
+    \begin{verbatim}
+        let x = 5
+        in x + 1\end{verbatim}
+    Using our definition above, we can write this out as 
+    \begin{verbatim}
+        let1 = Let "x" 
+                    (Num 5)
+                    (Bin Add (Var "x") (Num 1))\end{verbatim}
+\end{mdframed}
 
 \end{document}
