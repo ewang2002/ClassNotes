@@ -235,10 +235,10 @@ Thus,
             let c = 100         --
             in                  -- ["c" := 100, "inc" := <x, x + c>, "c" := 1]
                 inc 10 \end{verbatim}
-        So, what ends up happening is that, when we evaluate \code{inc 10}, we shave our \emph{extended environment}
+        So, what ends up happening is that, when we evaluate \code{inc 10}, we have our \emph{extended environment}
         \begin{verbatim}
             ["x" := 10, "c" := 100, "inc" := <x, x + c>, "c" := 1]\end{verbatim}
-        and then the first \code{c} will be found first (so \code{c} is 100).
+        and then the first \code{c} will be found first (so \code{c} is 100), and thus the answer is 110 (instead of 11).
     \end{mdframed}
 \end{mdframed}
 

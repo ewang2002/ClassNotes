@@ -1,0 +1,187 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{CSE 130}
+\chead{Wednesday, May 11, 2022}
+\lhead{Lecture 19}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+\section{Environments and Closures}
+\subsection{Nano: Functions}
+\subsubsection{Evaluating Applications}
+Our \code{eval} function uses dynamic binding, but we want static binding. So, we instead want to ``preserve'' the environment at the point of the function definition. In essense, to implement static scoping, we need to 
+\begin{enumerate}
+    \item Freeze the environment in the function's value at \emph{definition}.
+    \item Use the frozen environment, instead of the current environment, to evaluate the body at \emph{call}.
+\end{enumerate}
+So, in our example, we would have: 
+\begin{verbatim}
+    let c = 1                   -- []
+    in                          -- ["c" := 1]
+        let inc = \x -> x + c   -- 
+        in                      -- ["inc" := <fro, x, x + c>, "c" := 1]
+                                --      where fro = ["c" := 1]
+            let c = 100         -- 
+            in                  -- ["c" := 100, "inc" := <x, x + c>, "c" := 1]
+                inc 10 \end{verbatim}
+        So, what ends up happening is that, when we evaluate \code{inc 10}, we have our \emph{extended environment}, which extends the \emph{frozen environment} instead of the general environment:
+        \begin{verbatim}
+            ["x" := 10, "c" := 1]\end{verbatim}
+This gives us the desired answer of 11. 
+
+
+\subsubsection{Function Values as Closures \& Evaluating Function Calls}
+To implement lexical scoping, we want to represent function values as closures. A closure is essentially a lambda abstraction which has a formal, body, \emph{and} environment at function definition. Our updated grammar is then given by 
+\begin{verbatim}
+    v ::= n 
+        | <env, x, e>        -- frozen environment + formal + body\end{verbatim}
+where \code{env} is defined by 
+\begin{verbatim}
+    env ::= [] 
+            | (x := v) : env\end{verbatim}
+Hence, our updated \code{Value} representation is 
+\begin{verbatim}
+    dataValue = VNum Int 
+                | VClos Env Id Expr \end{verbatim}
+How do we modify our \code{eval} for \code{Lam}? Likewise, how do we modify our \code{eval} for \code{App}? (HW4\footnote{See lecture notes for hints.}.)
+
+\subsubsection{Advanced Features of Functions}
+In particular, what can \code{eval} support? Can it support the following? 
+\begin{itemize}
+    \item Returning functions from functions (partial application). 
+    \item Functions taking functions as arguments (higher-order functions). 
+    \item Recursion.
+\end{itemize}
+
+\begin{mdframed}[]
+    (Quiz.) What should the following evaluate to? 
+    \begin{verbatim}
+        let add = \x y -> x + y
+        in
+            let add1 = add 1
+            in
+                let add10 = add 10
+                in
+                    add1 100 + add10 1000\end{verbatim}
+    
+    \begin{enumerate}[(a)]
+        \item Runtime error. 
+        \item \code{1102}
+        \item \code{1120}
+        \item \code{1111}
+    \end{enumerate}
+
+    \begin{mdframed}[]
+        The answer is \textbf{D}. Note that \code{add1} takes in an argument and adds 1 to it. \code{add10} takes in an argument and adds \code{10}. So, \code{add1 100} should give us \code{101} and \code{add10 1000} should give us \code{1010}, so the final answer is \code{1111}.
+    \end{mdframed}
+\end{mdframed}
+In particular, partial application is supported.
+
+\begin{mdframed}[]
+    (Quiz.) What should the following evaluate to?
+    \begin{verbatim}
+        let inc = \x -> x + 1
+        in
+            let doTwice = \f -> (\x -> f (f x))
+            in
+                doTwice inc 10 \end{verbatim}
+    \begin{enumerate}[(a)]
+        \item Runtime error. 
+        \item \code{11}
+        \item \code{12}
+    \end{enumerate}
+
+    \begin{mdframed}[]
+        The answer is \textbf{C}.
+    \end{mdframed}
+\end{mdframed}
+So, higher-order functions have been achieved.
+
+\begin{mdframed}[]
+    (Quiz.) What does this evaluate to? 
+    \begin{verbatim}
+        let f = \n -> n * f (n - 1) 
+        in
+            f 5\end{verbatim}
+    \begin{enumerate}[(a)]
+        \item \code{120}
+        \item Evaluation does not terminate 
+        \item Error: unbound variable \code{f}
+    \end{enumerate}
+
+    \begin{mdframed}[]
+        The answer is \textbf{C}; when we call \code{f} recursively, we do not have \code{f} in our environment.
+    \end{mdframed}
+\end{mdframed}
+
+
+
+
+
+
+
+
+
+\newpage 
+\section{Lexing and Parsing}
+Here, we won't actually be using Nano. Rather, we will be using an even simpler language -- a calculator. Its AST representation can be defined by 
+\begin{verbatim}
+    data Aexpr = AConst  Int
+        | AVar    Id
+        | APlus   Aexpr Aexpr
+        | AMinus  Aexpr Aexpr
+        | AMul    Aexpr Aexpr\end{verbatim}
+Its evaluator function can be defined by 
+\begin{verbatim}
+    eval :: Env -> Aexpr -> Value
+    ...\end{verbatim}
+Its implementation is very similar to Nano. Thus, using the evaluator:
+\begin{verbatim}
+    -> eval [] (APlus (AConst 2) (AConst 6))
+    8
+
+    -> eval [("x", 16), ("y", 10)] (AMinus (AVar "x") (AVar "y"))
+    6\end{verbatim}
+Notice that this is very tedious; most of us are used to writing programs as text. How do we do this? In particular, we want to write a function that \emph{parses} the AST for us. 
+\begin{verbatim}
+    parse :: String -> Aexpr \end{verbatim}
+We will incorporate a two-step strategy. In particular, consider the sentence: \emph{He ate a bagel}. How do we read it? 
+\begin{itemize}
+    \item First, we split the sentence into words: \code{["He", "ate", "a", "bagel"]}.
+    \item Then, we relate the words to each other. \code{He} is the subject, \code{ate} is the verb, and so on. 
+\end{itemize}
+We can do the same thing when ``reading'' programs. 
+
+\subsection{Step 1: Lexing}
+We want to first convert a string to a bunch of tokens. A string is simply a list of characters: 
+\begin{verbatim}
+    229 + 98 * x2\end{verbatim}
+The idea is to aggregate characters that ``belong together'' into \textbf{tokens}, or the ``words'' of the program. So, 
+\begin{verbatim}
+    229 PLUS 98 TIMES x2\end{verbatim}
+Often, we distinguish tokens of different kinds based on their format: 
+\begin{itemize}
+    \item All numbers: integer constant. 
+    \item Alphanumerica: starts with a letter: identifier. 
+    \item \code{+}: Plus operator.
+    \item And so on.
+\end{itemize}
+
+\subsection{Step 2: Parsing}
+Now, we want to convert the tokens to AST. This is usually difficult, so we make use of a set of tools known as \textbf{parser generators}. 
+\begin{itemize}
+    \item Given the description of the token format, generates a lexer. 
+    \item Given the description of the grammar, generates a parser. 
+\end{itemize}
+We will be using parser generators, so we only care about how to describe the token format and the grammar. 
+
+\end{document}
