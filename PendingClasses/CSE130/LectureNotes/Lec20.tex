@@ -1,0 +1,352 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{CSE 130}
+\chead{Friday, May 13, 2022}
+\lhead{Lecture 20}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+\section{Lexing and Parsing}
+\subsection{Using the Parser Generators}
+There are two special types of files. 
+\begin{itemize}
+    \item \code{Lexer.x} (or any \code{.x} file): here, you will be writing the specifications for the lexer here (the token format). We will use the Haskell tool \code{alex} to translate this file to \code{Lexer.hs} (i.e., generate the lexer).
+    \item \code{Parser.y} (or any \code{.y} file): here, you will describe the form of the parser (the grammar). This will be fed to a tool called \code{happy}, which will be translated to the file \code{Parser.hs}.
+\end{itemize}
+
+\subsubsection{Regular Expressions}
+Before we talk about lexing, we first need to talk about regular expressions. Simply put, a regular expression is a sequence of characters that specifies a search pattern in text. For our \textbf{token format} file (used by \code{alex}), regular expressions have one of the following form\footnote{These may differ in different languages.}: 
+\begin{itemize}
+    \item a \textbf{character class}: written as a bunch of characters in a square bracket, this particular regular expression will match any of the characters in the brackets. In other words, for the character class \code{[c1 c2 ... cn]}, this will match \emph{any one} of the characters \code{c1 c2 ... cn}. 
+    
+    \bigskip 
+
+    There are several special character classes. 
+    \begin{itemize}
+        \item \code{[0-9]} will match any \emph{digit}.
+        \item \code{[a-z]} will match any \emph{lowercase letter}.
+        \item \code{[A-Z]} will match any \emph{uppercase letter}.
+        \item \code{[a-z A-Z]} will match \emph{any letter}. 
+    \end{itemize}
+    If a character class has one character, then you do not need to put any brackets; in other words, \code{[c1]} is equivalent to \code{c1}. 
+
+    \item \code{R1 R2} matches a string \code{s1 ++ s2}, where \code{s1} matches \code{R1} and \code{s2} matches \code{R2}. For example, \code{[0-9] [0-9]} matches any two-digit string. 
+    % do spaces not matter here?
+
+    \item \code{R+} matches \emph{one or more repetitions} of what \code{R} matches. For example, \code{[0-9]+} matches a natural number. 
+    
+    \item \code{R*} matches \emph{zero or more repetitions} of what \code{R} matches. 
+\end{itemize}
+
+\begin{mdframed}[]
+    (Quiz.) Which of the following strings are matched by \code{[a-z A-Z] [a-z A-Z 0-9]*}?
+
+    \begin{enumerate}[(a)]
+        \item (Empty string)
+        \item \code{5}
+        \item \code{x5}
+        \item \code{x}
+        \item C and D 
+    \end{enumerate}
+
+    \begin{mdframed}[]
+        The answer is \textbf{E}. The regular expression matches any \emph{one} letter (\code{[a-z A-Z]}) followed by \emph{zero oe more} letters and digits (\code{[a-z A-Z 0-9]*}). 
+    \end{mdframed}
+\end{mdframed}
+
+We can also name regular expressions. For example, instead of writing out \code{[0-9]} or \code{[a-z A-Z]} over and over again, we can instead write 
+\begin{verbatim}
+    $digit = [0-9]
+    $alpha = [a-z A-Z]\end{verbatim}
+Then, instead of writing \code{[a-z A-Z] [a-z A-Z 0-9]*}, we can write 
+\begin{verbatim}
+    $alpha [$alpha $digit]*\end{verbatim}
+
+\subsubsection{Lexing}
+We use the tool \code{alex} to generate the lexer. We want to give \code{alex} a \code{.x} file, describing the lexer. There are several components in a \code{.x} file. 
+
+\begin{itemize}
+    \item First, you need to list the kinds of \textbf{tokens} we have in the language.
+    \begin{verbatim}
+        data Token
+            = NUM    AlexPosn Int
+            | ID     AlexPosn String
+            | PLUS   AlexPosn
+            | MINUS  AlexPosn
+            | MUL    AlexPosn
+            | DIV    AlexPosn
+            | LPAREN AlexPosn
+            | RPAREN AlexPosn
+            | EOF    AlexPosn\end{verbatim}
+    We use a Haskell datatype to represent these possible tokens. This is completely normal Haskell syntax.
+    
+    \bigskip 
+    
+    Note that each constructor has the parameter \code{AlexPosn}. The whole point of this is to store information regarding where the token was found\footnote{Otherwise, you do not need to worry about this.}. Then, we might have some other parameters (e.g., \code{NUM} with \code{Int}) to \emph{store} the data associated with this type.
+
+    \item Next, you need to list the \textbf{token rules}.
+    \begin{verbatim}
+        -- Regex:                       Function: AlexPosn -> String -> Token
+        \+                            { \p _ -> PLUS   p }
+        \-                            { \p _ -> MINUS  p }
+        \*                            { \p _ -> MUL    p }
+        \/                            { \p _ -> DIV    p }
+        \(                            { \p _ -> LPAREN p }
+        \)                            { \p _ -> RPAREN p }
+        $alpha [$alpha $digit \_ \']* { \p s -> ID     p s }
+        $digit+                       { \p s -> NUM p (read s) }\end{verbatim}
+    Each line is a token rule. The content on the left-hand side is a \textbf{regular expression} that tells you what the token looks like. The content on the right-hand side tells \code{alex} how to construct this \code{Token} type from this information. 
+
+    \bigskip 
+
+    For example, let's look at 
+    \begin{verbatim}
+        \+                            { \p _ -> PLUS   p }\end{verbatim}
+    Obviously, the string to the left is a regular expression. It should be noted that a lot of the regular expressions have a backslash prepended to it (for example, this \code{+} regular expression has a backslash before it). The reason for this is because these characters, or at least some of them, have a special meaning in regular expressions, so we need to \emph{escape} them so we interpret the \code{+} literally as opposed to in a regular expression class. 
+
+    \bigskip 
+
+    Now, what is going on at the right side? On the right, we have a \textbf{Haskell function} surrounded by curly braces. Each function has \textbf{two arguments}: 
+    \begin{itemize}
+        \item The first argument is the position (\code{AlexPosn}). 
+        \item The second one is the string that was parsed. 
+    \end{itemize}
+    For this, we consider a more interesting example:
+    \begin{verbatim}
+        $alpha [$alpha $digit \_ \']*       { \p s -> ID     p s }\end{verbatim}
+    What this regular expression is saying is  to match anything that looks like an identifier (starts with a letter followed by any letter, digit, underscore, or tick). Then, the function takes in two arguments, \code{p} (for position) and \code{s} (the string that was parsed) and returns an \code{ID} with the position and string parsed. 
+
+    \bigskip 
+
+    Note that the last regular expression above is no different; the only difference is that we have \code{read s}, which converts the string read into an \code{Int}.
+
+
+
+    \item Finally, we need to run the lexer. From the token rules, \code{alex} will generate a function \code{alexScan} which
+    \begin{itemize}
+        \item Given the input string, find the longest prefix \code{p} that matches one of the rules. 
+        \item If \code{p} is empty, it fails (at the beginning of the string, there's something that doesn't match).
+        \item Otherwise, it will convert \code{p} into a token and returns the \emph{rest of the string}. 
+    \end{itemize}
+    As implied, this function will be executed in a loop so you can read the whole input string. Note that, in the programming assignments, we wrap this function into a function 
+    \begin{verbatim}
+        parseTokens :: String -> Either ErrMsg [Token]\end{verbatim}
+    which repeatedly calls \code{alexScan} until it consumes the whole input string or fails. Note that the return type here means that we will return \emph{either} \code{ErrMsg} or \code{[Token]}.
+
+    \bigskip 
+
+    Thus, testing the function gives us 
+    \begin{verbatim}
+        $ parseTokens "23 + 4 / off -"
+        Right [ NUM (AlexPosn 0 1 1) 23
+            , PLUS (AlexPosn 3 1 4)
+            , NUM (AlexPosn 5 1 6) 4
+            , DIV (AlexPosn 7 1 8)
+            , ID (AlexPosn 9 1 10) "off"
+            , MINUS (AlexPosn 13 1 14) 
+            ]
+        
+        $ parseTokens "%"
+        Left "lexical error at 1 line, 1 column"\end{verbatim}
+\end{itemize}
+
+\begin{mdframed}[]
+    (Quiz.) What is the result of \code{parseTokens} \code{"92zoo"} (positions omitted for readability)?
+
+    \begin{enumerate}[(a)]
+        \item Lexical error 
+        \item \code{[ID "92zoo"]}
+        \item \code{[NUM "92"]}
+        \item \code{[NUM "92", ID "zoo"]}
+    \end{enumerate}
+
+    \begin{mdframed}[]
+        The answer can either be \textbf{A} or \textbf{D}, depending  on whether you have whitespace sensitivity. If we care about whitespace, then \textbf{A} is the answer. If we do not care about whitespace, then \textbf{D} is the answer. 
+    \end{mdframed}
+\end{mdframed}
+\textbf{Remark:} In a real programming langauge, you probably care about whitespace sensitivity.
+
+\subsubsection{Parser}
+Just like how \code{alex} is for lexing, we use \code{happy} for the parser. We input to \code{happy} a \code{.y} file that describes the \emph{grammar}. As always, there are several components. 
+
+\begin{itemize}
+    \item Note that something like 
+    \begin{verbatim}
+        data Aexpr 
+            = AConst  Int
+            | AVar    Id
+            | APlus   Aexpr Aexpr
+            | AMinus  Aexpr Aexpr
+            | AMul    Aexpr Aexpr\end{verbatim}
+    is the \emph{abstract} syntax. This tells us that there is a binary operation called (for example) \code{APlus} with two \code{Aexpr}, but this doesn't tell us \emph{what} this might look like in source code. Thus, what we want is the \emph{concrete syntax}; in particular,
+    \begin{itemize}
+        \item What programs look like when written as text. 
+        \item How to map that text into the abstract syntax. 
+    \end{itemize}
+    What is a grammar? A grammar is a recursive definition of a set of parse trees; in particular, a grammar is made of 
+    \begin{itemize}
+        \item \textbf{Terminals}: the leaves of the tree (corresponds to tokens).
+        \item \textbf{Nonterminals}: the internal nodes of the tree (corresponds to more complex constructs, all kinds of subexpressions). 
+        \item \textbf{Production Rules}: describes how to ``produce'' a non-terminal from terminals and other non-terminals (i.e., what children each nonterminal can have).
+    \end{itemize}
+    So, consider the following example:
+    \begin{verbatim}
+        Aexpr :      -- Non-term Aexpr can be either:
+              | TNUM             -- Term of format "number", or
+              | ID               -- Term of format "identifier", or
+              | '(' Aexpr ')'    -- Term '(', non-term Aexpr, term ')'
+              | Aexpr '*' Aexpr  -- Non-term Aexpr, term '*', non-term Aexpr
+              | Aexpr '+' Aexpr  -- Non-term Aexpr, term '+', non-term Aexpr
+              | Aexpr '-' Aexpr  -- Non-term Aexpr, term '-', non-term Aexpr\end{verbatim}
+    Here, we have a single nonterminal (\code{Aexpr}). Then, our terminals are things like \code{TNUM}, \code{ID}, \code{'('}, \code{')'}, \code{'*'}, \code{'+'}, and \code{'-'}. Notice that we have 6 production rules, which describes how our \code{Aexpr} can be represented as a sequence of other things. For example, 
+    \begin{itemize}
+        \item \code{Aexpr} can be written as a \code{TNUM}.
+        \item \code{Aexpr} can be written as an \code{ID}.
+        \item \code{Aexpr} can be written as an \code{Aexpr} surrounded by parentheses.
+        \item And so on. 
+    \end{itemize}
+    So, a parse tree for the string \code{(x + 2)} will look like 
+    \begin{verbatim}
+                                    Aexpr 
+                                    / | \ 
+                                   /  |  \ 
+                                  /   |   \ 
+                                 /    |    \ 
+                               '('    |    ')'
+                                    Aexpr
+                                    / | \ 
+                                   /  |  \ 
+                                  /  '+'  \ 
+                                 /         \
+                              Aexpr      Aexpr 
+                                |          |
+                                |          |
+                                |          |
+                            'x' (ID)   '2' (TNUM)\end{verbatim}
+    \begin{mdframed}[]
+        (Quiz.) Using the above grammar of \code{Aexpr}, which string \emph{cannot} be parsed as \code{Aexpr}?
+    
+        \begin{enumerate}[(a)]
+            \item \code{x}
+            \item \code{x 5}
+            \item \code{(x +) 5}
+            \item \code{x + 5 + 1}
+            \item B and C 
+        \end{enumerate}
+    
+        \begin{mdframed}[]
+            The answer is \textbf{E}. For B, there is no rule that lets us generate both an identifier and number. For C, there is no rule that lets us generate \code{(x +)}.
+        \end{mdframed}
+    \end{mdframed}
+
+    \item So far, our grammar tells us whether a string is syntactically correct or not. However, we want to convert our string to an AST. 
+    \begin{verbatim}
+        parse :: String -> AExpr \end{verbatim}
+    An \textbf{attribute grammar} associates a value with each node in the parse tree such that 
+    \begin{itemize}
+        \item Each production is annotated with a rule.
+        \item Each rule computes the value\footnote{The AST (i.e. the Haskell value of type \code{AExpr}.)} of a non-terminal from the values of its children.  
+    \end{itemize}
+    So, the attribute grammar for arithmetic expression is as follows: 
+    \begin{verbatim}
+        --      Format                    Value
+        Aexpr : TNUM                    { AConst $1    }
+              | ID                      { AVar   $1    }
+              | '(' Aexpr ')'           { $2           }
+              | Aexpr '*' Aexpr         { AMul   $1 $3 }
+              | Aexpr '+' Aexpr         { APlus  $1 $3 } 
+              | Aexpr '-' Aexpr         { AMinus $1 $3 }
+    \end{verbatim}
+    Like with the token rules, there is a format for each expression. 
+    \begin{itemize}
+        \item The left-hand side is a context-free grammar (just like what we saw in the example above). 
+        \item The right-hand side is the attributes part. In particular, you have a \textbf{Haskell expression} surrounded by curly braces. This will then construct the value associated with each node. So, essentially, you can think of the right-hand side as a regular Haskell expression, with the dollar signs.
+    \end{itemize}
+    What do the dollar signs mean? Well,
+    \begin{itemize}
+        \item \code{\$1} refers to the \emph{value} of the first child. 
+        \item \code{\$2} refers to the value of the second child. 
+        \item And so on. 
+    \end{itemize}
+    Let's take this line (from the grammar) as an example: 
+    \begin{verbatim}
+        Aexpr '+' Aexpr         { APlus  $1 $3 } \end{verbatim}
+    To construct the value, i.e. the AST, for the plus node, you should apply the constructor \code{APlus} to the value of the first child (\code{\$1}) and the value of the third child (\code{\$3}). Here, each child (\code{\$n}) is annotated below:
+    \begin{verbatim}
+        Aexpr '+' Aexpr         { APlus  $1 $3 } 
+    --  $1    $2  $3\end{verbatim}
+    So, there's no reason for us to use the second child, \code{\$2}, since it's just literally \code{'+'}. So, going back to the parse tree for \code{(x + 2)}, the AST would look like 
+    So, a parse tree for the string \code{(x + 2)} will look like 
+    \begin{verbatim}
+                                    Aexpr           => APlus (AVar "x") (AConst 2)
+                                    / | \ 
+                                   /  |  \ 
+                                  /   |   \ 
+                                 /    |    \ 
+                               '('    |    ')'
+                                    Aexpr           => APlus (AVar "x") (AConst 2)
+                                    / | \ 
+                                   /  |  \ 
+                                  /  '+'  \ 
+                                 /         \
+            AVar "x" <=       Aexpr      Aexpr      => AConst 2
+                                |          |
+                                |          |
+                                |          |
+                            'x' (ID)   '2' (TNUM)\end{verbatim}
+    How do we compute the value of a terminal? In particular, 
+    \begin{itemize}
+        \item how do we map terminal \code{'x'} to string \code{"x"}?
+        \item how do we map terminal \code{'2'} to integer \code{2}?
+    \end{itemize}
+
+    \item We have to describe what the values of the terminals are to \code{happy}. Recall that the terminals correspond to the tokens returned by the lexer. So, in the \code{.y} file, we have to declare which termianls in the rules correspond to which tokens from the \code{Token} datatype. 
+    
+    \begin{verbatim}
+        -- Terminals:   Tokens from lexer:
+            TNUM        { NUM _ $$ }
+            ID          { ID _ $$  }
+            '+'         { PLUS _   }
+            '-'         { MINUS _  }
+            '*'         { MUL _    }
+            '/'         { DIV _    }
+            '('         { LPAREN _ }
+            ')'         { RPAREN _ }\end{verbatim}
+    Each thing on the left is a terminal (which appears in the production rules). Each thing on the right is a Haskell pattern for the datatype \code{Token}. So, the \code{\$\$} designates one parameter of a token constructor as the \textbf{value} of that token. 
+\end{itemize}
+
+\begin{mdframed}[]
+    (Quiz.) What is the value of the root \code{AExpr} node when parsing \code{1 + 2 + 3}?
+
+    \begin{verbatim}
+        Aexpr : TNUM                    { AConst $1    }
+              | ID                      { AVar   $1    }
+              | '(' Aexpr ')'           { $2           }
+              | Aexpr '*' Aexpr         { AMul   $1 $3 }
+              | Aexpr '+' Aexpr         { APlus  $1 $3 } 
+              | Aexpr '-' Aexpr         { AMinus $1 $3 }\end{verbatim}
+
+    \begin{enumerate}[(a)]
+        \item Cannot be parsed as \code{AExpr}.
+        \item \code{6}
+        \item \code{APlus (APlus (AConst 1) (AConst 2)) (AConst 3)}
+        \item \code{APlus (AConst 1) (APlus (AConst 2) (AConst 3))}
+    \end{enumerate}
+
+    \begin{mdframed}[]
+        The answer is both \textbf{C} and \textbf{D}. If we draw parse trees, we would be able to get both answers.
+    \end{mdframed}
+\end{mdframed}
+
+
+
+\end{document}
