@@ -1,0 +1,198 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{CSE 130}
+\chead{Friday, May 20, 2022}
+\lhead{Lecture 23}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+\section{Type Classes}
+\subsection{Using Type Classes}
+To motivate this, we will build a small library for \emph{Environments} mapping keys \code{k} to values \code{v}. Recall that, in Nano, we represented environments as \code{[(Id, Value)]}; however, what if we want to represent keys that are not \code{Id} or values that are not \code{Value}?
+
+\bigskip 
+
+Let us define a new \textbf{polymorphic datatype} \code{Env}. 
+\begin{verbatim}
+    data Env k v 
+        = Def   v                   -- Default value to be used for missing keys 
+        | Bind  k v (Env k v)       -- Bind key 'k' to value 'v'
+        deriving (Show)\end{verbatim}
+
+So, for example, 
+\begin{verbatim}
+    $ let env0 = add "cat" 10.0 (add "dog" 20.0 (Def 0))
+
+    $ get "cat" env0 
+    10 
+
+    $ get "dog" env0 
+    20 
+
+    $ get "horse" env0 
+    0\end{verbatim}
+
+Let us implement some of the key functions. 
+\begin{itemize}
+    \item \code{add}: Adds a \code{key} and \code{val} pair, returning a new environment. 
+    \begin{verbatim}
+        add :: k -> v -> Env k v -> Env k v 
+        add key val env = Bind key val env 
+        -- or
+        -- add = Bind\end{verbatim}
+
+    \item \code{get}: Gets the value associated with the \code{key}.
+        \begin{verbatim}
+            get :: k -> Env k v -> v 
+            get key (Def v)         = v
+            get key (Bind k v env)
+                | k == key      = v
+                | otherwise     = get key env \end{verbatim}
+\end{itemize}
+Note that this gives a type error, especially for \code{get}. The issue is that we require \code{k} and \code{key} to have \code{Eq} snce we're comparing two keys. So,
+\begin{verbatim}
+    get :: Eq k => k -> Env k v -> v    -- Changed this line 
+    get key (Def v)         = v
+    get key (Bind k v env)
+        | k == key      = v
+        | otherwise     = get key env \end{verbatim}
+
+
+
+
+\subsection{Explicit Type Annotations}
+Consider the standard typeclass \code{Read}, where its simplified implementation is shown below: 
+\begin{verbatim}
+    class Read a where 
+        read :: String -> a\end{verbatim}
+
+Note that \code{Read} is the \emph{opposite} of \code{Show}. 
+\begin{itemize}
+    \item It requires that every instance \code{T} can parse a string and turn it into \code{T}.
+    \item Just like with \code{Show}, most standard types are instances of \code{Read}.
+\end{itemize}
+
+\begin{mdframed}[]
+    (Quiz.) What does the expression \code{read "2"} evaluate to? 
+    \begin{enumerate}[(a)]
+        \item Type error
+        \item \code{"2"}
+        \item \code{2}
+        \item \code{2.0}
+        \item Run-time error 
+    \end{enumerate}
+
+    \begin{mdframed}[]
+        The answer is \textbf{A}. There are multiple ways to ``read'' \code{"2"}. In general, note that the definition of \code{read} has that the return type is \code{a}, a generic type. 
+    \end{mdframed}
+\end{mdframed}
+
+So, \textbf{explicit type annotation} is needed to tell Haskell what to convert the string to. 
+\begin{verbatim}
+    $ (read "2") :: Int 
+    2 
+
+    $ (read "2") :: Float 
+    2.0 
+
+    $ (read "2") :: String 
+    **** Exception: Prelude.read: no parse 
+    
+    $ (read "\"2\"") :: String 
+    "2"
+
+    $ read "()"
+    ()\end{verbatim}
+
+
+\subsection{Creating Type Classes}
+Type classes are useful for many different things. Let's see an example with \textbf{JSON}. Here's an example JSON: 
+\begin{verbatim}
+    { "name"    : "Nadia"
+    , "age"     : 37.0
+    , "likes"   : [ "poke", "coffee", "pasta" ]
+    , "hates"   : [ "beets" , "milk" ]
+    , "lunches" : [ {"day" : "mon", "loc" : "rubios"}
+                , {"day" : "tue", "loc" : "home"}
+                , {"day" : "wed", "loc" : "curry up now"}
+                , {"day" : "thu", "loc" : "home"}
+                , {"day" : "fri", "loc" : "santorini"} ]
+    }\end{verbatim}
+Each JSON value is either 
+\begin{itemize}
+    \item a base value like a string, number, or boolean,
+    \item an (ordered) array of values, or 
+    \item an object, i.e. a set of string-value pairs. 
+\end{itemize}
+
+\subsubsection{JSON Datatype}
+We can represent a subset of JSON values with the Haskell data type 
+\begin{verbatim}
+    data JVal 
+        = JStr  String 
+        | JNum  Double 
+        | JBool Bool 
+        | JObj  [(String, JVal)]
+        | JArr  [JVal]
+        deriving (Eq, Ord, Show)\end{verbatim}
+So, the example JSON would look like 
+\begin{verbatim}
+    js1 =
+        JObj [("name", JStr "Nadia")
+            ,("age",  JNum 36.0)
+            ,("likes",   JArr [ JStr "poke", JStr "coffee", JStr "pasta"])
+            ,("hates",   JArr [ JStr "beets", JStr "milk"])
+            ,("lunches", JArr [ JObj [("day",  JStr "mon")
+                                        ,("loc",  JStr "rubios")]
+                                , JObj [("day",  JStr "tue")
+                                        ,("loc",  JStr "home")]
+                                , JObj [("day",  JStr "wed")
+                                        ,("loc",  JStr "curry up now")]
+                                , JObj [("day",  JStr "thu")
+                                        ,("loc",  JStr "home")]
+                                , JObj [("day",  JStr "fri")
+                                        ,("loc",  JStr "santorini")]
+                                ])
+            ]  \end{verbatim}
+This is a pain to write out. Instead, let us serialize Haskell Values to JSON. 
+\begin{itemize}
+    \item Base types \code{String}, \code{Double}, \code{Bool} are serialized as base JSON values. 
+    \item Lists are serialized into JSON arrays. 
+    \item Lists of key-value pairs are serialized into JSON objects.
+\end{itemize}
+
+\subsubsection{Type Classes}
+We can define a type class 
+\begin{verbatim}
+    class JSON a where 
+        toJson :: a -> JVal \end{verbatim}
+so that a type \code{a} can be converted to JSON. Then, we can work on the basic types: 
+\begin{verbatim}
+    instance JSON Double where 
+        toJson = JNum
+
+    instance JSON Bool where 
+        toJson = JBool
+    
+    instance JSON String where 
+        toJson = JStr\end{verbatim}
+We can also work on more complicated types. 
+\begin{verbatim}
+    instance JSON a => JSON [a] where 
+        toJson xs = JArr [toJson x | x <- xs]\end{verbatim}
+Here, if \code{a} is an instance of \code{JSON}, then there is a generic recipe to convert lists of \code{a} values. Similarly, for key-value lists, we have: 
+\begin{verbatim}
+    instance (JSON a) => JSON [(String a)] where 
+        toJson kvs = JObj [ (k, toJson v) | (k, v) <- kvs]\end{verbatim}
+
+
+\end{document}
