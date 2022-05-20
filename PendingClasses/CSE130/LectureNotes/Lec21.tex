@@ -1,0 +1,99 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{CSE 130}
+\chead{Monday, May 16, 2022}
+\lhead{Lecture 21}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+\section{Lexing and Parsing}
+\subsection{Running the Parser}
+
+Recall that there were two issues. 
+\begin{itemize}
+    \item Wrong Precedence
+    \begin{verbatim}
+    $ evalString [] "2 * 5 + 5"
+    20\end{verbatim}
+    This is invalid, and is due to the fact that our grammar is \textbf{ambiguous} -- there are multiple ways to parse the string \code{2 * 5 + 5}; one way is correct (\code{(2 * 5) + 5}) and one way is incorrect (\code{2 * (5 + 5)}). Thus, we want to tell \code{happy} that \code{*} has higher precedence than \code{+}.
+
+    \item Wrong Associativity
+    \begin{verbatim}
+    $ evalString [] "2 - 1 - 1"
+    2\end{verbatim}
+    So, we also need to tell \code{happy} that \code{-} is \textbf{left-associative}.     
+\end{itemize}
+Therefore, we need to tell \code{happy} about precedence and associativity. 
+
+\subsubsection{Solution 1: Grammar Factoring}
+We can split the \code{AExpr} non-terminal into multiple ``levels.''
+\begin{verbatim}
+    Aexpr : Aexpr '+' Aexpr
+          | Aexpr '-' Aexpr
+          | Aexpr2
+
+    Aexpr2 : Aexpr2 '*' Aexpr2
+          | Aexpr2 '/' Aexpr2
+          | Aexpr3
+
+    Aexpr3 : TNUM
+          | ID
+          | '(' Aexpr ')'\end{verbatim}
+Note that \code{AExpr} is the most general term. Then, \code{AExpr2} is slightly more specific; it only has expressions relating to multiplication and division, and numbers/identifiers. \code{AExpr3} is the most strict, with only numbers/identifiers. Intuitively, \code{AExpr2} will ``bind tighter'' than \code{AExpr}. We also have \code{AExpr3}, which is the ``tightest.''
+
+\bigskip 
+
+This fixes the issue with \code{2 * 5 + 5}, but fails to parse \code{5 + 5}.
+
+\begin{mdframed}[]
+    (Quiz.) With this new grammar, can we parse \code{2 - 1 - 1} the wrong way?
+
+    \begin{enumerate}[(a)]
+        \item Yes.
+        \item No.
+    \end{enumerate}
+
+    \begin{mdframed}[]
+        The answer is \textbf{B}. There are still multiple ways to parse \code{2 - 1 - 1}.
+    \end{mdframed}
+\end{mdframed}
+How do we fix this? One way to do so is to disallow the right-hand side of a minus to be a minus. 
+
+\begin{verbatim}
+    Aexpr : Aexpr '+' Aexpr2
+          | Aexpr '-' Aexpr2
+          | Aexpr2
+
+    Aexpr2 : Aexpr2 '*' Aexpr3
+          | Aexpr2 '/' Aexpr3
+          | Aexpr3
+
+    Aexpr3 : TNUM
+          | ID
+          | '(' Aexpr ')'\end{verbatim}
+
+\subsubsection{Solution 2: Parser Directives}
+We can just use a special syntax for the parser generator; in \code{happy}, this is the syntax\footnote{Other parser generators may use other syntax.}: 
+\begin{verbatim}
+    %left '+' '-'
+    %left '*' '/'\end{verbatim}
+This means that 
+\begin{itemize}
+    \item All our operations are left-associative. 
+    \item Operators on the lower line have higher precedence.
+\end{itemize}
+Note that operations like \emph{applications}, which is left-associative, do not have an operator; thus, you still need to worry about things like these. 
+
+
+
+
+\end{document}

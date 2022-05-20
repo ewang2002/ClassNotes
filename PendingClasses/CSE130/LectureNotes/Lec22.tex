@@ -1,0 +1,161 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{CSE 130}
+\chead{Wednesday, May 18, 2022}
+\lhead{Lecture 22}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+\section{Type Classes}
+Consider the following operator: \code{+}
+\begin{itemize}
+    \item For \code{Integer}s, we have 
+    \begin{verbatim}
+        $ 2 + 3
+        5\end{verbatim}
+    \item For \code{Double}s, we have 
+    \begin{verbatim}
+        $ 2.9 + 3.5
+        6.4 \end{verbatim}
+\end{itemize}
+But, we can also do things like 
+\begin{verbatim}
+    $ [2.9, 3.5] == [2.9, 3.5]
+    True
+
+    $ ("cat", 10) < ("cat", 20)
+    True \end{verbatim}
+How does this work? 
+
+\begin{mdframed}[]
+    (Quiz.) Which of the following type annotations would work for \code{(+)}?
+
+    \begin{enumerate}[(a)]
+        \item \code{(+) :: Int -> Int -> Int}
+        \item \code{(+) :: Double -> Double -> Double}
+        \item \code{(+) :: a -> a -> a}
+        \item Any of the above. 
+        \item None of the above.
+    \end{enumerate}
+
+    \begin{mdframed}[]
+        The answer is \textbf{E}. If we picked A, then we can't add two \code{Double}s; the same idea applies for B. For C, we can't add, for example, two \code{Bool}s.
+    \end{mdframed}
+\end{mdframed}
+We need \textbf{ad-hoc polymorphism}. To do this, we make use of \emph{type classes}.
+
+
+
+
+\subsection{Constrained Types}
+We note that 
+\begin{verbatim}
+    $ :type (+)
+    (+) :: (Num a) => a -> a -> a\end{verbatim}
+Here, this is saying that \code{(+)} takes in two \code{a} values and returns an \code{a} value, such that \code{a} is an \emph{instance of} the \code{Num} type class\footnote{In terms of Java, we can think of \code{Num} as an interface, so \code{a} would have to implement the \code{Num} interface.}. Then, \code{(Num a) =>} is the \emph{constraint}.
+
+\bigskip 
+
+Let's try to add two \code{Bool} values.
+\begin{verbatim}
+    $ True + False 
+    <interactive>
+        No instance for (Num Bool) arising from a use of '+'
+        In the expression: True + False
+        In an equation for 'it': it = True + False\end{verbatim}
+This means that \code{True} and \code{False} are of type \code{Bool}, but that \code{Bool} is not an instance of \code{Num}.
+
+\begin{mdframed}[]
+    (Quiz.) What would be a reasonable type for the equality operator? 
+    \begin{enumerate}[(a)]
+        \item \code{(==) :: a -> a -> a}
+        \item \code{(==) :: a -> a -> Bool}
+        \item \code{(==) :: (Eq a) => a -> a -> a}
+        \item \code{(==) :: (Eq a) => a -> a -> Bool}
+        \item None of the above 
+    \end{enumerate}
+
+    \begin{mdframed}[]
+        The answer is \textbf{D}. Note that one example of something that can't really be compared are \emph{functions}.
+    \end{mdframed}
+\end{mdframed}
+
+\subsection{What is a Type Class?}
+A type class is a \emph{collection of methods} (functions, operators) that must exist for every instance. Some useful type classes in the Haskell standard library are
+\begin{itemize}
+    \item The \code{Eq} Type Class for \textbf{Equality}.
+    \begin{verbatim}
+        class Eq a where 
+            (==) :: a -> a -> Bool 
+            (/=) :: a -> a -> Bool \end{verbatim}
+    Note that a type \code{T} is an instance of \code{Eq} if there are two functions 
+    \begin{itemize}
+        \item \code{(==) :: T -> T -> Bool} that determines if two \code{T} values are equal. 
+        \item \code{(/=) :: T -> T -> Bool} that determines if two \code{T} values are not equal. 
+    \end{itemize}
+
+    \item The \code{Show} Type Class 
+    \begin{verbatim}
+        class Show a where 
+            show :: a -> String \end{verbatim}
+    This type class requires that instances are convertible to \code{String} so that it can be displayed. To see what we mean, note that 
+    \begin{verbatim}
+    $ 2
+    2
+
+    $ show 2
+    "2"
+
+    $ show 3.14 
+    "3.14"
+
+    $ show (1, "two", ([], [], []))
+    "(1,\"two\",([],[],[]))"\end{verbatim}
+
+    \item The \code{Ord} Type Class for \textbf{Order}.
+    \begin{verbatim}
+        class Eq a => Ord a where 
+            (<)     :: a -> a -> Bool
+            (<=)    :: a -> a -> Bool
+            (>)     :: a -> a -> Bool
+            (>=)    :: a -> a -> Bool\end{verbatim}
+    Note the \code{Eq a =>}. A type \code{T} is an instance of \code{Ord} if \code{T} is \emph{also} instance of \code{Eq}, and it defines functions for comparing values for inequalities. 
+
+    \bigskip 
+
+    In other words, if \code{T} implements \code{Ord}, then it must also implement \code{Eq} (i.e., \code{Ord} depends on \code{Eq}).
+\end{itemize}
+
+
+\subsection{Creating Type Classes}
+Consider the datatype 
+\begin{verbatim}
+    data Color = Red | Green \end{verbatim}
+Let us now add a declaration for \code{Show} on \code{Color}:
+\begin{verbatim}
+    instance Show Color where 
+        show Red        = "Red"
+        show Green      = "Green"\end{verbatim}
+
+Let's do the same thing for \code{Eq}:
+\begin{verbatim}
+    instance Eq Color where 
+        (==) Red    Red     = True 
+        (==) Green  Green   = True 
+        (==) _      _       = False
+        (/=) x      y       = not (x == y)\end{verbatim}
+This is tedious, and this type isn't very complicated. Indeed, there is a way for us to \emph{automatically} do this, using the \code{deriving} keyword. 
+\begin{verbatim}
+    data Color = Red | Green 
+        deriving (Eq, Show)\end{verbatim}
+
+\end{document}
