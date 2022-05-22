@@ -1,0 +1,149 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{MATH 180A}
+\chead{Friday, May 6, 2022}
+\lhead{Lecture 17}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\section{Sums of Random Variables}
+We will now work towards the Law of Large Numbers and the Central Limit Theorem. Before we do this, we need to first talk about sums of random variables.
+
+\subsection{Discrete Case}
+\begin{theorem}{}{}
+    Suppose that $X$ and $Y$ are independent discrete random variables with PMFs $p_X$ and $p_Y$. Then, the PMF of their sum $X + Y$ is the \textbf{convolution} of $p_X$ and $p_Y$. That is, 
+    \[p_{X + Y}(z) = \sum_x p_{X}(x) p_{Y}(z - x).\]
+\end{theorem}
+\textbf{Remark:} We want to find the probability that $X + Y = z$. To do this, we can take the sum of all possible values $X$ can take. Then, $X$ will take on some value and $Y$ will take the rest of the value $z - x$. 
+
+\bigskip 
+
+More generally, if $X_1, \dots, X_n$ are independent, then the PMF for their sum 
+\[S_n = \sum_{i = 1}^{n} X_i\]
+is the \textbf{$n$-fold convolution}
+\[p_{S_n}(z) = \sum_{x_1 + \dots + x_n = z} \left(\prod_{i = 1}^{n} p_{i}(x_i)\right).\]
+Alternatively, we note that (this is often useful for an induction proof)
+\[p_{S_n}(z) = \sum_{x} p_{S_{n - 1}} p_{n}(z - x)\]
+is the convolution of $p_{S_{n - 1}}$ and $p_n$.
+
+\begin{mdframed}[]
+    (Example.) Let $X_1, X_2, \dots$ be the result of independent dice rolls. Let $S_2$ be the sum of the first \emph{two} rolls. To find $\{S_2 = 5\}$, we note that 
+    \begin{center}
+        \begin{tabular}{||c|c||}
+            \hline 
+            Roll 1 ($x$) & Roll 2 ($5 - x$) \\ 
+            \hline \hline 
+            1 & 4 \\ 
+            2 & 3 \\ 
+            3 & 2 \\ 
+            4 & 1 \\ 
+            \hline 
+        \end{tabular}
+    \end{center}
+    Then, 
+    \[\PR(S_2 = 5) = \sum_{x} p_{1}(x) p_{2}(5 - x) = \sum_{x = 1}^{4} \frac{1}{6} \frac{1}{6} = \frac{4}{36} = \frac{1}{9}.\]
+\end{mdframed}
+
+\begin{mdframed}[]
+    (Example.) Let's suppose that we now want to find $\{S_3 = 4\}$. There are two ways to do this.
+    \begin{itemize}
+        \item \underline{Approach 1:} We note that 
+        \[\PR(S_3 = 4) = \sum_{x_1 + x_2 + x_3 = 4} \frac{1}{6^3} = \frac{3}{6^3},\]
+        since the only possibilities are $\{112, 121, 211\}$.
+
+        \item \underline{Approach 2:} We also note that 
+        \begin{equation*}
+            \begin{aligned}
+                \PR(S_3 = 4) &= \sum_{x} \PR(S_2 = x) \PR(X_3 = 4 - x) \\ 
+                    &= \sum_{x = 2}^{3} \PR(S_2 = x) \PR(X_3 = 4 - x) \\ 
+                    &= \frac{1}{6^2} \frac{1}{6} + \frac{2}{6^2} \frac{1}{6} \\ 
+                    &= \frac{3}{6^3}.
+            \end{aligned}
+        \end{equation*}
+        To see how we got this, note that $S_2$ represents the sum of the first two rolls. The minimum value $S_2$ can take is 2 (since the minimum value each die has is 1). The maximum value $S_2$ can take is 3 (since we need to account for the third roll as well). So, we have: 
+        \begin{center}
+            \begin{tabular}{||c|c||}
+                \hline 
+                Roll 1 \& 2 ($S_2 = x$) & Roll 3 ($4 - x$) \\ 
+                \hline \hline 
+                2 & 2 \\ 
+                3 & 1 \\ 
+                \hline 
+            \end{tabular}
+        \end{center}
+    \end{itemize}
+\end{mdframed}
+
+\begin{mdframed}[]
+    (Example.) Recall the convolution of $k$ independent Geometric RVs is a Negative Binomial RV (the number of trials until the $k$th ``success.'') What is the convolution of two independent Binomial RVs with the same probability parameter $p$? 
+
+    \begin{mdframed}[]
+        Recall that a Binomial random variable with parameters $n$ and $p$ is the distribution of the number of successes in a sequence of $n$ independent experiments, where each experiment is a Bernoulli trial. 
+
+        \bigskip 
+
+        If $X$ is a Binomial random variable with parameters $n$ and $p$, then we can represent it like 
+        \[X = B_1 + B_2 + \dots + B_n.\]
+        Likewise, if $Y$ is a Binomial random variable with parameters $m$ and $p$, then 
+        \[Y = B'_1 + B'_2 + \dots + B'_m.\]
+        Thus, the convolution is given by 
+        \[X + Y = B_1 + B_2 + \dots + B_n + B'_1 + B'_2 + \dots + B'_m.\]
+        Notice that this is also a Binomial random variable with parameters $n + m$ and $p$.
+    \end{mdframed}
+\end{mdframed}
+
+\subsection{Continuous Case}
+The continuous case is very similar to the discrete case, except we make use of integration. 
+
+\begin{theorem}{}{}
+    Suppose that $X$ and $Y$ are \textbf{independent} continuous RVs with PDFs $f_X$ and $f_Y$. Then, the PDF of their sum $X + Y$ is the \textbf{convolution} of $f_X$ and $f_Y$. That is, 
+    \[f_{X + Y}(z) = \int_{-\infty}^{\infty} f_{X}(x) f_{Y}(z - x) dx.\]
+    We can generalize this to sums 
+    \[S_n = \sum_{i = 1}^{n} X_i\]
+    of independent RVs, as before.
+\end{theorem}
+
+\begin{mdframed}[]
+    (Example.) Recall the example on the sum $S = M + N$ of two independent Uniform[0, 1] RVs. We found that 
+    \[f(s) = \begin{cases}
+        s & s \in [0, 1] \\ 
+        2 - s & s \in (1, 2] \\ 
+        0 & \text{Otherwise}
+    \end{cases}.\]
+    It is somewhat easier, although essentially equivalent, to do this with convolutions. To do this, note that 
+    \[f(s) = \int_{-\infty}^{\infty} f_{M}(u) f_{N}(s - u) du.\]
+    Note that $f_{M}(u) f_{N}(s - u) = 1$ if and only if $0 \leq u, s - u \leq 1$ if and only if $u \in [0, 1] \cap [s - 1, s]$. Therefore,
+    \[f(s) = \min\{1, s\} - \max\{0, s - 1\} = \begin{cases}
+        s & s \in [0, 1] \\ 
+        2 - s & s \in (1, 2] \\ 
+        0 & \text{Otherwise}
+    \end{cases},\] 
+    as expected.
+\end{mdframed}
+
+\subsection{Normal Random Variables}
+The sum of independent Normal RVs is still Normal. Moreover, we add the means and add the variances. 
+
+\begin{theorem}{}{}
+    Suppose that $X_1, \dots, X_n$ are independent Normal RVs with means $\mu_i$ and variances $\sigma_i^2$. Then, their sum 
+    \[S_n = \sum_{i = 1}^{n} X_i\]
+    is normal with mean 
+    \[\mu = \sum_{i = 1}^{n} \mu_i\]
+    and 
+    \[\sigma^2 = \sum_{i = 1}^{n} \sigma_{i}^2.\]
+\end{theorem}
+\textbf{Remark:} Note that $S_n$ having this sum and variance comes from LoE and the fact that they are independent (so we can add the variances). 
+
+% cauchy stuff past 44min
+
+\end{document}
