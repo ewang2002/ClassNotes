@@ -1,0 +1,133 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{CSE 130}
+\chead{Monday, May 23, 2022}
+\lhead{Lecture 24}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\section{Monads}
+
+\subsection{Functors}
+Recall our use of \emph{higher-order functions} to abstract code patterns for \emph{lists}. In particular, we made use of the \code{map} higher-order function to 
+\begin{itemize}
+    \item render the values of a list, 
+    \item square the values of a list,
+    \item and more.
+\end{itemize}
+What about trees? 
+\begin{itemize}
+    \item Let's suppose we wanted to render the values of a \emph{tree}, where a tree is defined by 
+    \begin{verbatim}
+    data Tree a 
+        = Leaf 
+        | Node a (Tree a) (Tree a)\end{verbatim}
+    So, to render the values of a tree, we can do 
+    \begin{verbatim}
+    showTree :: Tree Int -> Tree String
+    showTree Leaf         = Leaf 
+    showTree (Node v l r) = Node (show x) (showTree l) (showTree r)\end{verbatim}
+
+    \item Now, let's suppose we wanted to square the values of a tree. We can use the same pattern as used in the previous part, changing the return type and the return values appropriately.
+\end{itemize}
+
+We can write a generalization of this by writing a \code{map} function for trees. 
+\begin{verbatim}
+    mapTree :: (a -> b) -> Tree a -> Tree b
+    mapTree f Leaf          = Leaf 
+    mapTree f (Node v l r)  = ... \end{verbatim}
+But, observe the following: 
+\begin{verbatim}
+    type List a = [a]
+    mapList :: (a -> b) -> List a -> List b    -- List
+    mapTree :: (a -> b) -> Tree a -> Tree b    -- Tree\end{verbatim}
+Notice how we have essentially the same signature for both \code{List}s and \code{Tree}s. 
+
+\subsubsection{Class for Mapping}
+We can make a typeclass to model mapping over some datatypes (not all datatypes support mapping over them).
+
+\begin{verbatim}
+    class Functor t where 
+        fmap :: (a -> b) -> t a -> t b\end{verbatim}
+
+Then, we can do 
+\begin{verbatim}
+    instance Functor [] where 
+        fmap = mapList 
+
+    instance Functor Tree where 
+        fmap = mapTree\end{verbatim}
+
+
+
+
+\subsection{Monads}
+Consider the following \code{Expr} data type. 
+\begin{verbatim}
+    data Expr 
+        = Num   Int 
+        | Plus  Expr Expr
+        | Div   Expr Expr 
+        deriving (Show) 
+    
+    eval :: Expr -> Int 
+    eval (Num n)        = n
+    eval (Plus e1 e2)   = eval e1   +   eval e2 
+    eval (Div  e1 e2)   = eval e1 `div` eval e2\end{verbatim}
+
+So, for example, we can run 
+\begin{verbatim}
+    $ eval (Div (Num 6) (Num 2))
+    3 \end{verbatim}
+But, if we were in an interpreter like Nano, the following can crash Nano: 
+\begin{verbatim}
+    $ eval (Div (Num 6) (Num 0))
+    *** Exception: divide by zero \end{verbatim}
+
+Let us introduce a new data type which will handle errors for us.
+\begin{verbatim}
+    data Result a
+        = Error String 
+        | Value a \end{verbatim}
+So, instead of returning \code{Int}, this will now return \code{Result Int}, where 
+\begin{itemize}
+    \item If a sub-expression has a divide-by-zero, then return \code{Error ...}.
+    \item If all sub-expressions are safe, then we can return the actual \code{Value v}.
+\end{itemize}
+Therefore, 
+\begin{verbatim}
+    eval :: Expr -> Result Int 
+    eval (Num n)            = Value n 
+    eval (Plus e1 e2)       = 
+        case eval e1 of 
+            Error err1  -> Error err1 
+            Value v1    -> case eval e2 of 
+                            Error err2  -> Error err2 
+                            Value v1    -> Value (v1 + v2)
+    
+    eval (Div e1 e2)        = 
+        case eval e1 of 
+            Error err1  -> Error err1 
+            Value v1    -> case eval e2 of 
+                            Error err2  -> Error err2 
+                            Value v1    -> if v2 == 0 
+                                            then Error ("DBZ: " ++ show e2)
+                                            else Value (v1 `div` v2)\end{verbatim}
+
+Note that this works -- this doesn't crash the interpreter. However, there is a lot of repetition. 
+
+
+
+
+
+\end{document}
