@@ -1,0 +1,190 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{CSE 130}
+\chead{Wednesday, May 25, 2022}
+\lhead{Lecture 25}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\section{Monads}
+\subsection{Functors}
+\subsubsection{Class for Mapping}
+Recall 
+\begin{verbatim}
+    eval :: Expr -> Result Int 
+    eval (Num n)            = Value n 
+    eval (Plus e1 e2)       = 
+        case eval e1 of 
+            Error err1  -> Error err1 
+            Value v1    -> case eval e2 of 
+                            Error err2  -> Error err2 
+                            Value v1    -> Value (v1 + v2)
+    
+    eval (Div e1 e2)        = 
+        case eval e1 of 
+            Error err1  -> Error err1 
+            Value v1    -> case eval e2 of 
+                            Error err2  -> Error err2 
+                            Value v1    -> if v2 == 0 
+                                            then Error ("DBZ: " ++ show e2)
+                                            else Value (v1 `div` v2)\end{verbatim}
+Notice how there is a common pattern. Our goal is to refactor the common pattern so we can avoid repeating it. In this case, the pattern of interest is 
+\begin{verbatim}
+    case eval e2 of 
+        Error err2  -> Error err2 
+        Value v1    -> ... \end{verbatim}
+We always have some \code{case ... of}, where the \code{...} is of type \code{Result}. If we get an \code{Error}, then we just return that \code{Error} If we get a \code{Value}, we will return that \code{Value}. So, how do we abstract this into a pattern? 
+\begin{verbatim}
+    bind :: Result a -> (a -> Result b) -> Result b
+    bind res process = case res of 
+        Error msg   -> Error msg
+        Value v     -> process v\end{verbatim}
+This can be refactored to:
+\begin{verbatim}
+    bind :: Result a -> (a -> Result b) -> Result b 
+    bind (Error msg) _          = Error msg 
+    bind (Value v)   process    = process v\end{verbatim}
+Finally, we can make this into an infix operator: 
+\begin{verbatim}
+    (>>=) :: Result a -> (a -> Result b) -> Result b 
+    (>>=) (Error msg) _          = Error msg 
+    (>>=) (Value v)   process    = process v\end{verbatim}
+Rewriting this to look more natural, we have 
+\begin{verbatim}
+    (>>=) :: Result a -> (a -> Result b) -> Result b
+    (Error msg) >>= _       = Error msg
+    (Value v)   >>= process = process v\end{verbatim}
+So, \code{>>=} takes two inputs: 
+\begin{itemize}
+    \item \code{Result a}: The result of the first evaluation.
+    \item \code{a -> Result b}: In case the first evaluation produced a value, what to do \emph{next} with the value.
+\end{itemize}
+
+\begin{mdframed}
+    (Quiz.) With \code{>>=} defined as before, what does the following evaluate to? 
+    \begin{verbatim}
+        eval (Num 5) >>= \v -> Value (v + 1)\end{verbatim}
+
+    \begin{enumerate}[(a)]
+        \item Type Error. 
+        \item \code{5}
+        \item \code{Value 5}
+        \item \code{Value 6}
+        \item \code{Error msg}
+    \end{enumerate}
+
+    \begin{mdframed}
+        The answer is \textbf{D}. Recall that our \code{Result} is defined by 
+        \begin{verbatim}
+            data Result a
+                = Error String 
+                | Value a\end{verbatim}
+        So, \code{eval (Num 5)} will give us back a \code{Value 5}. Since this is not an error, we can extract \code{5} from \code{Value 5}, and then pass \code{5} into the function to get \code{Value 5 + 1 = Value 6}.
+    \end{mdframed}
+\end{mdframed}
+
+\begin{mdframed}[]
+    (Quiz.) With \code{>>=} defined as before, what does the following evaluate to? 
+    \begin{verbatim}
+        eval (Error "nope") >> \v -> Value (v + 1)\end{verbatim}
+    \begin{enumerate}[(a)]
+        \item Type Error. 
+        \item \code{5}
+        \item \code{Value 5}
+        \item \code{Value 6}
+        \item \code{Error "nope"}
+    \end{enumerate}
+    
+    \begin{mdframed}[]
+        The answer is \textbf{E}. Because we have an error \code{Error "nope"}, we can immediately use the \code{Error} pattern.
+    \end{mdframed}
+\end{mdframed}
+So, with this new function, we can do 
+\begin{verbatim}
+    eval :: Expr -> Result Int
+    eval (Num n)      = Value n
+    eval (Plus e1 e2) = eval e1 >>= \v1 ->
+                        eval e2 >>= \v2 ->
+                        Value (v1 + v2)
+    eval (Div e1 e2)  = eval e1 >>= \v1 ->
+                        eval e2 >>= \v2 ->
+                        if v2 == 0
+                          then Error ("DBZ: " ++ show e2)
+                          else Value (v1 `div` v2)\end{verbatim}
+
+\subsection{Monads}
+Note that \code{>>=}, like \code{fmap} or \code{show} or \code{==}, can be useful across many types, not just \code{Result}. Let us define a type class for it. 
+
+\begin{verbatim}
+    class Monad m where 
+        (>>=)   :: m a -> (a -> m b) -> m b         -- Bind 
+        return  :: a -> m a                         -- Return \end{verbatim}
+
+\subsubsection{Monad Instance for Result}
+Now, let's make \code{Result} an instance of \code{Monad}.
+
+\begin{verbatim}
+    instance Monad Result where 
+        (>>=)                   :: Result a -> (a -> Result b) -> Rseult b 
+        (Error msg) >>= _       = Error msg
+        (Value v)   >>= process = process v
+        
+        return :: a -> Result a
+        return v = Value v\end{verbatim}
+
+With this in mind, we can simplify our \code{eval} further.
+\begin{verbatim}
+    eval :: Expr -> Result Int
+    eval (Num n)      = return n
+    eval (Plus e1 e2) = do v1 <- eval e1
+                           v2 <- eval e2
+                           return (v1 + v2)
+    eval (Div e1 e2)  = do v1 <- eval e1
+                           v2 <- eval e2
+                           if v2 == 0
+                                then Error ("DBZ: " ++ show e2)
+                                else return (v1 `div` v2)\end{verbatim}
+Note that \code{>>=} is so useful that there is a special syntax for it; known as a \code{do} block, instead of writing 
+\begin{verbatim}
+    e1 >>= \v1 ->
+    e2 >>= \v2 ->
+    e3 >>= \v3 ->
+    e\end{verbatim}
+we can just write 
+\begin{verbatim}
+    do  v1 <- e1 
+        v2 <- e2 
+        v3 <- e3 
+        e\end{verbatim}
+Therefore, we can simplify our \code{eval} to 
+\begin{verbatim}
+    eval :: Expr -> Result Int
+    eval (Num n)      = return n
+    eval (Plus e1 e2) = do v1 <- eval e1
+                           v2 <- eval e2
+                           return (v1 + v2)
+    eval (Div e1 e2)  = do v1 <- eval e1
+                           v2 <- eval e2
+                           if v2 == 0
+                                then Error ("DBZ: " ++ show e2)
+                                else return (v1 `div` v2)\end{verbatim}
+\subsubsection{Either Monad}
+Knowing that error handling is a common task, instead of defining our own \code{Result} type, we can use \code{Either} from the Haskell standard library. So, 
+\begin{verbatim}
+    data Either a b
+        = Left  a       -- Something has gone wrong. 
+        | Right b       -- Everything has gone right. \end{verbatim}
+Since \code{Either} is already an instance of \code{Monad}, we do not need to define our own \code{>>=}.
+
+
+\end{document}
