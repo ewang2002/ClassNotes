@@ -1,0 +1,143 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{CSE 130}
+\chead{Friday, May 27, 2022}
+\lhead{Lecture 26}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\section{Monads}
+\subsection{Writing Apps with Monads}
+Why is it so hard to write a program that prints ``\code{Hello world!}'' in Haskell?
+
+\bigskip 
+
+Note that Haskell is \emph{pure}. A program is an expression that evaluates to a value and does \emph{nothing else}. So, a function of type \code{Int -> Int} computes a \emph{single integer output} from a single integer input and does \emph{nothing else}. Moreover, it always returns the same output given the same integer. Specifically, evaluation must not have any side effects. 
+
+\bigskip 
+
+Haskell has a special type called \code{IO}, which we can think of as a \code{Recipe}.
+\begin{verbatim}
+    type Recipe a = IO a \end{verbatim}
+
+So, when executing a program, Haskell looks for a special value 
+\begin{verbatim}
+    main :: Recipe ()\end{verbatim}
+This is a Recipe for everything a program should do, and does not return a special value.
+
+\bigskip 
+
+Note that 
+\begin{itemize}
+    \item A function of type \code{Int -> Int} still computes a single integer output from a single integer input and does nothing else.
+    \item A function of type \code{Int -> Recipe Int} computes an Int-recipe from a single integer input and does nothing else.
+    \item Handing this recipe to \code{main} will possibly result in these ``side effects.''
+\end{itemize}
+So, writing ``\code{Hello World}'' is as simple as 
+\begin{verbatim}
+    main :: Recipe ()
+    main = putStrLn "Hello, world!"\end{verbatim}
+Note that \code{putStrLn} has the following definition 
+\begin{verbatim}
+    putStrLn :: String -> Recipe ()\end{verbatim}
+Compiling and running like so gives us 
+\begin{verbatim}
+    $ ghc hello.hs 
+    $ ./hello 
+    Hello, world!\end{verbatim}
+How would we have multiple print statements, though? 
+\begin{mdframed}[]
+    (Quiz.) Suppose we have a function \code{combine} that lets us combine recipes like so: 
+    \begin{verbatim}
+        main :: Recipe ()
+        main = combine (putStrLn "Hello,") (putStrLn "World!")\end{verbatim}
+
+    \begin{enumerate}[(a)]
+        \item \code{() -> () -> ()}
+        \item \code{Recipe () -> Recipe () -> Recipe ()}
+        \item \code{Recipe a -> Recipe a -> Recipe a}
+        \item \code{Recipe a -> Recipe b -> Recipe b}
+        \item \code{Recipe a -> Recipe b -> Recipe a}
+    \end{enumerate}
+
+    \begin{mdframed}[]
+        The answer depends. For this particular example, \textbf{B} is the answer. However, this could be generalized, which we will discuss later. 
+    \end{mdframed}
+\end{mdframed}
+
+\subsubsection{Using Intermediate Results}
+Suppose we wanted to write a program that 
+\begin{itemize}
+    \item asks for the user's \code{name} using 
+    \begin{verbatim}
+        getLine :: Recipe String\end{verbatim}
+    \item prints out a greeting with that name using 
+    \begin{verbatim}
+        putStrLn :: String -> Recipe ()\end{verbatim}
+\end{itemize}
+
+How do we pass the output of the first recipe into the second recipe? 
+\begin{mdframed}[]
+    (Quiz.) Suppose you have two recipes.
+    \begin{verbatim}
+        crack       :: Recipe Yolk 
+        eggBatter   :: Yolk -> Recipe Batter  \end{verbatim}
+    and we want to get 
+    \begin{verbatim}
+        mkBatter :: Recipe Batter 
+        mkBatter :: crack `combineWithResult` eggBatter\end{verbatim}
+    What should the type of \code{combineWithResult} be? 
+
+    \begin{enumerate}[(a)]
+        \item \code{Yolk -> Batter -> Batter}
+        \item \code{Recipe Yolk -> (Yolk -> Recipe Batter) -> Recipe Batter}
+        \item \code{Recipe a -> (a -> Recipe a) -> Recipe a}
+        \item \code{Recipe a -> (a -> Recipe b) -> Recipe b}
+        \item \code{Recipe Yolk -> (Yolk -> Recipe Batter) -> Recipe ()}
+    \end{enumerate}
+
+    \begin{mdframed}[]
+        The answer is \textbf{D}. Note that B is a more specific case of D. As noted, this is similar in nature to the type of \code{>>=} (bind). 
+    \end{mdframed}
+\end{mdframed}
+In fact, since \code{Recipe}s are \code{Monad}s, we can do 
+\begin{verbatim}
+    main :: Recipe ()
+    main = getLine >>= \name -> putStrLn ("Hello, " ++ name ++ "!")\end{verbatim}
+or (in a more procedural style),
+\begin{verbatim}
+    main :: Recipe ()
+    main = do 
+                name <- getLine
+                putStrLn ("Hello, " ++ name ++ "!")\end{verbatim}
+Now, expanding on this program to ask the user for the name multiple times gives us 
+\begin{verbatim}
+    doQuit :: Recipe a 
+    doQuit =  exitWith ExitSuccess
+
+    putStrFlush :: String -> Recipe ()
+    putStrFlush str = do 
+        putStr str 
+        hFlush stdout 
+
+    main :: Recipe ()
+    main = do 
+                putStrFlush "Your name: "
+                name <- getLine
+                if name == ":quit"
+                    then doQuit 
+                    else do 
+                        putStrLn ("Hello, " ++ name ++ "!")
+                        main\end{verbatim}
+
+\end{document}
