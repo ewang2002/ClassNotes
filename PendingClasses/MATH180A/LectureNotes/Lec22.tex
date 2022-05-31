@@ -1,0 +1,108 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{MATH 180A}
+\chead{Wednesday, May 18, 2022}
+\lhead{Lecture 22}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\section{Generating Functions}
+We will first begin by covering the \textbf{discrete distributions}. 
+
+\bigskip 
+
+Recall that the mean $\mathbb{E}(X)$ and variance 
+\[\text{Var}(X) = \mathbb{E}(X^2) = [\mathbb{E}(X)]^2\]
+of a random variable provides useful information about the ``shape'' of a distribution. Note that these quantities only involve the \textbf{first moment} $\mathbb{E}(X)$ and \textbf{second moment} $\mathbb{E}(X^2)$ of $X$. But, what about higher moments? 
+
+\begin{definition}{}{}
+    $\mu_n = \mathbb{E}(X^n)$ is called the $n$th moment of the $X$.
+\end{definition}
+Recall that LotUS tells us how to compute this, using the PMF/PDF of $X$; in particular, 
+\[\mathbb{E}(X^n) = \sum_x x^{n} p(x)\]
+and 
+\[\mathbb{E}(X^n) = \int_{-\infty}^{\infty} x^n f(x) dx.\]
+
+\begin{definition}{}{}
+    The \textbf{moment generating function (MGF)} of $X$ is the function 
+    \[g(t) = \mathbb{E}(e^{tX}).\]
+\end{definition}
+\textbf{Remark:} Note that this is the expectation of the random variable $Y = e^{tX}$. 
+
+\bigskip 
+
+Recall the Taylor Series of $e^x$ is given by 
+\[e^x = \sum_{n = 0}^{\infty} \frac{x^n}{n!}.\]
+Hence, 
+\[e^{tX} = \sum_{n = 0}^{\infty} \frac{X^n t^n}{n!}.\]
+Therefore, by Linearity of Expectation, we have 
+\[g(t) = \mathbb{E}(e^{tX}) = \sum_{n = 0}^{\infty} \mathbb{E}\left(\frac{X^n t^n}{n!}\right) = \sum_{n = 0}^{\infty} \mathbb{E}(X^n) \frac{t^n}{n!} = \sum_{n = 0}^{\infty} \frac{\mu_n t^n}{n!}.\]
+\begin{theorem}{}{}
+    The MGF \[g(t) = \mathbb{E}(e^{tX}) = \sum_{n = 0}^{\infty} \frac{\mu_n t^n}{n!}.\] Hence, for each $n \geq 1$, we have that \[\frac{d^n}{dt^n} g(0) = \mu_n.\]
+\end{theorem}
+\textbf{Remark:} We note that the MGF here contains all the information about its moments, which in many cases is enough to uniquely determine a distribution.
+
+\begin{mdframed}[]
+    (Example.) A Binomial($n, p$) RV $X$ has MGF 
+    \[g(t) = \sum_{k = 0}^{n} e^{tk} \binom{n}{k} p^k q^{n - k} = \sum_{k = 0}^{n} \binom{n}{k} (pe^t)^k q^{n - k} = (pe^t + q)^n,\]
+    where $q = 1 - p$.
+
+    \bigskip 
+
+    If can be checked that $g'(0) = np$ and $g''(0) = n(n - 1)p^2 + np$. Hence, as we already know, $\mathbb{E}(X) = np$. Additionally, we know that 
+    \begin{equation*}
+        \begin{aligned}
+            \text{Var}(X) &= \mathbb{E}(X^2) - [\mathbb{E}(X)]^2 \\ 
+                &= [n(n - 1)p^2 + np] - (np)^2 \\ 
+                &= -np^2 + np \\ 
+                &= np(1 - p) \\ 
+                &= npq.
+        \end{aligned}
+    \end{equation*}
+\end{mdframed}
+\textbf{Remark:} There are some technical points to consider.
+\begin{itemize}
+    \item Note that $g(0) = 1$. 
+    \item The function (series) $g(t)$ may not exist. That is, the series $g(t) = \mathbb{E}(e^{tX}) = \sum_{n = 0}^{\infty} \frac{\mu_n t^n}{n!}$ may not converge in a neighborhood of 0. 
+\end{itemize}
+
+\begin{theorem}{}{}
+    Suppose that $X$ is a RV that only takes a finite number of possible values. That is, \[\sum_{i = 1}^{n} \PR(X = x_i) = 1,\] for some $x_1, \dots, x_n$. Then, the distribution of $X$ is uniquely determined by its MGF. That is, if some other RV $Y$ has the same MGF, then it has the same distribution as $X$. 
+\end{theorem}
+
+\begin{theorem}{}{}
+    If the MGFs $M_{X}(t)$ and $M_{Y}(t)$ exists, and for some $\epsilon > 0$, $M_{X}(t) = M_{Y}(t)$ for all $t \in (-\epsilon, \epsilon)$, then the CDFs $F_{X}(t) = F_{Y}(t)$. That is, $X$ and $Y$ have the same distribution.
+\end{theorem}
+\textbf{Remark:} That is, if (they might not) the MGFs exist and are equal in some (perhaps very small) open neighborhood of 0, then they have the same distribution.
+
+\subsection{Important Properties of the MGF}
+Here are some useful properties.
+\begin{itemize}
+    \item Linearity: 
+    \[g_{aX + b}(t) = e^{bt} g_{X}(at),\]
+    since $\mathbb{E}(e^{t(aX + b)}) = e^{tb} \mathbb{E}(e^{(at)X}).$
+
+    \item Independence: If $X$ and $Y$ are independent, then
+    \[g_{X + Y}(t) = g_{X}(t) g_{Y}(t).\]
+    More generally, if $X_1, \dots, X_n$ are independent, then the MGF of their sum \[S_n = \sum_{i = 1}^{n} X_i\] is \[g_{S_n}(t) = \prod_{i = 1}^{n} g_{X_i}(t).\]
+    Hence, if $X_1, \dots, X_n$ are IID with common MGF $g(t)$, then 
+    \[g_{S_n}(t) = [g(t)]^n.\]
+\end{itemize}
+
+\begin{mdframed}[]
+    (Example.) A Bernoulli($p$) RV has MGF 
+    \[g(t) = \mathbb{E}(e^{tX}) = e^{t(1)}p + e^{t(0)} q = e^t p + q.\]
+    This is because a Bernoulli random variable can only take two values: 1 or 0. Since a Binomial is just a sum of these Bernoulli random variables, the MGF of a Binomial($n, p$) has MGF \[(e^t p + q)^n.\]
+\end{mdframed}
+
+\end{document}
