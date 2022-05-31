@@ -1,0 +1,94 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{MATH 180A}
+\chead{Friday, May 20, 2022}
+\lhead{Lecture 23}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\section{Generating Functions}
+A branching process is a particle system where all particles have a IID distribution for the number of children they give birth to when they die. This is called the \textbf{offspring distribution}. That is, there are probabilities $p_0, p_1, p_2, \dots$, with probability $\sum_{k = 0}^{\infty} p_k = 1$, such that for any given particle, the probability that it has exactly $k$ children is $p_k$, independently of all other particles. 
+
+\bigskip 
+
+We let $X_n$ denote the number of particles in the $n$th generation of this process. Usually, but not always, we assume that we start with just one particle, $X_0 = 1$. 
+
+\begin{mdframed}[]
+    (Example.) Suppose that the first particle gives birth to 3 children. Then, $X_1 = 3$. Suppose the first of these children has 0 children, the second has 2 children, and the third has 1 child. Then, $X_2 = 3$. If none of the 3 particles have children, then we would have $X_3 = 0$. In this case, we say that the system has become ``extinct.''
+\end{mdframed}
+
+
+\subsection{Offspring Distribution: An Example}
+\emph{What conditions on the offspring distribution $p_0, p_1, p_2, \dots$ ensure that there is a positive probability that the particle system (e.g., family name) will survive forever?}
+
+\bigskip 
+
+Note that, if $p_0 = 0$ (in particular, when $p_1 = 1$), then this is sure to happen. However, in all other cases, there is at least some positive probability of extinction (e.g., the initial particle might have no children.) Assume that $p_0 \neq 1$. 
+
+\bigskip
+
+We will use generating functions to study branching processes. Let
+\[h(z) = \sum_{k = 0}^{\infty} p_k z^k\]
+be the generating function for the offspring distribution. Let 
+\[\mu = \sum_{k = 0}^{\infty} kp_k = h'(1)\]
+denote the expected/average number of children per particle. It is natural to expect that if $\mu < 1$, then this system will have a difficult time surviving. 
+
+\begin{theorem}{}{}
+    Consider a branching process with $X_0 = 1$, and assume that $p_1 \neq 1$. Let $d$ be the smallest positive fixed point of the generating function \[h(z) = \sum_{k = 0}^{\infty} p_k z^k.\] That is, let $d$ be the smallest positive $z > 0$ for which $h(z) = z$.
+    \begin{enumerate}
+        \item If $\mu \leq 1$, the system will die out eventually, with probability 1.
+        \item If $\mu > 1$, then the system will survive forever with probability $1 - d > 0$. That is, it will come extinct with probability $d < 1$.
+    \end{enumerate}
+\end{theorem}
+\begin{mdframed}[]
+    \begin{proof}
+        Let $d_n = \PR(X_n = 0)$ (no particles in the $n$th generation). Note that if $X_n = 0$, then $X_{n + 1} = 0$. That is, the events $\{X_n = 0\} \subset \{X_{n + 1} = 0\}$. Hence, $d_n \leq d_{n + 1}$. 
+
+        \bigskip 
+
+        Since $d_0 = 0$ (since $X_0 = 1$) and all $d_n \leq 1$, we have $0 = d_0 \leq d_1 \leq d_2 \leq \dots \leq 1$. 
+
+        \bigskip 
+
+        Recall, from Calculus, that a monotone increasing and bounded sequence has a limit $d = \lim_{n \mapsto \infty} = \sup_{n} d_n$.
+
+        \bigskip 
+
+        Note that this is equal to the extinction probability, $d = \PR(\exists n, X_n = 0)$.
+
+        \bigskip 
+
+        We know that $d_{n + 1} = h(d_n)$. To see this, we use first step analysis. In particular, we consider what happens in the first step and use the Law of Total Probability. The first particle gives birth to some number $k$ of children with probability $p_k$. By independence, we can consider the rest of this process as a series of $k$ independent branching processes. If the full process is to die out by time $n + 1$, then we need each of these $k$ (independent) processes to die out by time $n$. Hence,
+        \[d_{n + 1} = \sum_{k = 0}^{\infty} (d_n)^k p_k = h(d_n),\]
+        as claimed.
+
+        \bigskip 
+        
+        Now, since $d_n \mapsto d$ and $h$ is continuous, we have that $h(d_n) \mapsto h(d)$. Moreover, since $d_{n + 1} = h(d_n)$, it follows that $d = h(d)$. That is, the extinction probability $d$ is a fixed point of the generating function $h$. Note that $h(1) = 1$ is a fixed point, so it remains to show that $d$ is the smallest positive fixed point.
+
+        \bigskip 
+
+        Now, let $\rho$ be the smallest positive fixed point. We claim that $d = \rho$. Note that $h(z) = \sum_{k = 0}^{\infty} p_k z^k$ is increasing. Indeed, $h'(z) = \sum_{k = 1}^{\infty} kp_k z^{k - 1} \geq 0$ for $z \in (0, 1]$. Since $0 = d_0 \leq \rho$, we have $h(d_0) \leq h(\rho) = \rho$, but $d_1 = h(d_0)$ so $d_1 \leq \rho$.
+
+        \bigskip 
+
+        Repeating the same argument, we see that, in fact, all $d_n \leq \rho$. Note that $d = \lim_{n \mapsto \infty} \leq \rho$, but since $\rho$ is the smallest fixed point, it follows that $d = \rho$ is the smallest fixed point. Now, it only remains to be shown that 
+        \begin{enumerate}
+            \item There is only one fixed point $d = 1$ when $\mu \leq 1$.
+            \item Whereas, the smallest fixed point $d < 1$ when $\mu > 1$. 
+        \end{enumerate}
+        This follows by Calculus.
+    \end{proof}
+\end{mdframed}
+
+\end{document}
