@@ -1,0 +1,123 @@
+\section{Continuous Probability Distributions}
+Now, we will discuss the case where there is a continuum of possible values that a RV can take. For example, rather than discrete choices like 1, 2, 3, 4, 5, we will instead he dealing with things like the time until the first customer appears at a store, or the lifetime of a lightbulb.
+
+\subsection{Probability Density Function}
+Recall that, in the discrete case, a random variable's probability mass function (PMF)
+\[p_{X}(x) = \PR(X = x)\]
+has the property that 
+\[\PR(X \in A) = \sum_{x \in A} p_{X}(x).\]
+We now define the analog to the PMF. In particular, we want to find a probability density function $f$ such that 
+\[\PR(X \in A) = \int_{A} f(x) dx,\]
+where $A \subseteq \R$ is some arbitrary region. Note that $f(x)$ is not a probability. 
+
+\begin{definition}{Probability Density Function}{}
+    Let $X$ be a continuous, $\R$-valued random variable. A \textbf{probability density function} (PDF) for $X$ is a $\R$-valued, non-negative function $f$ that satisfies 
+    \[\PR(a < X < b) = \int_{a}^{b} f(x) dx\]
+    for all $a, b \in \R$.
+\end{definition}
+We note that 
+\[\PR(X = x) = \int_{x}^{x} f(x) dx = 0\]
+for any $x$. This means that 
+\[\PR(a < X < b) = \PR(a \leq X \leq b) = \PR(a < X \leq b) = \PR(a \leq X < b).\]
+For example, a uniform random variable on an interval $I \subset \R$ has PDF 
+\[\boxed{f = \frac{1}{\text{length}(I)}}.\]
+
+
+\subsection{Cumulative Distribution Function}
+While we have the probability density function, we also have the cumulative distribution function.
+\begin{definition}{Cumulative Distribution Function}{}
+    The \textbf{cumulative distribution function} (CDF) of a continuous random variable $X$ is the function given by 
+    \[F_{X}(x) = \PR(X \leq x) = \int_{-\infty}^{x} f_{X}(t) dt.\]
+\end{definition}
+
+\subsection{Relationship Between PDF and CDF}
+We can relate the PDF and the CDF by the following theorem: 
+\begin{theorem}{}{}
+    Let $X$ have CDF $F_{X}$ and PDF $f_{X}$. Then, $F'(x) = f(x)$.
+\end{theorem}
+
+\begin{proof}
+    Note that $F_{X}(x) = \int_{-\infty}^x f_{X}(t) dt$. Hence, by the Fundamental Theorem of Calculus, it follows that 
+    \[F_{X}'(x) = f_{X}(x),\]
+    as desired.
+\end{proof}
+
+\begin{note}{}{}
+    The PDF is the derivative of the CDF. 
+\end{note}
+
+\begin{mdframed}[]
+    (Example.) Suppose we have a dart board with unit radius. Suppose we throw a dart at the target. The sample space is the unit disk 
+    \[D = \{(x, y) \mid x^2 + y^2 \leq 1\}.\]
+    The unit circle has area $\pi(1)^2 = \pi$. Supposing a dart lands at uniformly random position on the target, we would have the PDF 
+    \[f(x, y) = \frac{1}{\pi}\]
+    for a random throw $(X, Y)$. Note that, because this is two-dimensional, we consider the \emph{area} as opposed to the length of the interval. 
+
+    \bigskip 
+
+    To find the probability of landing in a certain region, we would have to integrate over that region; more specifically, we have to integrate that uniform density $\frac{1}{\pi}$ by that region. For instance, if the ``bullseye'' region of the target is the center circle $B$ of radius $\frac{1}{5}$, then the probability of getting a ``bullseye'' would be 
+    \[\frac{\text{area}(B)}{\text{area}(D)} = \frac{\pi(1 / 5)^2}{\pi} = \frac{1}{25}.\]
+    So, we should expect approximately 1 in every 25 throws to be a ``bullseye.''
+
+    \bigskip 
+
+    Now, let $D$ be the distance from the center to the point $(X, Y)$ where a uniformly thrown dart lands. We note that 
+    \[D = \sqrt{X^2 + Y^2} \in [0, 1].\]
+    What is the distribution of this random variable? We should not expect $D$ to have a uniform distribution. For instance, notice that there are more points at distance $\geq 1/2$ from the center than there are points at distance $\leq 1/2$ from the center. So, we expect 
+    \[\PR(D \in [0, 1/2]) < \PR(D \in [1/2, 1])\]
+    although both of these sub-intervals of $[0, 1]$ have the same length. Recall that $f(d) = F'(d)$. Then, 
+    \[F(d) = \PR(D \leq d) = \PR(X^2 + Y^2 \leq d^2) = \frac{\pi d^2}{\pi} = d^2.\]
+    Notice here that $\pi d^2$ is the area of the \emph{inner} circle. Therefore, $f(d) = 2d$. 
+\end{mdframed}
+
+\begin{mdframed}[]
+    (Example Problem.) Let $U$ be a uniform random variable on $[0, 1]$, and consider the random variable 
+    \[X = U^2.\]
+    Find the PDF of $X$. 
+
+    \begin{mdframed}[]
+        We know that $X$ has PDF 
+        \[F_{X}(x) = \PR(X \leq x).\]
+        We also know that $U$ is a uniform RV on $[0, 1]$, so its PDF is given by 
+        \[f_{U}(u) = \begin{cases}
+            \frac{1}{1 - 0} = 1 & \text{if} \ u \in [0, 1] \\ 
+            0 & \text{otherwise}
+        \end{cases}.\]
+        So, we have that 
+        \begin{equation*}
+            \begin{aligned}
+                \PR(X \leq x) &= \PR(U^2 \leq x) \\ 
+                    &= \PR(U \leq \sqrt{x}) \\ 
+                    &= \int_{-\infty}^{\sqrt{x}} f_{U}(t) dt \\ 
+                    &= \int_{0}^{\sqrt{x}} 1 dt \\ 
+                    &= \sqrt{x}.
+            \end{aligned}
+        \end{equation*}
+        This tells us that the CDF is 
+        \[F_{X}(x) = \sqrt{x}.\]
+        Then, to find the PDF, we can just take the derivative of the CDF, like so: 
+        \[\frac{d}{dx} F_{X}(x) = \frac{d}{dx} \sqrt{x} = \frac{1}{2\sqrt{x}}.\]
+    \end{mdframed}
+\end{mdframed}
+
+\subsection{Exponential Random Variable}
+This random variable is useful when studying events occurring at random times. For example, lifetime of a lightbulb, time until the next customer, time until the next earthquake, etc. 
+
+\bigskip 
+
+Recall that $F(x) = \PR(X \leq x)$. Hence,
+\[1 - F(x) = \PR(X > x).\]
+This is sometimes denoted by $S(x) = 1 - F(x)$ and is referred to as the \textbf{survival function} of the random variable $X$. Note that if $X$ is a random time, e.g. the lifetime of a lightbulb, then $S(x)$ is the probability of ``surviving'' until time $x$. 
+
+\bigskip 
+
+A very special type of continuous random variable is the exponential random variable with rate $\lambda > 0$. This is the random variable with survival function 
+\[S(x) = e^{-\lambda x}.\]
+That is, the probability of survival until time $X$ decays exponentially with rate $\lambda$. Note that $F(x) = 1 - e^{-\lambda x}$, and so $f(x) = \lambda e^{-\lambda x}$ for $x \geq 0$ and $f(x) = 0$ otherwise is its PDF. 
+
+\subsubsection{Memoryless Property}
+The exponential RV is very important because it is the only continuous RV with a special property, known as the \textbf{memoryless property}. Then, given that an exponential RV has survived until time $x$, the probability that it survives for $y$ amount of time longer (i.e. until time $x + y$) is the same as the probability of just surviving until time $y$. 
+
+\bigskip 
+
+For example, if an exponential lightbulb has survived until time $x$, then given this, the probability of surviving until time $x + y$ is the same as the probability of a brand new lightbulb. 

@@ -1,0 +1,58 @@
+\documentclass[letterpaper]{article}
+\input{../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Math 180A}
+\chead{June 5th, 2022}
+\lhead{Course Notes}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\begin{titlepage}
+    \begin{center}
+        \vspace*{1cm}
+            
+        \Huge
+        \textbf{Math 180A}
+            
+        \vspace{0.5cm}
+        \LARGE
+        Introduction to Probability
+            
+        \vspace{1.5cm}
+            
+        \vfill
+            
+        Spring 2022 \\
+        Taught by Professor Brett Kolesnik
+    \end{center}
+\end{titlepage}
+
+\pagenumbering{gobble}
+
+\newpage 
+
+\pagenumbering{gobble}
+\begingroup
+    \renewcommand\contentsname{Table of Contents}
+    \tableofcontents
+\endgroup
+
+\newpage
+\pagenumbering{arabic}
+
+\input{sections/sec1.tex}
+\newpage 
+\input{sections/sec2.tex}
+\newpage 
+\input{sections/sec3.tex}
+
+\end{document}

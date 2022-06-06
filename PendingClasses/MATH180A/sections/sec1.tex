@@ -1,0 +1,326 @@
+\section{Discrete Probability Distributions}
+In this section, we are mostly concerned with discrete sample spaces, or \emph{finite} (or countably infinite) sample spaces. 
+
+\subsection{Sample Space}
+Probability is the study of randomness, of uncertainty. Formally, we can think of this process as running a \textbf{random experiment}.
+
+\begin{definition}{Sample Space}{}
+    The \textbf{sample space} of an experiment is the set of all possible outcomes of that experiment. Namely, we say that 
+    \[\Omega = \{\omega_1, \dots, \omega_n\},\]
+    where each $\omega_i$ represents a possible outcome.
+\end{definition}
+
+\begin{mdframed}[]
+    (Example.) When flipping a coin, we would have 
+    \[\Omega_{\text{Coin}} = \{\text{Heads}, \text{Tails}\}.\]
+\end{mdframed}
+
+The outcomes are assigned \textbf{masses} $m(\omega_i) \geq 0$ such that 
+\[m(\omega_1) + \dots + m(\omega_n) = 1.\]
+Here, we can think of the $m(\omega_i)$ as the \textbf{probability} that the outcome $\omega_i$ occurs. 
+
+\begin{mdframed}[]
+    (Example.) When rolling a regular die, we would have 
+    \[\Omega_{\text{Die}} = \{1, 2, 3, 4, 5, 6\}.\]
+    Here, each $\omega \in \Omega_{\text{Die}}$ has a mass of $\frac{1}{6}$; that is, 
+    \[\forall \omega \in \Omega_{\text{Die}}, m(\omega) = \frac{1}{6}.\]
+\end{mdframed}
+
+
+\subsection{Random Variables}
+We can use \emph{random variables} to quantify the outcome. 
+\begin{definition}{Random Variable}{}
+    Suppose we have an experiment whose outcome depends on chance. We can represent the outcome of the experiment by a captial Roman letter, such as $X$, called a \textbf{random variable} (RV).
+
+    \bigskip 
+
+    We can think of a random variable $X$ as a function from the sample space $\Omega$ to the set of real numbers $\R$; that is, 
+    \[X: \Omega \mapsto \R.\]
+\end{definition}
+If the outcome $\omega \in \Omega$ has a random occurrence, then the value $X(\omega)$ will also be random. 
+
+\begin{mdframed}[]
+    (Example.) Suppose we wanted to flip a fair coin. It's obvious that the sample space $\Omega$ is just Heads or Tails. So, we can define a random variable $X$ like 
+    \[X = \begin{cases}
+        1 & \text{if Heads} \\ 
+        0 & \text{if Tails}
+    \end{cases}.\] 
+    We can also define the random variable 
+    \[X = \begin{cases}
+        21313 & \text{if Heads} \\ 
+        0 & \text{if Tails}
+    \end{cases}.\]
+    The point is that your random variable maps your outcomes (from your sample space) to numbers. In other words, you are quantifying your outcomes.
+\end{mdframed}
+
+\subsection{Events}
+Often, in probability, we are interested in the probability that a certain event will occur. For example, we might be interested in whether or not it will rain today, or whether or not we will win the lottery, or so on.
+
+\begin{definition}{Event}{}
+    A subset of a sample space is an \textbf{event}.
+\end{definition}
+The probability of an event $E$ is given by 
+\[\PR(E) = \sum_{\omega \in E} m(\omega).\]
+
+\begin{mdframed}[]
+    (Example.) If we roll a die, then $\Omega = \{1, 2, 3, 4, 5, 6\}$. The event, 
+    \[E = ``\text{Roll an even number}'',\]
+    is the subset $E = \{2, 4, 6\} \subset \Omega$. 
+\end{mdframed}
+
+
+\subsection{Probability Distribution}
+If we have an outcome $\omega$, we can use the probability distribution function to get the probability that $\omega$ occurs. 
+\begin{definition}{Probability Distribution}{}
+    Let $\Omega$ be a discrete (finite or countable infinite) set. Then, the function 
+    \[\PR: \Omega \mapsto [0, 1]\]
+    is called a \textbf{probability distribution} on $\Omega$ if the following hold: 
+    \begin{enumerate}
+        \item $\PR(\omega) \geq 0$ for all $\omega \in \Omega$, and 
+        \item $\sum_{\omega \in \Omega} \PR(\omega) = 1$. 
+    \end{enumerate}
+\end{definition}
+
+\begin{mdframed}[]
+    (Example.) If we roll a fair die, then we have 
+    \[\Omega = \{1, 2, 3, 4, 5, 6\}.\]
+    Then, it follows that 
+    \[\PR(i) = \frac{1}{6}\]
+    for all $i \in \Omega$. 
+\end{mdframed}
+
+\subsection{Probability Mass Function}
+If $X$ is a random variable on $\Omega$, then we note that $\PR(X = x)$ is a probability distribution on the set 
+\[\Omega_{X} = \{X(\omega) : \omega \in \Omega\}\]
+of all possible values that $X$ can take. 
+\begin{definition}{Probability Mass Function}{}
+    For a discrete random variable $X$, the function 
+    \[\PR: \Omega_{X} \subset \R \mapsto [0, 1]\]
+    is called a \textbf{probability mass function} (PMF) of said random variable if the following hold: 
+    \begin{enumerate}
+        \item $\PR(x) \geq 0$ for all $x \in \Omega_{X}$, and 
+        \item $\sum_{x \in \Omega_{X}} \PR(x) = 1$. 
+    \end{enumerate}
+    In other words, given a possible value of the random variable, the probability that the random variable takes that particular value is given by the function above. 
+\end{definition}
+We note that, for a random variable $X$,
+\[\PR(X = x) = \sum_{\omega : X(\omega) = x} m(\omega).\]
+The $X = x$ inside the $\PR(X = x)$ is shorthand notation for the \textbf{event} 
+\[\{\omega : X(\omega) = x\} \subset \Omega.\]
+Additionally, instead of writing $\PR(X = x)$, we may also write $p_{X}(x)$. 
+
+
+\begin{mdframed}[]
+    (Example.) If we have a sample space $\Omega$ and a random variable $X: \Omega \mapsto \R$, then we can ask questions like ``How likely is it that the value of $X$ is equal to 2?'' This is the same as the probability of the event 
+    \[\{\omega : X(\omega) = 2\},\]
+    or, equivalently, 
+    \[\PR(X = 2)\]
+    or 
+    \[p_{X}(2).\]
+\end{mdframed}
+
+\begin{mdframed}[]
+    (Example.) Suppose again we have a fair die. If $X$ is a random variable that takes the value 1 if the roll is 1 or 2, and the value 0 otherwise, then 
+    \[\PR(X = 1) = \frac{1}{3}\]
+    and 
+    \[\PR(X = 0) = \frac{2}{3}\]
+    is the probability distribution of $X$ on the set $\Omega_{X} = \{0, 1\}$. 
+\end{mdframed}
+So, effectively, we can think of a probability mass function as a probability distribution function for values that the random variable can take. \textbf{We will be using this a lot.}
+
+\subsection{Cumulative Distribution Function}
+While we have the probability mass function, we also have the cumulative distribution function.
+\begin{definition}{Cumulative Distribution Function}{}
+    The \textbf{cumulative distribution function} (CDF) of a discrete random variable $X$ is the function given by 
+    \[F_{X}(x) = \PR(X \leq x) = \sum_{t : t \leq x} \PR(X = t).\]
+\end{definition}
+So, whereas the PMF gives us the probability of a random value taking a specific value, the CDF gives us the probability that a random variable takes on a value \emph{less than or equal to} a specific value.  
+
+\begin{mdframed}[]
+    (Example.) Suppose we're rolling a fair die, and suppose we have the random variable $X$ that takes the value 1 if $\omega \in \{1\}$ and the value 0 if $\omega \in \{2, 3, 4, 5, 6\}$. Then, $X = 1$ if we roll a 1 and $X = 0$ otherwise. Then,
+    \[\PR(X = 1) = m(1) = \frac{1}{6} \text{ and } \PR(X = 0) = m(2) + \dots + m(6) = \frac{5}{6}.\]
+\end{mdframed}
+
+\begin{mdframed}[]
+    (Example.) Suppose we roll a die 3 times in a row. Let $X$ be the number of 1's that we roll. Then, 
+    \[X = X_1 + X_2 + X_3\]
+    where each $X_i$ has the same distribution, i.e. $\PR(X_i = 1) = \frac{1}{6}$ and $\PR(X_i = 0) = \frac{5}{6}$ for each $i \in [1, 3]$. 
+\end{mdframed}
+
+\begin{mdframed}[]
+    (Example.) Again, suppose we roll a die 3 times in a row. Then, 
+    \[X = X_1 + X_2 + X_3.\]
+    Suppose we wanted to find the probability that at most \emph{2} of those rolls are 1's. We essentially need to calculate 
+    \[\PR(X \leq 2) = \PR(X = 0) + \PR(X = 1) + \PR(X = 2).\]
+    There are three possibilities: 
+    \begin{enumerate}[\hspace{0.5cm}(a)]
+        \item $\PR(X = 0)$: All 3 rolls are not 1's. Here, the probability that we don't get a 1 is $\frac{5}{6}$. So, the probability that all three rolls are not 1's is given by $(5 / 6)^3$. There is only $\binom{3}{0} = 1$ way we can possibly obtain zero 1's. To visualize this, let $x$ be some non-one integer. Then,
+        \begin{verbatim}
+            x x x.\end{verbatim}
+        \item $\PR(X = 1)$: Exactly 1 of the 3 rolls is a 1. The probability that we get a 1 is $\frac{1}{6}$ and the probability that we don't get a 1 is $\frac{5}{6}$. We note that there are $\binom{3}{1} = 3$ possible ways we can obtain one 1. To visualize this, let $x$ be some non-one integer. Then,
+        \begin{verbatim}
+            1 x x
+            x 1 x
+            x x 1.\end{verbatim}
+        \item $\PR(X = 2)$: Exactly 2 of the 3 rolls is a 1. We note that there are $\binom{3}{2}$ ways we can possibly get two 1's.  To visualize this, let $x$ be some non-one integer. Then,
+        \begin{verbatim}
+            1 1 x
+            x 1 1
+            1 x 1.\end{verbatim}
+    \end{enumerate}
+    Putting this together, we have: 
+    \[\PR(X \leq 2) = \binom{3}{0} \left(\frac{5}{6}\right)^3 + \binom{3}{1} \left(\frac{1}{6}\right) \left(\frac{5}{6}\right)^2 + \binom{3}{2}\left(\frac{1}{6}\right)^2 \left(\frac{5}{6}\right) \approx 99.54\%.\]
+\end{mdframed}
+
+
+\subsection{Review of Set Theory}
+Recall that events are subsets. In particular, let $A, B \subset \Omega$ be two events. Then: 
+\begin{itemize}
+    \item \underline{Intersection:} $A \cap B = \{\omega \mid \omega \in A \text{ and } \omega \in B\}$. 
+    \item \underline{Union:} $A \cup B = \{\omega \mid \omega \in A \text{ or } \omega \in B\}$.
+    \item \underline{Difference:} $A \setminus B = \{\omega \mid \omega \in A \text{ and } \omega \notin B\}$.
+    \item \underline{Complement:} $A^C = \Omega \setminus A$. 
+\end{itemize}
+Two events $A$ and $B$ are said to be \textbf{disjoint} if $A \cap B = \emptyset$. If two events are disjoint, then it is impossible for them to both occur at the same time. 
+
+
+\subsection{Properties of Probability Distribution}
+We now introduce our first theorem of this class. 
+\begin{theorem}{}{}
+    Suppose that $\PR$ is a probability distribution on a discrete set $\Omega$. Then,
+    \begin{enumerate}
+        \item $\PR(E) \geq 0$ for all events $E \subset \Omega$. 
+        \item $\PR(\Omega) = 1$. 
+        \item If $E \subset F \subset \Omega$, then $\PR(E) \leq \PR(F)$. 
+        \item If $A \cap B = \emptyset$ are disjoint, then $\PR(A \cup B) = \PR(A) + \PR(B)$.
+        \item $\PR(A^C) = 1 - \PR(A)$ for all events $A \subset \Omega$. 
+    \end{enumerate}
+\end{theorem}
+
+\begin{proof}
+    We'll prove each of the following statements in this theorem.
+    \begin{enumerate}
+        \item We know that $E$ is a subset of $\Omega$. Take some $\omega \in E$. Then, we know that its mass, $m(\omega) \geq 0$. Thus, it follows that 
+        \[\sum_{\omega \in E} m(\omega) \geq 0.\]
+
+        \item Recall that $\Omega$ is the set of all possible outcomes. Therefore, it follows that $\PR(\Omega) = 1$; if this is false, then this implies that there is at least one outcome that isn't in $\Omega$. 
+        
+        \item Using (1) as a baseline, suppose that $\PR(F) = f$. Since $E$ can only have elements from $F$, it follows that $\PR(E) \leq f$; if this statement is false, this implies that $E$ has elements that aren't in $F$, which cannot be the case.
+        
+        \item Since $A \cap B = \emptyset$, it follows that 
+        \[\PR(A \cap B) = \sum_{\omega \in A \cap B} \PR(\omega) = \sum_{\omega \in A} \PR(\omega) + \sum_{\omega \in B} \PR(\omega) = \PR(A) + \PR(B).\]
+        The key here is that we are not double-counting anything. 
+
+        \item Recall that $A \cup A^C = \Omega$ and $A \cap A^C = \emptyset$. In particular, since $A \cap A^C = \emptyset$, then
+        \[\PR(A \cup A^C) = \PR(A) + \PR(A^C).\]
+        But, since $A \cup A^C = \Omega$ and $\PR(\Omega) = 1$, we know that 
+        \[1 = \PR(A) + \PR(A^C).\]
+        Therefore, it follows that 
+        \[\PR(A^C) = 1 - \PR(A^C).\]
+    \end{enumerate}
+    This concludes the proof. 
+\end{proof}
+Looking at \#4 in the previous theorem, we can actually generalize this. 
+\begin{theorem}{}{}
+    If $A_1, \dots, A_n$ are pairwise disjoint (i.e. $\bigcap_{i \in [1, n] \subset \Z} A_i = \emptyset$), then 
+    \[P\left(\bigcup_{n = 1}^{n} A_i\right) = \sum_{i = 1}^{n} \PR(A_i).\]
+\end{theorem}
+
+\begin{proof}
+    One way we can go about this is to take advantage of the fact that $A_1, \dots, A_n$ are pairwise disjoint. We will use induction on $n$. 
+    \begin{itemize}
+        \item \underline{Base Case:} Suppose $n = 1$. Trivially, $A_1$ is pairwise disjoint since it's the only set and so $\PR(A_1) = \PR(A_1)$. Likewise, $n = 2$ is satisfied by the previous theorem.
+        
+        \item \underline{Inductive Step:} Suppose that this holds for $n$. We now want to show that this holds for $n + 1$. To do so, we note that 
+        \[A_1 \cap \dots \cap A_n = \emptyset\]
+        and 
+        \[\PR(A_1 \cup \dots \cup A_n) = \PR(A_1) + \dots + \PR(A_n).\]
+        So, we can define $A = A_1 \cup \dots \cup A_n$. We now introduce the set $A_{n + 1}$; suppose that $A_{n + 1} \cap A = \emptyset$. Then, it follows that 
+        \[\PR(A \cup A_{n + 1}) = \PR(A) + \PR(A_{n + 1}) = \PR(A_1) + \dots + \PR(A_n) + \PR(A_{n + 1})\]
+    \end{itemize}
+    This concludes the proof.
+\end{proof}
+
+\textbf{Remarks:}
+\begin{itemize}
+    \item The following consequence of the previous theorem is an extremely useful tool for calculating the probability of events. 
+    \item Often, it is difficult to find $\PR(E)$ directly, and it is easier to ``split the job up'' into doable subtasks. 
+\end{itemize}
+
+\subsection{Law of Total Probability}
+This brings us to the \emph{Law of Total Probability}. 
+\begin{theorem}{Law of Total Probability (LoTP)}{}
+    Let $E \subset \Omega$ be an event, and let $A_1, \dots, A_n$ be a partition of $\Omega$ (that is, a pairwise disjoint collection of sets that ``cover'' the sample space $\bigcup_{i = 1}^n A_i = \Omega$). Then, we have that 
+    \[P(E) = \sum_{i = 1}^{n} P(E \cap A_i)\]
+\end{theorem}
+
+\begin{mdframed}[]
+    \begin{proof}
+        Note that $E$ is the pairwise disjoint union of the sets $E \cap A_1, \dots, E \cap A_n$. Thus, we can just apply the previous theorem. 
+    \end{proof}
+\end{mdframed}
+
+\textbf{Remark:} While it might be difficult to find $P(E)$ directly, if you pick the $A_i$'s wisely, it can become easy to find each of the $P(E \cap A_i)$'s.
+
+\begin{corollary}{}{}
+    For any two events $A$ and $B$,
+    \[P(A) = P(A \cap B) + P(A \cap B^C)\]
+\end{corollary}
+\textbf{Remark:} This holds since $B$, $B^C$ is a parition of $\Omega$. 
+
+\begin{theorem}
+    If $A$ and $B$ are subsets of $\Omega$, then 
+    \[P(A \cup B) = P(A) + P(B) - P(A \cap B).\]
+\end{theorem}
+\begin{mdframed}[]
+    \begin{proof}
+        Recall that
+        \[P(A \cup B) = \sum_{\omega \in A \cup B} m(\omega).\]
+        Now, if $\omega$ is in exactly one of the two sets, then it is only counted once (hence the first and second term on the right-hand side). However, if $\omega$ is in both $A$ and $B$, then we would be double-counting since it's counted for in $P(A)$ and $P(B)$. So, we need to subtract it (hence, the last term on the right-hand side). 
+    \end{proof}
+\end{mdframed}
+\textbf{Remark:} If $A \cap B = \emptyset$, then $P(A \cap B) = 0$.
+
+
+\subsection{Example Probability Distributions}
+We now talk about two types of distributions: uniform and geometric distributions.
+
+\subsubsection{Uniform Distribution}
+\begin{definition}{Uniform Distribution}{}
+    The \emph{uniform distribution} on a \underline{finite} sample space $\Omega$ containing $n$ elements is the function $m$ defined by 
+    \[m(\omega) = \frac{1}{n}\]
+    for every outcome $\omega \in \Omega$. 
+\end{definition}
+For example, when flipping a fair coin, there is only two possiblities: heads or tails. So,
+\[m(\text{Heads}) = \frac{1}{2}.\]
+A nice property of the uniform distribution is that, for all events $E \subset \Omega$, we simply have that 
+\[\PR(E) = \frac{|E|}{|\Omega|}.\]
+
+\subsubsection{Infinite Sample Sizes \& Geometric Distribution}
+The same definitions that we discussed earlier apply the same way in the infinite case. However, notice that the rule 
+\[\sum_{i = 1}^{\infty} \PR(\omega_i) = 1\]
+means that this infinite series \emph{converges}, and it converges to 1 (it is not just a usual sum). Now, when $\Omega$ is countably infinite, we further assume, in the definition of probability distribution, that 
+\[\PR\left(\bigcup_{i \in I} E_i\right) = \sum_{i \in I} \PR(E_i)\]
+for all (possibly countably infinite) collections of pairwise disjoint sets $\{E_i \mid i \in I\}$.
+
+\bigskip 
+
+Now that we know the basics of infinite sample size, we can now consider the \textbf{geomtric distribution}\footnote{This will be discussed in detail later on.}
+    \[P(X = k) = p(1 - p)^{k - 1}\]
+for $k = 1, 2, \dots$ and $P(X = x) = 0$ for all other $x$. 
+\begin{mdframed}[]
+    (Example: Geometric Distribution.) To see this, suppose a coin flips ``Tails'' with probability $p$. Then, the random variable, $X$ is the number of flips until we flip ``Tails'' for the first time, has this distribution. For example, if we flip ``Heads'' twice and get ``Tails'' on the third attempt, then $X = 3$. Indeed, for this to happen on flip $k$, we need all of the previous $k - 1$ flips to be ``Heads,'' and then the next flip to be ``Tails.'' 
+
+    \bigskip 
+
+    Thus, the probability that we only get ``Tails'' on the third attempt (i.e., ``Heads'' on the first two attempts) is given by 
+    \[\PR(X = 3) = (1 - p) (1 - p) p = (1 - p)^2 p = (1 - p)^{3 - 1} p.\]
+\end{mdframed}
+
+To check that this is a bonafide probability distribution, we note that 
+\[\sum_{k = 1}^{\infty} P(X = k)\]
+is equal to 
+\[\sum_{k = 1}^{\infty} p(1 - p)^{k - 1} = p\sum_{k = 0}^{\infty} (1 - p)^k = \frac{p}{1 - (1 - p)} = 1.\]
+Note that the second-to-last step is from the geometric series 
+\[\sum_{i = 0}^{\infty} \alpha^i = \frac{1}{1 - \alpha}\]
+for $|\alpha| < 1$. 
