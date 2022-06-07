@@ -1,0 +1,293 @@
+\section{Distributions and Densities}
+We are now interested in looking at important probability distributions, along with their applications.
+
+\subsection{Types of Discrete Probability Distributions}
+The following are some of the most important discrete probability distributions, some of which we've seen before. 
+\begin{itemize}
+    \item Uniform 
+    \item Bernoulli/Indicator
+    \item Binomial 
+    \item Geometric
+    \item Negative Binomial 
+    \item Poisson 
+    \item Hypergeometric
+\end{itemize}
+
+\subsubsection{Uniform Distribution}
+The idea is that we put equal mass on every element in the set. More formally: 
+\begin{definition}{Uniform Distribution}{}
+    $X$ is \textbf{uniform} on a finite set $A$ if $p(x) = \frac{1}{|A|}$ for all $x \in A$. 
+\end{definition}
+\textbf{Remark:} This distribution has the special property that, for all $B \subset A$, $P(X \in B) = \frac{|B|}{|A|}$. 
+
+\subsubsection{Bernoulli Distribution}
+Essentially, we can only ever get two values: a 1 or a 0, with probability $p$ and $1 - p$. More formally: 
+\begin{definition}{Bernoulli Distribution}{}
+    $X$ is \textbf{Bernoulli}($p$) if $P(X = 1) = p$ and $P(X = 0) = 1 - p$. 
+\end{definition}
+\textbf{Remark:} In terms of Bernoulli, we usually think of it as a trial (where there's either a success or failure). 
+\begin{mdframed}[]
+    (Example: Indicator Random Variable.) Let $E$ be an event. The random variable $\mathbf{1}_E$ is equal to 1 if $E$ occurs and equal to 0 if $E^C$ occurs. This is known as a \textbf{indicator} of $E$. Note that $\mathbf{1}_E$ is a Bernoulli random variable with parameter $p = \PR(E)$.
+\end{mdframed}
+
+\subsubsection{Binomial Distribution}
+The binomial distribution involves Bernoulli trials. 
+\begin{definition}{Binomial Distribution}{}
+    Suppose that $n$ independent Bernoulli($p$) trials are performed. Then, the number of successes observed during these $n$ trials has the \textbf{Binomial}($n, p$) distribution with 
+    \[p(k) = \binom{n}{k} p^k (1 - p)^{n - k}\]
+    for $0 \leq k \leq n$. 
+\end{definition}
+\textbf{Remark:} In particular, for $k$ successful trials, the idea is that we pick $k$ trials to be successful (out of the $n$ trials). Then, we have probability $p^k$ for those trials to be successful, and probability $(1 - p)^{n - k}$ for those trials to be failures. By independence, we can just multiply them out. 
+
+\subsubsection{Geometric Distribution}
+The geometric distribution also involves Bernoulli trials. 
+\begin{definition}{Binomial Distribution}{}
+    Suppose that we keep performing independent Bernoulli($p$) trials until the first success is observed. Then, the total number of trials performed has the \textbf{Geometric}($p$) distribution, with 
+    \[p(k) = p(1 - p)^{k - 1}\]
+    for $k \geq 1$. 
+\end{definition}
+\textbf{Remarks:}
+\begin{itemize}
+    \item Here, the $k$th trial is the successful trial, and all of the $k - 1$ trials are thus failures. 
+    \item A related distribution is known as the \textbf{Shifted Geometric}($p$) distribution. Instead of asking how many trials before the first success, we're asking how many \emph{failures} before the first success. This has PMF 
+    \[p(k) = p(1 - p)^k\]
+    for $k \geq 0$. 
+    \item Here, $X$ is geometric if and only if $X - 1$ is shifted geometric.
+\end{itemize}
+The geometric random variable is, in a sense, the discrete analogue of the (continuous) exponential random variable. Recall that the exponential random variable is the only continuous random variable with the \emph{memoryless property}. The geometric random variable \emph{also} has this property, and is the only \emph{discrete random variable} that does.
+\begin{mdframed}[]
+    \begin{proof}
+        Suppose that $X$ is Geometric($p$). Then\footnote{$X$ is the number of trials until the first success. Intuitively, we note that $X > k$ occurs if and only all of the first $k$ trials were failures.}, 
+        \begin{equation*}
+            \begin{aligned}
+                \PR(X > k) &= \sum_{\ell = k + 1}^{\infty} p(1 - p)^{\ell - 1} \\ 
+                    &= p(1 - p)^k \sum_{\ell = 0} (1 - p)^{\ell} \\ 
+                    &= p(1 - p)^k \frac{1}{1 - (1 - p)} \\ 
+                    &= p(1 - p)^k \frac{1}{p} \\ 
+                    &= (1 - p)^k.
+            \end{aligned}
+        \end{equation*}
+        Hence, 
+        \begin{equation*}
+            \begin{aligned}
+                \PR(X > k + \ell | X > k) &= \frac{\PR(X > k + \ell)}{\PR(X > k)} \\ 
+                    &= \frac{(1 - p)^{k + \ell}}{(1 - p)^k} \\ 
+                    &= (1 - p)^{\ell} \\ 
+                    &= \PR(X > \ell).
+            \end{aligned}
+        \end{equation*}
+        Thus, $X$ has the memoryless property.
+    \end{proof}
+\end{mdframed}
+
+\subsubsection{Negative Binomial Distribution}
+The negative binomial distribution is a generalization of the geometric distribution. Instead of waiting for the first success, we wait for the $k$th success. 
+\begin{definition}{}{}
+    Suppose that we keep performing independent Bernoulli($p$) trials until the $k$th success is observed. Then, the total number of trials performed has the \textbf{Negative Binomial}($k, p$) distribution, with 
+    \[p(n) = \binom{n - 1}{k - 1} p^k (1 - p)^{n - k}\]
+    for $n \geq k$. 
+\end{definition}
+\textbf{Remark:} Why is this the PMF? 
+\begin{itemize}
+    \item For the $p^k (1 - p)^{n - k}$ part, there are $k$ successes, and there are $n - k$ failures like usual. 
+    \item For the binomial coefficient, the idea is that if the $n$th trial is the $k$th success, then there's no choice as to when the $k$th success will be; it has to be $\binom{n}{n}$. But, what about the $n - 1$ trials, of which $k - 1$ of them are successes? Well, there were exactly $k - 1$ successes during the first $n - 1$ trials. These could have occurred in any of $\binom{n - 1}{k - 1}$ ways. 
+\end{itemize}
+
+\subsubsection{Poisson Distribution}
+This is the most important distributions in all of probability theory. 
+\begin{definition}{}{}
+    A \textbf{Poisson} RV with rate $\lambda > 0$ has PMF 
+    \[p(k) = e^{-\lambda} \frac{\lambda^k}{k!}\]
+    for $k \geq 0$. 
+\end{definition}
+\textbf{Remark:} One way to remember this PMF is to recall the Taylor expansion $e^{\lambda} = \sum_{k = 0}^{\infty} \frac{\lambda^k}{k!}$, which can be used to show that this is indeed a PMF, $\sum_{k = 0}^{\infty} p(k) = 1$.
+
+\bigskip 
+
+The Poisson is related to the exponential and binomial distributions. In particular, the connection with the binomial is that if $N$ is the Binomial($n, \lambda / n$), then as $n \mapsto \infty$, it ``converges'' to Poisson($\lambda$). Note, if 
+\[\PR(N = k) = \binom{n}{k} (\lambda / n)^k (1 - \lambda / n)^{n - k}.\]
+For any fixed integer $k \geq 0$, we have 
+\[\binom{n}{k} \approx n^k / k!\]
+and 
+\[(1 - \lambda / n)^{n - k} \approx e^{-\lambda},\]
+so it follows that 
+\[\PR(N - k) \approx e^{-k} \frac{\lambda^k}{k!},\]
+which is the PMF of a Poisson($\lambda$). Thus, since a Binomial($n, p$) is approximately Poisson($\lambda$), when $p \approx \lambda / n$, the Poisson is useful for studying the occurrence of \textbf{rare events}. 
+
+\bigskip 
+
+If $p$ is small compared with $n$, then 
+\[\boxed{\PR(\text{Binomial}(n, p) = k) \approx \PR(\text{Poisson}(np) = k)}.\]
+A good ``rule of thumb'' is $n \geq 100$ and $np \leq 10$ in order for the approximation to be reasonable. 
+
+\begin{mdframed}[]
+    (Example.) On average, a typist makes one typo in every 1000 words. Approximate the probability of having at most 2 typos on the first 3 pages ($\approx 300$ words) of a manuscript they have typed. 
+
+    \begin{mdframed}[]
+        We could use a Binomial($300, 0.001$) random variable here, but it would lead to the somewhat length calculation 
+        \[\sum_{k = 0}^2 \binom{300}{k} (0.001)^k (0.999)^{300 - k} \approx 99.6429\%.\]
+        Here, the calculation is essentially: 
+        \begin{itemize}
+            \item The probability that there is at most 0 typos, and
+            \item The probability that there is at most 1 typo, and
+            \item The probability that there is at most 2 typos. 
+        \end{itemize}
+        Note that $n = 300$ and $p = \frac{1}{1000}$, so $n = 300 > 100$ and $np = 300(0.001) = 0.3 < 10$, so it follows that we will get a good approximation; in particular, we expect a Poisson($0.3$) random variable $X$ to give a good approximation. Indeed, 
+        \[\PR(X \leq 2) = \sum_{k = 0}^2 e^{-\lambda} \frac{\lambda^k}{k!} = e^{-\lambda} \sum_{k = 0}^2 \frac{\lambda^k}{k!} = e^{-0.3}\left(1 + 0.3 + \frac{(0.3)^2}{2}\right) \approx 99.6401\%.\]
+        This is nearly as good as what we found by using the Binomial. 
+    \end{mdframed}
+\end{mdframed}
+
+\subsubsection{Hypergeometric Distribution}
+This distribution is useful for sampling \emph{without} replacement. 
+
+\begin{mdframed}[]
+    (Example.) Suppose that a lake contains $N$ fish, where $k$ of them are big and $N - k$ of them are small. Suppose that a fisherman catches $n$ fish. Let $X$ be the number of them that are big. Then, with probability 
+    \[\PR(X = x) = \frac{\binom{k}{n} \binom{N - k}{n - x}}{\binom{N}{n}},\]
+    where $x$ of them will be big. 
+\end{mdframed}
+Note that if we instead sampled \emph{with} replacement, then the probability that $k$ of the $n$ fish are big would just be the Binomial probability 
+\[b(n, k / N, x) = \binom{n}{x} (k/N)^x (1 - k/N)^{n - x}.\]
+If both of $N$ and $k$ are much larger than $n$, then there is not much difference. Intuitively, because then there is little chance that we would catch the same fish twice anyhow, so sampling with or without replacement would be essentially the same. 
+
+\subsubsection{Benford Distribution}
+In many ``real life'' datasets, the first digits tend to \textbf{not} be uniform on $\{1, 2, \dots, 9\}$. In particular, digit 1 tends to be the most likely to occur. The \textbf{Benford distribution}, in many cases, does a better job of modeling this distribution of the leading digits occurring in ``typical'' data. 
+
+\begin{mdframed}[]
+    (Example.) The Benford distribution for the \emph{first} digit (base 10) has PMF 
+    \[p(k) = \log_{10}(1 + 1/k)\]
+    for $1 \leq k \leq 9$.
+\end{mdframed}
+In particular, the first digit of most ``typical'' datasets is a 1 with about a 30\% chance. 
+
+
+\subsection{Types of Continuous Probability Distributions}
+The following are some of the most important continuous probability distributions, some of which we've seen before. 
+\begin{itemize}
+    \item Uniform 
+    \item Exponential 
+    \item Gamma 
+    \item Normal 
+    \item Cauchy 
+\end{itemize}
+
+\subsubsection{Uniform Distribution}
+\begin{definition}{Uniform Distribution}{}
+    $U$ has \textbf{Uniform}$[a, b]$ distribution, for $a < b$, if its PDF is 
+    \[f(u) = \frac{1}{b - a}\]
+    for $a \leq u \leq b$. 
+\end{definition}
+\textbf{Remark:} Note that $b - a$ is the \emph{length} of $[a, b]$. 
+
+\textbf{Note:} There are also higher-dimensional uniform distributions, but then we replace length with area of volume. 
+
+\subsubsection{Exponential \& Gamma Distribution}
+\begin{definition}{Exponential Distribution}{}
+    $X$ is Exponential($\lambda$) with rate $\lambda > 0$ if its PDF is 
+    \[f(x) = \lambda e^{-\lambda x}\]
+    for $x > 0$. 
+\end{definition}
+Note that there is an important connection between the Exponential and the Poisson, which we will now describe. 
+\begin{mdframed}[]
+    (Example: Busy Server.) Suppose that a single server queue (e.g. call center, bank, etc.) is very busy, so that there is always someone in the queue. Suppose that service times are independent and Exponential($\lambda$)\footnote{As you wait longer, the time that you wait ``decays,'' or decreases.}. As soon as someone has been served, the next person in the queue starts being served immediately. Let $X_1, X_2, \dots$ be an IID sequence of Exponential($\lambda$) random variables. Then, the time $T_n$ at which the point the $n$th person has been served is distributed as \[\sum_{i = 1}^{n} X_i.\] This sum of $n$ IID Exponential($\lambda$) random variables has a special distribution, called the \textbf{Gamma}($n, \lambda$) distribution. This has PDF\footnote{When $n = 1$, this reduces to $\lambda e^{-\lambda x}$, the PDF of a single Exponential($\lambda$).} 
+    \[g(x) = \lambda e^{-\lambda x} \frac{(\lambda x)^{n - 1}}{(n - 1)!}\]
+    for $x > 0$.
+\end{mdframed}
+The Poisson distribution arises when we ask: What is the distribution for the number $N_t$ of people served by time $t > 0$? At any given time $t > 0$, we will (with probability 1, since the service times are continuous) be in the middle of serving someone. This person does not count towards $N_t$. 
+
+\bigskip 
+
+Note that $(N_t : t > 0)$ is called the \textbf{Poisson process}\footnote{This is a fascinating mathematical object with many properties and applications, which won't be covered here.}. This is a \emph{collection}, indexed by time, of random variables\footnote{Such an object is called a \textbf{stochastic process}.} In particular, the random variable $N_t$ has the Poisson($\lambda t$) distribution.
+
+\begin{mdframed}[]
+    \begin{proof}
+        Note that $N_t = k$ if and only if the $k$th person is served at some time $T_k = s \leq t$, and then the next service $X_{k + 1} > t - s$. In other words, we need to have finished serving $k$ people and be in the middle of serving the ($k + 1$)th person. Since \[T_k = \sum_{i = 1}^{k} X_i\] and $X_{k + 1}$ are independent, it follows that 
+        \[\PR(N_t = k) = \int_{0}^t f_{T_k}(s) [1 - F_{X_{k + 1}} (t - s)] ds.\]
+        Since $T_k$ is Gamma($k, \lambda$) and $X_{k + 1}$ is Exponential($\lambda$), it follows that 
+        \begin{equation*}
+            \begin{aligned}
+                \PR(N_t = k) &= \int_{0}^t f_{T_k}(s) [1 - F_{X_{k + 1}} (t - s)] ds \\ 
+                    &= \int_{0}^{t} \lambda e^{-\lambda s} \frac{(\lambda s)^{k - 1}}{(k - 1)!} \cdot e^{-\lambda (t - s)} ds \\ 
+                    &= e^{-\lambda t} \frac{\lambda^k}{(k - 1)!} \int_{0}^{t} s^{k - 1} ds \\ % TODO how? 
+                    &= e^{-\lambda t} \frac{(\lambda t)^k}{k!}.
+            \end{aligned}
+        \end{equation*}
+        Hence, this is the PMF of a Poisson, as claimed. 
+    \end{proof}
+\end{mdframed}
+
+\subsubsection{Normal/Gaussian Distribution}
+Recall that a Binomial converges to a Poisson if 
+\[p = \lambda / n \mapsto 0\]
+as \[n \mapsto \infty.\]
+On the other hand, if $p$ is \emph{fixed} (not converging to 0), the Binomial approaches a different distribution as $n \mapsto \infty$ called the \textbf{Normal} or \textbf{Gaussian} distribution. Indeed, as $n$ goes to infinity, we see a bell-shaped curve. 
+\begin{definition}{Normal Distribution}{}
+    $X$ is \textbf{Normal}($\mu, \sigma^2$) if its PDF is 
+    \[\frac{1}{\sigma \sqrt{2\pi}} e^{-\frac{(x - \mu)^2}{2 \sigma^2}}\]
+    for $-\infty < x < \infty$. 
+\end{definition}
+Here, $\mu$ is the ``center'' of the density and $\sigma$ is the measure of the ``spread'' of the density. 
+
+When $\mu = 0$ and $\sigma^2 = 1$, $X$ is called a standard normal, and its PDF is given the special notation 
+\[\Phi(x) = \frac{1}{\sqrt{2\pi}} e^{-x^2 / 2}.\]
+If $X$ is not standard, then you can ``standardize'' by taking $Z = (X - \mu) / \sigma$. Then, $X$ is Normal($\mu, \sigma^2$) if and only if $Z$ is Normal($0, 1$).
+
+\subsubsection{Cauchy Distribution}
+Now, suppose that $X$ and $Y$ are two independent standard Normal random variables. A very interesting distribution arises if we consider the ratio \[Z = X / Y.\] Since $X$ and $Y$ are independent, \[f_{Z}(z) = \int_{S_z} f_{X, Y}(x, y) dx dy,\] where $S_z = \{\{(x, y) \mid x / y = z\}$. We make a change of variables $x = uz$ and $y = u$. Then, as $u$ varies over $\R$, we get the whole set $S_z$. The Jacobian of this transformation is $|u|$, so 
+\[f_{Z}(z) = \int_{S_z} f_{X, Y}(x, y) dxdy = \int_{-\infty}^{\infty} |u| f_{X, Y}(uz, u) du.\]
+This is the same as 
+\[2\left(\frac{1}{\sqrt{2\pi}}\right)^2 \int_{0}^{\infty} ue^{-(uz)^2 / 2 - u^2 / 2} du.\]
+It can be shown that 
+\[\int_0^{\infty} xe^{-cx^2} dx = \frac{1}{2c}.\]
+Hence,
+\[f_{Z}(z) = \frac{1}{\pi} \int_0^{\infty} ue^{-\frac{u^2 (1 + z^2)}{2}} du = \frac{1}{\pi (1 + z^2)}.\]
+A random variable with this PDF is called a (standard) \textbf{Cauchy} random variable. 
+
+\bigskip 
+
+Note that the Cauchy distribution has some interesting properties. In partivular, it has no expected/average value. So, if you take an IID sequence $X_1, X_2, \dots$ of Cauchy random variables, the limit 
+\[\lim_{n \mapsto \infty} \frac{1}{n} \sum_{i = 1}^n X_i\]
+does not exist. 
+
+
+
+\subsection{CDF/PDF Transformations}
+We can use the distributions that we've talked about to build more \emph{complex} distributions. 
+
+\begin{theorem}{CDF Transformation Theorem}{}
+    Let $X$ be a continuous random variable and $\Phi$ is a strictly monotone function. Then, the random variable 
+    \[Y = \Phi(X)\]
+    has CDF
+    \begin{enumerate}
+        \item $F_{Y}(y) = F_{X}(\Phi^{-1}(y))$, if $\Phi$ is increasing. 
+        \item $F_{Y}(y) = 1 - F_{X}(\Phi^{-1}(y))$, if $\Phi$ is decreasing. 
+    \end{enumerate}
+\end{theorem}
+\begin{mdframed}[]
+    \begin{proof}
+        Suppose that $\Phi$ is strictly increasing. Then, the inverse function $\Phi^{-1}$ exists and is increasing. Therefore, \[\Phi(X) \leq y\] if and only if \[\Phi^{-1}(\Phi(X)) = X \leq \Phi^{-1}(y).\] Hence, \[F_{Y}(y) = \PR(Y \leq y) = \PR(\Phi(X) \leq y) = \PR(X \leq \Phi^{-1}(y)) = F_{X}(\Phi^{-1}(y)),\] as claimed. The strictly decreasing case is similar. 
+    \end{proof}
+\end{mdframed}
+Note that, by differentiating using the Calculus Chain Rule, we obtain the following corollary. 
+
+\begin{corollary}{PDF Transformation Theorem}{}
+    Let $X$ be a continuous random variable and $\Phi$ a strictly monotone function. Then, the random variable $Y = \Phi(X)$ has PDF
+    \[f_{Y}(y) = f_{X}(\Phi^{-1}(y)) \left|\frac{d}{dy} \Phi^{-1}(y)\right|.\]
+\end{corollary}
+Note that there is a transformation theorem in the case of discrete random variables, but it is much easier. In particular, the PMF of a random variable $Y = \Phi(X)$ is simply the function 
+\[p_{Y}(y) = \sum_{x: \Phi(x) = y} p_{X}(x).\]
+
+\begin{mdframed}[]
+    (Example.) Let $U$ be Uniform on $[0, 1]$. Then, consider the transformed version \[V = 1 - U,\] which is also uniform on $[0, 1]$. Note that \[\Phi(u) = 1 - u\] is decreasing, and $\Phi^{-1}(v) = 1 - v$. Therefore, by the CDF Transformation Theorem, we have 
+    \[F_{V}(v) = 1 - F_{U}(\Phi^{-1}(v)) = 1 - F_{U}(1 - v) = 1 - (1 - v) = v.\]
+    Hence, $V$ is Uniform on $[0, 1]$. 
+\end{mdframed}
+
+\begin{mdframed}[]
+    (Example.) Let $X$ be a standard Normal$(0, 1)$. Consider \[Y = X^2.\] Recall that $X$ has PDF \[\frac{1}{\sqrt{2\pi}} e^{-x^2 / 2}.\] The function \[\Phi(x) = x^2\] is not either only increasing or only decreasing; rather, it is decreasing when $x < 0$ and increasing when $x > 0$. Therefore, we cannot apply the Transformation Theorem as is, but we can still apply the idea of its proof. 
+
+    \bigskip 
+
+    Note that \[F_{Y}(y) = \PR(X^2 \leq y) = \PR(-\sqrt{y} \leq X \leq \sqrt{y}) = F_{X}(\sqrt{y}) - F_{X}(-\sqrt{y}).\] So, differentiating (to get the PDF), we find \[f_{Y}(y) = \frac{f_{X}(\sqrt{y}) + f_{X}(-\sqrt{y})}{2\sqrt{y}} = \frac{1}{\sqrt{2\pi y}} e^{-y / 2}.\]
+    Note that this is known as the \textbf{Chi-squared} distribution.
+\end{mdframed}
