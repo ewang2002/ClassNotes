@@ -1,1 +1,303 @@
 \section{Combinatorics}
+We will be studying various counting techniques. In probability, we are often interested in the probability of a certain event. Finding such a probability usually involves considering/counting all of the different ways in which it could possibly occur. 
+
+\subsection{Basic Principle of Counting}
+Suppose that an experiment involves $r$ independent stages, i.e. stages that have no effect on each other. Suppose that, in each stage $1 \leq i \leq r$, there are $n_i$ possible outcomes. Then, the total number of possible outcomes of the full experiment is the product $n_1 n_2 \dots n_r$. 
+
+\begin{mdframed}[]
+    (Example.) A menu consists of 2 appetizers, 5 main dishes, and 2 desserts. Then, there are $2(5)(2) = 20$ possible meals to choose from. In particular: 
+    \begin{itemize}
+        \item There are 2 appetizers that we can pick. 
+        \item For each appetizers, there are 5 dishes that we can pick.
+        \item For each appetizers, there are 2 desserts we can pick. 
+    \end{itemize}
+\end{mdframed}
+
+\begin{mdframed}[]
+    (Example: Birthday Problem.) How many people do we need to have in a room so that it is likely (e.g. more than 50 percent) that two people will have the same birthday? 
+
+    \bigskip 
+
+    Assume that everyone is equally likely to be born on any one of the 365 days in a year. We note that the uniform probability assumption is not so realistic (less likely to be born on weekends, some months more likely than others, etc.). However, our calculation gives a good \emph{upper bound} on the number of people needed in the room, since if the probabilities are non-uniform then the probability of having two people with the same birthday increases. 
+
+    \bigskip 
+
+    Suppose that there are $r$ people in the room. Then, there are $(365)^r$ possible birthdays: there are 365 choices for the first person, 365 choices for the second person, \dots, and 365 choices for the $r$th person. \emph{However}, there are only $(365)(364) \dots (365 - r + 1)$ possible ways that they could all have different birthdays. In particular: 
+    \begin{itemize}
+        \item There are 365 options for the first person. 
+        \item THere are 364 options for the second person. 
+        \item \dots 
+        \item There are $365 - (r - 1)$ options for the $r$th person. 
+    \end{itemize}
+    The probability that two people will have the same birthday when there are $r$ people in the room is 
+    \[1 - \frac{(365)_r}{(365)^r}.\]
+    The probability that no one will have the same birthday is $\frac{(365)_r}{(365)^r}$ because $(365)^r$ is the total number of possibilities for all the birthdays, and $(365)_r$ is the total number of possibilities where everyone has different birthdays. Then, by the complement rule, the above value is the probability that at least two people with the same birthday. By plotting this function, we have that $r > 23$. 
+
+    \bigskip 
+
+    This is sometimes referred to as the \textbf{Birthday Paradox}. Despite this, it is not a paradox. This is because the total number of \emph{pairs} of people is given by 
+    \[\frac{23(22)}{2} = 253.\]
+    To see why this is the case, we have: 
+    \begin{itemize}
+        \item 23 ways to pick the first person for the pair. 
+        \item 22 ways to pick the second person for the pairs. 
+    \end{itemize}
+    We then divide by 2 because a pair $(A, B)$ is the same thing as $(B, A)$. That being said, this is much more comparable to 365, and all we need is for \emph{one} of these pairs to be a match. 
+\end{mdframed}
+
+\begin{definition}{}{}
+    Let $0 \leq r < n$ be integers. Then, 
+    \[(n)_r = n(n - 1) \dots (n - r - 1)\]
+    is known as the \textbf{falling factorial}.
+\end{definition}
+
+\begin{definition}{}{}
+    We denote $(n)_n = n(n - 1) \dots 1$ as $n!$, and $0! = 1$, and denote this as $n$ \textbf{factorial}.
+\end{definition}
+We note that $n!$ is the total number of possible ways to permute (order) a list of $n$ distinguishable objects. 
+
+\begin{mdframed}[]
+    (Example.) There are $3! = 3(2)(1)$ possible ways to arrange three people in a line.
+    \begin{itemize}
+        \item There are 3 ways to pick the first person to be at the front of the line. 
+        \item There are 2 ways to pick the second person to be next in line. 
+        \item Finally, there is only 1 way to pick the one line person to be last in line. 
+    \end{itemize}
+\end{mdframed}
+
+\subsection{Permutations}
+
+\begin{definition}{}{}
+    A \textbf{permutation} of a finite set $A$ is a bijective mapping from $A$ to $A$. 
+\end{definition}
+\textbf{Remarks:}
+\begin{itemize}
+    \item We often, but not always, use the Greek letters $\pi$ or $\sigma$ to denote permutations. 
+    \item Note that any set $A$ of size $|A| = n$ is in bijective correspondence with $[n] = \{1, 2, \dots, n\}$. That is, we can enumerate $A = \{a_1, \dots, a_n\}$. So, we will usually only discuss permutations of $[n]$. 
+\end{itemize}
+
+\begin{mdframed}[]
+    (Example.) Consider the permutation of $\sigma$ of $[4] = \{1, 2, 3, 4\}$ such that 
+    \[\sigma = \begin{pmatrix}
+        1 & 2 & 3 & 4 \\ 
+        2 & 1 & 4 & 3
+    \end{pmatrix}.\]
+    Here, 
+    \[\sigma(1) = 2\]
+    \[\sigma(2) = 1\]
+    \[\sigma(3) = 4\]
+    \[\sigma(4) = 3.\]
+    In particular, the top row is a list of elements, and the bottom is the \textbf{rearrangement} of them given by $\sigma$. So, in this example, 2 becomes the first element, 1 becomes the second element, and so on.
+
+    \bigskip 
+
+    Occasionally, we might just write $\sigma = 2143$. 
+\end{mdframed}
+
+\begin{definition}{}{}
+    Let $S_n$ denote the set of all permutations of $[n]$, sometimes known as the \textbf{symmetric group} of degree $n$.
+\end{definition}
+\textbf{Remark:} $|S_n| = n!$.
+
+\begin{mdframed}[]
+    (Example.) The 6 permutations of $[3]$ are: 
+    \begin{itemize}
+        \item 123
+        \item 132
+        \item 213
+        \item 231
+        \item 312
+        \item 321
+    \end{itemize}
+\end{mdframed}
+
+\begin{theorem}{Stirling's Approximation}{}
+    As $n \mapsto \infty$, we have 
+    \[\frac{n!}{\sqrt{2\pi n} \left(\frac{n}{e}\right)^n} \mapsto 1.\]
+\end{theorem}
+\textbf{Remark:} Hence, for large $n$, we have $n! \approx \sqrt{2\pi n} \left(\frac{n}{e}\right)^n$. 
+
+\bigskip 
+
+Recall that a \textbf{fixed point} $x$ of a function $f$ is a point for which $f(x) = x$. Suppose we select a uniformly random permutation of $[n]$. What is the probability $p_{k}(n)$ that it will have exactly $k$ fixed points? Put it differently, if we put $n$ books on a shelf randomly, what is the probability that $k$ of them will happen to end up in their proper place on the shelf? In a future lecture, we will see that $p_{0}(n) \approx \frac{1}{e}$. 
+
+\bigskip 
+
+\begin{definition}{}{}
+    Let $\sigma$ be a permutation of $[n]$. We call $i \in [n]$ a \textbf{record} if $\sigma(i) > \sigma(j)$ for all $j < i$. 
+\end{definition}
+\textbf{Remarks:}
+\begin{itemize}
+    \item Informally, $i$ is a record if $\sigma(i)$ is larger than all of the previous values of $\sigma$. 
+    \item Trivially, $i = 1$ is a record.
+\end{itemize}
+
+\subsection{Combinations}
+Suppose we have a set $A$ of size $|A| = n$. How many subsets of $A$ are there? How many of these are of size $k$? 
+
+\begin{definition}{}{}
+    The number of ways to choose $k$ elements from a set of $n$ distinguishable objects is denoted by $\binom{n}{k}$.
+\end{definition}
+\textbf{Remarks:}
+\begin{itemize}
+    \item If $|A| = n$, then there are $\binom{n}{k}$ subsets of $S \subset A$ of size $|S| = k$, since each subset corresponds to a way of choosing $k$ elements from the set of $n$ elements. 
+    \item The number $\binom{n}{k}$ is also known as the \textbf{binomial coefficient}.
+\end{itemize}
+
+\begin{theorem}{}{}
+    For $0 \leq k \leq n$, we have 
+    \[\binom{n}{k} = \frac{n!}{k!(n - k)!}.\]
+\end{theorem}
+\textbf{Remarks:}
+\begin{itemize}
+    \item Recall that $0! = 1$.
+    \item Recall that $\frac{n!}{(n - k)!} = (n)_k$. 
+    \item So, we can say that $\binom{n}{k} = \frac{(n)_k}{k!}$.
+\end{itemize}
+One thing to note is that the relationship 
+\[\binom{n}{k} = \binom{n - 1}{k - 1} + \binom{n - 1}{k}\]
+gives us a recursive method of computing binomial coefficients. This is known as the famous \textbf{Pascal's Triangle}.
+Another thing to notice is that 
+\[\frac{n!}{k!(n - k)!} = \frac{n!}{(n - k)!(n - (n - k))!}\]
+and so it follows that 
+\[\binom{n}{k} = \binom{n}{n - k}.\]
+
+\begin{mdframed}[]
+    (Example.) Why does a Four of a Kind beat a Full House in Poker? 
+    \begin{itemize}
+        \item Recall that there are 52 cards in a deck. In Poker, you get 5 cards. 
+        \item A Four of a Kind means that you get 4 of one of the kind of cards and one other card (e.g. all 4 aces and a 2).
+        \item A Full House is when you get 3 of one kind and 2 of the other (e.g. 3 aces and 2 3's.).
+    \end{itemize}
+
+    \begin{mdframed}[]
+        How many ways can we get a Full House? 
+        \begin{itemize}
+            \item We need to get two types of cards. There are $13 \cdot 12$ ways to do this.
+            \item Now, we need to make the full house. For one of the cards, there are 4 different suits, of which we want 3 suits. Thus, $\binom{4}{3}$.
+            \item For the other card, there are again 4 different suits, of which we want 2 suits. Thus, $\binom{4}{2}$. 
+        \end{itemize}
+        This gives us 
+        \[13 \cdot 12 \cdot \binom{4}{3} \binom{4}{2}.\]
+        How many ways can we get a Four of a Kind? 
+        \begin{itemize}
+            \item There are 13 ways to choose the first card (that we need 4 of one kind for).
+            \item There are now 48 cards left. We just need to pick one card to be our extra card.
+        \end{itemize}
+        This gives us 
+        \[13 \cdot 48.\]
+        The probability of a Full House is given by 
+        \[\frac{13 \cdot 12 \cdot \binom{4}{3} \binom{4}{2}}{\binom{52}{5}} \approx 0.14\%.\]
+        The probability of a Four of a Kind is given by 
+        \[\frac{13 \cdot 48}{\binom{52}{5}} \approx 0.024\%.\]
+        For both of these cases, the $\binom{52}{5}$ came from the fact that we get 5 cards from a deck of 52. 
+    \end{mdframed}
+\end{mdframed}
+
+\begin{mdframed}[]
+    (Example Problem.) Compute (with explanation) the probability that a poker hand contains (exactly) one pair (\emph{aabcd} with \emph{a}, \emph{b}, \emph{c}, \emph{d} distinct face values). (\emph{Answer:} $\approx 42.3\%$.)
+
+    \begin{mdframed}[]
+        First, there are 13 ways we can pick one kind of card. There are $\binom{4}{2}$ ways to pick 2 of the same card under different suits. Thus, the number of ways we can pick a pair of one kind of card is given by 
+        \[13\binom{4}{2}.\]
+        There are now $\binom{12}{3}$ ways to pick the 3 remaining kinds of cards, and for each card there are $\binom{4}{1}$ ways to pick one card with some suit. Thus, this gives us 
+        \[\binom{12}{3} \left(\binom{4}{1}\right)^3.\]
+        Combining this, we have 
+        \[\frac{13\binom{4}{2}\binom{12}{3} \left(\binom{4}{1}\right)^3}{\binom{52}{5}} \approx 42.3\%,\]
+        as desired.  
+    \end{mdframed}
+\end{mdframed}
+
+\begin{mdframed}[]
+    (Example Problem.) A researcher requires an estimate for the number of trout in a lake. To this end, she captures 50 trout, marks each fish, and releases them into the lake. Two days later she returns to the lake and captures 80 trout, of which 16 are marked. Suppose that the lake contains $n$ trout. Find the probability $L(n)$ that 16 trout are marked in a sample of 80.
+
+    \begin{mdframed}[]
+        We know that: 
+        \begin{itemize}
+            \item There are $n$ trouts in the lake. 
+            \item 50 of the trouts in the lake are marked. 
+            \item We caught 80 trouts, of which 16 of them are marked.
+        \end{itemize}
+        I claim that $L(n)$ is given by the formula 
+        \[L(n) = \frac{\binom{50}{16} \cdot \binom{n - 50}{64}}{\binom{n}{80}}.\]
+        To see why this is the case, we have: 
+        \begin{itemize}
+            \item There are $\binom{n}{80}$ ways to catch 80 trouts from the $n$ total trouts in the lake. 
+            \item We know that 16 trouts that we catch have to be marked. We also know that there are 50 marked trouts in the lake in total. Thus, there are $\binom{50}{16}$ ways to get 16 marked trouts from the 50 marked trouts in the lake. 
+            \item Since we know that the 16 trouts that we caught are marked, it follows that $80 - 16 = 64$ trouts that we caught are not marked. We also know that there are $n - 50$ trouts in the lake that aren't marked. Thus, there are $\binom{n - 50}{64}$ ways to catch 64 unmarked trouts from the $n - 50$ unmarked trouts in the lake.
+        \end{itemize}
+    \end{mdframed}
+\end{mdframed}
+
+
+\subsection{Binomial Distribution}
+There is an important probability distribution related to the binomial coefficients, called the \textbf{Binomial Distribution}. But, we first need to describe the concept of a \textbf{Bernoulli trial}.
+\begin{definition}{Bernoulli Trial}{}
+    A \textbf{Bernoulli trial} is a simple experiment that is either a \emph{success} or \emph{failure}. More specifically, it is a discrete random variable that either takes the value 1 (success) or 0 (failure).
+\end{definition}
+Moreover, a $\text{Bernoulli}(p)$ trial is one in which the probability of success is $p$. Hence, its PMF is 
+\[\PR(X = 1) = p\]
+and 
+\[\PR(X = 0) = 1 - p.\]
+For example, flipping ``Tails'' when tossing a fair coin is a $\text{Bernoulli}(1 / 2)$ trial. 
+
+\bigskip 
+
+We haven't defined what independence means in probability, but informally, a series of events $E_1, \dots, E_n$ are independent if their outcomes ``do not affect'' each other. For example, when we flip a coin, whatever we get on the first flip won't affect what we get on the second flip. So, in this case, we have 
+\[\PR\left(\bigcap_{i = 1}^{n} E_i\right) = \prod_{i = 1}^{n} \PR(E_i).\]
+In other words, the probability that they all occur is just the product of the individual probabilities. 
+
+\begin{mdframed}[]
+    (Example Problem.) A magician gives you a coin that comes up ``Heads'' with some probability $p \in (0, 1)$. This probability $p$ is unknown, and perhaps you even have reason (e.g., the magician wears a suspicious looking grin, etc.) to suspect that the coin is biased, $p \neq 1/2$.
+
+    \bigskip 
+
+    \noindent
+    Show that this coin can be ``turned into'' a fair coin, by redefining what ``Heads'' means, in the following way: Flip the coin twice in a row. If the first flip is ``Heads'' and the second flip is ``Tails'', call the result ``Heads New''. On the other hand, if the first flip is ``Tails'' and the second flip is ``Heads'', call the result ``Tails New''. Otherwise, flip the coin twice in a row again, and keep repeating this procedure until either ``Heads New'' or ``Tails New'' has been determined.
+
+    \bigskip 
+
+    \noindent
+    Show that $\PR(\text{``Heads New''}) = 1/2$.
+
+    \begin{mdframed}[]
+        Let $\PR(\text{HT})$ be the probability that we get a heads followed by a tails. We know that the probability of getting a heads is $p$, and the probability of getting a tails is $1 - p$. So, the probability that we get a heads followed by a tails in our first try is given by
+        \[p(1 - p).\]
+        If we don't get a heads and then a tails, then we either got a heads and heads or tails and tails (otherwise, we would lose if we got tails and heads). The probability of getting a heads and heads or tails and tails is given by 
+        \[p^2 + (1 - p)^2.\]
+        So, the probability that we initially get a heads and heads or tails and tails is given by
+        \[(p^2 + (1 - p)^2) \PR(\text{HT}),\]
+        where $\PR(\text{HT})$ is due to us trying again. Therefore, we have 
+        \begin{equation*}
+            \begin{aligned}
+                \PR(\text{HT}) &= p(1 - p) + (p^2 + (1 - p)^2) \PR(\text{HT}) \\ 
+                    &\implies \PR(\text{HT}) = p(1 - p) + \PR(\text{HT}) p^2 + \PR(\text{HT}) (1 - p)^2 \\ 
+                    &\implies \PR(\text{HT}) - \PR(\text{HT}) p^2 - \PR(\text{HT}) (1 - p)^2 = p(1 - p) \\ 
+                    &\implies \PR(\text{HT}) (1 - p^2 - (1 - p)^2) = p(1 - p) \\ 
+                    &\implies \PR(\text{HT}) (1 - p^2 - (1 - 2p + p^2)) = p(1 - p) \\ 
+                    &\implies \PR(\text{HT}) (1 - p^2 - 1 + 2p - p^2) = p(1 - p) \\ 
+                    &\implies \PR(\text{HT}) = \frac{p(1 - p)}{1 - p^2 - 1 + 2p - p^2} \\ 
+                    &\implies \PR(\text{HT}) = \frac{p(1 - p)}{2p - 2p^2} \\ 
+                    &\implies \PR(\text{HT}) = \frac{\cancel{p(1 - p)}}{2 \cancel{p(1 - p)}} \\ 
+                    &\implies \boxed{\PR(\text{HT}) = \frac{1}{2}}.
+            \end{aligned}
+        \end{equation*}
+    \end{mdframed}
+\end{mdframed}
+
+\begin{definition}{Binomial Distribution}{}
+    Let $n \geq 1$ be an integer and $P \in [0, 1]$. Let $N$ be the number of ``successes'' in a series of $n$ independent Bernoulli($p$) trials. Then, we say that $N$ has the Binomial($n, p$) distribution.
+\end{definition}
+Its PMF\footnote{Probability Mass Function} is given by 
+\[\PR(N = k) = \binom{n}{k}p^k (1 - p)^{n - k}\]
+for $0 \leq k \leq n$ and $\PR(N = x) = 0$ otherwise. To see why this is the case,
+\begin{itemize}
+    \item There are $\binom{n}{k}$ ways to choose which $k$ of the $n$ trials will be successful. Each of these $k$ trials will be a success with probability $p$, and each of the remaining $n - k$ trials will be a failure with probability $1 - p$. 
+    \item Since these trials are independent, we can multiply everything together: each of the $\binom{n}{k}$ outcomes that would cause $N - k$ to have probability $p^k (1 - p)^{n - k}$. 
+\end{itemize}
+How do we see that this is a legitimate probability distribution? In other words, how do we know that this all adds up to 1? 
+\begin{theorem}{Binomial Theorem}{}
+    \[(a + b)^n = \sum_{k = 0}^{n} \binom{n}{k} a^k b^{n - k}.\]
+\end{theorem}
+With this in mind, we have 
+\[\sum_{k = 0}^{n} \PR(N = k) = \sum_{k = 0}^{n} \binom{n}{k} p^k (1 - p)^{n - k} = (p + (1 - p))^n = 1^n = 1.\]

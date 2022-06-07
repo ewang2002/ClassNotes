@@ -13,6 +13,9 @@
 \usepackage{csquotes}
 \usepackage{mleftright}
 \usepackage{soul}
+\usepackage{cancel}
+
+
 % https://tex.stackexchange.com/questions/13506/how-to-continue-the-framed-text-box-on-multiple-pages
 
 \tcbuselibrary{theorems}
@@ -82,3 +85,13 @@
             colframe=red!75!black,
         } 
     }{impnote}
+
+\makeatletter
+\def\mathcolor#1#{\@mathcolor{#1}}
+\def\@mathcolor#1#2#3{%
+  \protect\leavevmode
+  \begingroup
+    \color#1{#2}#3%
+  \endgroup
+}
+\makeatother
