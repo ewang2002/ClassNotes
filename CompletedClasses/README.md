@@ -53,3 +53,20 @@ Below, I'll very briefly list the notes contained in these folders.
 | Math 103B | Information                               | 
 | --------- | ----------------------------------------- |
 | Status    | Nearly Complete (No Combined Notes File). |
+
+
+### Spring 2022
+- `Programming Languages`: Notes for [**CSE 130**](https://catalog.ucsd.edu/courses/CSE.html#cse130) taught by Professor [Nadia Polikarpova](https://cseweb.ucsd.edu/~npolikarpova/).
+
+
+| CSE 130   | Information                 | 
+| --------- | ----------------------------|
+| Status    | Nearly Complete (No Combined Notes File). |
+
+
+- `Probability`: Notes for [**Math 180A**](https://catalog.ucsd.edu/courses/MATH.html#math103b) taught by Professor [Brett Kolesnik](https://mathweb.ucsd.edu/~bkolesnik/). 
+
+
+| Math 180A | Information                               | 
+| --------- | ----------------------------------------- |
+| Status    | Nearly Complete.                          |
