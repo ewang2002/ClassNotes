@@ -4,15 +4,10 @@ import datetime
 from typing import List, Tuple
 
 CLASSES = {
-    'MATH180A': {
+    'CSE158R': {
         'full': True,
-        'schedule': ['M', 'W', 'F'],
-        'class': 'MATH 180A'
-    },
-    'CSE130': {
-        'full': True,
-        'schedule': ['M', 'W', 'F'],
-        'class': 'CSE 130'
+        'schedule': ['Tu', 'Th'],
+        'class': 'CSE 158R'
     }
 }
 

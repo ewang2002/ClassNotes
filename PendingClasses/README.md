@@ -5,4 +5,4 @@ These are notes for classes that I will be taking. The notes will most certainly
 Below, I'll very briefly list the notes contained in these folders.
 
 ### Fall 2022
-- TBA
+- CSE 158R: Web Mining and Recommender Systems
