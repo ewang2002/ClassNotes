@@ -3,6 +3,3 @@ These are notes for classes that I will be taking. The notes will most certainly
 
 ## Directories
 Below, I'll very briefly list the notes contained in these folders.
-
-### Fall 2022
-- CSE 158R: Web Mining and Recommender Systems
