@@ -1,0 +1,67 @@
+discussion #1, 1/11
+
+
+
+JUNGLE 
+
+I AM IN PORTLAND, COME HERE TOMORROW 
+
+====== Encode ======
+
+JUNGLE
+365241
+
+I AM IN PORTLAND COME HERE TOMORROW 
+
+    3 6 5 2 4 1
+      /   \
+     /     \
+    /       \
+vvvvvv      vvvvvv
+
+123456      123456 
+IAMINP      PIINMA
+- 1st letter (I) goes to position 3
+- 2nd letter (A) goes to position 6
+- ...
+
+ORTLAN      NLOATR
+DCOMEH      HMDEOC
+ERETOM      MTEOER
+ORROWJ      JOOWRR
+
+====== Combine them ======
+PIINMANLOATRHMDEOCMTEOERJOOWRR
+
+==================================================================
+
+Keyword: MARTIN 
+         315624
+
+
+        315624
+
+123456          123456
+HOTNEM          THEMON
+YIENIS          EYISIN     
+HATSEB          THEBAS     
+MTEOEN          EMENTO     
+TTFHHE          FTHETH     
+ROIUDH          IRDHOU          
+ERSYCJ          SECJYR
+
+THE MONEY IS IN THE BASEMENT OF THE THIRD HOUSE CJYR
+
+
+
+=======================================================================
+
+Caesar 
+
+RD KJJY MZWY 
+MY FEET HURT
+
+ABCDEFGHIJKLMNOPQRSTUVWXYZ
+
+shift 5 
+

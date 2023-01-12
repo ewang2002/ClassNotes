@@ -133,6 +133,20 @@ For example, a 1-gram is just a single letter; a 2-gram (i.e., \emph{bigram}) is
 \subsection{Rectangular Tranposition}
 \textbf{Rectangular tranposition}, known also as \emph{regular columnar transposition}, is a tranposition cipher. The ciphertext is obtained by \emph{permuting} the letters of the plaintext in a particular pattern. The pattern is determined by a secret \emph{keyword}. 
 
+\bigskip 
+
+Roughly speaking, the steps to perform rectangular transposition are as follows:
+\begin{enumerate}
+    \item Using the keyword, rank the letters based on alphabetical ranking. 
+    \item Break up the message into groups of $n$, where $n$ is the length of the keyword.
+    \item For each group, do the following: 
+    \begin{itemize}
+        \item Encrypting: If the $i$th letter of the keyword has rank $j$, move the $i$th letter in the group into the $j$th position.
+        \item Decrypting: If the $i$th letter of the keyword has rank $j$, move the $j$th letter of each group into the $i$th position. 
+    \end{itemize}
+\end{enumerate}
+Note that keywords with repeat letters do not work by themselves. We either need to agree not to use words with repeat letters, or remove duplicate letters from the keyword\footnote{In this course, we won't consider words with repeat letters.}.
+
 \begin{mdframed}[]
     (Example: Encryption.) Suppose that Alice and Bob share the keyword \code{GUARD}, and that Alice wants to send the following message to Bob: 
     \begin{mdframed}
@@ -165,28 +179,37 @@ RECOM
 INGFO
 RYOUQ\end{verbatim}
     \end{mdframed}
-    Now, we begin the \textbf{encryption} process by rearranging the letters in each row based on the alphabetical ranking of the letters of the keyword \code{GUARD}. We note that the alphabetical rankings of the letters of this keyword are 3, 5, 1, 4, 2. 
+    Now, we begin the \textbf{encryption} process by rearranging the letters in each row based on the alphabetical ranking of the letters of the keyword \code{GUARD}. 
     \begin{center}
-        \includegraphics[scale=0.9]{../assets/rank_crypto.png}
+        \includegraphics[scale=0.7]{../assets/rank_crypto.png}
     \end{center}
-    Let's suppose each letter in one of the rows of the 5-grams for the plaintext is in the order \textbf{\code{12345}}. The idea is that we want to map the letters so that they're in the order \textbf{\code{35142}}. In order words, 
-    \[f(\code{12345}) = \code{35142}.\]
-    Consider the first row of the 5-grams for the plaintext (with the numbers representing the order that the letters appear in):
+    We note that the alphabetical rankings of the letters of this keyword are 3, 5, 1, 4, 2. We can see this as a \emph{permutation}; that is, 
+    \[1 \mapsto 3 \qquad 2 \mapsto 5 \qquad 3 \mapsto 1 \qquad 4 \mapsto 4 \qquad 5 \mapsto 2\]
+    \textbf{The idea for encryption is that, for each column $i$, we'll send that column to whatever is mapped by the permutation above.} Going back to the stack of letters we have, we can label each individual column:
     \begin{mdframed}
         \begin{verbatim}
-12345
-HIDET\end{verbatim}
+plaintext 
+position    1 2 3 4 5
+            H I D E T
+            H E B A B
+            O O N S A
+            R E C O M
+            I N G F O
+            R Y O U Q\end{verbatim}
     \end{mdframed}
-    The corresponding 5-gram for the ciphertext would be: 
-    \begin{mdframed}
-        \begin{verbatim}
-35142
-DTHEI\end{verbatim}
-    \end{mdframed}
+    The idea is that 
+    \begin{itemize}
+        \item we can put all letters under position 1 in the plaintext stack to position \textbf{3} of the ciphertext stack, 
+        \item we can put all letters under position 2 in the plaintext stack to position \textbf{5} of the ciphertext stack, 
+        \item we can put all letters under position 3 in the plaintext stack to position \textbf{1} of the ciphertext stack, 
+        \item we can put all letters under position 4 in the plaintext stack to position \textbf{4} of the ciphertext stack, 
+        \item we can put all letters under position 5 in the plaintext stack to position \textbf{2} of the ciphertext stack.
+    \end{itemize}
+    The process, visually, would look like: 
     \begin{center}
-        \includegraphics[scale=0.7]{../assets/ex1_hidet.png}
+        \includegraphics[scale=0.7]{../assets/trans_encrypt.png}
     \end{center}
-    Applying this to every row of the 5-gram plaintext, we get 
+    Therefore, the ciphertext stack would look like: 
     \begin{mdframed}
         \begin{verbatim}
 DTHEI
@@ -202,8 +225,12 @@ OQRUY\end{verbatim}
 DTHEIBBHAENAOSOCMROEGOIFNOQRUY\end{verbatim}
     \end{mdframed}
 \end{mdframed}
+\textbf{Remark:} An easy way to run through the process is to create two ``groups,'' side-by-side. The first group will be the plaintext stack, and the second group will be the ciphertext text. Then, label each column of the first group with the \textbf{alphabetical ranking} of the keyword. Label each column of the second group with \textbf{12345}. Finally, map each column from the first group to the second group based on the label. 
+\begin{center}
+    \includegraphics[scale=0.7]{../assets/trans_encrypt2.png}
+\end{center} 
 
-
+Decrypting is merely the inverse of the encryption process.
 \begin{mdframed}
     (Example: Decryption.) Consider the above example again. Suppose Alice successfully sends the following ciphertext to Bob:
     \begin{mdframed}
@@ -220,36 +247,19 @@ CMROE
 GOIFN
 OQRUY\end{verbatim}
     \end{mdframed}
-    Bob also knows the alphabetical ranking of the letters of \code{GUARD} (which is the same rankings as described above). Now, because each 5-gram is part of the \emph{ciphertext}, the ordering of each letter in a 5-gram is \code{35142}. To decrypt the message, he needs to map the letters in each row (5-gram) so that it's in order \code{12345}. 
+    Bob also knows the alphabetical ranking of the letters of \code{GUARD} (which is the same rankings as described above). In particular, the alphabetical ranking is \code{35142}. So, we need to do the following: 
+    \begin{itemize}
+        \item The letters in position 1 of the ciphertext stack needs to be moved to position \textbf{3},
+        \item the letters in position 2 of the ciphertext stack needs to be moved to position \textbf{5},
+        \item the letters in position 3 of the ciphertext stack needs to be moved to position \textbf{1},
+        \item the letters in position 4 of the ciphertext stack needs to be moved to position \textbf{4},
+        \item the letters in position 5 of the ciphertext stack needs to be moved to position \textbf{2}. 
+    \end{itemize}
     
-    \bigskip
-    
-    Consider the first row of the 5-gram for the ciphertext (numbering shown to indicate ordering):
-    \begin{mdframed}
-        \begin{verbatim}
-35142
-DTHEI\end{verbatim}
-    \end{mdframed}
-    The corresponding 5-gram for the plaintext would be: 
-    \begin{mdframed}
-        \begin{verbatim}
-12345
-HIDET\end{verbatim}
-    \end{mdframed}
-
+    The process, visually, would look like: 
     \begin{center}
-        \includegraphics[scale=0.7]{../assets/ex2_hidet.png}
+        \includegraphics[scale=0.7]{../assets/trans_decrypt.png}
     \end{center}
-    Performing this operation for each row gives us the following: 
-    \begin{mdframed}
-        \begin{verbatim}
-HIDET
-HEBAB
-OONSA
-RECOM
-INGFO
-RYOUQ\end{verbatim}
-    \end{mdframed}
     Undoing the stacking gives us:
     \begin{mdframed}
         \begin{verbatim}
@@ -261,7 +271,10 @@ HIDETHEBABOONSARECOMINGFORYOUQ\end{verbatim}
 Hide! The baboons are coming for you.\end{verbatim}
     \end{mdframed}
 \end{mdframed}
-
+\textbf{Remark:} We can easily decrypt an encrypted word by doing the inverse of what we did above. Create two ``groups,'' side-by-side. The first group will be the ciphertext stack, and the second group will be the plaintext text. Then, label each column of the first group with \textbf{12345}. Label each column of the second group with the \textbf{alphabetical ranking} of the keyword. Finally, map each column from the first group to the second group based on the label. 
+\begin{center}
+    \includegraphics[scale=0.7]{../assets/trans_decrypt2.png}
+\end{center} 
 
 \begin{mdframed}[nobreak=true]
     (Exercise: Encryption.) \emph{Encrypt the message \code{There is always hope.} using the keyword \code{CRASH}.}
@@ -293,44 +306,44 @@ PEABC\end{verbatim}
 
         Now, we note the alphabetical ranking of each letter in \code{CRASH}:
         \[C \mapsto 2 \quad R \mapsto 4 \quad A \mapsto 1 \quad S \mapsto 5 \quad H \mapsto 3.\]
-        So, effectively, if the original positioning of each letter in a row is \code{12345}, we need to remap them so they are in the positioning \code{24153}. This gives us:
+        Using the streamlined way discussed above, we have 
         \begin{mdframed}
             \begin{verbatim}
-1 2 3 4 5 | 2 4 1 5 3
-T H E R E | H R T E E
-I S A L W | S L I W A
-A Y S H O | Y H A O S
-P E A B C | E B P C A\end{verbatim}
+2 4 1 5 3 | 1 2 3 4 5
+T H E R E | E T E H R
+I S A L W | A I W S L
+A Y S H O | S A O Y H
+P E A B C | A P C E B\end{verbatim}
         \end{mdframed}
         Unstacking the new rows gives us the ciphertext:
         \begin{mdframed}
             \begin{verbatim}
-HRTEESLIWAYHAOSEBPCA\end{verbatim}
+ETEHRAIWSLSAOYHAPCEB\end{verbatim}
         \end{mdframed}
     \end{mdframed}
 \end{mdframed}
 
 
 \begin{mdframed}[nobreak=true]
-    (Exercise: Decryption.) \emph{Decrypt the message \code{HGTIEAFREFAESLROEOXS.} using the keyword \code{CRASH}.}
+    (Exercise: Decryption.) \emph{Decrypt the message \code{ETIHGFREAFRSLAESOXOE} using the keyword \code{CRASH}.}
 
     \begin{mdframed}
         Begin by grouping the letters into 5-grams, since \code{CRASH} has length 5:
         \begin{mdframed}
             \begin{verbatim}
-HGTIE
-AFREF
-AESLR
-OEOXS\end{verbatim}
+ETIHG
+FREAF
+RSLAE
+SOXOE\end{verbatim}
         \end{mdframed}
-        Recall that the alphabetical ranking of each letter in \code{CRASH} is \code{24153}. Because the letters in each row are in position \code{24153}, we simply need to map this to \code{12345}. Therefore, we have:
+        Recall that the alphabetical ranking of each letter in \code{CRASH} is \code{24153}. Using the streamlined way discussed above, we have 
         \begin{mdframed}
             \begin{verbatim}
-2 4 1 5 3    1 2 3 4 5
-H G T I E -> T H E G I
-A F R E F -> R A F F E
-A E S L R -> S A R E L
-O E O X S -> O O S E X\end{verbatim}
+1 2 3 4 5    2 4 1 5 3
+E T I H G -> T H E G I 
+F R E A F -> R A F F E 
+R S L A E -> S A R E L 
+S O X O E -> O O S E X \end{verbatim}
         \end{mdframed}
         Unstacking the new rows gives us the plaintext:
         \begin{mdframed}
@@ -344,6 +357,92 @@ The giraffes are loose.\end{verbatim}
         \end{mdframed}
     \end{mdframed}
 
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) Encrypt the message \code{Meet at the trolley station.} using keyword \code{UCSD}.
+
+    \begin{mdframed}
+        Encoding, grouping the resulting letters into groups of 4, and adding a nonsense letter gives us: 
+        \begin{verbatim}
+MEET
+ATTH
+ETRO
+LLEY
+STAT
+IONX\end{verbatim}
+        Noting that the alphabetical ranking of \code{UCSD} is \code{4132}, we can use the streamlined way discussed above to get the encrypted result:
+        \begin{mdframed}
+            \begin{verbatim}
+4 1 3 2    1 2 3 4
+M E E T -> E T E M
+A T T H -> T H T A
+E T R O -> T O R E
+L L E Y -> L Y E L
+S T A T -> T T A S
+I O N X -> O X N I\end{verbatim}
+        \end{mdframed}
+        Unstacking the result gives us:
+        \begin{mdframed}
+            \begin{verbatim}
+/ETEMTHTATORELYELTTASOXNI\end{verbatim}
+        \end{mdframed}
+    \end{mdframed}
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) Alice and Bob share the keyword \code{ZEUS}. Alice uses rectangular tranposition to encrypt the following nonsense message: 
+    \begin{verbatim}
+MTSQAGXY\end{verbatim}
+    What is the corresponding ciphertext? 
+    \begin{mdframed}
+        Encoding, grouping the resulting letters into groups of 4, and adding a nonsense letter gives us: 
+        \begin{mdframed}
+            \begin{verbatim}
+MTSQ
+AGXY\end{verbatim}
+        \end{mdframed}
+        Noting that the alphabetical ranking of \code{ZEUS} is \code{4132}, we can use the streamlined way discussed above to get the encrypted result:
+        \begin{mdframed}
+            \begin{verbatim}
+4 1 3 2    1 2 3 4
+M T S Q -> T Q S M
+A G X Y -> G Y X A\end{verbatim}
+        \end{mdframed}
+        Unstacking the result gives us:
+        \begin{mdframed}
+            \begin{verbatim}
+TQSMGYXA\end{verbatim}
+    \end{mdframed}
+    \end{mdframed}
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) The following message was encrypted using rectangular transposition with the keyword \code{SNAKE}. What is the plaintext? 
+    \begin{verbatim}
+        DSUEMSEDIAJQQDA\end{verbatim}
+    
+    \begin{mdframed}
+        \code{SNAKE} has alphabetical ranking \code{54132}. With this in mind, stacking the letters of the encrypted message into groups of 5 and then running the streamlined process gives us: 
+        \begin{mdframed}
+\begin{verbatim}
+1 2 3 4 5    5 4 1 3 2   
+D S U E M -> M E D U S
+S E D I A -> A I S D E
+J Q Q D A -> A D J Q Q\end{verbatim}
+        \end{mdframed}
+
+        Unstacking the result gives us: 
+        \begin{mdframed}
+\begin{verbatim}
+MEDUSAISDEADJQQ\end{verbatim}
+        \end{mdframed}
+        Decoding gives us: 
+        \begin{mdframed}
+\begin{verbatim}
+Medusa is dead.\end{verbatim}
+        \end{mdframed}
+    \end{mdframed}
 \end{mdframed}
 
 
@@ -444,6 +543,20 @@ As with rectangular tranposition, we should encode the message by removing any n
                 I LIVE AT IHOUSE\end{verbatim}
         \end{itemize}
         Therefore, the message is \code{I LIVE AT IHOUSE}. The shift was 8.
+    \end{mdframed}
+\end{mdframed}
+
+
+\begin{mdframed}
+    (Exercise.) Alice encrypts the following message using a Caesar cipher with a shift of 1. 
+    \begin{verbatim}
+Zeus is hiding in a cave \end{verbatim}
+    What is the corresponding ciphertext? 
+    \begin{mdframed}
+        \begin{verbatim}
+plain       ZEUSISHIDINGINACAVE
+cipher      AFVTJTIJEJOHJOBDBWF\end{verbatim}
+        Essentially, we just move all letters forward by 1.
     \end{mdframed}
 \end{mdframed}
 
