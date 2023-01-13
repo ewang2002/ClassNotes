@@ -1,0 +1,241 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Math 187A}
+\chead{Wednesday, January 11, 2023}
+\lhead{Lecture 2}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\section{Classical Cryptosystems}
+(Continued from Lecture 1.)
+\subsection{Interlude: Modular Arithmetic}
+One fundamental idea in number theory, which is used in cryptography, is modular arithmetic. 
+
+\subsubsection{Quotients and Remainders}
+
+\begin{lemma}{Euclid's Division}{}
+    For any integer $a$ and positive integer $n$, there exists a unique pair of integers $q$ and $r$ such that $0 \leq r < n$ and $a = qn + r$. The integers $q$ and $r$ are called the quotient and remainder, respectively. We also write $a \Mod{n}$ to refer to the remainder.
+\end{lemma}
+For the proof, the dea is that we can keep subtracting, or adding, $n$ from $a$ until we end up in the range $[0, n)$. Therefore, the number of times we had to subtract, or add, $n$ is the \emph{quotient}, and the number in the range $[0, n)$ that we end up with at the end is the \emph{remainder}. 
+
+\begin{mdframed}
+    (Example.) Divide $a = 17$ by $n = 5$. Find the quotient and remainder.
+    
+    \bigskip 
+
+    Using the proof idea, we note that: 
+    \begin{itemize}
+        \item Subtracting 5 to $a$ once gives us 12. 
+        \item Subtracting 5 to $a$ twice gives us 7.
+        \item Subtracting 5 to $a$ thrice gives us 2.
+    \end{itemize}
+    It took us 3 subtractions to get to a number that's in the range $[0, 5)$, so the quotient is $\boxed{3}$ and the remainder is $\boxed{2}$. 
+\end{mdframed}
+We should note that this is pretty standard when $a \geq 0$. However, for $a < 0$, it might be less familiar, albeit the same process.
+
+\begin{mdframed}
+    (Example.) Divide $a = -7$ by $n = 5$. Find the quotient and remainder.
+
+    \bigskip 
+
+    Using the proof idea, we note that: 
+    \begin{itemize}
+        \item Adding 5 to $a$ once gives us 2.
+        \item Adding 5 to $a$ twice gives us 3. 
+    \end{itemize}
+    It took us 2 additions to get to a number that's in the range $[0, 5)$, so the quotient is $\boxed{-2}$ (because we had to \emph{add}, not subtract) and the remainder is $\boxed{3}$. 
+\end{mdframed}
+
+\textbf{Remark:} 
+\begin{itemize}
+    \item If we have to \textbf{add} $n$ to $a$ $x$ times to get a number that's in the range $[0, n)$, then our final quotient will be negative (that is, $-x$).
+    \item If we have to \textbf{subtract} $n$ from $a$ $x$ times to get a number that's in the range $[0, n)$, then our final quotient will be positive (that is, $x$).
+\end{itemize}
+
+\begin{mdframed}
+    (Exercise.) For each of the following, calculate the quotient and remainder when $a$ is divided by $n$. Do these calculations by hand. 
+    \begin{itemize}
+        \item $a = 13$, $n = 3$.
+        \begin{mdframed}
+            We know that $13 / 3 = 4$, and $13 - (3 \cdot 4) = 1 \in [0, 3)$. So, the quotient is \boxed{4} and the remainder is \boxed{1}. 
+        \end{mdframed}
+        \item $a = 134$, $n = 10$.
+        \begin{mdframed}
+            We know that $134 / 10 = 13$ and $134 - (10 \cdot 13) = 4 \in [0, 10)$. So, the quotient is \boxed{13} and remainder is \boxed{4}.
+        \end{mdframed}
+        \item $a = -37$, $n = 10$.
+        \begin{mdframed}
+            We know that we need to add $n$ to $a$ \textbf{4} times to get a number, $3$, that is in the range $[0, 10)$. To be precise, 
+            \[-37 + 10 + 10 + 10 + 10 = -37 + 40 = 3 \in [0, 10).\]
+            Therefore, the quotient is \boxed{-4} and the remainder is \boxed{3}. 
+        \end{mdframed}
+        \item $a = -15$, $n = 60$.
+        \begin{mdframed}
+            We have to add $n$ to $a$ \textbf{1} time to get $45 \in [0, 60)$. Therefore, the quotient is \boxed{01} and the remainder is \boxed{45}.
+        \end{mdframed}
+        \item $a = 13$, $n = 12$.
+        \begin{mdframed}
+            We know that $13 / 12 = 1$ and $13 - (12 \cdot 1) = 1$. So, the quotient is \boxed{1} and the remainder is \boxed{1}.
+        \end{mdframed}
+    \end{itemize}
+\end{mdframed}
+
+\begin{proposition}
+    Suppose $a$ and $n$ are integers and $n > 0$. All the following statements are equivalent:
+    \begin{itemize}
+        \item $a \Mod{n} = 0$.
+        \item There is no remainder when $a$ is divided by $n$. 
+        \item $a$ is a multiple of $n$. 
+        \item $a$ is divisible by $n$. 
+        \item $n$ is a divisor of $a$. 
+        \item $n$ is a factor of $a$. 
+        \item $n$ divides $a$ (in notation\footnote{Note that $\vert$ is read as ``\emph{divides}.''}: $n \vert a$).
+        \item $a / n$ is an integer.
+    \end{itemize}
+\end{proposition}
+
+\subsubsection{Congruences}
+\begin{definition}{Congruence}{}
+    Fix a positive integer $n$. If $a$ and $b$ are integers, we say that ``$a$ is \textbf{congruent} to $b$ mod $n$,'' or that ``$a$ and $b$ are congruent mod $n$,'' if $a$ and $b$ have the same remainder when each is divided by $n$. This can be denoted in symbols as follows: 
+    \[a \equiv b \Mod{n}.\] 
+\end{definition}
+For example, $19 \equiv 7 \Mod{4}$ since $19$ and $7$ both have remainder 3 when divided by 4. Observe also that $19 - 7 = 12$ is a multiple of 4. This can be generalized: 
+
+\begin{lemma}{}{}
+    Fix a positive integer $n$. Two integers $a$ and $b$ are congruent mod $n$ if and only if $a - b$ is a multiple of $n$.
+\end{lemma}
+
+\begin{proof}
+    Divide $a$ and $b$ by $n$ to write $a = q_1 n + r_1$ and $b = q_2 n + r_2$. If \[a \equiv b \Mod{n},\] this by definition means that $r_1 = r_2$ so 
+    \[a - b = (q_1 n + r_1) - (q_2 n + r_2) = q_1 n - q_2 n = n(q_1 - q_2).\]
+    So, $a - b$ is a multiple of $n$. Conversely, suppose $a - b$ is a multiple of $n$. Then, 
+    \[(a - b) - (q_1 - q_2)n = ((q_1 n + r_1) - (q_2 n + r_2)) - (q_1 - q_2)n = r_1 - r_2\]
+    is a multiple of $n$. Since $0 \leq r_1, r_2 < n$, however, we must have $|r_1 - r_2| < n$. The only way that $r_1 - r_2$ can be a multiple of $n$ is if $r_1 - r_2 = 0$, i.e., if $r_1 = r_2$. That means $a \equiv b \Mod{n}$. 
+\end{proof}
+
+\begin{theorem}{Modular Arithmetic Theorem}{}
+    Fix a positive integer $n$. Suppose $a$, $a'$, $b$, $b'$ are integers such that 
+    \[a \equiv a' \Mod{n}\]
+    \[b \equiv b' \Mod{n}\]
+    and $k$ is any positive integer. Then, all of the following are also true: 
+    \[a + b \equiv a' + b' \Mod{n}\]
+    \[a - b \equiv a' - b' \Mod{n}\]
+    \[ab \equiv a'b' \Mod{n}\]
+    \[a^k \equiv (a')^k \Mod{n}\]
+\end{theorem}
+
+\begin{mdframed}
+    (Exercise.) Use the Modular Arithmetic Theorem to quickly calculate the following. 
+    \begin{itemize}
+        \item $417 \cdot 22 \Mod{10}$.
+        \begin{mdframed}
+            \begin{equation*}
+                \begin{aligned}
+                    417 \cdot 22 &\equiv 7 \cdot 2  \\ 
+                        &= 14 \\ 
+                        &\equiv 4 \Mod{10}.
+                \end{aligned}
+            \end{equation*}
+        \end{mdframed}
+        \item $333333 + 666 \Mod{3}$.
+        \begin{mdframed}
+            \begin{equation*}
+                \begin{aligned}
+                    333333 + 666 &\equiv 0 + 0 \\ 
+                        &\equiv 0 \Mod{3}.
+                \end{aligned}
+            \end{equation*}
+        \end{mdframed}
+        \item $7^{202320232023} \Mod{6}$. 
+        \begin{mdframed}
+            \begin{equation*}
+                \begin{aligned}
+                    7^{202320232023} &= 7 \cdot 7 \cdot \hdots \cdot 7 \\ 
+                        &\equiv 1 \cdot 1 \cdot \hdots \cdot 1 \\ 
+                        &= 1 \Mod{6}.
+                \end{aligned}
+            \end{equation*}
+        \end{mdframed}
+    \end{itemize}
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) Fix positive integers $k$ and $n$. Suppose $a$ and $a'$ are integers such that $a \equiv a' \Mod{n}$. It is not true in general that $k^a \equiv k^{a'} \Mod{n}$. Show this by example: in other words, find $k$, $n$, $a$, and $a'$ such that $a \equiv a' \Mod{n}$ but $k^a \not\equiv k^{a'} \Mod{n}$. 
+
+    \begin{mdframed}
+        Let $k = 2$, $n = 5$, $a = 6$, and $a' = 1$ so that 
+        \[6 \equiv 1 \Mod{5}.\]
+        Then, we note that 
+        \[k^a = 2^6 = 64\]
+        and 
+        \[k^{a'} = 2^1 = 2.\]
+        From this, it's clear that 
+        \[64 \not\equiv 2 \Mod{5}.\]
+    \end{mdframed}
+\end{mdframed}
+
+\begin{mdframed}[nobreak=true]
+    (Exercise.) \emph{Suppose that the number $273x49y5$, where $x$ and $y$ are unknown digits, is divisible by 495. Find $x$ and $y$.}
+    \begin{mdframed}
+        We are asked to solve 
+        \[273x49y5 \equiv 0 \mod{495}.\]
+
+        We can write $273x49y5$ as 
+        \[20000000 + 7000000 + 300000 + 10000x + 4000 + 900 + 10000y + 5.\]
+        With this in mind, we have
+        \begin{equation*}
+            \begin{aligned}
+                20000000 &+ 7000000 + 300000 + 10000x + 4000 + 900 + 10y + 5 \\ 
+                    &\equiv 20 + 205 + 30 + 100x + 40 + 405 + 10y + 5 \\ 
+                    &= 705 + 100x + 10y \\ 
+                    &\equiv 210 + 100x + 10y \mod{495}.
+            \end{aligned}
+        \end{equation*}
+        We note that the next multiple of 495 is 990. So, effectively, we want to find some $x$ and $y$ such that $0 \leq x < 10$ and $0 \leq y < 10$ and
+        \[210 + 100x + 10y = 990.\]
+        This gives us 
+        \[100x + 10y = 780.\]
+        One obvious solution is $x = 7$ and $y = 8$. 
+    \end{mdframed}
+\end{mdframed}
+
+
+\subsubsection{Revisiting the Caesar Cipher}
+Suppose we identify the letters $A$ through $Z$ with the numbers 0 through 25. In other words, we have $A \mapsto 0$, $B \mapsto 1$, and so on. Suppose we want to apply the Caesar cipher with a shift of 5 to encrypt the letter $Y$. Consider the following 
+\[E(x) = (x + 5) \Mod{26}.\]
+We note that $Y$ corresponds to the number 24. Then, it follows that 
+\[E(24) = (24 + 5) \Mod{26} = 29 \Mod{26} = 3.\]
+The number 3 corresponds to the letter $D$, the desired result. In other words, if we can identify the letters with numbers, the function $E$ is the encryption function of the Caesar cipher with a shift of 5.  
+
+\bigskip 
+
+The decryption function is given by 
+\[D(y) = (y - 5) \Mod{26}.\]
+So, if we wanted to decrypt the letter $D$, which corresponds to the number 3, then 
+\[D(3) = (3 - 5) \Mod{26} = -2 \Mod{26} = 24,\]
+which corresponds to $Y$. 
+
+\bigskip 
+
+What we just did is actually a consequence of the Modular Arithmetic Theorem; for a quick little ``proof,'' notice how  
+\begin{equation*}
+    \begin{aligned}
+        D(E(x)) &= D(y) \\
+            &\equiv (y - 5) \Mod{26} \\ 
+            &\equiv ((x + 5) - 5) \Mod{26} \\ 
+            &= x.
+    \end{aligned} 
+\end{equation*}
+
+
+\end{document}
