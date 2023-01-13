@@ -26,7 +26,7 @@ One fundamental idea in number theory, which is used in cryptography, is modular
 \begin{lemma}{Euclid's Division}{}
     For any integer $a$ and positive integer $n$, there exists a unique pair of integers $q$ and $r$ such that $0 \leq r < n$ and $a = qn + r$. The integers $q$ and $r$ are called the quotient and remainder, respectively. We also write $a \Mod{n}$ to refer to the remainder.
 \end{lemma}
-For the proof, the dea is that we can keep subtracting, or adding, $n$ from $a$ until we end up in the range $[0, n)$. Therefore, the number of times we had to subtract, or add, $n$ is the \emph{quotient}, and the number in the range $[0, n)$ that we end up with at the end is the \emph{remainder}. 
+For the proof, the deal is that we can keep subtracting, or adding, $n$ from $a$ until we end up in the range $[0, n)$. Therefore, the number of times we had to subtract, or add, $n$ is the \emph{quotient}, and the number in the range $[0, n)$ that we end up with at the end is the \emph{remainder}. 
 
 \begin{mdframed}
     (Example.) Divide $a = 17$ by $n = 5$. Find the quotient and remainder.
@@ -81,13 +81,22 @@ We should note that this is pretty standard when $a \geq 0$. However, for $a < 0
         \end{mdframed}
         \item $a = -15$, $n = 60$.
         \begin{mdframed}
-            We have to add $n$ to $a$ \textbf{1} time to get $45 \in [0, 60)$. Therefore, the quotient is \boxed{01} and the remainder is \boxed{45}.
+            We have to add $n$ to $a$ \textbf{1} time to get $45 \in [0, 60)$. Therefore, the quotient is \boxed{-1} and the remainder is \boxed{45}.
         \end{mdframed}
         \item $a = 13$, $n = 12$.
         \begin{mdframed}
             We know that $13 / 12 = 1$ and $13 - (12 \cdot 1) = 1$. So, the quotient is \boxed{1} and the remainder is \boxed{1}.
         \end{mdframed}
     \end{itemize}
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) What is $-13 \Mod{5}$?
+    \begin{mdframed}
+        \[-13 + 5 + 5 + 5 = 2 \in [0, 5),\]
+        so the quotient is $-3$ (since we had to perform 3 additions) and the remainder is \boxed{2}. Therefore, 
+        \[-13 \Mod{5} = 2.\]
+    \end{mdframed}
 \end{mdframed}
 
 \begin{proposition}
@@ -166,6 +175,19 @@ For example, $19 \equiv 7 \Mod{4}$ since $19$ and $7$ both have remainder 3 when
                 \end{aligned}
             \end{equation*}
         \end{mdframed}
+        \item What is $5^{2023202320232023} \Mod{6}$?
+        \begin{mdframed}
+            \begin{equation*}
+                \begin{aligned}
+                    5^{2023202320232023} &= 5 \cdot 5 \cdot \hdots \cdot 5 \\ 
+                        &\equiv (-1) \cdot (-1) \cdot \hdots \cdot (-1) \\ 
+                        &= (-1)^{2023202320232023} \\ 
+                        &\equiv -1 \\ 
+                        &\equiv 5 \Mod{6}.
+                \end{aligned}
+            \end{equation*}
+            Therefore, the answer is \boxed{5}.
+        \end{mdframed}
     \end{itemize}
 \end{mdframed}
 
@@ -236,6 +258,36 @@ What we just did is actually a consequence of the Modular Arithmetic Theorem; fo
             &= x.
     \end{aligned} 
 \end{equation*}
+
+\begin{mdframed}
+    (Exercise.) Decipher the message below, which was encrypted using a Caesar cipher with a shift of 3 and then using a rectangular transposition with the keyword \code{EARLY}.
+    \begin{verbatim}
+        DKSSBUIGLDEBXOX\end{verbatim}
+
+    \begin{mdframed}
+        To decrypt this message, we need to work backwards: first, use rectangular transposition to undo the first encryption, and then Caesar cipher to undo the second encryption.
+        \begin{enumerate}
+            \item For the rectangular transposition, note that the keyword has alphabetical ranking \code{21435}, so using the streamlined way discussed earlier, we have 
+            \begin{mdframed}
+                \begin{verbatim}
+12345    21435
+DKSSB -> KDSSB
+UIGLD -> IULGD
+EBXOX -> BEOXX\end{verbatim}
+            \end{mdframed}
+            Unstacking gives us \code{KDSSBIULGDBEOXX}.
+
+            \item Next, we need to undo the Caesar cipher encryption on the message that we found from the previous step. Since the encryption used a positive shift of 3, undoing it requires us to use a negative shift of 3. This gives us: 
+            \begin{mdframed}
+                \begin{verbatim}
+encrypted   KDSSBIULGDBEOXX
+decrypted   HAPPYFRIDAY....\end{verbatim}
+            \end{mdframed}
+            Note that the last four letters were omitted. In any case, this gives us the decoded message \code{Happy Friday}.
+        \end{enumerate}
+    \end{mdframed}
+\end{mdframed}
+\textbf{Remark:} You should not assume that these operations are commutative. That is, if we were to decrypt the message by applying the Caesar cipher first and then the rectangular transposition, as opposed to the reverse order, we may get a different answer!
 
 
 \end{document}
