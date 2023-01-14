@@ -27,18 +27,18 @@ Consider an $n \times m$ matrix, or a matrix with $n$ rows and $m$ columns:
     \end{bmatrix}.
 \]
 The entries of $A$ might be real or complex numbers although, for now, we'll assume they're real. Suppose we have an $m$-tuple (or vector) of real numbers: 
-\[x = \begin{bmatrix}
+\[\mathbf{x} = \begin{bmatrix}
     x_1 \\ x_2 \\ \vdots \\ x_m
 \end{bmatrix}.\]
 
 \subsection{Multiplying Matrix by Vector}
-Suppose $A$ is an $n \times \boxed{m}$ matrix and $x$ is a vector with $m$ elements (i.e., a $\boxed{m} \times 1$ matrix). Let's suppose we wanted to find $Ax$. There are two ways we can do this. 
+Suppose $A$ is an $n \times \boxed{m}$ matrix and $\mathbf{x}$ is a vector with $m$ elements (i.e., a $\boxed{m} \times 1$ matrix). Let's suppose we wanted to find $A\mathbf{x}$. There are two ways we can do this. 
 
 \subsubsection{Solving as a Single Component}
 We can solve for
-\[Ax = b,\]
+\[A\mathbf{x} = \mathbf{b},\]
 where 
-\[b = \begin{bmatrix}
+\[\mathbf{b} = \begin{bmatrix}
     b_1 \\ b_2 \\ \vdots \\ b_n
 \end{bmatrix}.\]
 Here, 
@@ -49,11 +49,11 @@ Here,
     \[A = \begin{bmatrix}
         1 & 2 & 3 \\ 
         4 & 5 & 6
-    \end{bmatrix} \qquad x = \begin{bmatrix}
+    \end{bmatrix} \qquad \mathbf{x} = \begin{bmatrix}
         7 \\ 8 \\ 9
     \end{bmatrix}.\]
     We note that 
-    \[Ax = \begin{bmatrix}
+    \[A\mathbf{x} = \begin{bmatrix}
         b_1 \\ 
         b_2
     \end{bmatrix},\]
@@ -64,7 +64,7 @@ Here,
 \end{mdframed}
 We can write some code to perform this operation for us:
 \begin{algorithmic}
-    \State $b \gets 0$
+    \State $\mathbf{b} \gets \mathbf{0}$
     \For{$i = 1, \hdots, n$}
         \For{$i = 1, \hdots, m$}
             \State $b_i \gets b_i + a_{ij} x_j$
@@ -74,7 +74,7 @@ We can write some code to perform this operation for us:
 Note that the $j$-loop accumulates the inner product $b_i$. 
     
 \subsubsection{Solving as a Formula}
-We can also solve for $Ax = b$ by considering the following:
+We can also solve for $A\mathbf{x} = \mathbf{b}$ by considering the following:
 \[\begin{bmatrix}
     b_1 \\ b_2 \\ \vdots \\ b_n 
 \end{bmatrix} = \begin{bmatrix}
@@ -84,14 +84,14 @@ We can also solve for $Ax = b$ by considering the following:
 \end{bmatrix} x_2 + \hdots + \begin{bmatrix}
     a_{1m} \\ a_{2m} \\ \vdots \\ a_{nm}
 \end{bmatrix} x_m.\]
-This shows that $b$ is a linear combination of the columns of $A$. 
+This shows that $\mathbf{b}$ is a linear combination of the columns of $A$. 
 
 \begin{mdframed}
     (Example.) Consider
     \[A = \begin{bmatrix}
         1 & 2 & 3 \\ 
         4 & 5 & 6
-    \end{bmatrix} \qquad x = \begin{bmatrix}
+    \end{bmatrix} \qquad \mathbf{x} = \begin{bmatrix}
         7 \\ 8 \\ 9
     \end{bmatrix}.\]
     Using this approach, we now have 
@@ -113,22 +113,22 @@ This shows that $b$ is a linear combination of the columns of $A$.
 \end{mdframed}
 
 \begin{proposition}
-    If $b = Ax$, then $b$ is a linear combination of the columns of $A$. If we let $A_j$ denote the $j$th column of $A$, we have 
-    \[b = \sum_{j = 1}^{m} A_j x_j.\]
+    If $\mathbf{b} = A\mathbf{x}$, then $\mathbf{b}$ is a linear combination of the columns of $A$. If we let $A_j$ denote the $j$th column of $A$, we have 
+    \[\mathbf{b} = \sum_{j = 1}^{m} A_j x_j.\]
 \end{proposition}
 We can also express this as pseudocode: 
 \begin{algorithmic}
-    \State $b \gets 0$
+    \State $\mathbf{b} \gets \mathbf{0}$
     \For{$j = 1, \hdots, m$}
-        \State $b \gets b + A_j x_j$
+        \State $\mathbf{b} \gets \mathbf{b} + A_j x_j$
     \EndFor
 \end{algorithmic}
 If we use a loop to perform each vector operation, the code becomes:
 \begin{algorithmic}
-    \State $b \gets 0$
+    \State $\mathbf{b} \gets \mathbf{0}$
     \For{$j = 1, \hdots, m$}
         \For{$i = 1, \hdots, n$}
-            \State $b \gets b + a_{ij} x_j$
+            \State $b_i \gets b_i + a_{ij} x_j$
         \EndFor 
     \EndFor
 \end{algorithmic}
@@ -141,15 +141,15 @@ involves two flops: one floating-point multiply and one floating-point add. \tex
 
 \begin{mdframed}
     (Example.) Consider 
-    \[v = \begin{bmatrix}
+    \[\mathbf{v} = \begin{bmatrix}
         v_1 \\ v_2 \\ \vdots \\ v_n
-    \end{bmatrix} \qquad w = \begin{bmatrix}
+    \end{bmatrix} \qquad \mathbf{w} = \begin{bmatrix}
         w_1 \\ w_2 \\ \vdots \\ w_n
     \end{bmatrix}.\]
     Let's compute the inner product\footnote{A generalization of the dot product}:
     \begin{equation*}
         \begin{aligned}
-            \cyclic{v, w} &= v^T \cdot w = \begin{bmatrix}
+            \cyclic{\mathbf{v}, \mathbf{w}} &= \mathbf{v}^T \cdot \mathbf{w} = \begin{bmatrix}
                 v_1 & v_2 & \hdots & v_n
             \end{bmatrix} \begin{bmatrix}
                 w_1 \\ w_2 \\ \vdots \\ w_n
@@ -160,5 +160,12 @@ involves two flops: one floating-point multiply and one floating-point add. \tex
     \end{equation*}
     There are $n - 1$ addition operations and $n$ multiplication operations, for a total of $2n - 1$ flop count.
 \end{mdframed}
+
+\subsubsection{Big-O Notation}
+We note that $\mathbf{v}^T \mathbf{w}$, where $\mathbf{v}, \mathbf{w} \in \R^n$ needs $2n$ flops. This is the same thing as saying that the operation takes $\BigO(n)$ time as $n \mapsto \infty$. This means that we can disregard the implied constant, which is 2 in this case. The reason why we can do this is because, as $n$ grows larger, the constant doesn't really matter all that much. 
+
+\bigskip 
+
+For instance, if $n$ is large, then $\BigO(n)$ is faster than $\BigO(n^2)$, and $\BigO(n^2)$ is faster than $\BigO(n^3)$. 
 
 \end{document}
