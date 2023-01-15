@@ -3,3 +3,6 @@ These are notes for classes that I will be taking. The notes will most certainly
 
 ## Directories
 Below, I'll very briefly list the notes contained in these folders.
+- `MATH187A`: Introduction to Cryptography w/ Professor Agrawal.
+- `MATH170A`: Introduction to Numerical Analysis (Linear Algebra) w/ Professor Liu. 
+- `POLI112A`: Economic Theories of Political Behavior w/ Professor Izzo.
