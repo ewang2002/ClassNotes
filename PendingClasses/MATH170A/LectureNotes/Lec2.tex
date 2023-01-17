@@ -224,6 +224,47 @@ Representing it with matrices, we have
         \end{bmatrix}.
     \end{aligned}
 \end{equation*}
-Note that if you choose a different approximation, you will get a different left-hand side and right-hand side.
+\textbf{Remarks:}
+\begin{itemize}
+    \item Note that if you choose a different approximation, you will get a different left-hand and right-hand side.
+    \item A larger $m$ gives a better approximation, but the resulting linear system is larger as well. 
+\end{itemize}
+Ultimately, the goal here is to solve the linear system $A\mx = \mb$ to find $u(x_1), u(x_2), \hdots, u(x_m)$. This is the approximation to $u$.
+
+\subsection{Solving Diagonal Systems}
+Let's start with the simplest kind of linear system to solve.
+\[\begin{bmatrix}
+    a_{11} & 0 & 0 & \hdots & 0 \\ 
+    0 & a_{22} & 0 & \hdots & 0 \\ 
+    0 & 0 & a_{33} & \hdots & 0 \\ 
+    \vdots & \vdots & \vdots & & \vdots  \\ 
+    0 & 0 & 0 & \hdots & a_{nn}
+\end{bmatrix} \begin{bmatrix}
+    x_1 \\ x_2 \\ x_3 \\ \vdots \\ x_n
+\end{bmatrix} = \begin{bmatrix}
+    b_1 \\ b_2 \\ b_3 \\ \vdots \\ b_n
+\end{bmatrix}.\]
+Writing this as a system of linear equations gives 
+\[\begin{cases}
+    a_{11}x_1 + 0x_2 + \hdots + 0x_n = b_1 \\ 
+    0x_1 + a_{22}x_2 + \hdots + 0x_n = b_2 \\ 
+    \vdots \\ 
+    0x_1 + 0x_2 + \hdots + a_{nn}x_n = b_n 
+\end{cases} \implies \begin{cases}
+    a_{11}x_1 = b_1 \\ 
+    a_{22}x_2 = b_2 \\ 
+    \vdots \\ 
+    a_{nn}x_n = b_n 
+\end{cases}.\]
+The solution is just 
+\[x_1 = \frac{b_1}{a_{11}} \qquad x_2 = \frac{b_2}{a_{22}} \qquad \hdots \qquad x_n = \frac{b_n}{a_{nn}}.\]
+We can write an algorithm to solve this as well. 
+\begin{algorithmic}
+    \State $\mx \gets \mathbf{0}$
+    \For{$i = 1, \hdots, n$}
+        \State $x_i \gets \frac{\mb_i}{A_{ii}}$
+    \EndFor
+\end{algorithmic}
+From this, it follows that the flop count is just $n$, and its Big-O is $\BigO(n)$. 
 
 \end{document}

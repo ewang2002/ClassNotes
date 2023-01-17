@@ -1,0 +1,109 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Math 170A}
+\chead{Friday, January 13, 2023}
+\lhead{Lecture 3}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\newcommand{\0}{\mathbf{0}}
+\newcommand{\y}{\mathbf{y}}
+\renewcommand{\b}{\mathbf{b}}
+\newcommand{\x}{\mathbf{x}}
+\newcommand{\e}{\mathbf{e}}
+
+\begin{document}
+
+\section{Triangular Systems (1.3)}
+Generally, it's common practice to reduce general systems down to a triangular form, generally through a process known as Gaussian elimination. They are also easy to solve, and can be solved inexpensively. 
+
+\subsection{Lower and Upper Triangular Matrices}
+We say that $L \in \R^{n \times n}$ is a \textbf{lower triangular} matrix if $\ell_{ij} = 0$ whenever $i < j$. Thus, a lower triangular matrix has the form 
+\[A = \begin{bmatrix}
+    \ell_{11} & 0 & 0 & 0 & 0 & \hdots & 0 \\ 
+    \ell_{21} & \ell_{22} & 0 & 0 & 0 & \hdots & 0 \\ 
+    \ell_{31} & \ell_{32} & \ell_{33} & 0 & 0 & \hdots & 0 \\ 
+    \ell_{41} & \ell_{42} & \ell_{43} & \ell_{44} & 0 & \hdots & 0 \\ 
+    \ell_{51} & \ell_{52} & \ell_{53} & \ell_{54} & \ell_{55} & \hdots & 0 \\
+    \vdots & \vdots & \vdots & \vdots & \vdots & \ddots & \vdots \\  
+    \ell_{n1} & \ell_{n2} & \ell_{n3} & \ell_{n4} & \ell_{n5} & \hdots & \ell_{nn}
+\end{bmatrix}.\]
+Similarly, we say that $U \in \R^{n \times n}$ is an \textbf{upper triangular} matrix if $u_{ij} = 0$ whenever $i > j$; they have the form 
+\[A = \begin{bmatrix}
+    u_{11} & u_{12} & u_{13} & u_{14} & u_{15} & \hdots & u_{1n} \\ 
+    0 & u_{22} & u_{23} & u_{24} & u_{25} & \hdots & u_{2n} \\ 
+    0 & 0 & u_{33} & u_{34} & u_{35} & \hdots & u_{3n} \\ 
+    0 & 0 & 0 & u_{44} & u_{45} & \hdots & u_{4n} \\ 
+    0 & 0 & 0 & 0 & u_{55} & \hdots & u_{5n} \\
+    \vdots & \vdots & \vdots & \vdots & \vdots & \ddots & \vdots \\  
+    0 & 0 & 0 & 0 & 0 & \hdots & u_{nn}
+\end{bmatrix}.\]
+A \textbf{triangular matrix} is one that is either upper or lower triangular.
+
+\begin{mdframed}
+    (Example.) Consider the following matrix \[\begin{bmatrix}
+        2 & 0 & 0 \\ 
+        4 & -1 & 0 \\ 
+        -2 & 0 & 3
+    \end{bmatrix}.\]
+    This is a \textbf{lower triangular matrix}. 
+\end{mdframed}
+\textbf{Remarks:} 
+\begin{itemize}
+    \item We can have 0's in the places where there are normally nonzero numbers. This does not violate the definition of a lower- or upper-triangular matrix. 
+    \item Because of this, we can say that a diagonal matrix is both a lower- and upper-triangular matrix.
+\end{itemize} 
+
+\subsection{Uniqueness of Solution}
+When is there a unique system to $L\x = \b$ or $U\x = \b$? 
+
+\begin{mdframed}
+    A triangular system (lower or upper) has a unique solution if and only if \emph{all \underline{diagonal} entries} are non-zero.
+\end{mdframed}
+
+In fact, as long as the \emph{determinant} of the triangular matrix $A$ is not 0, there will be a unique solution. With triangular matrices, computing the determinant is easy: we just need to multiply all the elements on the \emph{diagonal} together. More technically, as long as 
+\[\det(A) = a_{11} \cdot a_{22} \cdot a_{33} \cdot \hdots \cdot a_{nn} \neq 0,\]
+then $A\x = \b$ will be a unique solution.
+
+\subsection{Solving Lower Triangular Systems: Forward Substitution}
+Suppose we want to solve the following system 
+\[\begin{bmatrix}
+    \ell_{11} & 0 & 0 & \hdots & 0  \\ 
+    \ell_{21} & \ell_{22} & 0 & \hdots & 0  \\ 
+    \ell_{31} & \ell_{32} & \ell_{33} & \hdots & 0  \\ 
+    \vdots & \vdots & \vdots & \ddots & \vdots \\ 
+    \ell_{n1} & \ell_{n2} & \ell_{n3} & \hdots & \ell_{nn}
+\end{bmatrix} \begin{bmatrix}
+    x_1 \\ x_2 \\ x_3 \\ \vdots \\ x_n
+\end{bmatrix} = \begin{bmatrix}
+    b_1 \\ b_2 \\ b_3 \\ \vdots \\ b_n
+\end{bmatrix}.\]
+Notice that \[\ell_{11} x_1 = b_1 \implies x_1 = \frac{b_1}{\ell_{11}}.\]
+Also notice that \[\ell_{21} x_1 + \ell_{22}x_2 = b_2 \implies \ell_{22}x_2 = b_2 - \ell_{21}x_1 \implies x_2 = \frac{b_2 - \ell_{21} x_1}{\ell_{22}}.\]
+And then notice that \[\ell_{31} x_1 + \ell_{32} x_2 + \ell_{33} x_3 = b_3 \implies \ell_{33}x_3 = b_3 - \ell_{31}x_1 - \ell_{32}x_2 \implies x_3 = \frac{b_3 - \ell_{31}x_1 - \ell_{32}x_2}{\ell_{33}}.\]
+Notice how we started off with a simple linear equation, which gave us the answer for $x_1$, and then we can use $x_1$ to find $x_2$ easily in the next equation, and so on. This algorithm is known as \textbf{forward substitution}. For $i = 1, \hdots, n$, it makes use of the formula 
+\[\boxed{x_i = \frac{b_i - \ell_{i1} x_1 - \ell_{i2} x_2 - \hdots - \ell_{i,i - 1} x_{i - 1}}{\ell_{ii}} = \frac{b_i - \sum_{j = 1}^{i - 1} \ell_{ij} x_j}{\ell_{ii}}.}\]
+Roughly speaking, the algorithm looks like the following:
+\begin{algorithmic}
+    \For{$i = 1, \hdots, n$}
+        \For{$j = 1, \hdots, i - 1$}
+            \State $x_i \gets x_i - \ell_{ij} x_j$
+        \EndFor
+
+        \If{$g_{ii} = 0$}
+            \State Set Error Flag, Exit 
+        \EndIf
+
+        \State $x_i \gets x_i / \ell_{ii}$
+    \EndFor
+\end{algorithmic}
+
+\end{document}
