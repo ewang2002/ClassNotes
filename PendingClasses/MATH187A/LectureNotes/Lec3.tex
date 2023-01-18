@@ -363,7 +363,7 @@ Essentially, the steps are as follows:
 \end{mdframed}
 
 \begin{mdframed}
-    (Exercise.) Observe that $\gcd(42, 12) = 6$. Show taht the pairs $(-1, 4)$ and $(1, -3)$ are both Bezout coefficients for 42 and 12. 
+    (Exercise.) Observe that $\gcd(42, 12) = 6$. Show that the pairs $(-1, 4)$ and $(1, -3)$ are both Bezout coefficients for 42 and 12. 
 
     \begin{mdframed}
         \begin{itemize}
@@ -374,6 +374,48 @@ Essentially, the steps are as follows:
             \[42(1) + 12(-3) = 42 - 36 = 6.\]
         \end{itemize}
     \end{mdframed}
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) Consider $\gcd(150, 90)$.
+    
+    \begin{enumerate}
+        \item How many divisions do we need to do until we see a remainder of 0 when we use the Euclidean algorithm to compute $\gcd(150, 90)$?
+        \begin{mdframed}
+            \begin{center}
+                \begin{tabular}{|c|c|c|c|c|}
+                    \hline 
+                    $\mathbf{a}$ & $\mathbf{b}$ & $\mathbf{b = aq + r}$ & $\mathbf{q}$ & $\mathbf{r}$ \\ 
+                    \hline 
+                    90 & 150 & $150 = 90q + r$ & 1 & 60 \\ 
+                    60 & 90 & $90 = 60q + r$ & 1 & 30 \\ 
+                    30 & 60 & $60 = 30q + r$ & 2 & 0 \\ 
+                    \hline 
+                \end{tabular}
+            \end{center}
+            We had to perform \textbf{3} divisions. 
+        \end{mdframed}
+
+        \item Find Bezout coefficients for $\gcd(150, 90)$. 
+        \begin{mdframed}
+            Noting that $\gcd(150, 90) = 30$ and the equations we worked with are 
+            \begin{itemize}
+                \item (Eq. 1) $150 = 90(1) + 60 \implies 60 = 150 - 90(1)$
+                \item (Eq. 2) $90 = 60(1) + 30 \implies 30 = 90 - 60(1)$
+                \item (Eq. 3) $60 = 30(2) + 0$
+            \end{itemize}
+            Starting with Eq. 2, we have 
+            \begin{equation*}
+                \begin{aligned}
+                    30 &= 90 - 60(1) \\ 
+                        &= 90 - (\underbrace{150 - 90(1)}_{\text{Eq. 1}})(1) \\ 
+                        &= 90 - 150 + 90 \\ 
+                        &= 90(2) + 150(-1).
+                \end{aligned}
+            \end{equation*}
+            So, the Bezout coefficients are \boxed{2} and \boxed{-1}.
+        \end{mdframed}
+    \end{enumerate}
 \end{mdframed}
 
 
@@ -430,6 +472,26 @@ So, in the above example, we found that $9 \equiv 5^{-1} \Mod{11}$ because $5 \c
         \end{aligned}
     \end{equation*}
     Therefore, the Modular Inversion Theorem tells us that 10 is the inverse of 7 mod 23. 
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) Which of the following integers is invertible mod 210? 
+    \begin{enumerate}[(a)]
+        \item 3 
+        \item 4
+        \item 5
+        \item None of the above 
+    \end{enumerate}
+
+    \begin{mdframed}
+        The answer is \textbf{D}. Note that 
+        \begin{enumerate}[(a)]
+            \item $\gcd(3, 210) \neq 1$.
+            \item $\gcd(4, 210) \neq 1$.
+            \item $\gcd(5, 210) \neq 1$. 
+        \end{enumerate} 
+        So, by theorem (\ref{th:l3:1}), the answer must be D. 
+    \end{mdframed}
 \end{mdframed}
 
 \begin{mdframed}
@@ -536,6 +598,53 @@ So, in the above example, we found that $9 \equiv 5^{-1} \Mod{11}$ because $5 \c
             and so $x = 11$ and $y = -9$. From this, by Theorem (\ref{th:l3:1}) it follows that $\boxed{11}$ is an inverse of $41 \Mod{50}$. 
         \end{mdframed}
     \end{itemize}
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) Find an inverse of $54 \Mod{131}$, if possible. 
+
+    \begin{mdframed}
+        Begin by finding the GCD. 
+        \begin{center}
+            \begin{tabular}{|c|c|c|c|c|}
+                \hline 
+                $\mathbf{a}$ & $\mathbf{b}$ & $\mathbf{b = aq + r}$ & $\mathbf{q}$ & $\mathbf{r}$ \\ 
+                \hline
+                54 & 131 & $131 = 54q + r$ & 2 & 23 \\ 
+                23 & 54 & $54 = 23q + r$ & 2 & 8 \\ 
+                8 & 23 & $23 = 8q + r$ & 2 & 7 \\
+                7 & 8 & $8 = 7q + r$ & 1 & 1 \\
+                1 & 7 & $7 = 1q + r$ & 7 & 1 \\  
+                \hline 
+            \end{tabular}
+        \end{center}
+        Because $\gcd(54, 131) = 1$, there exists Bezout coefficients and hence an inverse. Note that the equations used to find the GCD were 
+        \begin{itemize}
+            \item (Eq. 1) $131 = 54(2) + 23 \implies 23 = 131 - 54(2)$
+            \item (Eq. 2) $54 = 23(2) + 8 \implies 8 = 54 - 23(2)$ 
+            \item (Eq. 3) $23 = 8(2) + 7 \implies 7 = 23 - 8(2)$
+            \item (Eq. 4) $8 = 7(1) + 1 \implies 1 = 8 - 7(1)$
+            \item (Eq. 5) $7 = 1(7) + 0$
+        \end{itemize}
+        Starting from Eq. 4 (last operation with a nonzero remainder), we have 
+        \begin{equation*}
+            \begin{aligned}
+                1 &= 8 - 7(1) \\ 
+                    &= 8 - (\underbrace{23 - 8(2)})_{\text{Eq. 3}})(1) \\ 
+                    &= 8 - 23 + 8(2) \\ 
+                    &= 8(3) - 23 \\ 
+                    &= (\underbrace{54 - 23(2)}_{\text{Eq. 2}})(3) - 23 \\ 
+                    &= 54(3) - 23(6) - 23 \\ 
+                    &= 54(3) - 23(7) \\ 
+                    &= 54(3) - (\underbrace{131 - 54(2)}_{\text{Eq. 1}})(7) \\ 
+                    &= 54(3) - 131(7) + 54(14) \\ 
+                    &= 54(17) - 131(7)
+            \end{aligned}
+        \end{equation*}
+        Therefore, we have 
+        \[\gcd(54, 131) = 54(17) + 131(-7),\]
+        So, the answer must be 17. 
+    \end{mdframed}
 \end{mdframed}
 
 \begin{mdframed}
