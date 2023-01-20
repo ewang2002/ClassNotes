@@ -1,0 +1,314 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Math 170A}
+\chead{Wednesday, January 18, 2023}
+\lhead{Lecture 4}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\newcommand{\0}{\mathbf{0}}
+\newcommand{\y}{\mathbf{y}}
+\renewcommand{\b}{\mathbf{b}}
+\newcommand{\x}{\mathbf{x}}
+\newcommand{\e}{\mathbf{e}}
+
+\begin{document}
+
+\section{Gaussian Elimination and the LU Decomposition}
+We'll now consider the problem of \emph{solving} a system of $n$ linear equations in $n$ unknowns \[A\x = \b\] by Gaussian elimination. Here, we'll assume that $A$ is invertible\footnote{There's a unique solution $\x$, go find it!} and, as usual, $n \times n$. No special properties of $A$ are assumed (e.g., not triangular, not symmetric, not positive definite.).
+
+\begin{mdframed}
+    \textbf{Strategy:} We want to transform $A\x = \b$ into an \emph{equivalent system} $U\x = \y$ with $U$ being an upper triangular matrix. Then, we can use back substitution to obtain the solution.
+\end{mdframed}
+
+\subsection{Elementary Transformations}
+The following transformations can be performed on a system of linear equations, which will not change the solution. Note that we'll assume the use of matrices to represent the problem. 
+\begin{enumerate}
+    \item Add a multiple of one row to another row.
+    \[R_i \mapsto R_i + cR_j,\]
+    where $c$ is the multiple. 
+
+    \item Interchange two rows (also known as pivoting). 
+    \[R_i \leftrightarrow R_j\]
+
+    \item Multiply a row by a non-zero scalar. 
+    \[R_i \mapsto cR_i,\]
+    where $c$ is the non-zero scalar.
+\end{enumerate}
+These transformations will be applied to a system of the form $\begin{bmatrix}
+    A & \b
+\end{bmatrix}$. 
+
+\subsection{Applying Elementary Operations}
+For now, we'll talk about Gaussian Elimination (GE) \underline{without} row interchanges (pivoting). For now, we'll assume that $a_{11} \neq$. We want to convert all entries under $a_{11}$ to 0. 
+
+\begin{enumerate}
+    \item First, let's get rid of $a_{21}$. We can use the operation \[R_2 \mapsto R_2 - \frac{a_{21}}{a_{11}} R_1\] to do just this: 
+    \[\underbrace{\begin{bmatrix}
+        a_{11} & a_{12} & a_{13} & \hdots & a_{1n} \\ 
+        a_{21} & a_{22} & a_{23} & \hdots & a_{2n} \\ 
+        a_{31} & a_{32} & a_{33} & \hdots & a_{3n} \\ 
+        \vdots & \vdots & \vdots & \ddots & \vdots \\ 
+        a_{n1} & a_{n2} & a_{n3} & \hdots & a_{nn}
+    \end{bmatrix}}_{A} \underbrace{\begin{bmatrix}
+        b_1 \\ b_2 \\ b_3 \\ \vdots \\ b_n
+    \end{bmatrix}}_{\b} \xrightarrow[R_2 \mapsto R_2 - \frac{a_{21}}{a_{11}} R_1]{\text{Type (1) operation.}} \begin{bmatrix}
+        a_{11} & a_{12} & a_{13} & \hdots & a_{1n} \\ 
+        0      & a_{22}^{(1)} & a_{23}^{(1)} & \hdots & a_{2n}^{(1)} \\ 
+        a_{31} & a_{32} & a_{33} & \hdots & a_{3n} \\ 
+        \vdots & \vdots & \vdots & \ddots & \vdots \\ 
+        a_{n1} & a_{n2} & a_{n3} & \hdots & a_{nn}
+    \end{bmatrix} \begin{bmatrix}
+        b_1 \\ b_2^{(1)} \\ b_3 \\ \vdots \\ b_n
+    \end{bmatrix}.\]
+    Note that, while we were able to get rid of $a_{21}$, the other entries in row 2 ($a_{22}$, $a_{23}$, and so on) were updated (hence $a_{22}^{(1)}$, $a_{23}^{(1)}$, and so on). We should also note that $b_2$ was updated, since each row operation affects the \emph{entire} row, which means both the $A$ and the $\b$. 
+
+    \item Next, let's get rid of $a_{31}$. Very similarly to the previous step, we can do
+    \[\begin{bmatrix}
+        a_{11} & a_{12} & a_{13} & \hdots & a_{1n} \\ 
+        0      & a_{22}^{(1)} & a_{23}^{(1)} & \hdots & a_{2n}^{(1)} \\ 
+        a_{31} & a_{32} & a_{33} & \hdots & a_{3n} \\ 
+        \vdots & \vdots & \vdots & \ddots & \vdots \\ 
+        a_{n1} & a_{n2} & a_{n3} & \hdots & a_{nn}
+    \end{bmatrix} \begin{bmatrix}
+        b_1 \\ b_2^{(1)} \\ b_3 \\ \vdots \\ b_n
+    \end{bmatrix} \xrightarrow[R_3 \mapsto R_3 - \frac{a_{31}}{a_{11}}R_1]{\text{Type (1) operation.}} \begin{bmatrix}
+        a_{11} & a_{12} & a_{13} & \hdots & a_{1n} \\ 
+        0      & a_{22}^{(1)} & a_{23}^{(1)} & \hdots & a_{2n}^{(1)} \\ 
+        0      & a_{32}^{(1)} & a_{33}^{(1)} & \hdots & a_{3n}^{(1)} \\ 
+        \vdots & \vdots & \vdots & \ddots & \vdots \\ 
+        a_{n1} & a_{n2} & a_{n3} & \hdots & a_{nn}
+    \end{bmatrix} \begin{bmatrix}
+        b_1 \\ b_2^{(1)} \\ b_3^{(1)} \\ \vdots \\ b_n
+    \end{bmatrix}\]
+
+    \item Suppose we want to get rid of $a_{i1}$. This is just 
+    \[R_i \mapsto R_i - \frac{a_{i1}}{a_{11}}R_1\]
+    for $i = 3, \hdots, n$. So, this gives us 
+    \[\begin{bmatrix}
+        a_{11} & a_{12} & a_{13} & \hdots & a_{1n} \\ 
+        0      & a_{22}^{(1)} & a_{23}^{(1)} & \hdots & a_{2n}^{(1)} \\ 
+        0      & a_{32}^{(1)} & a_{33}^{(1)} & \hdots & a_{3n}^{(1)} \\ 
+        \vdots & \vdots & \vdots & \ddots & \vdots \\ 
+        0      & a_{n2}^{(1)} & a_{n3}^{(1)} & \hdots & a_{nn}^{(1)}
+    \end{bmatrix} \begin{bmatrix}
+        b_1 \\ b_2^{(1)} \\ b_3^{(1)} \\ \vdots \\ b_n^{(1)}
+    \end{bmatrix}.\]
+\end{enumerate}
+
+Next, we want to get rid of $a_{32}^{(1)}$, $a_{42}^{(1)}$, and so on\footnote{We omit $a_{22}^{(1)}$ because, remember, our goal is to make our system into an upper-triangular system.}. Let's assume that $a_{22}^{(1)} \neq 0$.
+
+\begin{enumerate}
+    \item Let's get rid of $a_{32}$. To do this, we'll use the operation
+    \[R_3 \mapsto R_3 - \frac{a_{32}^{(1)}}{a_{22}^{(1)}} R_2.\]
+    This gives us 
+    \[\begin{bmatrix}
+        a_{11} & a_{12} & a_{13} & \hdots & a_{1n} \\ 
+        0      & a_{22}^{(1)} & a_{23}^{(1)} & \hdots & a_{2n}^{(1)} \\ 
+        0      & a_{32}^{(1)} & a_{33}^{(1)} & \hdots & a_{3n}^{(1)} \\ 
+        \vdots & \vdots & \vdots & \ddots & \vdots \\ 
+        0      & a_{n2}^{(1)} & a_{n3}^{(1)} & \hdots & a_{nn}^{(1)}
+    \end{bmatrix} \begin{bmatrix}
+        b_1 \\ b_2^{(1)} \\ b_3^{(1)} \\ \vdots \\ b_n^{(1)}
+    \end{bmatrix} \xrightarrow[R_3 \mapsto R_3 - \frac{a_{32}^{(1)}}{a_{22}^{(1)}} R_2]{\text{Type (1) operation.}} \begin{bmatrix}
+        a_{11} & a_{12} & a_{13} & \hdots & a_{1n} \\ 
+        0      & a_{22}^{(1)} & a_{23}^{(1)} & \hdots & a_{2n}^{(1)} \\ 
+        0      & 0       & a_{33}^{(2)} & \hdots & a_{3n}^{(2)} \\ 
+        \vdots & \vdots & \vdots & \ddots & \vdots \\ 
+        0      & a_{n2} & a_{n3} & \hdots & a_{nn}
+    \end{bmatrix} \begin{bmatrix}
+        b_1 \\ b_2^{(1)} \\ b_3^{(2)} \\ \vdots \\ b_n
+    \end{bmatrix}.\]
+
+    \item Likewise, we can repeat this for $a_{i2}$ using the operation 
+    \[R_i \mapsto R_i - \frac{a_{i2}^{(1)}}{a_{22}^{(1)}} R_2\]
+    for $i = 4, \hdots, n$. This gives us 
+    \[\begin{bmatrix}
+        a_{11} & a_{12} & a_{13} & \hdots & a_{1n} \\ 
+        0      & a_{22}^{(1)} & a_{23}^{(1)} & \hdots & a_{2n}^{(1)} \\ 
+        0      & 0       & a_{33}^{(2)} & \hdots & a_{3n}^{(2)} \\ 
+        \vdots & \vdots & \vdots & \ddots & \vdots \\ 
+        0      & 0       & a_{n3}^{(2)} & \hdots & a_{nn}^{(2)}
+    \end{bmatrix} \begin{bmatrix}
+        b_1 \\ b_2^{(1)} \\ b_3^{(2)} \\ \vdots \\ b_n^{(2)}
+    \end{bmatrix}.\]
+\end{enumerate}
+
+We can continue this procedure until we produce an upper-triangular matrix. This upper-triangular matrix will look like 
+\[\begin{bmatrix}
+    a_{11} & a_{12} & a_{13} & \hdots & a_{1n} \\ 
+    0      & a_{22}^{(1)} & a_{23}^{(1)} & \hdots & a_{2n}^{(1)} \\ 
+    0      & 0       & a_{33}^{(2)} & \hdots & a_{3n}^{(2)} \\ 
+    \vdots & \vdots & \vdots & \ddots & \vdots \\ 
+    0      & 0       & 0            & \hdots & a_{nn}^{(n - 1)}
+\end{bmatrix} \begin{bmatrix}
+    b_1 \\ b_2^{(1)} \\ b_3^{(2)} \\ \vdots \\ b_n^{(n - 1)}
+\end{bmatrix}.\]
+At the very end, we can use back substitution on the upper-triangular matrix. 
+
+\bigskip 
+
+\textbf{Remark:} We are dividing by $a_{11}$, $a_{22}^{(1)}$, $a_{33}^{(2)}$, and so on for a general matrix. In reality, \emph{some of these entries could be 0}. 
+
+\subsection{LU Decomposition}
+\begin{theorem}{LU Decomposition}{}
+    Let $A$ be an $n \times n$ matrix whose leading principal submatrices are all nonsingular. Then, $A$ can be decomposed in exactly one way into a product 
+    \[A = LU,\]
+    such that $L$ is unit lower-triangular and $U$ is upper triangular.
+\end{theorem}
+In other words, 
+\[\begin{bmatrix}
+    a_{11} & a_{12} & a_{13} & \hdots & a_{1n} \\ 
+    a_{21} & a_{22} & a_{23} & \hdots & a_{2n} \\ 
+    a_{31} & a_{32} & a_{33} & \hdots & a_{3n} \\ 
+    \vdots & \vdots & \vdots & \ddots & \vdots \\ 
+    a_{n1} & a_{n2} & a_{n3} & \hdots & a_{nn}
+\end{bmatrix} = \begin{bmatrix}
+    1 & 0 & 0 & \hdots & 0 \\ 
+    \ell_{21} & 1 & 0 & \hdots & 0 \\ 
+    \ell_{31} & \ell_{32} & 1 & \hdots & 0 \\ 
+    \vdots & \vdots & \vdots & \ddots & \vdots \\ 
+    \ell_{n1} & \ell_{n2} & \ell_{n3} & \hdots & 1
+\end{bmatrix} \begin{bmatrix}
+    u_{11} & u_{12} & u_{13} & \hdots & u_{1n} \\ 
+    0 & u_{22} & u_{23} & \hdots & u_{2n} \\ 
+    0 & 0 & u_{33} & \hdots & u_{3n} \\
+    \vdots & \vdots & \vdots & \ddots & \vdots \\ 
+    0 & 0 & 0 & \hdots & u_{nn}
+\end{bmatrix}.\]
+
+\begin{mdframed}
+    (Exercise: LU Decomposition.) Let \[A = \begin{bmatrix}
+        1 & 3 & 4 \\ 1 & 2 & 6 \\ 3 & 5 & 7
+    \end{bmatrix}, \b = \begin{bmatrix}
+        1 \\ 1 \\ 1
+    \end{bmatrix}.\] Solve $A\x = \b$ for $\x$. 
+
+    \begin{mdframed}
+        \begin{equation*}
+            \begin{aligned}
+                \begin{bmatrix}
+                    1 & 3 & 4 \\ 
+                    1 & 2 & 6 \\ 
+                    3 & 5 & 7
+                \end{bmatrix} \begin{bmatrix}
+                    1 \\ 1 \\ 1 
+                \end{bmatrix} &\xrightarrow[R_2 \mapsto R_2 - R_1]{\text{Operation (1)}} \begin{bmatrix}
+                    1 & 3 & 4 \\ 
+                    0 & -1 & 2 \\ 
+                    3 & 5 & 7
+                \end{bmatrix} \begin{bmatrix}
+                    1 \\ 0 \\ 1 
+                \end{bmatrix} \\ 
+                    &\xrightarrow[R_3 \mapsto R_3 - 3R_1]{\text{Operation (1)}} \begin{bmatrix}
+                        1 & 3 & 4 \\ 
+                        0 & -1 & 2 \\ 
+                        0 & -4 & -5
+                    \end{bmatrix} \begin{bmatrix}
+                        1 \\ 0 \\ -2 
+                    \end{bmatrix} \\ 
+                    &\xrightarrow[R_3 \mapsto R_3 - 4R_2]{\text{Operation (1)}} \begin{bmatrix}
+                        1 & 3 & 4 \\ 
+                        0 & -1 & 2 \\ 
+                        0 & 0 & -13
+                    \end{bmatrix} \begin{bmatrix}
+                        1 \\ 0 \\ -2 
+                    \end{bmatrix}
+            \end{aligned}
+        \end{equation*}
+        Notice that our matrix is in upper-triangular form. From here, we just need to solve 
+        \[\begin{cases}
+            -13x_3 = -2 \\ 
+            -1x_2 + 2x_3 = 0 \\ 
+            x_1 + 3x_2 + 4x_3 = 1
+        \end{cases},\]
+        which can be done via backwards substitution.
+
+        \bigskip 
+
+        We performed three operations to get to the upper-triangular matrix. Each operation corresponds to a lower-triangular matrix. In particular, if we write out 
+        \[\tilde{L_1} \tilde{L_2} \tilde{L_3} A = U,\]
+        where each of the $L_i$ represents a lower-triangular matrix and corresponds to an operation, then $\tilde{L_3}$ represents the first operation, $R_2 \mapsto R_2 - R_1$, or $\tilde{L_3} = \begin{bmatrix}
+            1 & 0 & 0 \\ 
+            -1 & 1 & 0 \\ 
+            0 & 0 & 1
+        \end{bmatrix}$. Likewise, $\tilde{L_2}$ represents the second operation, $R_3 \mapsto R_3 - 3R_1$, or $\tilde{L_2} = \begin{bmatrix}
+            1 & 0 & 0 \\ 
+            0 & 1 & 0 \\ 
+            -3 & 0 & 1
+        \end{bmatrix}$. Finally, $\tilde{L_1}$ represents the third operation, $R_3 \mapsto R_3 - 4R_2$, or $\tilde{L_1} = \begin{bmatrix}
+            1 & 0 & 0 \\ 
+            0 & 1 & 0 \\ 
+            0 & -4 & 1
+        \end{bmatrix}$. 
+        Notice how the positioning of the numbers corresponds to the entry that we tried to eliminate in $A$. For example, in $L_2$, we put $-3$ in position $L_{21}$ because we eliminated the $3$ from position $A_{21}$ in the second operation. Therefore, 
+        \[\begin{bmatrix}
+            1 & 0 & 0 \\ 
+            0 & 1 & 0 \\ 
+            0 & -4 & 1
+        \end{bmatrix} \begin{bmatrix}
+            1 & 0 & 0 \\ 
+            0 & 1 & 0 \\ 
+            -3 & 0 & 1
+        \end{bmatrix} \begin{bmatrix}
+            1 & 0 & 0 \\ 
+            -1 & 1 & 0 \\ 
+            0 & 0 & 1
+        \end{bmatrix} \begin{bmatrix}
+            1 & 3 & 4 \\ 
+            1 & 2 & 6 \\ 
+            3 & 5 & 7
+        \end{bmatrix} = \begin{bmatrix}
+            1 & 3 & 4 \\ 
+            0 & -1 & 2 \\ 
+            0 & 0 & -13
+        \end{bmatrix}\]
+
+        
+        In any case, we know that 
+        \[\underbrace{\tilde{L_1} \tilde{L_2} \tilde{L_3}}_{\tilde{L}} A = U.\]
+        Then,
+        \[\tilde{L}A = U \implies A = \tilde{L}^{-1} U = LU\]
+        where 
+        \[L = \tilde{L}.\]
+    \end{mdframed}
+\end{mdframed}
+
+\textbf{Remark:} To see how each operation corresponds to a lower-triangular matrix, consider $R_2 \mapsto R_2 + 5R_1$: 
+\[\begin{bmatrix}
+    1 & 0 & 0 \\ 
+    5 & 1 & 0 \\ 
+    0 & 0 & 1 
+\end{bmatrix} \begin{bmatrix}
+    a_{11} & a_{12} & a_{13} \\ 
+    a_{21} & a_{22} & a_{23} \\ 
+    a_{31} & a_{32} & a_{33}
+\end{bmatrix} = \begin{bmatrix}
+    a_{11} & a_{12} & a_{13} \\ 
+    5a_{11} + a_{21} & 5a_{12} + a_{22} & 5a_{13} + a_{23} \\ 
+    a_{31} & a_{32} & a_{33}
+\end{bmatrix}.\]
+Likewise, consider $R_3 \mapsto R_3 + 10R_2$:
+\[\begin{bmatrix}
+    1 & 0 & 0 \\ 
+    0 & 1 & 0 \\ 
+    0 & 10 & 0 
+\end{bmatrix} \begin{bmatrix}
+    a_{11} & a_{12} & a_{13} \\ 
+    a_{21} & a_{22} & a_{23} \\ 
+    a_{31} & a_{32} & a_{33}
+\end{bmatrix} = \begin{bmatrix}
+    a_{11} & a_{12} & a_{13} \\ 
+    a_{21} & a_{22} & a_{23} \\ 
+    10a_{21} + a_{31} & 10a_{22} + a_{32} & a_{23} + a_{33}
+\end{bmatrix}.\]
+
+\end{document}
