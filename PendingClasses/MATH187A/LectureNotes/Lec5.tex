@@ -147,6 +147,36 @@ Before going into polygraphic ciphers, let us first discuss how \emph{linear alg
     \end{bmatrix}\] is an inverse of $A$ mod 26. It follows that $AX = I$. 
 \end{mdframed}
 
+\begin{mdframed}
+    (Exercise.) Which of the following matrices is invertible mod 26? 
+    \begin{enumerate}[(a)]
+        \item $\begin{bmatrix}
+            7 & 5 \\ 3 & 3 
+        \end{bmatrix}$
+        \item $\begin{bmatrix}
+            8 & 1 \\ 3 & 2 
+        \end{bmatrix}$
+        \item $\begin{bmatrix}
+            4 & 2 \\ 1 & 2 
+        \end{bmatrix}$
+        \item $\begin{bmatrix}
+            4 & 3 \\ 1 & 2
+        \end{bmatrix}$
+    \end{enumerate}
+
+    \begin{mdframed}
+        The answer is \textbf{D}. By calculating the determinant of each matrix, we see that the GCD of the determinant of the matrix and 26 is 1 for only D. 
+    \end{mdframed}
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) As a follow-up to the previous exercise, what is the inverse of the invertible matrix? 
+
+    \begin{mdframed}
+        TODO 
+    \end{mdframed}
+\end{mdframed}
+
 \subsection{Hill Cipher}
 The \emph{Hill Cipher} is the first polygraphic cipher we'll talk about. We'll focus on the digraphic case, which replaces 2 letters of plaintext at a time. Our \textbf{key} for this cipher is a matrix that is invertible mod 26. 
 
@@ -342,6 +372,88 @@ SLAYTHEHYDRA\end{verbatim}
     \end{mdframed}
 \end{mdframed}
 
+\begin{mdframed}
+    (Exercise.) Use the Hill cipher with key \[A = \begin{bmatrix}
+        4 & 3 \\ 1 & 2
+    \end{bmatrix}\] to encrypt the word \code{AREA}. 
+
+    \begin{mdframed}
+        Labeling each letter with its corresponding number, we have 
+        \begin{mdframed}
+            \begin{verbatim}
+0 17 4 0
+A  R E A\end{verbatim}
+        \end{mdframed}
+        Then, we just need to multiply each pair of numbers, like so: 
+        \[\begin{bmatrix}
+            4 & 3 \\ 1 & 2
+        \end{bmatrix} \begin{bmatrix}
+            0 \\ 17
+        \end{bmatrix} = \begin{bmatrix}
+            4 \cdot 0 + 3 \cdot 17 \\ 
+            1 \cdot 0 + 2 \cdot 17
+        \end{bmatrix} = \begin{bmatrix}
+            51 \\ 
+            34 
+        \end{bmatrix} \equiv \begin{bmatrix}
+            25 \\ 
+            8
+        \end{bmatrix} \Mod{26},\]
+        and 
+        \[\begin{bmatrix}
+            4 & 3 \\ 1 & 2 
+        \end{bmatrix} \begin{bmatrix}
+            4 \\ 0
+        \end{bmatrix} = \begin{bmatrix}
+            16 + 0 \\ 
+            4 + 0
+        \end{bmatrix} \equiv \begin{bmatrix}
+            16 \\ 4
+        \end{bmatrix} \Mod{26}.\] Therefore, the answer is \code{ZIQE}.
+    \end{mdframed}
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) The matrix \[A = \begin{bmatrix}
+        4 & 3 \\ 1 & 2
+    \end{bmatrix}\] is used to encrypt \code{CRZX}. What is the plaintext? 
+
+    \begin{mdframed}
+        We know that the inverse of $A$ is \[X =  \begin{bmatrix}
+            16 & 15 \\ 
+            5 & 6 
+        \end{bmatrix}.\] Then, going through each pair of numbers gives us 
+        \[\begin{bmatrix}
+            16 & 15 \\ 5 & 6
+        \end{bmatrix} \begin{bmatrix}
+            2 \\ 17
+        \end{bmatrix} = \begin{bmatrix}
+            16 \cdot 2 + 15 \cdot 17 \\ 
+            5 \cdot 2 + 6 \cdot 17
+        \end{bmatrix} = \begin{bmatrix}
+            287 \\ 
+            112
+        \end{bmatrix} = \begin{bmatrix}
+            1 \\ 
+            8
+        \end{bmatrix},\]
+        and 
+        \[\begin{bmatrix}
+            16 & 15 \\ 5 & 6
+        \end{bmatrix} \begin{bmatrix}
+            25 \\ 23
+        \end{bmatrix} = \begin{bmatrix}
+            16 \cdot 25 + 15 \cdot 23 \\ 
+            5 \cdot 25 + 6 \cdot 23 
+        \end{bmatrix} = \begin{bmatrix}
+            745 \\ 263
+        \end{bmatrix} \equiv \begin{bmatrix}
+            17 \\ 3
+        \end{bmatrix}.\]
+        This gives us \code{BIRD}.
+    \end{mdframed}
+\end{mdframed}
+
 \subsection{Playfair Cipher}
 The \textbf{Playfair Cipher} is another digraphic cipher, like the Hill cipher we just discussed above. The key for a Playfair cipher is a $5 \times 5$ grid of letters, where each letter appears exactly once. Because there are 26 letters in the English alphabet but 25 letters can fit in a grid, we treat \code{I} and \code{J} as the same letter\footnote{We could also use a variant where we use a $6 \times 6$ grid that includes all 26 letters and 10 digits, instead.}. 
 
@@ -406,6 +518,59 @@ To encrypt, we need to replace each pair with another pair using the grid by fol
         So, it follows that \code{DE} becomes \code{FT}.
     \end{itemize}
     Continuing this process yields the desired result.
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) You are constructing a $5 \times 5$ grid for a Playfair cipher starting with the keyword \code{FAJITAS}. What letter falls in the very center of the grid (i.e., in the 3rd row and the 3rd column)? 
+
+    \begin{enumerate}[(a)]
+        \item K
+        \item L
+        \item M
+        \item None of the above. 
+    \end{enumerate}
+
+    \begin{mdframed}
+        Constructing the grid looks something like: 
+        \begin{center}
+            \begin{tabular}{|c|c|c|c|c|}
+                \hline 
+                F & A & I & T & S \\
+                \hline 
+                B & C & D & E & G \\
+                \hline 
+                H & K & L & M & N \\
+                \hline 
+                O & P & Q & R & U \\
+                \hline 
+                V & W & X & Y & Z \\ 
+                \hline 
+            \end{tabular}
+        \end{center}
+        So, the answer is (b). 
+    \end{mdframed}
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) Encode the message \code{Little Fluffy} for encryption using a Playfair cipher. How many pairs of letters are in the encoded message? 
+
+    \begin{enumerate}[(a)]
+        \item 6
+        \item 7
+        \item 8
+        \item None of the above. 
+    \end{enumerate}
+
+    \begin{mdframed}
+        Encoding gives us 
+        \begin{itemize}
+            \item LITTLEFLUFFY
+            \item LITTLEFLUFFY
+            \item LITXTLEFLUFXFY
+            \item LI TX TL EF LU FX FY
+        \end{itemize}
+        The answer is (b). 
+    \end{mdframed}
 \end{mdframed}
 
 
