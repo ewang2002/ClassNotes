@@ -454,6 +454,22 @@ A  R E A\end{verbatim}
     \end{mdframed}
 \end{mdframed}
 
+\begin{mdframed}
+    (Exercise.) Suppose you want to encrypt a sequence of bits (i.e., a sequence of \code{0}'s and \code{1}'s) using a $2 \times 2$ Hill cipher. How many different encryption functions are there? In other words, how many different congruence classes of $2 \times 2$ can be used as a key for a Hill cipher? 
+
+    \begin{mdframed}
+        If we assume that our alphabet contains only binary numbers, then there are 2 possible numbers. Therefore, our Hill cipher must be a matrix mod 2. We want to know how many of these matrices are invertible mod 2. 
+
+        \bigskip 
+
+        There are $2 \cdot 2 \cdot 2 \cdot 2$ choices for what our $2 \times 2$ matrix can be. There are three possible determinants: $0$ and $\pm 1$. Note that $-1 \equiv 1 \Mod{2}$ so there's actually \emph{2} possible determinants. Of these determinants, note that $\gcd(1, 2) = 1$ while $\gcd(0, 2) = 2$.
+        
+        \bigskip 
+
+        With this in mind, we know that any matrix with determinant 1 is valid. There are \boxed{6} such matrices.
+    \end{mdframed}
+\end{mdframed}
+
 \subsection{Playfair Cipher}
 The \textbf{Playfair Cipher} is another digraphic cipher, like the Hill cipher we just discussed above. The key for a Playfair cipher is a $5 \times 5$ grid of letters, where each letter appears exactly once. Because there are 26 letters in the English alphabet but 25 letters can fit in a grid, we treat \code{I} and \code{J} as the same letter\footnote{We could also use a variant where we use a $6 \times 6$ grid that includes all 26 letters and 10 digits, instead.}. 
 
@@ -570,6 +586,40 @@ To encrypt, we need to replace each pair with another pair using the grid by fol
             \item LI TX TL EF LU FX FY
         \end{itemize}
         The answer is (b). 
+    \end{mdframed}
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) Use a Playfair cipher with a key given by the grid below, decrypt \code{WZ LT OP WK SH ES VX PH}.
+    \begin{center}
+        \begin{tabular}{|c|c|c|c|c|}
+            \hline
+            C & W & F & Q & Y \\ 
+            \hline
+            G & I & Z & R & B \\ 
+            \hline
+            H & M & K & L & U \\ 
+            \hline
+            V & A & D & E & N \\ 
+            \hline
+            O & P & X & T & S \\ 
+            \hline
+        \end{tabular}
+    \end{center}
+
+    \begin{mdframed}
+        For decryption, we just perform the inverse of the encryption process (e.g., for the row rule, when encrypting is replacing the letter with the one immediately to the right, decrypting is replacing the letter with the one immediately to the left.)
+        \begin{itemize}
+            \item \code{WZ} maps to \code{FI}.
+            \item \code{LT} maps to \code{RE}.
+            \item \code{OP} maps to \code{SO}.
+            \item \code{WK} maps to \code{FM}.
+            \item \code{SH} maps to \code{OU}.
+            \item \code{ES} maps to \code{NT}.
+            \item \code{VX} maps to \code{DO}.
+            \item \code{PH} maps to \code{OM}.
+        \end{itemize}
+        The answer is \code{FIRESOFMOUNTDOOM}, or \code{Fires of Mount Doom}.
     \end{mdframed}
 \end{mdframed}
 

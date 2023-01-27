@@ -119,6 +119,50 @@ Decrypted          R  A  G  N  A  R  O  K  I  S  C  O  M  I  N  G\end{verbatim}
     \end{itemize}
 \end{mdframed}
 
+\begin{mdframed}
+    (Exercise.) Use a Vigenere cipher with keyword \code{AND} to encrypt the message \code{Six Meals}. 
+
+    \begin{mdframed}
+        Encoding and mapping each letter to the corresponding number, we have 
+        \begin{mdframed}
+            \begin{verbatim}
+S  I  X  M  E  A  L  S
+18 8  23 12 4  0  11 18\end{verbatim}
+        \end{mdframed}
+
+        From there, we can run through the encryption process: 
+        \begin{mdframed}
+            \begin{verbatim}
+Encoded             S  I  X  M  E  A  L  S
+Numbers (1)         18 8  23 12 4  0  11 18
+Keyword             A  N  D  A  N  D  A  N
+Key Numbers (2)     0  13 3  0  13 3  0  13
+(1) + (2) mod 26    18 21 0  12 17 3  11 5
+Encrypted           S  V  A  M  R  D  L  F\end{verbatim}
+        \end{mdframed}
+        Therefore, the answer is \code{SVAMRDLF}.
+    \end{mdframed}
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) Use a Vigenere cipher with keyword \code{AND} to decrypt \code{YEX SUD LYQ OGS AFV}. 
+
+    \begin{mdframed}
+        Running through the decryption process yields 
+        \begin{mdframed}
+\begin{verbatim}
+Encoded             Y  E  X  S  U  D  L  Y  Q  O  G  S  A  F  V 
+Numbers (1)         24 1  23 18 20 3  11 24 16 14 6  18 0  5  21
+Keyword             A  N  D  A  N  D  A  N  D  A  N  D  A  N  D
+Key Numbers         0  13 3  0  13 3  0  13 3  0  13 3  0  13 3
+(1) - (2) mod 26    24 14 20 18 7  0  11 11 13 14 19 15 0  18 18
+Decrypted           Y  O  U  S  H  A  L  L  N  O  T  P  A  S  S 
+\end{verbatim}
+        \end{mdframed}
+        This yields \code{YOUSHALLNOTPASS}, or \code{You shall not pass}.
+    \end{mdframed}
+\end{mdframed}
+
 \subsection{One-Time Pad}
 The \emph{one-time pad} is a special case of the Vigenere cipher where the key sequence is 
 \begin{itemize}
@@ -135,3 +179,63 @@ In any case, we'll revisit this section later -- it's important to be precise wh
 
 
 \end{document}
+
+% A crude implementation of the Vigenere cipher.
+% Arguments:
+% - s: string to encrypt or decrypt (must be encoded).
+% - k: the keyword
+% - e: true if encrypt, false if decrypt.
+%
+% const v = (s, k, e) => {
+% 	let res = "";
+% 	for (let i = 0; i < s.length; i++) {
+% 		res += s[i] + "  ";
+% 	}
+% 
+% 	res += "\n"; 
+% 
+% 	const keyNums = [];
+% 	for (let i = 0; i < s.length; i++) {
+% 		let num = g(s[i]); 
+% 		res += num + " ".repeat(2 - (num > 9 ? 1 : 0)); 
+% 		keyNums.push(num); 
+% 	}
+% 
+% 	res += "\n"; 
+% 
+% 	let i = 0;
+% 	let temp = "";
+% 	while (i < s.length) {
+% 		let t = i % k.length;
+% 		res += k[t] + "  ";
+% 
+% 		let num = g(k[t]);
+% 		temp += num + " ".repeat(2 - (num > 9 ? 1 : 0)); 
+% 		keyNums[i] = keyNums[i] + (e ? 1 : -1) * num; 
+% 		i++;
+% 	}
+% 
+% 	res += "\n" + temp + "\n";
+% 
+% 	for (let i = 0; i < keyNums.length; i++) {
+% 		let valToMod = keyNums[i];
+% 		while (valToMod < 0) {
+% 			valToMod += 26; 
+% 		}
+% 
+% 		keyNums[i] = valToMod % 26; 
+% 		res += keyNums[i] + " ".repeat(2 - (keyNums[i] > 9 ? 1 : 0)); 
+% 	}
+% 	
+% 	res += "\n";
+% 	
+% 	for (let i = 0; i < keyNums.length; i++) {
+% 		let n = f(keyNums[i]);
+% 		res += n + "  ";
+% 	}
+% 
+% 	return res;
+% };
+% 
+% const f = n => "ABCDEFGHIJKLMNOPQRSTUVWXYZ"[n];
+% const g = l => "ABCDEFGHIJKLMNOPQRSTUVWXYZ".indexOf(l);
