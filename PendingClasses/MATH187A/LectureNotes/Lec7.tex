@@ -1,0 +1,221 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+\usepackage{csquotes}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Math 187A}
+\chead{Wednesday, February 01, 2023}
+\lhead{Lecture 7}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\section{Codebreaking}
+In the previous section, we mostly looked at encryption and decryption of many ciphers. Now, we'll look at how to \emph{break} some of these ciphers. It should be noted that codebreaking is not necessarily ``exact science''; that is, there's not necessarily an algorithm that guarantees producing the correct plaintext from ciphertext in one shot without access to the key. Instead, these techniques can help constrain the search for the correct ciphertext. 
+
+\subsection{Frequency Analysis}
+\textbf{Frequency analysis} is a powerful technique used to break simple -- and sometimes also polygraphic -- substutition ciphers. The idea is relatively simple. 
+
+\begin{displayquote}
+    \textbf{Heuristic:} The relative frequencies of letters remain \emph{roughly} stable across different samples of English texts, and \code{ETAOINSHRDLU} is the \emph{approximate} order of the 12 most common letters.
+\end{displayquote}
+
+We can use this heuristic to break simple substutition ciphers. Ideally, the technique works best with longer ciphertexts, but the idea is to guess the decryption key one letter at a time, doing one of the following at each step: 
+\begin{enumerate}
+    \item Assign the most frequent unassigned letter of ciphertext to be the most frequent unassigned letter in some sample English text (or perhaps some other letter with a similar frequency).
+    \item Look through the ciphertext and see if you can make any guesses about words that seem to appear there. If you see something, fill in the blanks in that word by making appropriate guesses for the key.
+\end{enumerate}
+If, at any point, it seems like your guesses are leading to nonsense or implausible sequences of letters, backtrack and make another guess. A few comments: 
+\begin{itemize}
+    \item Usually, we can start with two applications of option 1. For example, we can guess that the most common letter in the ciphertext is \code{E} and the second most commmon letter is \code{T}. 
+    \item We can also note that \code{THE} occurs frequently in English (and other similar words like \code{THEY} or \code{THEIR} or \code{THEN}). 
+    \item If, after you make the \code{T} and \code{E} substutitions, you see the \code{T*E} pattern frequently (\code{*} being some \emph{fixed} letter in ciphertext), you can make the assumption that \code{*} could be \code{H}. 
+    \begin{itemize}
+        \item Also, perhaps if you see \code{TH*T} occurring in your ciphertext after making the substutitions and with \code{*} fixed, you can probably assume that \code{*} is \code{A}. 
+    \end{itemize}
+
+    \item If you can't spot any possible words, you can always try using option 1 instead and match the most frequent letters. 
+\end{itemize}
+Usually, the first few guesses after \code{E} and \code{T} are the hardest. Once you've made a few correct guesses, it becomes easy to see words.
+
+\subsection{Interlude: Probability}
+Notice how, in the previous observation, we made use of the Heuristic to help us mount attacks on substutition ciphers. We can use variants of this observation for other ciphers, but this requires us to first talk about \textbf{probability}.
+
+\subsubsection{Experiments and Events}
+In probability thoery, the word \emph{experiment} is used to talk abstractly and heuristically about processes which generate ``outcomes'' and which might be rather intricate. These experiments are formally modeled by \emph{probability spaces}. For now, we'll use the following definition. 
+\begin{definition}{(Discrete) Probability Space}{}
+    A \textbf{(discrete) probability space} is a nonempty countable\footnote{``Countable'' means that the outcomes can be put in a list so that the summation $\sum_{x \in \Omega} \PR[x]$ makes sense. Any finite set, and some infinite sets, are countable. For now, we'll focus on the finite case.} set $\Omega$ called the \textbf{sample space} and whose elements are called \textbf{outcomes}. Each outcome $x \in \Omega$ is assigned a real number $\PR[x]$ between 0 and 1 called its \textbf{probability}. The probabilities of all the outcomes must sum to 1; that is, 
+    \[\sum_{x \in \Omega} \PR[x] = 1.\]
+\end{definition}
+The probability associated to each outcome should be thought of as some measure of our ``confidence'' that our experiment will produce that outcome. For example, it might be the percentage of times we expect the experiment to produce that outcome if the experiment were to be releated many times. 
+
+\begin{mdframed}
+    (Example.) Rolling a dice is an example of an experiment. 
+    \begin{itemize}
+        \item The possible outcomes of this experiment are the numbers 1 through 6; that is, the \textbf{sample space} is \[\Omega = \{1, 2, 3, 4, 5, 6\}.\] 
+        \item Assigning each outcome a probability of $\frac{1}{6}$, that is, for $x \in \Omega$, \[\PR[x] = \frac{1}{6},\] means that the dice is ``fair'' and each outcome is equally likely. 
+    \end{itemize}
+    Thus, we constructed a probability space; we have a finite set $\Omega$ that enumerates the possible outcomes, and we assigned a probability to each outcome. 
+\end{mdframed}
+
+A single experiment can also have ``multiple parts,'' as seen in the next example. 
+\begin{mdframed}
+    (Example.) Flipping a fair coin twice can be thought of as a single experiment. 
+    \begin{itemize}
+        \item Possible outcomes of this experiment might be something like ``heads and then heads again'' or ``heads and then tails'' and so on. All these outcomes taken together as a set form the sample space, 
+        \[\Omega = \{HH, HT, TH, TT\},\]
+        where $H$ means ``Heads'' and $T$ means ``Tails.''
+
+        \item We can assign each of these four outcomes probability $\frac{1}{4}$, that is for some $x \in \Omega$
+        \[\PR[x] = \frac{1}{4}.\]
+    \end{itemize}
+    Here, we've modeled the situation where the coin is fair and the result of each coin flip is unrelated to the other. 
+\end{mdframed}
+Notice how both examples above have outcomes with the same probabilities. This is a common situation, and thus has a name.
+
+\begin{definition}{Uniform Distribution}{}
+    A probability space is \textbf{uniform} if all of its outcomes have equal probability. 
+\end{definition}
+Sometimes, we might be interested in grouping the various outcomes together. We can do so with a definition.
+
+\begin{definition}{Event}{}
+    Given a probability space, an \textbf{event} $E$ is a subset of the sample space $\Omega$; that is, 
+    \[E \subset \Omega.\]
+    We define 
+    \[\PR[E] = \sum_{x \in E} \PR[x].\]
+\end{definition}
+\textbf{Remark:} The words ``event'' and ``outcome'' have distinct definitions in probability theory.
+
+\begin{mdframed}
+    (Example.) Consider the example of rolling a dice again. An \emph{event} might be something like ``the dice roll is odd.'' Formally, if we think of the sample space $\Omega = \{1, 2, 3, 4, 5, 6\}$, the event ``the dice roll is odd'' corresponds to the event \[E = \{1, 3, 5\}.\] This event is also assigned a probability, by summing together the probabilities of all outcomes that comprise the event:
+    \[\PR[E] = \PR[1] + \PR[3] + \PR[5] = \frac{1}{6} + \frac{1}{6} + \frac{1}{6} = \frac{3}{6} = \frac{1}{2}.\]
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) Suppose you have 4 boxes (labeled 1, 2, 3, and 4), and you have 8 colors available (red, blue, green, yellow, pink, purple, teal, brown). Consider an experiment where each of the 4 boxes is assigned a color. For example, one possible outcome of this experiment might be the one where box 1 is colored red, box 2 is colored blue, box 3 is colored green, and box 4 is colored blue.
+
+    \begin{enumerate}
+        \item How many possible outcomes are there?
+        \begin{mdframed}
+            The answer is $8^4 = 70$ outcomes. We can assign any of the 8 colors to box 1, any of the 8 colors to box 2, any of the 8 colors to box 3, and any of the 8 colors to box 4.   
+        \end{mdframed}
+        \item How many outcomes are in the event ``no two boxes have the same color?''
+        \begin{mdframed}
+            The answer is $8 \cdot 7 \cdot 6 \cdot 5 = 1680$. Once we pick a color, we can no longer use that color for the next box. 
+        \end{mdframed}
+    \end{enumerate}
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) Suppose you have $k$ boxes and you have $n$ colors available. Consider again the same experiment where each of the $k$ boxes is assigned one of the $n$ colors ``at random'' (i.e., construct a uniform probability space).
+    \begin{enumerate}
+        \item What is the probability of the event that no two boxes have the same color? 
+        \begin{mdframed}
+            Note that the number of outcomes such that no two boxes have the same color is given by $n \cdot (n - 1) \cdot (n - 2) \cdot (n - 3) \cdot \hdots \cdot (n - k + 1)$. The total number of outcomes is $n^k$. The probability is given by \[\frac{n \cdot (n - 1) \cdot (n - 2) \cdot (n - 3) \cdot \hdots \cdot (n - k + 1)}{n^k}.\]
+        \end{mdframed}
+        \item What is the probability that there are at least two boxes of the same color? 
+        \begin{mdframed}
+            Note that the event that at least two boxes have the same colors is the opposite of the event that no two boxes have the same colors. In other words, 
+            \[\PR(\geq 2\text{ Boxes Have Same Color}) = 1 - \PR(\text{No Two Boxes Have Same Color}).\]
+            This gives us 
+            \[\PR(\geq 2\text{ Boxes Have Same Color}) = 1 - \frac{n \cdot (n - 1) \cdot (n - 2) \cdot (n - 3) \cdot \hdots \cdot (n - k + 1)}{n^k}.\]
+        \end{mdframed}
+        \item Find expressions in terms of $n$ and $k$. 
+        \begin{mdframed}
+            Notice that 
+            \[n \cdot (n - 1) \cdot (n - 2) \cdot (n - 3) \cdot \hdots \cdot (n - k + 1) = (n)_k = \frac{n!}{(n - k)!}.\] This is known as a falling factorial. So, 
+            \begin{enumerate}
+                \item $\frac{\frac{n!}{(n - k)!}}{n^k}$.
+                \item $1 - \frac{\frac{n!}{(n - k)!}}{n^k}$.
+            \end{enumerate}
+        \end{mdframed}
+    \end{enumerate}
+\end{mdframed}
+
+
+\subsubsection{Random Variables}
+A common way that events show up is through \textbf{random variables}. We can think of random variables as representations of making an observation (or taking a measurement) on the outcome of an experiment. A random variable has a set of possible values that it can take. Letters like $X$ or $Y$ can be used to denote random variables. 
+\begin{definition}{Random Variable}{}
+    Fix a probability space $\Omega$. A \textbf{random variable} is a function with domain $\Omega$ and its set of \emph{possible} values is the range of this function. 
+\end{definition}
+
+\begin{mdframed}
+    (Example.) Consider the ``multi-part'' experiment discussed earlier (with the coin being flipped twice). We can make the observation that the first coin flip can be thought of as a random variable, which we can call $X$. $X$ can take the value ``heads'' or ``tails.'' Then, we can write things like $X = H$ to refer to the event that the first coin flip landed heads. In other words, in the sample space \[\Omega = \{HH, HT, TH, TT\},\] the notation $X = H$ describes the event $\{HH, HT\}$ and we have \[\PR[X = H] = \PR[HH] + \PR[HT] = \frac{1}{4} + \frac{1}{4} = \frac{1}{2}.\]
+\end{mdframed}
+
+\begin{mdframed}
+    (Example.) Suppose we're interested in the number of heads. We can define another random variable $Y$ that can take values 0, 1, or 2. The notation $Y = n$ for either $n = 0, 1, 2$ describes the event that we observe $n$ heads out of the two coin flips. So, for $Y = 1$, we have the event $\{HT, TH\}$ and \[\PR[Y = 1] = \PR[HT] = \PR[TH] = \frac{1}{4} + \frac{1}{4} = \frac{1}{2}.\]
+    However, for $Y = 0$, we have the event $\{TT\}$ and \[\PR[Y = 0] = \PR[TT] = \frac{1}{4}.\]
+\end{mdframed}
+
+\begin{definition}{Uniform Random Variable}{}
+    A random variable is \textbf{uniform} if all of its values have equal probability.
+\end{definition}
+In the previous two examples, $X$ is uniform (it can either take heads or tails, i.e., $X = H$ or $X = T$, both of which have probabilities $1/2$) whereas $Y$ is not uniform.
+
+\begin{definition}{Expected Value}{}
+    Suppose $X$ is a random variable whose values are real numbers. The \textbf{expected value}, known as the expectation, of $X$, denoted $\E[X]$, is defined by \[\E[X] = \sum_{\text{values } a} a \cdot \PR[X = a].\]
+\end{definition}
+
+\begin{mdframed}
+    (Example.) In the experiment involving two coin flips, the random variable $Y$ which counts the number of heads has real number values (0, 1, 2). Its expectation is given by 
+    \[\E[Y] = 0 \cdot \frac{1}{4} + 1 \cdot \frac{1}{2} + 2 \cdot \frac{1}{4} = 1.\]
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) Consider the experiment where you roll a pair of fair dice. Let the random variable $X$ denote the sum of the dice rolls. 
+    \begin{enumerate}
+        \item What are the possible values of $X$? 
+        \begin{mdframed}
+            The possible values are \[\{2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12\}.\]
+        \end{mdframed}
+        \item What is $\PR[X = 7]$?
+        \begin{mdframed}
+            Note that the pair of fair dice will have sum 7 if we get 
+            \[\{(1, 6), (2, 5), (3, 4), (4, 3), (5, 2), (6, 1).\}\]
+            Therefore, 
+            \[\PR[X = 7] = \frac{6}{36} = \frac{1}{6}.\]
+        \end{mdframed}
+        \item What is $\PR[X = 7 \text{ or } 11]$?
+        \begin{mdframed}
+            Note that the paur of fair dice will have 11 if we get 
+            \[\{(6, 5), (5, 6)\}.\]
+            Combining this with this previous part, we have 8 possible combinations. This gives us 
+            \[\PR[X = 7 \text{ or } 11] = \frac{8}{36} = \frac{2}{9}.\]
+        \end{mdframed}
+        \item What is $\E[X]$? 
+        \begin{mdframed}
+            Note that
+            \begin{itemize}
+                \item For sum 2, there is only 1 possible combination. 
+                \item For sum 3, there are 2 possible combinations.
+                \item For sum 4, there are 3 possible combinations.  
+                \item For sum 5, there are 4 possible combinations. 
+                \item For sum 6, there are 5 possible combinations. 
+                \item For sum 7, there are 6 possible combinations. 
+                \item For sum 8, there are 5 possible combinations. 
+                \item For sum 9, there are 4 possible combinations. 
+                \item For sum 10, there are 3 possible combinations. 
+                \item For sum 11, there are 2 possible combinations. 
+                \item For sum 12, there are 1 possible combinations. 
+            \end{itemize}
+            Therefore, the expected value is 
+            \begin{equation*}
+                \begin{aligned}
+                    \E[X] &= 2 \frac{1}{36} + 3 \frac{2}{36} + 4 \frac{3}{36} + 5 \frac{4}{36} + 6 \frac{5}{36} + 7 \frac{6}{36} + 8 \frac{5}{36} + 9 \frac{4}{36} + 10 \frac{3}{36} + 11 \frac{2}{36} + 12 \frac{1}{36} \\ 
+                        &= 7.
+                \end{aligned}
+            \end{equation*}
+        \end{mdframed}
+    \end{enumerate}
+\end{mdframed}
+
+
+\end{document}
