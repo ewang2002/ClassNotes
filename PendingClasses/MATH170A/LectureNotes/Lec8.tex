@@ -8,7 +8,7 @@
 \pagestyle{fancy}
 \fancyhf{}
 \rhead{Math 170A}
-\chead{Monday, January 30, 2023}
+\chead{Friday, January 27, 2023}
 \lhead{Lecture 8}
 \rfoot{\thepage}
 
@@ -149,26 +149,5 @@ It might be useful to consider this visualization:
     \end{enumerate}
     Thus, we're done.
 \end{proof}
-
-\subsubsection{QR Decomposition}
-\begin{theorem}{}{}
-    Let $A \in \R^{n \times m}$ such that $n \geq m$. Then, there exists an orthogonal $Q \in \R^{n \times m}$ and $R \in \R^{n \times m}$ with 
-    \[R = \begin{bmatrix}
-        r_{11} & r_{12} & \hdots & r_{1m} \\ 
-        0 & r_{22} & \hdots & r_{2m} \\
-        0 & 0 & \hdots & r_{3m} \\ 
-        \vdots & \vdots & \ddots & \vdots \\ 
-        0 & 0 & \hdots & r_{nm} \\ 
-        0 & 0 & \hdots & 0 \\ 
-        0 & 0 & \hdots & 0 \\ 
-        0 & 0 & \hdots & 0 \\ 
-        \vdots & \vdots & \ddots & 0 \\ 
-        0 & 0 & \hdots & 0
-    \end{bmatrix} = \begin{bmatrix}
-        \hat{\R} \\ 0
-    \end{bmatrix},\]
-    with $\hat{\R} \in \R^{m \times m}$ being an upper-triangular matrix and the 0 being the zero-matrix.
-\end{theorem}
-Later on, we'll talk more about QR decomposition and solving the Least Squares Problem.
 
 \end{document}

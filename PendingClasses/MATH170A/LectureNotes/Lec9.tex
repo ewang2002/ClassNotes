@@ -1,0 +1,166 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Math 170A}
+\chead{Monday, January 30, 2023}
+\lhead{Lecture 9}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\newcommand{\0}{\mathbf{0}}
+\newcommand{\y}{\mathbf{y}}
+\renewcommand{\b}{\mathbf{b}}
+\newcommand{\x}{\mathbf{x}}
+\newcommand{\e}{\mathbf{e}}
+\newcommand{\rr}{\mathbf{r}}
+\newcommand{\vv}{\mathbf{v}}
+
+
+\begin{document}
+
+\section{Solutions to the Discrete Least Squares Problem (3.3)}
+In the previous section, we learned how to construct a Least Squares Problem given a set of points. The idea was to find a function such that the residual was minimized. We talked briefly about using QR decomposition and how it could be used to solve this problem. Now, we'll talk more about using QR decomposition. 
+
+\begin{theorem}{Full QR Decomposition}{}
+    Let $A \in \R^{n \times m}$ such that $n \geq m$. Then, there exists an orthogonal $Q \in \R^{n \times m}$ and $R \in \R^{n \times m}$ with 
+    \[R = \begin{bmatrix}
+        r_{11} & r_{12} & \hdots & r_{1m} \\ 
+        0 & r_{22} & \hdots & r_{2m} \\
+        0 & 0 & \hdots & r_{3m} \\ 
+        \vdots & \vdots & \ddots & \vdots \\ 
+        0 & 0 & \hdots & r_{nm} \\ 
+        0 & 0 & \hdots & 0 \\ 
+        0 & 0 & \hdots & 0 \\ 
+        0 & 0 & \hdots & 0 \\ 
+        \vdots & \vdots & \ddots & 0 \\ 
+        0 & 0 & \hdots & 0
+    \end{bmatrix} = \begin{bmatrix}
+        \hat{R} \\ 0
+    \end{bmatrix},\]
+    with $\hat{R} \in \R^{m \times m}$ being an upper-triangular matrix and the 0 being the zero-matrix, such that \[A = QR.\]
+\end{theorem}
+\textbf{Remark:} If $A$ has full rank ($\text{rank}(A) = \min\{n, m\} = m$) and we choose $n_i > 0$, then the reduced QR is unique. 
+
+\subsection{Purpose of QR}
+One of the main purposes of the QR decomposition is to solve the Least Squares Problem. Note that methods like LU and PLU decompositions are not useful because the matrix we're working with is a tall matrix ($n \geq m$). 
+
+\bigskip 
+
+Now, that being said, there are two cases to consider. 
+\begin{enumerate}
+    \item If $A$ is a square matrix and invertible, then it still has a QR decomposition. Note that 
+    \begin{equation*}
+        \begin{aligned}
+            A\x = \y &\implies QR\x = \y \\ 
+                &\implies Q^T Q R \x = Q^T \y \\ 
+                &\implies R\x = Q^T \y. 
+        \end{aligned}
+    \end{equation*}
+
+    \item Otherwise, recall that \[\min_{\x \in \R^m} ||\y - A\x||_{2}^{2}\] with $A \in \R^{n \times m}$ and $n \geq m$. Assume that $A$ has a QR decomposition such that \[A = QR,\] we want to compute \[||\y - A\x||_{2}^{2}.\] Notice that
+    \begin{equation*}
+        \begin{aligned}
+            ||\y - A\x||_2^2 &= ||\y - QR\x||_2^2 \\ 
+                &= ||I\y - QR\x||_2^2 \\ 
+                &= ||QQ^T \y - QR\x||_2^2 \\ 
+                &= ||Q(Q^T \y - R\x)||_2^2 \\ 
+                &= ||Q^T \y - R\x||_2^2 && Q \text{ is orthogonal, so} ||Q\x||_2^2 = ||\x||_2^2 \\ 
+                &= \left|\left| \begin{bmatrix}
+                    \hat{c} \\ d
+                \end{bmatrix} - \begin{bmatrix}
+                    \hat{R} \\ 0
+                \end{bmatrix} \x \right|\right|_2^2 \\ 
+                &= \left|\left| \begin{bmatrix}
+                    \hat{c} - \hat{R}\x \\ 
+                    d 
+                \end{bmatrix} \right|\right|_2^2 \\ 
+                &= ||\hat{c} - \hat{R}\x||_2^2 + ||d||_2^2
+        \end{aligned}
+    \end{equation*}
+
+    Recall that we rewrote $R$ so that \[R = \begin{bmatrix}
+        \hat{R} \\ \0
+    \end{bmatrix}.\] We can rewrite $Q^T \y$ so that \[Q^T \y = \begin{bmatrix}
+        \hat{c} \\ d
+    \end{bmatrix},\] where $\hat{c}$ and $d$ are vectors of length $m$.  
+\end{enumerate}
+With this in mind, we have 
+\[\min_{\x \in \R^m} ||\y - A\x||_2^2 = \min_{\x \in \R^m} ||\hat{c} - \hat{R}\x||_2^2 + ||d||_2^2.\]
+Here, $\min_{\x \in \R^m} ||\hat{c} - \hat{R}\x||_2^2$ is the solution to $\hat{R}\x = \hat{c}$, with $\hat{c} = Q^T \y(1 : m)$ and $\hat{R} = R(1:m, 1:m)$ and $A = QR$ is a QR decomposition. Additionally, $\hat{R}\x = \hat{c}$ has a unique solution $\x$, assuming $\text{rank}(A) = m$ and $\hat{c} - \hat{R}\x = \0$. The norm of the residual is $||d||_2$. 
+
+
+\begin{mdframed}
+    (Example.) Suppose we have $\min_{\x \in \R^m} ||\y - A\x||_2^2$ with \[A = \begin{bmatrix}
+        -1 & -1 & 1 \\ 
+        1 & 3 & 3 \\ 
+        -1 & -1 & 5 \\ 
+        1 & 3 & 7
+    \end{bmatrix}\] and \[\y = \begin{bmatrix}
+        1 \\ 0 \\ -1 \\ 2
+    \end{bmatrix}\] and want to find $\x$ by using QR. Because we haven't talked about how to do the QR decomposition, we'll give $Q$ and $R$ now: 
+    \begin{equation*}
+        \begin{aligned}
+            \underbrace{\begin{bmatrix}
+                -1 & -1 & 1 \\ 
+                1 & 3 & 3 \\ 
+                -1 & -1 & 5 \\ 
+                1 & 3 & 7
+            \end{bmatrix}}_{A \in \R^{4 \times 4}} &= \frac{1}{2} \underbrace{\begin{bmatrix}
+                -1 & 1 & -1 & 1 \\ 
+                1 & 1 & -1 & -1 \\ 
+                -1 & 1 & 1 & -1 \\ 
+                1 & 1 & 1 & 1
+            \end{bmatrix}}_{Q \in \R^{4 \times 4}} \underbrace{\begin{bmatrix}
+                2 & 4 & 2 \\ 
+                0 & 2 & 8 \\ 
+                0 & 0 & 4 \\ 
+                0 & 0 & 0
+            \end{bmatrix}}_{R \in \R^{4 \times 3}} \\ 
+                &= \begin{bmatrix}
+                    -\frac{1}{2} & \frac{1}{2} & -\frac{1}{2} & \frac{1}{2} \\ 
+                    \frac{1}{2} & \frac{1}{2} & -\frac{1}{2} & -\frac{1}{2} \\ 
+                    -\frac{1}{2} & \frac{1}{2} & \frac{1}{2} & -\frac{1}{2} \\ 
+                    \frac{1}{2} & \frac{1}{2} & \frac{1}{2} & \frac{1}{2}
+                \end{bmatrix} \begin{bmatrix}
+                    2 & 4 & 2 \\ 
+                    0 & 2 & 8 \\ 
+                    0 & 0 & 4 \\ 
+                    0 & 0 & 0
+                \end{bmatrix}
+        \end{aligned}
+    \end{equation*}
+    Note that\footnote{Recall that $\hat{R} = R(1:m, 1:m)$. In other words, we take the first $m$ rows and columns from $R$.} \[\hat{R} = \begin{bmatrix}
+        2 & 4 & 2 \\ 
+        0 & 2 & 8 \\ 
+        0 & 0 & 4
+    \end{bmatrix}.\] Additionally, note that \[Q^T \y = \begin{bmatrix}
+        1 \\ 1 \\ 0 \\ 2
+    \end{bmatrix}\] so it follows that \[\hat{c} = \begin{bmatrix}
+        1 \\ 1 \\ 0
+    \end{bmatrix}.\] Finally, $d = \begin{bmatrix}
+        2
+    \end{bmatrix} = 2$ (note that $d$ is a vector of the remaining entries after $\hat{c}$). Now, we can solve \[\hat{R}\x = \hat{c}.\] In particular,
+    \[\begin{bmatrix}
+        2 & 4 & 2 \\ 
+        0 & 2 & 8 \\ 
+        0 & 0 & 4
+    \end{bmatrix} \begin{bmatrix}
+        x_1 \\ x_2 \\ x_3
+    \end{bmatrix} = \begin{bmatrix}
+        1 \\ 1 \\ 0
+    \end{bmatrix}.\] This gives us \[\x = \begin{bmatrix}
+        -\frac{1}{2} \\ \frac{1}{2} \\ 0
+    \end{bmatrix}.\]
+    The norm of the residual is $||d||_2 = |2| = 2$. 
+\end{mdframed}
+
+
+
+\end{document}
