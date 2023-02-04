@@ -1,0 +1,188 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Math 170A}
+\chead{Wednesday, February 01, 2023}
+\lhead{Lecture 10}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\newcommand{\0}{\mathbf{0}}
+\newcommand{\y}{\mathbf{y}}
+\renewcommand{\b}{\mathbf{b}}
+\newcommand{\x}{\mathbf{x}}
+\newcommand{\e}{\mathbf{e}}
+\newcommand{\rr}{\mathbf{r}}
+\newcommand{\vv}{\mathbf{v}}
+\renewcommand{\u}{\mathbf{u}}
+
+
+\begin{document}
+
+\section{Projectors \& Reflectors (3.2)}
+In this section, we'll talk about projectors and reflectors, something that's important for QR decomposition.
+
+\subsection{Projectors}
+\begin{definition}{Projector}{}
+    A \textbf{projector} is a matrix $P$ with \[P^2 = P.\] 
+\end{definition}
+
+\begin{definition}{Orthoprojector}{}
+    If $P$ is a projector and also symmetric (i.e., $P = P^T$), then $P$ is called an \textbf{orthoprojector}.
+\end{definition}
+
+\begin{mdframed}
+    (Example.) Suppose $\u \in \R^n$ is a unit vector (i.e., $||\u||_2 = 1$). Then, $P = \u \cdot \u^T$ is an orthoprojector. That is, 
+    \[P = \begin{bmatrix}
+        u_1 \\ u_2 \\ \vdots \\ u_n
+    \end{bmatrix} \begin{bmatrix}
+        u_1 & u_2 & \hdots & u_n
+    \end{bmatrix} = \begin{bmatrix}
+        u_1^2 & u_1 u_2 & \hdots & u_1 u_n \\ 
+        u_2 u_1 & u_2^2 & \hdots & u_2 u_n \\ 
+        \vdots & \vdots & \ddots & \vdots \\ 
+        u_n u_1 & u_n u_1 & \hdots & u_n^2 
+    \end{bmatrix}.\]
+    To see why $P$ here is an orthoprojector, we'll show that it satisfies some properties. 
+    \begin{enumerate}
+        \item Definition of a projector.
+        \[P^2 = P \cdot P = (\u \cdot \u^T) (\u \cdot \u^T) = \u (\underbrace{\u^T \u}_{1}) \u^T = \u \u^T = P.\]
+
+        \item Definition of an orthoprojector.
+        \[P^T = (\u \u^T)^T = (\u^T)^T \u^T = \u\u^T = P.\]
+    \end{enumerate}
+    There are some additional properties to know for this case. 
+    \begin{itemize}
+        \item $P\u = \u$:
+        \[P\u = (\u\u^T)\u = \u(\underbrace{\u^T \u}_{1}) = \u.\]
+
+        \item If $\vv \perp \u$ (i.e., $\cyclic{\vv, \u} = 0$), then $P\vv = \0$. 
+        \[P\vv = (\u\u^T)\vv = \u(\underbrace{\u^T\vv}_{0}) = \0.\]
+    \end{itemize}
+\end{mdframed}
+\textbf{Remarks:} 
+\begin{itemize}
+    \item Note that if $\u \in \R^{n \times 1}$, then $\u^T \in \R^{1 \times n}$ and so $P$ will be an $n \times n$ matrix.
+    \item Note that $\u \u^T \neq \u^T \u$. In particular, $\u \u^T$ is an $n \times n$ matrix while $\u^T \u = \cyclic{\u, \u} = ||\u||_{2}^{2}$. 
+\end{itemize}
+
+\subsection{Reflectors}
+Reflectors are built by \emph{projectors}.
+
+\begin{definition}{Reflector}{}
+    For a unit vector $\u \in \R^n$ (i.e., $||\u||_2 = 1$), $Q = I - 2\u \u^T$ is called a (householder) \textbf{reflector}. 
+\end{definition}
+\textbf{Remarks:} 
+\begin{itemize}
+    \item We can rewrite the above with $Q = I - 2P$, where $P = \u \u^T$ is a projector. 
+    \item If $\u$ doesn't have unit norm, we can normalize it,
+    \[\frac{\u}{||\u||_2},\]
+    so that $\left|\left| \frac{\u}{||\u||_2} \right|\right|_2 = \frac{1}{||\u||_2} ||\u||_2 = 1$ (note that $||\u||_2$ is a scalar.) In this sense, we can write 
+    \[Q = I - 2 \frac{\u}{||\u||_2} \frac{\u^T}{||\u||_2} = I - 2 \frac{\u\u^T}{||\u||_2^2}.\]
+\end{itemize}
+There are some properties of $Q = I - 2 \u\u^T$ (where $\u$ is a unit vector) to know.
+\begin{enumerate}
+    \item $Q\u = -\u$. 
+    \[Q\u = (I - 2\u\u^T)\u = \u - 2\u\u^T\u = \u - 2\u = -\u.\]
+
+    \item $Q\vv = \vv$ such that $\vv \perp \u$.
+    \[Q\vv = (I - 2\u\u^T)\vv = \vv - 2\u\underbrace{\u^T\vv}_{\0} = \vv.\]
+
+    \item $Q^T = Q$. 
+    \[Q^T = (I - 2\u\u^T)^T = (I - 2P)^T = I - 2P^T = I - 2P = Q.\]
+    Here, note that $I^T = I$. Additionally, note that $P^T = P$.
+
+    \item $\underbrace{Q^T = Q^{-1}}_{\text{Orthogonal}}$ and $Q = Q^{-1}$ and $Q^T Q = Q^2 = I$. 
+    \[Q^2 = QQ = (I - 2P)(I - 2P) = I - 2P - 2P + 4P^2 = I - 4P - 4P^2 = I - 4P + 4P = I.\]
+\end{enumerate}
+
+\begin{lemma}{}{}
+    For any $\x \in \R^n$ and $\y \in \R^n$ such that \[\y = \begin{bmatrix}
+        ||\x||_2 & 0 & 0 & \hdots & 0
+    \end{bmatrix}^T,\]
+    define $\vv = \x - \y$ and $\u = \frac{\vv}{||\vv||_2}$. Then, 
+    \[Q = U - 2\u\u^T\] is a reflector satisfying $Q\x = \y$. 
+\end{lemma}
+\textbf{Remarks:} 
+\begin{itemize}
+    \item If $\x = \y$, then $Q = I$.
+    \item Alternatively, if $\e_1 = \begin{bmatrix}
+        1 & 0 & 0 & \hdots & 0
+    \end{bmatrix}^T$, then 
+    \[\y = ||\x||_2 \e_1.\] It should be noted that $\e_2 = \begin{bmatrix}
+        0 & 1 & 0 & \hdots & 0
+    \end{bmatrix}$ and $\e_n = \begin{bmatrix}
+        0 & 0 & 0 & \hdots & 1
+    \end{bmatrix}$. 
+\end{itemize} 
+
+\subsection{QR Decomposition (For the 3rd Time)}
+We will talk about reduced QR later; for now, we will focus on full QR. The idea is that, with QR, we'll do something like 
+\[Q_n \hdots Q_2 Q_1 A \mapsto R.\]
+The idea is that, starting from $A$, we can multiply the reflectors multiple times until we end up with $R$, which is an upper-triangular matrix. This is analogous to LU decomposition, where we did 
+\[L_n \hdots L_2 L_1 A \mapsto U.\]
+
+Now, for QR decomposition, given $A \in \R^{n \times m}$ (our ``tall'' matrix), we want to find $QR$. We can rewrite $A$ in column form,
+\[A = \begin{bmatrix}
+    c_1 & c_2 & c_3 & \hdots & c_i & \hdots & c_m
+\end{bmatrix},\] 
+where $c_i$ is the $i$th column for $i = 1, 2, \hdots, m$. Recall that we want to derive $R$; that is, we want an upper-triangular matrix. So, starting from the first column, we want to make all the entries under $a_{11}$ 0. We can use a reflector mapping $Q_1$ to map the column,
+\[c_1 \mapsto ||c_1|| \e_1\]
+where $\e_1 \in \R^n$, so that we end up with
+\[Q_1 A = \begin{bmatrix}
+    ||c_1|| & * & * & \hdots & * \\ 
+    0 & * & * & \hdots & * \\ 
+    \vdots & \vdots & \vdots & \ddots & \vdots \\ 
+    0 & * & * & \hdots & *
+\end{bmatrix} = \begin{bmatrix}
+    ||c_1|| & * & * & \hdots & * \\ 
+    0 & \underline{*} & \underline{*} & \hdots & \underline{*} \\ 
+    \vdots & \vdots & \vdots & \ddots & \vdots \\ 
+    0 & \underline{*} & \underline{*} & \hdots & \underline{*}
+\end{bmatrix}.\]
+From the above matrix, we can represent the underlined stars as a new matrix: \[\tilde{A} = \begin{bmatrix}
+    \underline{*} & \underline{*} & \hdots & \underline{*} \\ 
+    \vdots & \vdots & \ddots & \vdots \\ 
+    \underline{*} & \underline{*} & \hdots & \underline{*}
+\end{bmatrix} \in \R^{(n - 1) \times (m - 1)}.\]
+So, if we have 
+\[\tilde{A} = \begin{bmatrix}
+    \tilde{c_2} & \tilde{c_3} & \hdots & \tilde{c_m}
+\end{bmatrix},\] we want to define a reflector mapping \[\tilde{Q_2}: \tilde{c_2} \mapsto ||\tilde{c_2}|| \tilde{e_1}\] where $\tilde{e_1} \in \R^{n - 1}$. Now, define \[Q_2 = \begin{bmatrix}
+    1 & 0 \\ 
+    0 & \tilde{Q_2}
+\end{bmatrix}\] so that \[Q_2 Q_1 A = \begin{bmatrix}
+    ||c_1|| & * & * & \hdots & * \\ 
+    0 & ||\tilde{c_2}|| & * & \hdots & * \\ 
+    0 & 0 & * & \hdots & * \\
+    \vdots & \vdots & \vdots & \ddots & \vdots \\ 
+    0 & 0 & * & \hdots & *
+\end{bmatrix} = \begin{bmatrix}
+    ||c_1|| & * & * & \hdots & * \\ 
+    0 & ||\tilde{c_2}|| & * & \hdots & * \\ 
+    0 & 0 & \underline{*} & \hdots & \underline{*} \\
+    \vdots & \vdots & \vdots & \ddots & \vdots \\ 
+    0 & 0 & \underline{*} & \hdots & \underline{*}
+\end{bmatrix}.\] From this, we can define \[B = \begin{bmatrix}
+    \underline{*} & \hdots & \underline{*} \\ 
+    \vdots & \ddots & \vdots \\ 
+    \underline{*} & \hdots & \underline{*}
+\end{bmatrix}.\] Continuing this process, we should eventually end up with \[Q_m \hdots Q_1 A = \begin{bmatrix}
+    ||c_1|| & * & * & \hdots & * \\ 
+    0       & ||\tilde{c_2}|| & * & \hdots & * \\ 
+    0       & 0               & ||\tilde{c_3}|| & \hdots & * \\ 
+    \vdots  & \vdots          & \vdots          & \ddots & * \\ 
+    0       & 0               & 0               & \hdots & ||\tilde{c_m}|| \\ 
+    \vdots  & \vdots          & \vdots          & \vdots & \vdots \\ 
+    0 & 0 & 0 & 0 & 0
+\end{bmatrix} = R.\]
+Note that $\tilde{Q}A = R \implies A = QR$. Then, the question becomes: how do we define $Q$? 
+
+\end{document}
