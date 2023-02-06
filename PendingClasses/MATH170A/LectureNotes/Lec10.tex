@@ -183,6 +183,17 @@ So, if we have
     \vdots  & \vdots          & \vdots          & \vdots & \vdots \\ 
     0 & 0 & 0 & 0 & 0
 \end{bmatrix} = R.\]
-Note that $\tilde{Q}A = R \implies A = QR$. Then, the question becomes: how do we define $Q$? 
+Note that $\tilde{Q}A = R \implies A = QR$. Then, the question becomes: how do we define $Q$? We can define $Q$ as\footnote{Recall that $\tilde{Q}$ is orthogonal.} \[Q = \tilde{Q}^{-1} = \tilde{Q}^{T}.\] 
+\textbf{Remarks:}
+\begin{itemize}
+    \item The product of orthogonal matrices is \textbf{orthogonal}.
+    \item The inverse of orthogonal matrices is \textbf{orthogonal}.
+    \item Note that full QR is not unique.
+\end{itemize}
+Now, if $A$ has full rank and $r_{ii} > 0$ (the diagonal on the $R$), then the QR decomposition is unique. Note that 
+\begin{itemize}
+    \item If $A$ has full rank, then $A$ has $m$ linearly independent columns and $\text{rank}(A) = \min\{n, m\} = m$.
+\end{itemize}
+
 
 \end{document}
