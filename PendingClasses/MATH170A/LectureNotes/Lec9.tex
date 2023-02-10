@@ -29,7 +29,7 @@
 In the previous section, we learned how to construct a Least Squares Problem given a set of points. The idea was to find a function such that the residual was minimized. We talked briefly about using QR decomposition and how it could be used to solve this problem. Now, we'll talk more about using QR decomposition. 
 
 \begin{theorem}{Full QR Decomposition}{}
-    Let $A \in \R^{n \times m}$ such that $n \geq m$. Then, there exists an orthogonal $Q \in \R^{n \times m}$ and $R \in \R^{n \times m}$ with 
+    Let $A \in \R^{n \times m}$ such that $n \geq m$. Then, there exists an orthogonal $Q \in \R^{n \times n}$ and $R \in \R^{n \times m}$ with 
     \[R = \begin{bmatrix}
         r_{11} & r_{12} & \hdots & r_{1m} \\ 
         0 & r_{22} & \hdots & r_{2m} \\

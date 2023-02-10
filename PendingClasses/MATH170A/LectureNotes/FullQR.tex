@@ -1,0 +1,420 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Math 170A}
+\lhead{Supplemental}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\newcommand{\0}{\mathbf{0}}
+\newcommand{\y}{\mathbf{y}}
+\renewcommand{\b}{\mathbf{b}}
+\newcommand{\x}{\mathbf{x}}
+\newcommand{\e}{\mathbf{e}}
+\newcommand{\rr}{\mathbf{r}}
+\newcommand{\vv}{\mathbf{v}}
+\renewcommand{\u}{\mathbf{u}}
+
+
+\begin{document}
+
+
+\section{QR Decomposition of a Tall Matrix}
+\begin{mdframed}
+    Find the full QR decomposition of \[A = \begin{bmatrix}
+        1 & -1 & 4 \\
+        1 & 4 & -2 \\ 
+        1 & 4 & 2 \\ 
+        1 & -1 & 0
+    \end{bmatrix}.\]
+\end{mdframed}
+
+\begin{itemize}
+    \item \underline{Step 1:} First, we start with $\vec{a_1} = \begin{bmatrix}
+        1 \\ 1 \\ 1 \\ 1
+    \end{bmatrix}$, the first column of $A$. We want to map $\vec{a_1} \mapsto ||\vec{a_1}||_2 \e_1$, so we have $||\vec{a_1}||_2 = \sqrt{4} = 2$ and \[\vec{a_1} \mapsto 2\begin{bmatrix}
+        1 \\ 0 \\ 0 \\ 0
+    \end{bmatrix} = \begin{bmatrix}
+        2 \\ 0 \\ 0 \\ 0
+    \end{bmatrix}.\] Using the lemma discussed in lecture 10, we can define \[\vec{v_1} = \vec{a_1} - ||\vec{a_1}||_2 \e_1 = \begin{bmatrix}
+        1\\1\\1\\1
+    \end{bmatrix} - \begin{bmatrix}
+        2\\0\\0\\0
+    \end{bmatrix} = \begin{bmatrix}
+        -1 \\ 1 \\ 1 \\ 1
+    \end{bmatrix}\] \[||\vec{v_1}||_2 = 2\] and so \[\vec{u_1} = \frac{\vec{v_1}}{||\vec{v_1}||_2} = \frac{1}{2} \begin{bmatrix}
+        -1 \\ 1 \\ 1 \\ 1
+    \end{bmatrix} = \begin{bmatrix}
+        -\frac{1}{2} \\ \frac{1}{2} \\ \frac{1}{2} \\ \frac{1}{2}
+    \end{bmatrix}.\] Then, we have \[Q_1 = I - 2\vec{u_1}\vec{u_1}^T = \begin{bmatrix}
+        1 & 0 & 0 & 0 \\ 
+        0 & 1 & 0 & 0 \\ 
+        0 & 0 & 1 & 0 \\ 
+        0 & 0 & 0 & 1
+    \end{bmatrix} - 2 \begin{bmatrix}
+        -\frac{1}{2} \\ \frac{1}{2} \\ \frac{1}{2} \\ \frac{1}{2}
+    \end{bmatrix} \begin{bmatrix}
+        -\frac{1}{2} & \frac{1}{2} & \frac{1}{2} & \frac{1}{2}
+    \end{bmatrix} = \begin{bmatrix}
+        \frac{1}{2} & \frac{1}{2} & \frac{1}{2} & \frac{1}{2} \\ 
+        \frac{1}{2} & \frac{1}{2} & -\frac{1}{2} & -\frac{1}{2} \\ 
+        \frac{1}{2} & -\frac{1}{2} & \frac{1}{2} & -\frac{1}{2} \\ 
+        \frac{1}{2} & -\frac{1}{2} & -\frac{1}{2} & \frac{1}{2}
+    \end{bmatrix}.\]
+    From this, it follows that 
+    \[Q_1 A = \begin{bmatrix}
+        2 & 3 & 2 \\ 
+        0 & 0 & 0 \\ 
+        0 & 0 & 4 \\ 
+        0 & -5 & 2
+    \end{bmatrix}.\]
+
+
+
+    \item \underline{Step 2:} We now look at the second column of $Q_1 A$ (\emph{not} $A$). Note that this is\footnote{As from lecture, we set the value in the first row and at that column to 0.} $\vec{\tilde{a_2}} = \begin{bmatrix}
+        0 \\ 0 \\ 0 \\ -5
+    \end{bmatrix}$, and $||\vec{\tilde{a_2}}||_2 = \sqrt{25} = 5$. So. mapping $\vec{\tilde{a_2}} \mapsto ||\vec{\tilde{a_2}}||_2 \e_2$, we have 
+    \[\vec{\tilde{a_2}} \mapsto 5 \begin{bmatrix}
+        0 \\ 1 \\ 0 \\ 0
+    \end{bmatrix} = \begin{bmatrix}
+        0 \\ 5 \\ 0 \\ 0
+    \end{bmatrix}.\] So, using the lemma again, we define 
+    \[\vec{v_2} = \vec{\tilde{a_2}} - ||\vec{\tilde{a_2}}||_2 \e_2 = \begin{bmatrix}
+        0 \\ 0 \\ 0 \\ -5
+    \end{bmatrix} - \begin{bmatrix}
+        0 \\ 5 \\ 0 \\ 0
+    \end{bmatrix} = \begin{bmatrix}
+        0 \\ -5 \\ 0 \\ -5
+    \end{bmatrix}\] \[||\vec{v_2}||_2 = \sqrt{(-5)^2 + 5^2} = \sqrt{50}\] and so \[\vec{u_2} = \frac{1}{\sqrt{50}} \begin{bmatrix}
+        0 \\ -5 \\ 0 \\ -5
+    \end{bmatrix} = \begin{bmatrix}
+        0 \\ \frac{-5}{\sqrt{50}} \\ 0 \\ \frac{-5}{\sqrt{50}}
+    \end{bmatrix}.\]
+    Then, 
+    \[Q_2 = I - 2\vec{u_2}\vec{u_2}^T = \begin{bmatrix}
+        1 & 0 & 0 & 0 \\ 
+        0 & 1 & 0 & 0 \\ 
+        0 & 0 & 1 & 0 \\ 
+        0 & 0 & 0 & 1
+    \end{bmatrix} - 2 \begin{bmatrix}
+        0 \\ \frac{-5}{\sqrt{50}} \\ 0 \\ \frac{-5}{\sqrt{50}}
+    \end{bmatrix} \begin{bmatrix}
+        0 & \frac{-5}{\sqrt{50}} & 0 & \frac{-5}{\sqrt{50}}
+    \end{bmatrix} = \begin{bmatrix}
+        1 & 0 & 0 &0\\ 
+        0 & 0 & 0 &-1\\ 
+        0 & 0 & 1 &0\\ 
+        0 & -1 & 0 & 0
+    \end{bmatrix}.\]
+    From this, it follows that 
+    \[Q_2 (Q_1 A) = \begin{bmatrix}
+        2 & 3 & 2 \\ 
+        0 & 5 & -2 \\ 
+        0 & 0 & 4 \\ 
+        0 & 0 & 0
+    \end{bmatrix}.\]
+\end{itemize}
+Notice how, in step 2, we found an upper-triangular matrix. Therefore, we have that 
+\[R = \begin{bmatrix}
+    2 & 3 & 2 \\ 
+    0 & 5 & -2 \\ 
+    0 & 0 & 4 \\ 
+    0 & 0 & 0
+\end{bmatrix}\] and 
+\begin{equation*}
+    \begin{aligned}
+        Q_2 (Q_1 A) &= R \\ 
+            &\implies Q_1 A = Q_2^{-1} R \\ 
+            &\implies A = Q_1^{-1} Q_2^{-1} R \\ 
+            &\implies A =  \begin{bmatrix}
+                \frac{1}{2} & \frac{1}{2} & \frac{1}{2} & \frac{1}{2} \\ 
+                \frac{1}{2} & \frac{1}{2} & -\frac{1}{2} & -\frac{1}{2} \\ 
+                \frac{1}{2} & -\frac{1}{2} & \frac{1}{2} & -\frac{1}{2} \\ 
+                \frac{1}{2} & -\frac{1}{2} & -\frac{1}{2} & \frac{1}{2}
+            \end{bmatrix}^{-1} \begin{bmatrix}
+                1 & 0 & 0 &0\\ 
+                0 & 0 & 0 &-1\\ 
+                0 & 0 & 1 &0\\ 
+                0 & -1 & 0 & 0
+            \end{bmatrix}^{-1} R \\ 
+            &\implies A = \begin{bmatrix}
+                \frac{1}{2} & \frac{1}{2} & \frac{1}{2} & \frac{1}{2} \\ 
+                \frac{1}{2} & \frac{1}{2} & -\frac{1}{2} & -\frac{1}{2} \\ 
+                \frac{1}{2} & -\frac{1}{2} & \frac{1}{2} & -\frac{1}{2} \\ 
+                \frac{1}{2} & -\frac{1}{2} & -\frac{1}{2} & \frac{1}{2}
+            \end{bmatrix} \begin{bmatrix}
+                1 & 0 & 0 &0\\ 
+                0 & 0 & 0 &-1\\ 
+                0 & 0 & 1 &0\\ 
+                0 & -1 & 0 & 0
+            \end{bmatrix} R \\
+            &\implies A = \begin{bmatrix}
+                \frac{1}{2}&-\frac{1}{2}&\frac{1}{2}&-\frac{1}{2} \\ 
+                \frac{1}{2}&\frac{1}{2}&-\frac{1}{2}&-\frac{1}{2} \\ 
+                \frac{1}{2}&\frac{1}{2}&\frac{1}{2}&\frac{1}{2} \\ 
+                \frac{1}{2}&-\frac{1}{2}&-\frac{1}{2}&\frac{1}{2}
+            \end{bmatrix} R.
+    \end{aligned}
+\end{equation*} 
+So, \[Q = \begin{bmatrix}
+    \frac{1}{2}&-\frac{1}{2}&\frac{1}{2}&-\frac{1}{2} \\ 
+    \frac{1}{2}&\frac{1}{2}&-\frac{1}{2}&-\frac{1}{2} \\ 
+    \frac{1}{2}&\frac{1}{2}&\frac{1}{2}&\frac{1}{2} \\ 
+    \frac{1}{2}&-\frac{1}{2}&-\frac{1}{2}&\frac{1}{2}
+\end{bmatrix}.\]
+
+
+
+
+
+
+
+
+
+
+\newpage 
+\section{Reflector}
+\begin{mdframed}
+    Find a reflector $Q$ that maps the vector $\vec{x} = \begin{bmatrix}
+        3 \\ 4 \\ 1 \\ 3 \\ 1
+    \end{bmatrix}$ to a multiple of the first column of the $5 \times 5$ identity, $\e_1$. Compute $Q$ by writing it as \[Q = I - 2\frac{\vec{u}\vec{u}^T}{||\vec{u}||_2^2}\] for some appropriate $\vec{u}$, and write it as a completely assembled matrix.
+\end{mdframed}
+
+We want to map $\vec{x} \mapsto ||\vec{x}||_2 \e_1$. Notice how \[||\vec{x}||_2 = \sqrt{3^2 + 4^2 + 1^2 + 3^2 + 1^2} = \sqrt{9 + 16 + 1 + 9 + 1} = \sqrt{36} = 6.\] So, we're mapping \[\vec{x} \mapsto 6\begin{bmatrix}
+    1 \\ 0 \\ 0 \\ 0 \\ 0
+\end{bmatrix} = \begin{bmatrix}
+    6 \\ 0 \\ 0 \\ 0 \\ 0
+\end{bmatrix}.\] Now, we can define \[\vec{v} = \vec{x} - ||\vec{x}||_2 \e_1 = \begin{bmatrix}
+    3 \\ 4 \\ 1 \\ 3 \\ 1
+\end{bmatrix} - \begin{bmatrix}
+    6 \\ 0 \\ 0 \\ 0 \\ 0
+\end{bmatrix} = \begin{bmatrix}
+    -3 \\ 4 \\ 1 \\ 3 \\ 1
+\end{bmatrix}\] \[||\vec{v}||_2 = 6.\] So, 
+\[\vec{u} = \frac{1}{6}\begin{bmatrix}
+    -3 \\ 4 \\ 1 \\ 3 \\ 1
+\end{bmatrix} = \begin{bmatrix}
+    -\frac{1}{2} \\ \frac{2}{3} \\ \frac{1}{6} \\ \frac{1}{2} \\ \frac{1}{6}
+\end{bmatrix}.\] Thus, 
+\[Q = I - 2\vec{u}\vec{u}^T = \begin{bmatrix}
+    1 & 0 & 0 & 0 & 0 \\ 
+    0 & 1 & 0 & 0 & 0 \\ 
+    0 & 0 & 1 & 0 & 0 \\ 
+    0 & 0 & 0 & 1 & 0 \\ 
+    0 & 0 & 0 & 0 & 1 
+\end{bmatrix} - 2\begin{bmatrix}
+    -\frac{1}{2} \\ \frac{2}{3} \\ \frac{1}{6} \\ \frac{1}{2} \\ \frac{1}{6}
+\end{bmatrix}\begin{bmatrix}
+    -\frac{1}{2} & \frac{2}{3} & \frac{1}{6} & \frac{1}{2} & \frac{1}{6}
+\end{bmatrix}\]
+Therefore, the answer is 
+\[\begin{bmatrix}
+    \frac{1}{2}&\frac{2}{3}&\frac{1}{6}&\frac{1}{2}&\frac{1}{6}\\ 
+    \frac{2}{3}&\frac{1}{9}&-\frac{2}{9}&-\frac{2}{3}&-\frac{2}{9}\\ 
+    \frac{1}{6}&-\frac{2}{9}&\frac{17}{18}&-\frac{1}{6}&-\frac{1}{18}\\ 
+    \frac{1}{2}&-\frac{2}{3}&-\frac{1}{6}&\frac{1}{2}&-\frac{1}{6}\\ 
+    \frac{1}{6}&-\frac{2}{9}&-\frac{1}{18}&-\frac{1}{6}&\frac{17}{18}
+\end{bmatrix}.\]
+
+
+
+
+\newpage 
+\section{Least Squares}
+\begin{mdframed}
+    Consider the overdetermined system 
+    \[\begin{bmatrix}
+        1 \\ 1
+    \end{bmatrix} \begin{bmatrix}
+        x
+    \end{bmatrix} = \begin{bmatrix}
+        9 \\ 5
+    \end{bmatrix}.\] 
+    \begin{enumerate}[(a)]
+        \item Calculate a full QR decomposition of the coefficient matrix with the help of Householder reflectors.
+        \item Using the QR decomposition from part (a), calculate the least squares solution (the minimizer). 
+        \item Calculate the norm of the residual with the help of $Q$ (the minimum).
+    \end{enumerate}
+\end{mdframed}
+Here, $A$ is a $2 \times 1$ matrix and so $n = 2$ and $m = 1$. 
+
+\subsection*{Part (A)}
+We want to find the QR decomposition of $\begin{bmatrix}
+    1 \\ 1
+\end{bmatrix}$. There's only one column, which we'll call $\vec{a} = \begin{bmatrix}
+    1 \\ 1
+\end{bmatrix}$. Note that $||\vec{a}||_2 = \sqrt{1^2 + 1^2} = \sqrt{2}$ and so we can map $\vec{a} \mapsto ||\vec{a}||_2 \e_1$ by 
+\[\vec{a} \mapsto \sqrt{2} \begin{bmatrix}
+    1 \\ 0
+\end{bmatrix} = \begin{bmatrix}
+    \sqrt{2} \\ 0
+\end{bmatrix}.\]
+Using the lemma discussed in class, we define 
+\[\vec{v} = \vec{a} - ||\vec{a}||_2 \e_1 = \begin{bmatrix}
+    1 \\ 1
+\end{bmatrix} - \begin{bmatrix}
+    \sqrt{2} \\ 0
+\end{bmatrix} = \begin{bmatrix}
+    1 - \sqrt{2} \\ 1
+\end{bmatrix}\] \[||\vec{v}|| = \sqrt{(1 - \sqrt{2})^2 + 1^2} = \sqrt{4 - 2\sqrt{2}}\] and so we have 
+\[\vec{u} = \frac{\vec{v}}{||\vec{v}||_2} = \frac{1}{\sqrt{4 - 2\sqrt{2}}} \begin{bmatrix}
+    1 - \sqrt{2} \\ 1
+\end{bmatrix} = \begin{bmatrix}
+    \frac{1-\sqrt{2}}{\sqrt{4-2\sqrt{2}}}\\ 
+    \frac{1}{\sqrt{4-2\sqrt{2}}}
+\end{bmatrix}.\] From there, we have 
+\[Q = I - 2\vec{u}\vec{u}^T = \begin{bmatrix}
+    1 & 0 \\ 0 & 1
+\end{bmatrix} - 2 \begin{bmatrix}
+    \frac{1-\sqrt{2}}{\sqrt{4-2\sqrt{2}}}\\ 
+    \frac{1}{\sqrt{4-2\sqrt{2}}}
+\end{bmatrix} \begin{bmatrix}
+    \frac{1-\sqrt{2}}{\sqrt{4-2\sqrt{2}}} & 
+    \frac{1}{\sqrt{4-2\sqrt{2}}}
+\end{bmatrix} = \begin{bmatrix}
+    \frac{1}{\sqrt{2}} & \frac{1}{\sqrt{2}} \\ 
+    \frac{1}{\sqrt{2}} & -\frac{1}{\sqrt{2}}
+\end{bmatrix}.\] Then, 
+\[QA = R = \begin{bmatrix}
+    \sqrt{2} \\ 0
+\end{bmatrix}.\] Therefore\footnote{Note that $Q$ is orthogonal and also our householder reflector, so $Q^T = Q^{-1} = Q$.}, 
+\[A = \underbrace{\begin{bmatrix}
+    \frac{1}{\sqrt{2}} & \frac{1}{\sqrt{2}} \\ 
+    \frac{1}{\sqrt{2}} & -\frac{1}{\sqrt{2}}
+\end{bmatrix}}_{Q} \underbrace{\begin{bmatrix}
+    \sqrt{2} \\ 0
+\end{bmatrix}}_{R}.\]
+
+
+\subsection*{Part (B)}
+If $\vec{y} = \begin{bmatrix}
+    9 \\ 5
+\end{bmatrix}$, then \[Q^T \vec{y} = Q \vec{y} = \begin{bmatrix}
+    \frac{1}{\sqrt{2}} & \frac{1}{\sqrt{2}} \\ 
+    \frac{1}{\sqrt{2}} & -\frac{1}{\sqrt{2}}
+\end{bmatrix} \begin{bmatrix}
+    9 \\ 5
+\end{bmatrix} = \begin{bmatrix}
+    7\sqrt{2} \\ 2\sqrt{2}
+\end{bmatrix}.\] Since $m = 1$, we have 
+\[\hat{c} = \begin{bmatrix}
+    7 \sqrt{2}
+\end{bmatrix} \quad \hat{R} = \begin{bmatrix}
+    \sqrt{2}
+\end{bmatrix}.\] The idea is to solve $\hat{R}\vec{x} = \hat{c}$, so \[\begin{bmatrix}
+    \sqrt{2}
+\end{bmatrix}\begin{bmatrix}
+    x
+\end{bmatrix} = \begin{bmatrix}
+    7\sqrt{2}
+\end{bmatrix}.\]
+This gives us $\vec{x} = \begin{bmatrix}
+    7
+\end{bmatrix}$, the minimizer.
+
+\subsection*{Part (C)}
+From part (b), we know that $Q^T \vec{y} = \begin{bmatrix}
+    7\sqrt{2} \\ 2\sqrt{2}
+\end{bmatrix}$. Recall that if $\hat{c}$ consisted of the first $m$ elements, then $\hat{d}$ will consist of the remaining elements. So, \[\hat{d} = \begin{bmatrix}
+    2\sqrt{2}
+\end{bmatrix}\] and so \[||\hat{d}||_2 = \sqrt{(2\sqrt{2})^2} = \sqrt{8} = 2\sqrt{2},\] the minimum.
+
+
+\subsection*{Remarks}
+In lecture 9, we wrote 
+\[Q^T\vec{y} = \begin{bmatrix}
+    \hat{c} \\ \hat{d}
+\end{bmatrix},\] where 
+\[\hat{c} = Q^T\vec{y}(1:m) \quad \hat{d} = Q^T\vec{y}(m + 1:).\] Likewise, $\hat{R} = R(1:m, 1:m)$.
+
+
+
+
+
+
+
+
+\newpage 
+\section{Another QR Decomposition \& Least Squares}
+\begin{mdframed}
+    Find the full QR decomposition for $A$ and use it to find the minimizer $\vec{x}$ and the minimum value that solves the least squares problem $\min_{x \in \R} ||\vec{b} - A\vec{x}||_2$ with \[A = \begin{bmatrix}
+        1 \\ 0 \\ 1
+    \end{bmatrix} \quad \vec{b} = \begin{bmatrix}
+        2 \\ 2 \\ 0
+    \end{bmatrix}.\]
+\end{mdframed}
+Note that $n = 3$ and $m = 1$. 
+
+\subsection*{QR Decomposition}
+Let $\vec{a}$ be the first (and only) column of $A$. We know that \[||\vec{a}||_2 = \sqrt{2},\] so we're mapping $\vec{a} \mapsto \sqrt{2}\e_1$; that is, 
+\[\vec{a} \mapsto \begin{bmatrix}
+    \sqrt{2} \\ 0 \\ 0
+\end{bmatrix}.\] Then, 
+\[\vec{v} = \begin{bmatrix}
+    1 \\ 0 \\ 1
+\end{bmatrix} - \begin{bmatrix}
+    \sqrt{2} \\ 0 \\ 0
+\end{bmatrix} = \begin{bmatrix}
+    1 - \sqrt{2} \\ 0 \\ 1
+\end{bmatrix}\] \[||\vec{v}||_2 = \sqrt{(1 - \sqrt{2})^2 + 1^2} = \sqrt{4 - 2\sqrt{2}}.\] Then, 
+\[\vec{u} = \frac{1}{\sqrt{4 - 2\sqrt{2}}} \begin{bmatrix}
+    1 - \sqrt{2} \\ 0 \\ 1
+\end{bmatrix} = \begin{bmatrix}
+    \frac{1-\sqrt{2}}{\sqrt{4-2\sqrt{2}}}\\ 
+    0
+    \\ \frac{1}{\sqrt{4-2\sqrt{2}}}
+\end{bmatrix}.\] From there, 
+\[Q = \begin{bmatrix}
+    1 & 0 & 0 \\
+    0 & 1 & 0 \\ 
+    0 & 0 & 1
+\end{bmatrix} - 2\begin{bmatrix}
+    \frac{1-\sqrt{2}}{\sqrt{4-2\sqrt{2}}}\\ 
+    0
+    \\ \frac{1}{\sqrt{4-2\sqrt{2}}}
+\end{bmatrix}\begin{bmatrix}
+    \frac{1-\sqrt{2}}{\sqrt{4-2\sqrt{2}}}& 
+    0
+    & \frac{1}{\sqrt{4-2\sqrt{2}}}
+\end{bmatrix} = \begin{bmatrix}
+    \frac{1}{\sqrt{2}} & 0 & \frac{1}{\sqrt{2}}\\ 
+    0 & 1 & 0 \\ 
+    \frac{1}{\sqrt{2}} & 0 & -\frac{1}{\sqrt{2}}
+\end{bmatrix}\]
+Then, 
+\[QA = R = \begin{bmatrix}
+    \sqrt{2} \\ 0 \\ 0
+\end{bmatrix}.\]
+
+\subsection*{Minimizer}
+Note that 
+\[Q^T\vec{b} = Q\vec{b} = \begin{bmatrix}
+    \sqrt{2} \\ 2 \\ \sqrt{2}
+\end{bmatrix}.\] Since $m = 1$, we have 
+\[\hat{c} = Q^T\vec{b}(1 : m) = \begin{bmatrix}
+    \sqrt{2}
+\end{bmatrix} \quad \hat{R} = \begin{bmatrix}
+    \sqrt{2}
+\end{bmatrix}\] so 
+\[\hat{R}\vec{x} = \hat{c} \implies \begin{bmatrix}
+    \sqrt{2}
+\end{bmatrix} \vec{x} = \begin{bmatrix}
+    \sqrt{2}
+\end{bmatrix}\] and thus $\hat{x} = \begin{bmatrix}
+    1
+\end{bmatrix}$. 
+
+\subsection*{Minimum}
+Likewise, 
+\[\hat{d} = Q^T\hat{b}(m+1:) = \begin{bmatrix}
+    2 \\ \sqrt{2}
+\end{bmatrix}.\] So, \[||\hat{d}||_2 = \sqrt{2^2 + (\sqrt{2})^2} = \sqrt{4 + 2} = \sqrt{6}.\]
+
+\end{document}
