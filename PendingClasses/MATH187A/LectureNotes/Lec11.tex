@@ -1,0 +1,165 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{csquotes}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Math 187A}
+\chead{Wednesday, February 15, 2023}
+\lhead{Lecture 11}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\section{Codebreaking}
+Continued from previous section.
+
+\subsection{Index of Coincidence}
+Imagine starting with some text consisting of only uppercase alphabet characters. Separate all of the letters from each other. Throw them all into in a bag to shuffle them up. Then draw two letters from it without replacement. What is the probability that the two letters you drew are the same?
+
+\bigskip
+
+We can let $N$ be the total number of letters in the bag. For each letter $\alpha$, let $N_\alpha$ be the number of times that $\alpha$ appears in the bag. Then, $\frac{N_\alpha}{N}$ is the probability that $\alpha$ is the first letter you draw from the bag. After you get that letter, there are $N - 1$ letters left in the bag and $\alpha$ occurs only $N_\alpha - 1$ times, so the probability of drawing $\alpha$ again is $\frac{N_\alpha - 1}{N - 1}$. The overall probability, then, of drawing $\alpha$ twice is \[\frac{N_\alpha (N_\alpha - 1)}{N(N - 1)}.\]
+
+Now, notice that this probability is for \emph{some} letter $\alpha$. However, the question we asked in the first paragraph asks what the probability is of drawing two of the same letters in a row. So, we need to consider every possible letter; therefore, the probability we're looking for is \[\sum_{\alpha \in \{A, \hdots, Z\}} \frac{N_\alpha (N_\alpha - 1)}{N(N - 1)}.\] 
+
+\begin{mdframed}
+    (Exercise.) Above we stated that the probability of drawing $\alpha$ for our first letter is $N_\alpha / N$ and the probability of drawing $\alpha$ for our second letter is $(N_\alpha - 1) / (N - 1)$, so the probability of drawing two $\alpha$'s in a row is the product of these. Justify this ``multiplication'' of probabilities using conditional probabilities.
+
+    \begin{mdframed}
+        Let $A_{\alpha}$ be the event that the first letter is $\alpha$, and let $B_\alpha$ be the event that the second letter is $\alpha$. Notice how $\PR[A_{\alpha}] = \frac{N_\alpha}{N}$ and $\PR[B_\alpha | A_\alpha] = \frac{N_\alpha - 1}{N - 1}$, so it follows that \[\PR[B_\alpha | A_\alpha] = \frac{\PR[B_\alpha \cap A_\alpha]}{\PR[A_\alpha]} \implies \PR[B_\alpha | A_\alpha] \PR[A_\alpha] = \PR[B_\alpha \cap A_\alpha] \implies \PR[B_\alpha \cap A_\alpha] = \frac{N_\alpha}{N} \frac{N_\alpha - 1}{N - 1}.\]
+    \end{mdframed}
+\end{mdframed}
+Since there are 26 letters in the English alphabet, it turns out to be convenient to normalize this probability we computed above by multiplying by 26. The resulting number gets a special name: 
+\begin{definition}{Index of Confidence}{}
+    Let $N$ be the length of some text and, for each letter $\alpha$, let $N_\alpha$ be the number of times $\alpha$ occurs in this text. The \textbf{index of confidence} of the text, denoted $IC$, is the number \[IC = 26 \sum_{\alpha \in \{A, \hdots, Z\}} \frac{N_\alpha (N_\alpha - 1)}{N(N - 1)}.\]
+\end{definition}
+
+\begin{mdframed}
+    Suppose that you start with a text where every letter appears equally often. What would the index of coincidence of such a text be?
+
+    \begin{mdframed}
+        If every letter appears equally often, then we know that there will be $\frac{1}{26}N$ of each letter. Then, the index of coincidence is given by 
+        \begin{equation*}
+            \begin{aligned}
+                IC &= 26 \sum_{\alpha \in \{A, \hdots, Z\}} \frac{\frac{1}{26}N (\frac{1}{26}N - 1)}{N(N - 1)} \\ 
+                    &= 26\frac{1}{26}\frac{1}{26} \sum_{\alpha \in \{A, \hdots, Z\}} \frac{N (N - 1)}{N(N - 1)} \\ 
+                    &= 26\frac{1}{26}\frac{1}{26} \sum_{\alpha \in \{A, \hdots, Z\}} 1 \\ 
+                    &= 26\frac{1}{26}\frac{1}{26} 26 \\ 
+                    &= 1.
+            \end{aligned}
+        \end{equation*}
+    \end{mdframed}
+\end{mdframed}
+
+
+\begin{mdframed}
+    (Exercise.) What is the largest possible index of coincidence? What kind of text would result in an index of coincidence that’s as large as possible?
+
+    \begin{mdframed}
+        Suppose only one letter was in some given text. Then, $N_\alpha = N$ and 
+        \begin{equation*}
+            \begin{aligned}
+                IC &= 26 \sum_{\alpha \in \{A, \hdots, Z\}} \frac{N (N - 1)}{N(N - 1)} \\ 
+                    &= 26 \sum_{\alpha \in \{A, \hdots, Z\}} 1 \\ 
+                    &= 26 \cdot 26 \\ 
+                    &= 26^2.
+            \end{aligned}
+        \end{equation*}
+        So, the largest possible index of coincidence is 26 and the resulting text would only have one letter.
+    \end{mdframed}
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) Let $N$ be the length of some text and, for each letter $\alpha$, let $N_\alpha$ be the number of times $\alpha$ occurs in this text. Let $p_\alpha = N_\alpha / N$. Show that, if $N$ is very large, then 
+    \[IC \approx 26 \sum_{\alpha \in \{A, \hdots, Z\}} p_\alpha^2.\]
+
+    \begin{mdframed}
+        Note that 
+        \begin{equation*}
+            \begin{aligned}
+                IC &= 26 \sum_{\alpha \in \{A, \hdots, Z\}} \frac{N_\alpha (N_\alpha - 1)}{N(N - 1)} \\
+                    &\approx 26 \sum_{\alpha \in \{A, \hdots, Z\}} p_{\alpha} p_{\alpha} && \text{Assume } N \text{ is very large} \\ 
+                    &= 26 \sum_{\alpha \in \{A, \hdots, Z\}} p_\alpha^2.
+            \end{aligned}
+        \end{equation*}
+    \end{mdframed}
+\end{mdframed}
+
+As we've seen, relative frequencies of letters in English are roughly stable from text to text, at least for sufficiently long texts. Correspondingly, the index of coincidence is also roughly stable from text to text! Here is the relevant heuristic:
+
+\begin{mdframed}
+    (Heuristic.) The index of coincidence of long English plaintext is 
+    \begin{itemize}
+        \item typically around 1.75, and 
+        \item almost always between 1.5 and 2. 
+    \end{itemize}
+\end{mdframed}
+
+Note that, based on the exercise above,
+\[IC \approx 26 \sum_{\alpha \in \{A, \hdots, Z\}} p_\alpha^2.\]
+The right-hand side always exactly the same if we perform a simple substitution on our text. 
+\begin{mdframed}
+    (Example.) For example, suppose the letter \code{E} has a relative frequency of 13\% in some plaintext. Then, $p_E^2 \approx 0.13^2$ will appear as a summand in the above expression for the IC of this plaintext. 
+
+    \bigskip 
+
+    Now, suppose we perform a simple substitution that converts \code{E} to \code{Q}. Then, $p_Q^2 \approx 0.13^2$ will appear as a summand of the IC for the ciphertext.
+\end{mdframed} 
+The subscript is different, but the value is exactly the same. So, since we're summing over all the letters, the value of IC does not change when we performa  simple substitution.
+
+\begin{mdframed}
+    (Exercise.) Suppose some English plaintext is encrypted using a transposition cipher (e.g., rectangular transposition). How will the index of coincidence of the plaintext compare to that of the ciphertext?
+
+    \begin{mdframed}
+        Because rectangular transposition (and any cipher that just rearranges text around) simply rearranges the letters of the plaintext around, the index of coincidence for the plaintext will be exactly the same as the index of coincidence for the ciphertext.
+
+        \bigskip 
+
+        In particular, this means that the index of coincidence of the ciphertext will probably have the same properties as the described heuristic above.
+    \end{mdframed}
+\end{mdframed}
+
+
+\subsection{Breaking the Vigenere Cipher}
+With the index of coincidence in hand, we can now break the Vigenere cipher. Although this isn't the \href{https://en.wikipedia.org/wiki/Kasiski_examination}{first method} that was used to break said cipher, it does use the index of coincidence.
+
+\bigskip 
+
+Suppose we start with ciphertext which is known for being encrypted using the Vigenere cipher:
+\begin{mdframed}
+    \begin{verbatim}
+        IKGWERTZONXEULTEZWHWXTYHSZKEGQOJNENRUDJGFRNKUISLDZOMKDKWZHVU
+        OSJLFZEJJONQHWVRFEATRYIDIKKDKKEHNAEWOEYFIRMLNIENIFMAJKELXAMH
+        RKKDKKEEUOIVADUNVRNLNEERNKKNJHHWNAUKESXDYLSHGRVQTKGNUFOEVAEL
+        OFYRVSESZYVWSLOLCLDGTTCLKWHEZQGGATZQTZKDRUKFUWRQDAJOEWLAQESH
+        IFMLVITTEMPVEDLIEWHAYGILMZUUJHIUGNERTZKLGLTAYHROLTKGCDDONEEW
+        HWEL...\end{verbatim}
+\end{mdframed}
+Then, we can try to decrypt the ciphertext like so: 
+\begin{enumerate}
+    \item First, make a guess for the ``period'' (i.e., the length of the keyword). Suppose we guess a period of 5. Then, we can break the ciphertext into rows of that length. 
+    \begin{verbatim}
+        IKGWE 
+        RTZON 
+        XEULT 
+        EZWHW 
+        XTYHS 
+        ZKEG…\end{verbatim}
+
+    If the period we've guessed is correct, \textbf{each column of this rectangle was encryped using a Caesar cipher with the same shift}. This means that we should be able to detect that our guess for the period is correct by examining indices of coincidence. If every column has an index of coincidence in the range that's expected of English text, our guess for the period is probably correct. Otherwise, we should try a different period. 
+
+    \bigskip 
+
+    In our example above, if we guess a period of 5, it turns out that the indices of coincidence of the five columns are 1.13, 1.11, 1.18, 1.15, and 1.15, respectively. That's outside the range that's expected of English text, so our guess of 5 is probably is wrong. If we try a period of 6, we find that the indices of coincidence are 1.75, 1.77, 1.73, 1.72, 1.79, and 1.74, respectively -- all in the right range. So, the period of 6 is probably correct. 
+
+    \item Once we find a probable guess for the period, we're in the clear. Then, we just have to figure out what the shift is for each column, which we can do using basic frequency analysis. Recall that the most frequent letter in each column should correspond to \code{E}, so we should guess that the shift for that column is the shift that moves \code{E} to the most frequent letter (If that doesn't work we might try shifting so that the second most frequent letter in that column moves to \code{E} instead.)
+\end{enumerate}
+
+\end{document}
