@@ -1,0 +1,248 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+\usepackage{csquotes}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Math 170A}
+\chead{Monday, February 13, 2023}
+\lhead{Lecture 14}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+\newcommand{\0}{\mathbf{0}}
+\newcommand{\y}{\mathbf{y}}
+\renewcommand{\b}{\mathbf{b}}
+\newcommand{\x}{\mathbf{x}}
+\newcommand{\e}{\mathbf{e}}
+\newcommand{\rr}{\mathbf{r}}
+\newcommand{\vv}{\mathbf{v}}
+\renewcommand{\u}{\mathbf{u}}
+
+\begin{document}
+
+\section{Condition Numbers \& Perturbation (2.2, 2.3)}
+We are now interested in the \emph{sensitivity} of $A\x = \b$ with respect to perturbations (i.e., error). In other words, does noise in $A$ or $\b$ strongly affect the solution $\x$? Here, we'll deal with two types of perturbations: in $\b$, and in $A$. Eventually, we'll talk about the case when there's noise in both. 
+
+\subsection{Motivating Example}
+To see what we mean, consider the following two examples.
+\begin{mdframed}
+    (Example.) Consider the system 
+    \[\underbrace{\begin{bmatrix}
+        1 & 1 \\ 0 & 1 
+    \end{bmatrix}}_A \underbrace{\begin{bmatrix}
+        x_1 \\ x_2
+    \end{bmatrix}}_{\x} = \underbrace{\begin{bmatrix}
+        2 \\ 0
+    \end{bmatrix}}_{\b}.\]
+
+    \begin{enumerate}
+        \item Solve for $\x$. 
+        \begin{mdframed}
+            Note that \[\x = \begin{bmatrix}
+                2 \\ 0
+            \end{bmatrix}\] by backwards substitution.
+        \end{mdframed}
+
+        \item Suppose we introduce a very small error to the entries of $\b$ such that $\hat{\b} = \begin{bmatrix}
+            2 \\ 0.001
+        \end{bmatrix}.$ Our system now becomes \[\underbrace{\begin{bmatrix}
+            1 & 1 \\ 0 & 1 
+        \end{bmatrix}}_A \underbrace{\begin{bmatrix}
+            \hat{x_1} \\ \hat{x_2}
+        \end{bmatrix}}_{\hat{\x}} = \underbrace{\begin{bmatrix}
+            2 \\ 0.001
+        \end{bmatrix}}_{\hat{\b}}.\] Solve for $\hat{\x}$. In other words, what happens to $\x$ if we perturb $\b$?  
+
+        \begin{mdframed}
+            Here, we have \[\hat{\x} = \begin{bmatrix}
+                1.999 \\ 0.001
+            \end{bmatrix}.\]
+            Here, $\hat{\x}$ is known as a perturbed solution. Notice how the difference between the solution and the perturbed solution is very small, to the point that both $\x$ and $\hat{x}$ are \emph{similar}.
+        \end{mdframed}
+
+        \item Compute the error in $\b$ and in $\x$.
+        \begin{mdframed}
+            The error in $\b$ can be found by using the $L_2$-norm. So, for $\b$, we have 
+            \[||\b - \hat{\b}||_2 = \left|\left| \begin{bmatrix}
+                2 \\ 0
+            \end{bmatrix} - \begin{bmatrix}
+                2 \\ 0.001
+            \end{bmatrix} \right|\right|_2 = \left|\left| \begin{bmatrix}
+                0 \\ -0.001
+            \end{bmatrix} \right|\right|_2 = 0.001\]
+            Likewise, for $\x$, we have 
+            \[||\x - \hat{\x}||_2 = \left|\left| \begin{bmatrix}
+                2 \\ 0
+            \end{bmatrix} - \begin{bmatrix}
+                1.999 \\ 0.001
+            \end{bmatrix} \right|\right|_2 = \left|\left| \begin{bmatrix}
+                0.001 \\ -0.001
+            \end{bmatrix} \right|\right|_2 = \sqrt{2} \cdot 0.001 \approx 0.0014.\]
+        \end{mdframed}
+    \end{enumerate}
+\end{mdframed}
+
+
+\begin{mdframed}[nobreak=true]
+    (Example.) Consider a similar system 
+    \[\underbrace{\begin{bmatrix}
+        1 & 1 \\ 0 & 0.001 
+    \end{bmatrix}}_A \underbrace{\begin{bmatrix}
+        x_1 \\ x_2
+    \end{bmatrix}}_{\x} = \underbrace{\begin{bmatrix}
+        2 \\ 0
+    \end{bmatrix}}_{\b}.\]
+
+    \begin{enumerate}
+        \item Solve for $\x$. 
+        \begin{mdframed}
+            We have 
+            \[\x = \begin{bmatrix}
+                2 \\ 0
+            \end{bmatrix},\] which we found by backwards substitution. 
+        \end{mdframed}
+
+        \item Suppose we introduce a very small error to the entries of $\b$ such that $\hat{\b} = \begin{bmatrix}
+            2 \\ 0.001
+        \end{bmatrix}.$ Our system now becomes \[\underbrace{\begin{bmatrix}
+            1 & 1 \\ 0 & 0.001 
+        \end{bmatrix}}_A \underbrace{\begin{bmatrix}
+            \hat{x_1} \\ \hat{x_2}
+        \end{bmatrix}}_{\hat{\x}} = \underbrace{\begin{bmatrix}
+            2 \\ 0.001
+        \end{bmatrix}}_{\hat{\b}}.\] Solve for $\hat{\x}$.
+
+        \begin{mdframed}
+            Here, we have \[\hat{x} = \begin{bmatrix}
+                1 \\ 1
+            \end{bmatrix}.\]
+            One important thing to notice is that the perturbed solution is \emph{quite different} from the actual solution. So, unlike the previous example, $\x$ and $\hat{x}$ are \emph{different}. 
+        \end{mdframed}
+
+        \item Compute the error in $\b$ and in $\x$.
+        \begin{mdframed}
+            The error in $\b$ is the same as in the previous example; therefore,  
+            \[||\b - \hat{\b}||_2 = 0.001\]
+            But, for $\x$, notice how 
+            \[||\x - \hat{\x}||_2 = \left|\left| \begin{bmatrix}
+                2 \\ 0
+            \end{bmatrix} - \begin{bmatrix}
+                1 \\ 1
+            \end{bmatrix} \right|\right|_2 = \left|\left| \begin{bmatrix}
+                1 \\ -1
+            \end{bmatrix} \right|\right|_2 = \sqrt{2} \approx 1.41.\]
+            In particular, $0.001$ is $10^3$ larger than 1.41. So, in this linear system, when we perturb $\b$ a little, we can cause a \emph{large} error. 
+        \end{mdframed}
+    \end{enumerate}
+\end{mdframed}
+
+\textbf{Remark:} From this, it follows that the error in $\x$ depends on the matrix $A$ as well. 
+
+
+\subsection{Condition Number}
+How do we measure the dependence on the matrix $A$? This is related to the \textbf{condition number}, known as \code{cond(A)} in MATLAB. The condition number is a simple but useful measure of the sensitivity of the linear system $A\x = \b$. Although we haven't defined the condition number yet, consider the following examples, which showcase the difference in condition number: 
+\begin{itemize}
+    \item $\cond\left(\begin{bmatrix}
+        1 & 1 \\ 0 & 1
+    \end{bmatrix}\right) \approx 2.1618$, which is a small condition number. 
+    
+    \item $\cond\left(\begin{bmatrix}
+        1 & 1 \\ 0 & 0.001
+    \end{bmatrix}\right) \approx 2 \cdot 10^3$, which is a large condition number, and the error is amplified by this large condition number. 
+\end{itemize}
+
+\subsection{Perturbation of \texorpdfstring{$\b$}{b}}
+Now, we want to solve $A\x = \b$, where $A$ is invertible. Instead of $\b$, we only have access to \[\hat{\b} = \b + \delta\b,\] where $\delta\b$ is the (very small) error, known as the perturbation in $\b$. Then, we can consider the linear system \[A\hat{\x} = \hat{\b}.\] If $\hat{\b}$ is close to $\hat{\b}$, is it true that $\hat{\x}$ is close to $\hat{\x}$ as well? \textbf{This depends} on the condition number of $A$. In particular, we'll later see that \begin{equation}{\label{2-13:1}}
+    \boxed{\frac{||\x - \hat{\x}||}{||\x||} \leq \kappa(A) \frac{||\b - \hat{\b}||}{||\b||}}.
+\end{equation} Here, 
+\begin{itemize}
+    \item $\frac{||\x - \hat{\x}||}{||\x||}$ is the \emph{relative error} of $\x$, 
+    \item $\frac{||\b - \hat{\b}||}{||\b||}$ is the \emph{relative error} of $\b$. 
+    \item $\kappa(A)$ is the condition number of the invertible matrix $A$.
+\end{itemize}
+The relative error of $\x$ is bounded by the condition number of matrix $A$ multiplifed by the relative error of $\b$. 
+
+\bigskip 
+
+What is $\kappa(A)$? We can define it like so:  
+\[\kappa(A) = ||A|| \cdot ||A^{-1}||,\] where $||\cdot||$ can be any vector norm. We will use the notation 
+\begin{itemize}
+    \item $\kappa_p$ for the $p$-norm; that is, \[\kappa_{p}(A) = ||A||_p \cdot ||A^{-1}||_p.\]
+    \item $\kappa_\infty$ for the $\infty$-norm; that is, \[\kappa_\infty(A) = ||A||_\infty \cdot ||A^{-1}||_\infty.\]
+\end{itemize}
+
+With this in mind, let's prove the inequality in (\ref{2-13:1}).
+\begin{proof}
+    We can break this down into two steps. 
+    \begin{itemize}
+        \item Let $\hat{\b} = \b + \delta\b$ (the perturbed $\b$) and $\hat{\x} = \x + \delta\x$ (the perturbed $\x$). So, 
+        \begin{equation*}
+            \begin{aligned}
+                A\hat{\x} = \hat{\b} &\implies A(\x + \delta\x) = \b + \delta\b \\ 
+                    &\implies A\x + A\delta\x = \b + \delta\b \\ 
+                    &\implies A\delta\x = \delta\b && \text{Recall that } A\x = \b \\ 
+                    &\implies \delta\x = A^{-1}\delta\b && A \text{ is invertible} \\ 
+                    &\implies ||\delta\x|| = ||A^{-1} \delta\b||.
+            \end{aligned}
+        \end{equation*}
+        Recall that $||A|| = \max_{\x \neq \0} \frac{||A\x||}{||\x||}$ is the matrix norm induced by the vector norm. Additionally, note that $||A^{-1}|| = \max_{\x \neq \0} \frac{||A^{-1}\x||}{||\x||}$. Then,
+        \[||A^{-1}|| = \max_{\x \neq \0} \frac{||A^{-1}\x||}{||\x||} \geq \frac{||A^{-1}\delta\b||}{||\delta\b||} \implies ||A^{-1}|| \cdot ||\delta\b|| \geq ||A^{-1}\delta\b||.\]
+        So, 
+        \[||\delta\x|| = ||A^{-1} \delta\b|| \leq ||A^{-1}|| \cdot ||\delta\b|| \implies ||\delta\x|| \leq ||A^{-1}|| \cdot ||\delta\b||.\]
+
+        \item Recall that $\b = A\x$. So, 
+        \[\b = A\x \implies ||\b|| = ||A\x|| \leq ||A|| \cdot ||\x||.\]
+        Then, we can divide both sides by $||\b|| \cdot ||\x||$ to get 
+        \[\frac{1}{||\x||} \leq ||A||\frac{1}{||\b||}.\]
+    \end{itemize}
+    With all this, we can combine the inequalities
+    \[||\delta\x|| \leq ||A^{-1}|| \cdot ||\delta\b||\]
+    \[\frac{1}{||\x||} \leq ||A||\frac{1}{||\b||}\]
+    to get 
+    \[\underbrace{\frac{||\delta\x||}{||\x||}}_{\substack{\text{Relative error} \\ \text{in } \x}} \leq \underbrace{||A^{-1}|| \cdot ||A||}_{\substack{\kappa(A) \\ \text{Condition number.}}} \cdot \underbrace{\frac{||\delta\b||}{||\b||}}_{\substack{\text{Relative error} \\ \text{in } \b}}.\]
+   This simplifies to $\frac{||\delta\x||}{||\x||} \leq \kappa(A)\frac{||\delta\b||}{||\b||}$, as desired.  
+\end{proof}
+\textbf{Remarks:}
+\begin{itemize}
+    \item The matrix norm is the induced matrix norm, e.g., if the vector norm is 2-norm, then the matrix norm is 2-norm. That is, 
+    \[||A||_p = \max_{\x \neq \0} \frac{||A\x||_p}{||\x||_p}\]
+    \[||A||_\infty = \max_{\x \neq \0} \frac{||A\x||_\infty}{||\x||_\infty}\]
+    This means that we can use whatever vector norm we want for (\ref{2-13:1}) as long as all vectors use the same norm. Additionally, the induced matrix norm for $A$ should be the same as the one used for the vector norm. \textbf{The norms must be consistent in the inequality.}
+    \item When interpreting $\kappa(A)$, 
+    \begin{itemize}
+        \item If $\kappa(A)$ is small (close to 1), then $A$ is called ``well-conditioned.''
+        \item If $\kappa(A)$ is large, then $A$ is called ``ill-conditioned.''
+    \end{itemize}
+    \item A tall matrix does not have a condition matrix because it's not invertible. 
+\end{itemize} 
+
+\subsection{Properties of the Induced Matrix Norm}
+\begin{proposition}
+    Let $||\cdot||$ be an induced matrix norm \[||A|| = \max_{\x \neq \0} \frac{||A\x||}{||\x||}.\] Then, 
+    \begin{enumerate}
+        \item $||I|| = 1$. Here, $I$ is the identity matrix; the condition number of the identity matrix is 1. 
+        \item $\kappa(A) \geq 1$. In particular, the condition number of some matrix will be \emph{at least} 1. 
+    \end{enumerate}
+\end{proposition}
+\begin{proof}
+    Note that 
+    \[||I|| = \max_{\x \neq \0} \frac{||I\x||}{||\x||} = 1.\]
+    Also, 
+    \[I = AA^{-1} \implies 1 = ||I|| = ||AA^{-1}|| \leq ||A|| \cdot ||A^{-1}|| = \kappa(A),\]
+    so we're done.
+\end{proof}
+
+\textbf{Remarks:}
+\begin{itemize}
+    \item For \#2 of the proposition, if we introduce an error in $\b$, the condition number will not make the error smaller.
+    \item $\kappa(I) = 1$. 
+    \item The Feobenius norm is not an induced matrix norm. In particular, the above results do not hold for the Feobenius norm $||I||_F$ as $||I||_F \neq 1$.  
+\end{itemize}
+
+
+\end{document}
