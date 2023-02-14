@@ -37,8 +37,8 @@ Now, notice that this probability is for \emph{some} letter $\alpha$. However, t
     \end{mdframed}
 \end{mdframed}
 Since there are 26 letters in the English alphabet, it turns out to be convenient to normalize this probability we computed above by multiplying by 26. The resulting number gets a special name: 
-\begin{definition}{Index of Confidence}{}
-    Let $N$ be the length of some text and, for each letter $\alpha$, let $N_\alpha$ be the number of times $\alpha$ occurs in this text. The \textbf{index of confidence} of the text, denoted $IC$, is the number \[IC = 26 \sum_{\alpha \in \{A, \hdots, Z\}} \frac{N_\alpha (N_\alpha - 1)}{N(N - 1)}.\]
+\begin{definition}{Index of Coincidence}{}
+    Let $N$ be the length of some text and, for each letter $\alpha$, let $N_\alpha$ be the number of times $\alpha$ occurs in this text. The \textbf{index of coincidence} of the text, denoted $IC$, is the number \[IC = 26 \sum_{\alpha \in \{A, \hdots, Z\}} \frac{N_\alpha (N_\alpha - 1)}{N(N - 1)}.\]
 \end{definition}
 
 \begin{mdframed}
@@ -48,19 +48,21 @@ Since there are 26 letters in the English alphabet, it turns out to be convenien
         If every letter appears equally often, then we know that there will be $\frac{1}{26}N$ of each letter. Then, the index of coincidence is given by 
         \begin{equation*}
             \begin{aligned}
-                IC &= 26 \sum_{\alpha \in \{A, \hdots, Z\}} \frac{\frac{1}{26}N (\frac{1}{26}N - 1)}{N(N - 1)} \\ 
-                    &= 26\frac{1}{26}\frac{1}{26} \sum_{\alpha \in \{A, \hdots, Z\}} \frac{N (N - 1)}{N(N - 1)} \\ 
-                    &= 26\frac{1}{26}\frac{1}{26} \sum_{\alpha \in \{A, \hdots, Z\}} 1 \\ 
-                    &= 26\frac{1}{26}\frac{1}{26} 26 \\ 
-                    &= 1.
+                IC &= 26 \sum_{\alpha \in \{A, \dots, Z\}} \frac{\frac{1}{26}N (\frac{1}{26}N - 1)}{N(N - 1)} \\ 
+                    &= 26 \frac{\frac{1}{26}N (\frac{1}{26}N - 1)}{N(N - 1)}  \sum_{\alpha \in \{A, \dots, Z\}} 1 \\ 
+                    &= 26 \frac{\frac{1}{26}N (\frac{1}{26}N - 1)}{N(N - 1)} 26 \\ 
+                    &= \frac{N (\frac{1}{26}N - 1)}{N(N - 1)} 26 \\ 
+                    &=  \frac{(\frac{1}{26}N - 1)}{(N - 1)} 26 \\ 
+                    &= \frac{N - 26}{N - 1} 
             \end{aligned}
         \end{equation*}
+        Notice how, as $N \mapsto \infty$, $\frac{N - 26}{N - 1} \approx 1$, so it follows that the index of coincidence would be approximately 1.0.
     \end{mdframed}
 \end{mdframed}
 
 
 \begin{mdframed}
-    (Exercise.) What is the largest possible index of coincidence? What kind of text would result in an index of coincidence that’s as large as possible?
+    (Exercise.) What is the largest possible index of coincidence? What kind of text would result in an index of coincidence that's as large as possible?
 
     \begin{mdframed}
         Suppose only one letter was in some given text. Then, $N_\alpha = N$ and 
