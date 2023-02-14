@@ -65,13 +65,17 @@ Since there are 26 letters in the English alphabet, it turns out to be convenien
     (Exercise.) What is the largest possible index of coincidence? What kind of text would result in an index of coincidence that's as large as possible?
 
     \begin{mdframed}
-        Suppose only one letter was in some given text. Then, $N_\alpha = N$ and 
+        Suppose only one letter was in some given text. Then, $N_\alpha = \begin{cases}
+            N & \text{if } \alpha \text{ is that letter} \\ 
+            0 & \text{otherwise}
+        \end{cases}$ and 
         \begin{equation*}
             \begin{aligned}
-                IC &= 26 \sum_{\alpha \in \{A, \hdots, Z\}} \frac{N (N - 1)}{N(N - 1)} \\ 
-                    &= 26 \sum_{\alpha \in \{A, \hdots, Z\}} 1 \\ 
-                    &= 26 \cdot 26 \\ 
-                    &= 26^2.
+                IC &= 26 \sum_{\alpha \in \{A, \hdots, Z\}} \frac{N_\alpha (N_\alpha - 1)}{N(N - 1)} \\
+                    &= 26 (\hdots + 0 + \frac{N(N - 1)}{N(N - 1)} + 0 + \hdots) \\ 
+                    &= 26 (\hdots + 0 + 1 + 0 + \hdots) \\ 
+                    &= 26 (1) \\ 
+                    &= 26.
             \end{aligned}
         \end{equation*}
         So, the largest possible index of coincidence is 26 and the resulting text would only have one letter.
