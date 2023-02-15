@@ -1,11 +1,15 @@
 # ClassNotes @ UCSD
-These are course notes for some of the classes that I'm taking. Please note that they are not guaranteed to be accurate or updated.
+These are course notes for some of the more interesting classes that I'm taking at UC San Diego. 
 
-For all of the notes, unless otherwise specified, all images are by the professor (essentially, screenshots of course lecture slides or other supplied resources).
-
-If you want to make any correction(s), please submit an [Issue](https://github.com/ewang2002/ClassNotes/issues) first.
+## Acknowledgements
+For my notes from SP22 and earlier: a majority of the images were from my professor's notes.
 
 ## Directories
 - The `PendingClasses` directory contains notes for the classes that I am currently taking, or will soon take.
 - The `CompletedClasses` directory contains notes for the classes that I have already completed.
-- The `Scripts` directory contains several random scripts (when needed) to make life slightly easier for me.
+
+## Disclaimer
+My notes are not guaranteed to be accurate. You can, and probably should, assume that 
+- there are numerous typos in my notes. 
+- notation may be messy or inconsistent. 
+- notes may be low-quality or otherwise inconsistent in quality. 
