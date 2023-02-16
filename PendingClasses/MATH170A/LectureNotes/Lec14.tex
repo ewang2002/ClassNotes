@@ -1,0 +1,57 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+\usepackage{csquotes}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Math 170A}
+\chead{Wednesday, February 15, 2023}
+\lhead{Lecture 15}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+\newcommand{\0}{\mathbf{0}}
+\newcommand{\y}{\mathbf{y}}
+\renewcommand{\b}{\mathbf{b}}
+\newcommand{\x}{\mathbf{x}}
+\newcommand{\e}{\mathbf{e}}
+\newcommand{\rr}{\mathbf{r}}
+\newcommand{\vv}{\mathbf{v}}
+\renewcommand{\u}{\mathbf{u}}
+
+\begin{document}
+
+\textbf{Note:} A lot of lecture 15 is actually in Lecture 14's notes since most of the lecture continues on Lecture 14. 
+
+\section{Singular Value Decomposition (4.1)}
+The singular value decomposition, known as \textbf{SVD}, is a matrix decomposition (similar to eigenvector, eigenvalues, but less restrictive). SVD is used for 
+\begin{itemize}
+    \item low rank approximation (imaging).
+    \item least squares when rank is not full. 
+\end{itemize}
+
+\begin{theorem}{SVD Theorem}{}
+    Let $A \in \R^{n \times m}$, with $A \neq 0$ and assume $n \geq m$ with $\text{rank}(A) = r \leq m$. Then, there exists orthogonal matrices $U \in \R^{n \times n}$ and $V \in \R^{m \times m}$ and positive numbers $\sigma_1 \geq \sigma_2 \geq \hdots \geq \sigma_r > 0$ such that \[A = U \Sigma V^T\] with \[\Sigma = \begin{bmatrix}
+        \sigma_1 & 0 & 0 & 0 & 0 & \hdots & 0 \\ 
+        0 & \sigma_2 & 0 & 0 & 0 & \hdots & 0 \\ 
+        0 & 0 & \ddots & 0 & 0 & \hdots & 0 \\ 
+        0 & 0 & 0 & \sigma_r & 0 & \hdots & 0 \\ 
+        0 & 0 & 0 & 0 & 0 & \hdots & 0 \\ 
+        \vdots & \vdots & \vdots & \vdots & \vdots & \ddots & \vdots \\ 
+        0 & 0 & 0 & 0 & 0 & \hdots & 0
+    \end{bmatrix} \in \R^{n \times m}.\]
+\end{theorem}
+This is called a full SVD\footnote{Later, we will introduced a reduced SVD.} Here, $\sigma_1, \sigma_2, \hdots, \sigma_r$ are called the \emph{singular values}.
+
+\textbf{Remarks:}
+\begin{itemize}
+    \item Notice that $A = U\Sigma V^T \implies AV = U\Sigma V^T V = U\Sigma$. If you compare this to eigenvectors and eigenvalues, you will notice that $AV = V\Lambda$. 
+    
+    \item The SVD is not unique. Instead of $U$, we can try $-U$; likewise, instead of $V$, we can use $-V$. 
+\end{itemize}
+
+\end{document}

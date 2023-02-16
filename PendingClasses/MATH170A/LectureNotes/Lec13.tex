@@ -240,9 +240,117 @@ With this in mind, let's prove the inequality in (\ref{2-13:1}).
 \textbf{Remarks:}
 \begin{itemize}
     \item For \#2 of the proposition, if we introduce an error in $\b$, the condition number will not make the error smaller.
-    \item $\kappa(I) = 1$. 
-    \item The Feobenius norm is not an induced matrix norm. In particular, the above results do not hold for the Feobenius norm $||I||_F$ as $||I||_F \neq 1$.  
+    \item $\kappa(I) = 1$. In particular, 
+    \[\kappa(I) = ||I|| \cdot ||I^{-1}|| = 1 \cdot 1 = 1.\]
+    \item The Feobenius norm is not an induced matrix norm. In particular, the above results do not hold for the Feobenius norm $||I||_F$ as $||I||_F \neq 1$. Recall that 
+    \[||A||_F = \sqrt{\sum_{i = 1}^{n} \sum_{j = 1}^{n} (a_{ij})^2}.\]
+    However, for $I \in \R^{n \times n}$, 
+    \[||I_n||_F = \sqrt{n} \neq 1.\]
 \end{itemize}
+
+\subsection{Perturbation of \texorpdfstring{$A$}{A}}
+\begin{theorem}{}{}
+    Let $A$ be nonsingular, $\b \neq 0$, and let $\x$ and $\hat{\x} = \x + \delta \x$ be solutions to $A\x = \b$ and $(A + \delta A) \hat{\x} = \b$, respectively. Then, 
+    \[\frac{||\delta \x||}{||\hat{\x}||} \leq \kappa(A) \frac{||\delta A||}{||A||}.\]
+\end{theorem}
+
+\begin{proof}
+    We have 
+    \begin{equation*}
+        \begin{aligned}
+            (A + \delta A) \hat{\x} = \b &\implies (A + \delta A) (\x + \delta\x) = \b && \text{We defined } \hat{\x} = \x = \delta\x \\ 
+                &\implies A\x + A\delta\x + \delta A\x + \delta A \delta \x = \b \\ 
+                &\implies A\x + A\delta\x + \delta A (\x + \delta \x) = \b \\ 
+                &\implies A\x + A\delta\x + \delta A \hat{\x} = \b \\ 
+                &\implies A\delta\x + \delta A \hat{\x} = \0 && \text{Recall that } A\x = \b \\ 
+                &\implies A\delta \x = -\delta A \hat{\x} \\ 
+                &\implies \delta\x = -\underbrace{A^{-1}}_{\text{Matrix}} \underbrace{\delta A}_{\text{Matrix}} \underbrace{\hat{\x}}_{\text{Vector}}.
+        \end{aligned}
+    \end{equation*}
+    From here, it follows that
+    \begin{equation*}
+        \begin{aligned}
+            ||\delta\x|| &= ||-A^{-1} \delta A\hat{\x}|| \\ 
+                &\leq ||A^{-1}|| \cdot ||\delta A \hat{\x}|| \\ 
+                &\leq ||A^{-1}|| \cdot ||\delta A|| \cdot ||\hat{\x}||
+        \end{aligned}
+    \end{equation*}
+    Dividing through by $||\hat{\x}||$, we have 
+    \[\frac{||\delta\x||}{||\hat{\x}||} \leq ||A^{-1}|| \cdot ||\delta A||.\]
+    Recall that $\kappa(A) = ||A|| \cdot ||A^{-1}|| \implies ||A^{-1}|| = \frac{\kappa(A)}{||A||}$, so 
+    \[\frac{||\delta\x||}{||\hat{\x}||} \leq \kappa(A) \frac{||\delta A||}{||A||}\] 
+    as desired.
+\end{proof}
+\textbf{Remark:} $\delta$, in this case, is not a scalar. We can think of $\delta\x$ as $\x$ with a very tiny (and arbitrary) error introduced. Analogously, we can think of $\delta A$ as $A$ with a very tiny (and arbitrary) error. 
+
+\subsection{Perturbation of \texorpdfstring{$A$}{A} and \texorpdfstring{$\b$}{b}}
+\begin{theorem}{}{}
+    Instead of $A\x = \b$, we now consider $\hat{A}\hat{\x} = \hat{\b}$ with $\hat{A} = A + \delta A$ and $\hat{\b} = \b + \delta\b$. Then, 
+    \[\frac{||\delta \x||}{||\hat{\hat{x}}||} \leq \kappa(A) \left(\frac{||\delta A||}{||A||} + \frac{||\delta \b||}{||\hat{\b}||} \cdot \frac{||\delta A||}{||A||} + \frac{||\delta \b||}{||\hat{\b}||}\right)\]
+\end{theorem}
+
+\begin{proof}
+    We can break this down into two steps.
+    \begin{itemize}
+        \item For $\hat{A}\hat{\x} = \hat{\b}$, we have 
+        \begin{equation*}
+            \begin{aligned}
+                \hat{A}\hat{\x} = \hat{\b} &\implies (A + \delta A)(\x + \delta \x) = \b + \delta \b \\ 
+                    &\implies A\x + A\delta\x + \delta A \x + \delta A \delta \x = \b + \delta \b \\ 
+                    &\implies A\delta\x + \delta A \x + \delta A \delta \x = \delta \b && \text{Recall that } A\x = \b \\ 
+                    &\implies A\delta\x + \delta A(\x + \delta \x) = \delta \b \\ 
+                    &\implies A\delta\x + \delta A\hat{\x} = \delta\b \\ 
+                    &\implies A\delta\x = \delta\b - \delta A \hat{\x} \\ 
+                    &\implies \delta\x = A^{-1}(\delta \b - \delta A \hat{\x}).
+            \end{aligned}
+        \end{equation*}
+        Now, 
+        \begin{equation*}
+            \begin{aligned}
+                ||\delta\x|| &= ||A^{-1}(\delta \b - \delta A \hat{\x})|| \\
+                    &\leq ||A^{-1}|| \cdot ||\delta \b - \delta A \hat{\x}|| \\ 
+                    &\leq ||A^{-1}|| (||\delta\b|| + ||\delta A|| \cdot ||\hat{\x}||) && \text{See remark below}.
+            \end{aligned}
+        \end{equation*}
+        Thus, 
+        \begin{equation*}
+            \begin{aligned}
+                ||\delta\x|| &\leq ||A^{-1}|| (||\delta\b|| + ||\delta A|| \cdot ||\hat{\x}||) \\ 
+                    &= \frac{||A^{-1}||}{||\hat{\x}||} (||\delta\b|| + ||\delta A|| \cdot ||\hat{\x}||) \\ 
+                    &= ||A^{-1}|| \left(\frac{||\delta\b||}{||\hat{\x}||} + \frac{||\delta A|| \cdot ||\hat{\x}||}{||\hat{\x}||}\right) \\ 
+                    &= ||A^{-1}|| \left(\frac{||\delta\b||}{||\hat{\x}||} + ||\delta A||\right) \\ 
+                    &= \frac{\kappa(A)}{||A||} \left(\frac{||\delta\b||}{||\hat{\x}||} + ||\delta A||\right) && \kappa(A) = ||A|| \cdot ||A^{-1}|| \implies ||A^{-1}|| = \frac{\kappa(A)}{||A||} \\ 
+                    &= \kappa(A) \left(\frac{||\delta\b||}{||A|| \cdot ||\hat{\x}||} + \frac{||\delta A||}{||A||}\right).
+            \end{aligned}
+        \end{equation*}
+
+        \item Again, from $\hat{A}\hat{\x} = \hat{\b}$, we have 
+        \[\hat{A}\hat{\x} = \hat{\b} \implies (A + \delta A) \hat{\x} = \hat{\b}.\]
+        Then, 
+        \[||\hat{\b}|| = ||(A + \delta A) \hat{\x}|| \leq ||A + \delta A|| \cdot ||\hat{\x}||.\]
+        Therefore, dividing by $||\hat{\x}|| \cdot ||\hat{\b}||$ we get 
+        \[\frac{1}{||\hat{\x}||} \leq \frac{||A + \delta A||}{||\b||} \leq \frac{||A|| + ||\delta A||}{||\delta \b||}.\]
+    \end{itemize}
+    Combining the results of the previous two steps yields the desired result.
+\end{proof}
+
+% \begin{equation*}
+%     \begin{aligned}
+%         ||\delta\x|| \frac{1}{||\hat{\x}||} &\leq \kappa(A) \left(\frac{||\delta\b||}{||A|| \cdot ||\hat{\x}||} + \frac{||\delta A||}{||A||}\right) \frac{||A|| + ||\delta A||}{||\delta \b||} \\ 
+%             &= \kappa(A) \left(\frac{||\delta\b||}{||A|| \cdot ||\hat{\x}||} \frac{||A|| + ||\delta A||}{||\delta \b||} + \frac{||\delta A||}{||A||} \frac{||A|| + ||\delta A||}{||\delta \b||}\right) \\ 
+%             &= \kappa(A) \left(\frac{||\delta \b||(||A|| + ||\delta A||)}{||A|| \cdot ||\hat{\x}|| \cdot ||\delta \b||} + \frac{||\delta A||(||A|| + ||\delta A||)}{||A|| \cdot ||\delta \b||}\right) \\
+%             &= \kappa(A) \left(\frac{||\delta \b|| \cdot ||A|| + ||\delta \b|| \cdot ||\delta A||}{||A|| \cdot ||\hat{\x}|| \cdot ||\delta \b||} + \frac{||\delta A|| \cdot ||A|| + ||\delta A|| \cdot ||\delta A||}{||A|| \cdot ||\delta \b||}\right) \\
+%             &= \kappa(A) \left(\frac{||\delta \b|| \cdot ||A||}{||A|| \cdot ||\hat{\x}|| \cdot ||\delta \b||} + \frac{||\delta \b|| \cdot ||\delta A||}{||A|| \cdot ||\hat{\x}|| \cdot ||\delta \b||} + \frac{||\delta A|| \cdot ||A||}{||A|| \cdot ||\delta \b||} + \frac{||\delta A|| \cdot ||\delta A||}{||A|| \cdot ||\delta \b||}\right) \\
+%             &= \kappa(A) \left(\frac{1}{||\hat{\x}||} + \frac{||\delta A||}{||A|| \cdot ||\hat{\x}||} + \frac{||\delta A||}{||\delta \b||} + \frac{||\delta A|| \cdot ||\delta A||}{||A|| \cdot ||\delta \b||}\right) \\
+%     \end{aligned}
+% \end{equation*}
+
+\textbf{Remark:} To see why this equality works, consider the following diagram:
+\begin{center}
+    \includegraphics[scale=0.8]{../assets/triangle_min_plu.png}
+\end{center}
+
+
 
 
 \end{document}

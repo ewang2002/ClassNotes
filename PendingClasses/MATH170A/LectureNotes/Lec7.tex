@@ -111,9 +111,9 @@ This measures the \emph{maximum stretch} the linear function $L(\x) = A\x$ can d
 
 Some of the most important matrix $p$-norms are 
 \begin{itemize}
-    \item For $p = 1$: $||A||_1 = \max_{\x \neq \0} \frac{||A\x||_1}{||\x||_1} = \max_{j = 1, 2, \hdots, n} \sum_{n = 1}^{n} |a_{ij}|.$ (maximum $L_1$-norm of each column.) 
-    \item For $p = \infty$: $||A||_\infty = \max_{\x \neq \0} \frac{||A\x||_\infty}{||\x||_\infty} = \max_{j = 1, 2, \hdots, n} \sum_{j = 1}^{n} |a_{ij}|.$ (maximum $L_1$-norm of each row.)
-    \item For $p = 1$: $||A||_2 = \max_{\x \neq \0} \frac{||A\x||_2}{||\x||_2} = \sigma_1.$ (largest\footnote{This is related to SVD, which we will learn later.} singular value of matrix $A$.)
+    \item For $p = 1$: $||A||_1 = \max_{\x \neq \0} \frac{||A\x||_1}{||\x||_1} = \max_{j = 1, 2, \hdots, n} \sum_{i = 1}^{n} |a_{ij}|.$ (maximum $L_1$-norm of each column.) 
+    \item For $p = \infty$: $||A||_\infty = \max_{\x \neq \0} \frac{||A\x||_\infty}{||\x||_\infty} = \max_{i = 1, 2, \hdots, n} \sum_{j = 1}^{n} |a_{ij}|.$ (maximum $L_1$-norm of each row.)
+    \item For $p = 2$: $||A||_2 = \max_{\x \neq \0} \frac{||A\x||_2}{||\x||_2} = \sigma_1.$ (largest\footnote{This is related to SVD, which we will learn later.} singular value of matrix $A$.)
 \end{itemize}
 \textbf{Remark:} Don't confuse $||A||_2$ and $||A||_F$. They are very different! Specifically, 
 \[||A||_2 = \max_{\x \neq \0} \frac{||A\x||_2}{||\x||_2}\]
