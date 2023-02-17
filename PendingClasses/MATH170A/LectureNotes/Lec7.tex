@@ -49,9 +49,9 @@ For a point \[\x = (x_1, x_2),\] we can define the \emph{2-norm} of a vector to 
 \textbf{Remark:} With regards to the third property, consider \begin{center}
     \includegraphics[scale=0.6]{../assets/tri_inequality.png}
 \end{center}
-Note that \[||\x + \y|| = ||\x|| + ||\y||\] if $\x$ and $\y$ points at the same direction.
+Note that $||\x + \y|| = ||\x|| + ||\y||$ if $\x$ and $\y$ points at the same direction.
 
-\subsubsection{Popular Norms}
+\subsubsection{Common Norms}
 There are some common norms that we've seen before. As implied, they all satisfy the properties above. 
 \begin{itemize}
     \item For $p \geq 1$, we define 
@@ -63,6 +63,29 @@ There are some common norms that we've seen before. As implied, they all satisfy
 
     \item The infinite norm is defined to be \[||\x||_{\infty} = \max_{i = 1, 2, \hdots, n} |x_i|.\] It should be noted that \[\lim_{p \mapsto \infty} ||\x||_p = ||\x||_{\infty}.\]
 \end{itemize}
+
+\begin{mdframed}
+    (Exercise.) Consider the vector, \[\vv = \begin{bmatrix}
+        4 \\ 8 \\ 6
+    \end{bmatrix}.\]
+
+    \begin{itemize}
+        \item Compute $||\vv||_1$.
+        \begin{mdframed}
+            \[||\vv||_1 = |4| + |8| + |6| = 18.\]
+        \end{mdframed}
+
+        \item Compute $||\vv||_2$.
+        \begin{mdframed}
+            \[||\vv||_2 = \sqrt{4^2 + 8^2 + 6^2} = \sqrt{116}.\]
+        \end{mdframed}
+
+        \item Compute $||\vv||_\infty$. 
+        \begin{mdframed}
+            \[||\vv||_\infty = \max_{i = 1, 2, 3} |v_i| = \max\{|4|, |8|, |6|\} = 8.\]
+        \end{mdframed}
+    \end{itemize}
+\end{mdframed}
 
 \subsection{Matrix Norms}
 We now want to consider norms for a matrix $A \in \R^{n \times n}$. There are two ways we can interpret matrix norms.
@@ -111,13 +134,57 @@ This measures the \emph{maximum stretch} the linear function $L(\x) = A\x$ can d
 
 Some of the most important matrix $p$-norms are 
 \begin{itemize}
-    \item For $p = 1$: $||A||_1 = \max_{\x \neq \0} \frac{||A\x||_1}{||\x||_1} = \max_{j = 1, 2, \hdots, n} \sum_{i = 1}^{n} |a_{ij}|.$ (maximum $L_1$-norm of each column.) 
-    \item For $p = \infty$: $||A||_\infty = \max_{\x \neq \0} \frac{||A\x||_\infty}{||\x||_\infty} = \max_{i = 1, 2, \hdots, n} \sum_{j = 1}^{n} |a_{ij}|.$ (maximum $L_1$-norm of each row.)
-    \item For $p = 2$: $||A||_2 = \max_{\x \neq \0} \frac{||A\x||_2}{||\x||_2} = \sigma_1.$ (largest\footnote{This is related to SVD, which we will learn later.} singular value of matrix $A$.)
+    \item For $p = 1$, \[||A||_1 = \max_{\x \neq \0} \frac{||A\x||_1}{||\x||_1} = \max_{j = 1, 2, \hdots, n} \sum_{i = 1}^{n} |a_{ij}|,\] the maximum $L_1$-norm of each column.
+    \item For $p = \infty$, \[||A||_\infty = \max_{\x \neq \0} \frac{||A\x||_\infty}{||\x||_\infty} = \max_{i = 1, 2, \hdots, n} \sum_{j = 1}^{n} |a_{ij}|,\] the maximum $L_1$-norm of each row.
+    \item For $p = 2$: \[||A||_2 = \max_{\x \neq \0} \frac{||A\x||_2}{||\x||_2} = \sigma_1,\] the largest\footnote{This is related to SVD, which we will learn later.} singular value of matrix $A$.
 \end{itemize}
 \textbf{Remark:} Don't confuse $||A||_2$ and $||A||_F$. They are very different! Specifically, 
 \[||A||_2 = \max_{\x \neq \0} \frac{||A\x||_2}{||\x||_2}\]
 while 
 \[||A||_F = ||\vv||_2 = \left(\sum_{i, j} (a_{ij})^2\right)^{\frac{1}{2}}.\]
+
+\begin{mdframed}
+    (Exercise.) Consider the following matrix 
+    \[A = \begin{bmatrix}
+        4 & 8 & 6 \\ 
+        8 & 17 & 10 \\ 
+        6 & 10 & 29
+    \end{bmatrix}.\]
+
+    \begin{itemize}
+        \item Compute $||A||_F$.
+        \begin{mdframed}
+            \[||A||_F = \sqrt{4^2 + 8^2 + 6^2 + 8^2 + 17^2 + 10^2 + 6^2 + 10^2 + 29^2} = \sqrt{1546}.\]
+        \end{mdframed}
+
+        \item Compute $||A||_1$.
+        \begin{mdframed}
+            We consider the sum of the absolute value of the entries in each column. 
+            \begin{itemize}
+                \item For the first column, we know that 
+                \[\sum_{i = 1}^{3} |a_{i1}| = |4| + |8| + |6| = 18.\]
+                \item For the second column, 
+                \[\sum_{i = 1}^{3} |a_{i2}| = |8| + |17| + |10| = 35.\]
+                \item For the third column, 
+                \[\sum_{i = 1}^{3} |a_{i3}| = |6| + |10| + |29| = 45.\]
+            \end{itemize}
+            Therefore, \[||A||_1 = \max\{18, 35, 45\} = 45.\]
+        \end{mdframed}
+
+        \item Compute $||A||_\infty$. 
+        \begin{mdframed}
+            We consider the sum of the absolute value of the entries in each row. 
+            \begin{itemize}
+                \item For the first row, 
+                \[\sum_{j = 1}^{3} |a_{1j}| = |4| + |8| + |6| = 18.\]
+                \item For the second row, 
+                \[\sum_{j = 1}^{3} |a_{2j}| = |8| + |17| + |10| = 35.\]
+                \item For the third row, 
+                \[\sum_{j = 1}^{3} |a_{3j}| = |6| + |10| + |29| = 45.\]
+            \end{itemize}
+            Therefore, \[||A||_\infty = \max\{18, 35, 45\} = 45.\]
+        \end{mdframed}
+    \end{itemize}
+\end{mdframed}
 
 \end{document}
