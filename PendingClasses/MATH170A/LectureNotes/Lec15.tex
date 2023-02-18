@@ -1,0 +1,282 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+\usepackage{csquotes}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Math 170A}
+\chead{Friday, February 17, 2023}
+\lhead{Lecture 16}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+\newcommand{\0}{\mathbf{0}}
+\newcommand{\y}{\mathbf{y}}
+\renewcommand{\b}{\mathbf{b}}
+\newcommand{\x}{\mathbf{x}}
+\newcommand{\e}{\mathbf{e}}
+\newcommand{\rr}{\mathbf{r}}
+\newcommand{\vv}{\mathbf{v}}
+\renewcommand{\u}{\mathbf{u}}
+
+\begin{document}
+
+\section{Singular Value Decomposition \& Basic Applications (4.1, 4.2)}
+\begin{theorem}{Geometric Singular Value Decomposition Theorem}{}
+    Let $A \in \R^{n \times m}$ be a nonzero matrix with rank $r$. Then, $\R^m$ has an orthogonal basis $v_1, v_2, \hdots, v_m$, $\R^n$ has an orthonormal basis $u_1, u_2, \hdots, u_n$, and there exists $\sigma_1 \geq \sigma_2 \geq \hdots \geq \sigma_r > 0$ such that 
+    \[Av_i = \begin{cases}
+        \sigma_i u_i & i = 1, \hdots, r \\ 
+        \0 & i = r + 1, \hdots, m
+    \end{cases} \qquad A^T u_i = \begin{cases}
+        \sigma_i v_i & i = 1, \hdots, r \\ 
+        \0 & i = r + 1, \hdots, n
+    \end{cases}.\]
+    For SVD, there exists orthogonal matrices $U \in \R^{n \times n}$ and $V \in \R^{m \times m}$ such that \[A = U \Sigma V^T\] with \[\Sigma = \begin{bmatrix}
+        \sigma_1 & 0 & 0 & 0 & 0 & \hdots & 0 \\ 
+        0 & \sigma_2 & 0 & 0 & 0 & \hdots & 0 \\ 
+        0 & 0 & \ddots & 0 & 0 & \hdots & 0 \\ 
+        0 & 0 & 0 & \sigma_r & 0 & \hdots & 0 \\ 
+        0 & 0 & 0 & 0 & 0 & \hdots & 0 \\ 
+        \vdots & \vdots & \vdots & \vdots & \vdots & \ddots & \vdots \\ 
+        0 & 0 & 0 & 0 & 0 & \hdots & 0
+    \end{bmatrix} \in \R^{n \times m}.\]
+\end{theorem}
+\textbf{Remarks:}
+\begin{itemize}
+    \item This is called a full SVD\footnote{Later, we will introduced a reduced SVD.} Here, $\sigma_1, \sigma_2, \hdots, \sigma_r$ are called the \emph{singular values}.
+    \item Note that we can write $U$ and $V$ as a vector of vectors, 
+    \[U = \begin{bmatrix}
+        u_1, u_2, \hdots, u_n
+    \end{bmatrix}, u_i \in \R^{n}\]
+    and \[V = \begin{bmatrix}
+        v_1, v_2, \hdots, v_m
+    \end{bmatrix}, v_m \in \R^m.\]
+\end{itemize}
+
+\subsection{Intuition}
+To get some intuition, let's suppose we start with $A = U\Sigma V^T$. Then, we know that \[AV = U\Sigma V^T V \implies AV = U\Sigma.\] Rewriting $V$ and $U$ as columns, we have 
+\begin{equation}{\label{lec15:1}}
+    A\begin{bmatrix}
+        v_1 & v_2 & \hdots & v_m
+    \end{bmatrix} = \begin{bmatrix}
+        u_1 & u_2 & \hdots & u_n
+    \end{bmatrix} \begin{bmatrix}
+        \sigma_1 & 0 & 0 & 0 & 0 & \hdots & 0 \\ 
+        0 & \sigma_2 & 0 & 0 & 0 & \hdots & 0 \\ 
+        0 & 0 & \ddots & 0 & 0 & \hdots & 0 \\ 
+        0 & 0 & 0 & \sigma_r & 0 & \hdots & 0 \\ 
+        0 & 0 & 0 & 0 & 0 & \hdots & 0 \\ 
+        \vdots & \vdots & \vdots & \vdots & \vdots & \ddots & \vdots \\ 
+        0 & 0 & 0 & 0 & 0 & \hdots & 0
+    \end{bmatrix}.
+\end{equation}
+For some matrix 
+\[B = \begin{bmatrix}
+    b_1 & b_2 & \hdots & b_m
+\end{bmatrix},\] then \[B \begin{bmatrix}
+    \sigma_1 & 0 & 0 & \hdots & 0 \\ 
+    0 & 0 & 0 & \hdots & 0 \\ 
+    0 & 0 & 0 & \hdots & 0 \\ 
+    \vdots & \vdots & \vdots & \ddots & \vdots \\
+    0 & 0 & 0 & \hdots & 0
+\end{bmatrix} = \begin{bmatrix}
+    b_1 & b_2 & \hdots & b_m
+\end{bmatrix}\begin{bmatrix}
+    \sigma_1 & 0 & 0 & \hdots & 0 \\ 
+    0 & 0 & 0 & \hdots & 0 \\ 
+    0 & 0 & 0 & \hdots & 0 \\ 
+    \vdots & \vdots & \vdots & \ddots & \vdots \\
+    0 & 0 & 0 & \hdots & 0
+\end{bmatrix} = \begin{bmatrix}
+    \sigma_1 b_1 & \0 & \hdots & \0
+\end{bmatrix}.\]
+Likewise, \[B \begin{bmatrix}
+    0 & 0 & 0 & \hdots & 0 \\ 
+    0 & \sigma_2 & 0 & \hdots & 0 \\ 
+    0 & 0 & 0 & \hdots & 0 \\ 
+    \vdots & \vdots & \vdots & \ddots & \vdots \\
+    0 & 0 & 0 & \hdots & 0
+\end{bmatrix} = \begin{bmatrix}
+    b_1 & b_2 & \hdots & b_m
+\end{bmatrix}\begin{bmatrix}
+    0 & 0 & 0 & \hdots & 0 \\ 
+    0 & \sigma_2 & 0 & \hdots & 0 \\ 
+    0 & 0 & 0 & \hdots & 0 \\ 
+    \vdots & \vdots & \vdots & \ddots & \vdots \\
+    0 & 0 & 0 & \hdots & 0
+\end{bmatrix} = \begin{bmatrix}
+    \0 & \sigma_2 b_2 & \hdots & \0
+\end{bmatrix}.\] 
+Notice how $\sigma_i$ scales the $i$th column of $B$. Now, let's suppose we combine the operations above into one matrix: 
+\[B \begin{bmatrix}
+    \sigma_1 & 0 & 0 & \hdots & 0 \\ 
+    0 & \sigma_2 & 0 & \hdots & 0 \\ 
+    0 & 0 & 0 & \hdots & 0 \\ 
+    \vdots & \vdots & \vdots & \ddots & \vdots \\
+    0 & 0 & 0 & \hdots & 0
+\end{bmatrix} = \begin{bmatrix}
+    0 & b_2 & \hdots & 0
+\end{bmatrix}\begin{bmatrix}
+    \sigma_1 & 0 & 0 & \hdots & 0 \\ 
+    0 & \sigma_2 & 0 & \hdots & 0 \\ 
+    0 & 0 & 0 & \hdots & 0 \\ 
+    \vdots & \vdots & \vdots & \ddots & \vdots \\
+    0 & 0 & 0 & \hdots & 0
+\end{bmatrix} = \begin{bmatrix}
+    \sigma_1 b_1 & \sigma_2 b_2 & \hdots & \0
+\end{bmatrix}.\] 
+Here, both column 1 and 2 are scaled. So, going back to equation (\ref{lec15:1}), we have 
+\[\begin{bmatrix}
+    \sigma_1 u_1 & \sigma_2 u_2 & \hdots & \sigma_r u_r & \0 & \hdots & \0
+\end{bmatrix}.\]
+This gives us the formula,
+\[Av_i = \begin{cases}
+    \sigma_i u_i & i = 1, \hdots, r \\ 
+    \0 & i = r + 1, \hdots, m
+\end{cases}.\]
+
+Likewise, let's consider $A^T$; 
+\begin{equation*}
+    \begin{aligned}
+        A^T &= (U\Sigma V^T)^T \\ 
+            &= (V^T) \Sigma^T U^T \\ 
+            &= V\Sigma U^T.
+    \end{aligned}
+\end{equation*}
+From there, we have $A^T U = V\Sigma^T U^T U = V\Sigma^T.$ Expanding out the matrices, we have 
+\[A^T \begin{bmatrix}
+    u_1 & u_2 & \hdots & u_n
+\end{bmatrix} = \begin{bmatrix}
+    v_1 & v_2 & \hdots & v_m
+\end{bmatrix} \begin{bmatrix}
+    \sigma_1 & 0 & 0 & \hdots & 0 \\ 
+    0 & \sigma_2 & 0 & \hdots & 0 \\ 
+    0 & 0 & \sigma_r & \hdots & 0 \\ 
+    \vdots & \vdots & \vdots & \ddots & \vdots \\
+    0 & 0 & 0 & \hdots & 0
+\end{bmatrix} = \begin{bmatrix}
+    \sigma_1 v_1 & \sigma_2 v_2 & \hdots & \sigma_r v_r & \0 & \hdots
+\end{bmatrix}.\]
+Note that $\Sigma^T$ is not a tall matrix, but a wide one; instead of being $n \times m$, it's $m \times n$. This gives us the formula
+\[A^T u_i = \begin{cases}
+    \sigma_i v_i & i = 1, \hdots, r \\ 
+    \0 & i = r + 1, \hdots, m
+\end{cases}.\] In particular, we can see that 
+\begin{center}
+    \begin{tabular}{p{2in} p{2in}}
+        \[v_1 \xrightarrow[\sigma_1]{A} u_1\]
+        \[v_2 \xrightarrow[\sigma_2]{} u_2\]
+        \[v_3 \xrightarrow[\sigma_3]{} u_3\]
+        \[\vdots\]
+        \[v_r \xrightarrow[\sigma_r]{} u_r\]
+        \[v_{r + 1} \xrightarrow{} \0\]
+        \[\vdots\]
+        \[v_{m} \xrightarrow{} \0\] &  
+        \[u_1 \xrightarrow[\sigma_1]{A^T} v_1\]
+        \[u_2 \xrightarrow[\sigma_2]{} v_2\]
+        \[u_3 \xrightarrow[\sigma_3]{} v_3\]
+        \[\vdots\]
+        \[u_r \xrightarrow[\sigma_r]{} v_r\]
+        \[u_{r + 1} \xrightarrow{} \0\]
+        \[\vdots\]
+        \[u_{n} \xrightarrow{} \0\]
+    \end{tabular}
+\end{center}
+So, in particular, the range of matrix A, $\mathcal{R}(A)$, is spanned by 
+\[v_1 \xrightarrow[\sigma_1]{A} u_1\]
+\[v_2 \xrightarrow[\sigma_2]{} u_2\]
+\[v_3 \xrightarrow[\sigma_3]{} u_3\]
+\[\vdots\]
+\[v_r \xrightarrow[\sigma_r]{} u_r.\]
+The null space of $A$, $\mathcal{N}(A)$, is spanned by 
+\[v_{r + 1} \xrightarrow{} \0\]
+\[\vdots\]
+\[v_{m} \xrightarrow{} \0.\]
+For $A^T$, this is analogous.
+
+\subsection{Fundamental Subspaces}
+The SVD displays orthogonal bases for the four Fundamental subspaces, $\mathcal{R}(A)$, $\mathcal{N}(A)$, $\mathcal{R}(A^T)$, and $\mathcal{N}(A^T)$, where $\mathcal{R}$ is the \emph{range} and $\mathcal{N}$ is the null space. 
+\[\mathcal{R}(A) = \text{span}\{u_1, u_2, \hdots, u_r\}.\]
+\[\mathcal{N}(A) = \text{span}\{v_{r + 1}, v_{r + 2}, \hdots, v_m\}.\]
+\[\mathcal{R}(A^T) = \text{span}\{v_1, v_2, \hdots, v_r\}.\]
+\[\mathcal{N}(A^T) = \text{span}\{u_{r + 1}, u_{r + 2}, \hdots, u_n\}.\]
+In particular, 
+\[\mathcal{R}(A) + \mathcal{N}(A^T) = \text{span}\{u_1, u_2, \hdots, u_n\}.\]
+\[\mathcal{R}(A^T) + \mathcal{N}(A) = \text{span}\{v_1, v_2, \hdots, v_m\}.\]
+We can see that $\mathcal{R}(A^T) = \mathcal{N}(A)^{\perp}$ and $\mathcal{R}(A) = \mathcal{N}(A^T)^{\perp}.$
+
+\begin{corollary}{}{}
+    Let $A \in \R^{n \times m}$. Then, $\dim(\mathcal{R}(A)) + \dim(\mathcal{N}(A)) = m$ and $\dim(\mathcal{R}(A^T)) + \dim(\mathcal{N}(A^T)) = n$.
+\end{corollary}
+
+\subsection{Reduced SVD}
+We'll introduce this section with an example. 
+
+\begin{mdframed}
+    (Example.) Suppose we have a $3 \times 3$ matrix of rank\footnote{It has 3 rows but only has 2 non-zero singular values, $\sigma_1$ and $\sigma_2$} 2. Then, 
+    \begin{equation*}
+        \begin{aligned}
+            A &= \underbrace{\begin{bmatrix}
+                u_{11} & u_{12} & u_{13} \\ 
+                u_{21} & u_{22} & u_{23} \\ 
+                u_{31} & u_{32} & u_{33} 
+            \end{bmatrix}}_{U} \underbrace{\begin{bmatrix}
+                \sigma_1 & 0 & 0 \\ 
+                0 & \sigma_2 & 0 \\ 
+                0 & 0 & 0 
+            \end{bmatrix}}_{\Sigma} \underbrace{\begin{bmatrix}
+                v_{11} & v_{21} & v_{31} \\ 
+                v_{12} & v_{22} & v_{32} \\ 
+                v_{13} & v_{23} & v_{33} 
+            \end{bmatrix}}_{V^T} \\ 
+                &= \begin{bmatrix}
+                    \sigma_1 u_{11} & \sigma_2 u_{12} & 0 \\ 
+                    \sigma_1 u_{21} & \sigma_2 u_{22} & 0 \\ 
+                    \sigma_1 u_{31} & \sigma_2 u_{32} & 0 
+                \end{bmatrix} \begin{bmatrix}
+                    v_{11} & v_{21} & v_{31} \\ 
+                    v_{12} & v_{22} & v_{32} \\ 
+                    v_{13} & v_{23} & v_{33} 
+                \end{bmatrix}.
+        \end{aligned}
+    \end{equation*} 
+    As a result, we'll end up multiplying $v_{13}$, $v_{23}$, $v_{33}$ by 0. So, instead, what if we have: 
+    \[A = \underbrace{\begin{bmatrix}
+        u_{11} & u_{12} \\ 
+        u_{21} & u_{22} \\ 
+        u_{31} & u_{32} 
+    \end{bmatrix}}_{\hat{U}} \underbrace{\begin{bmatrix}
+        \sigma_1 & 0 \\ 
+        0 & \sigma_2
+    \end{bmatrix}}_{\hat{\Sigma}} \underbrace{\begin{bmatrix}
+        v_{11} & v_{21} & v_{31} \\ 
+        v_{12} & v_{22} & v_{32}
+    \end{bmatrix}}_{\hat{V^T}}.\]
+    This is known as the reduced SVD. 
+\end{mdframed}
+
+\begin{theorem}{Condensed SVD Theorem}{}
+    Let $A \in \R^{n \times m}$ be a nonzero matrix of rank $r$. Then, there exists $\hat{U} \in \R^{n \times r}$, $\hat{\Sigma} \in \R^{r \times r}$, and $\hat{V} \in \R^{m \times r}$, such that $\hat{U}$ and $\hat{V}$ are isometries, and $\hat{\Sigma}$ is a diagonal matrix with main-diagonal entries $\sigma_1 \geq \sigma_2 \geq \hdots \geq \sigma_r > 0$ and \[A = \hat{U}\hat{\Sigma}\hat{V^T}.\]
+\end{theorem}
+
+\subsubsection{Relationship to Norm and Condition Number}
+Recall that we defined the matrix 2-norm as  
+\[||A|| = \max_{\x \neq \0} \frac{||A\x||_2}{||\x||} = \sigma_1,\] where $\sigma_1$ is the largest singular value. Note that this definition also makes sense for $A \in \R^{n \times m}$. 
+
+\begin{theorem}{}{}
+    \[||A||_2 = \sigma_1.\]
+\end{theorem}
+\begin{proof}
+    In next lecture.
+\end{proof}
+
+Since $A$ and $A^T$ have the same singular values, we have the following corollary. 
+\begin{corollary}{}{}
+    \[||A||_2 = ||A^T||_2.\]
+\end{corollary}
+
+\end{document}
