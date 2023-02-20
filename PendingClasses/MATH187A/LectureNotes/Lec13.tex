@@ -1,0 +1,330 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{csquotes}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Math 187A}
+\chead{Wednesday, February 22, 2023}
+\lhead{Lecture 13}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\section{Modern Cryptography}
+Modern cryptography generally begins with two, related, desires 
+\begin{itemize}
+    \item In all the ciphers we've seen so far, we assume Alice and Bob have some way of sharing a key. We haven't said much about \emph{how} that happens, and we've also seen that the perfect secrecy requires very long keys. How can Alice and Bob share a long key with each other without Eve finding out about it? 
+    \item None of the ciphers we've seen so far is robust against chosen-plaintext attacks. If Eve has the ability to request the ciphertexts for any plaintexts she likes, she can gradually get more information about the key until she can break the code. Recall that the one-time pad is only safe if the key is only used once. 
+\end{itemize}
+We would like a cryptosystem where the \emph{decryption key} is only known to Bob. Alice and Eve and everyone else in the world has access to Bob's encryption key and can encrypt messages for Bob to see, but then only Bob can recover the plaintext. This allows us to avoid Alice and Bob having to share a common key, and would allow Eve to generate ciphertexts for any plaintext of her choosing while also making sure that the cryptosystem is safe against chosen-ciphertext attacks. 
+
+\bigskip 
+
+It turns out that there are a number of cryptosystems of this type, and they all fall under the heading of \textbf{public-key cryptography}, because the encryption key can be made public to the world. A recurring theme behind public-key cryptosystems is a ``one-way function,'' which is a function that's easy to compute but hard to invert. 
+
+\subsection{Interlude: Primes} 
+\begin{definition}{Prime}{}
+    A positive integer $p \geq 2$ is \textbf{prime} if its only positive divisors are 1 and itself. An integer $n \geq 2$ that is not prime is called \textbf{composite}.
+\end{definition}
+For example, 5 is prime because 1 and 5 are its only divisors. 4, on the other hand, is not prime, since 2 is a divisor of 4 (in addition to 1 and 4). 
+
+\begin{mdframed}
+    (Exercise.) The ``twin prime conjecture'' is a famous open problem which says that there are infinitely many “twin primes,” ie, pairs of primes that are 2 apart. For example, 3 and 5 are twin primes, as are 5 and 7, or 11 and 13. Give five more examples of twin primes.
+    
+    \begin{mdframed}
+        The following pairs are five other examples:
+        \[(17, 19), (29, 31), (41, 43), (59, 61), (71, 73).\]
+    \end{mdframed}
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) There is a version of the twin prime conjecture which says that every even integer can be written as the difference of consecutive primes in infinitely many ways. For example, we have: \[6 = 29 - 23 = 137 - 131 = 599 - 593 = \hdots.\]
+    Express the integer 10 as the difference of two consecutive primes in five different ways.
+    \begin{mdframed}
+        Five other ways include: 
+        \[10 = 13 - 3 = 17 - 7 = 29 - 19 = 41 - 31 = 71 - 61.\]
+    \end{mdframed}
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) Explain why, if an integer $n \geq 2$ is composite, it must be divisible by a prime $p$ such that $p \leq \sqrt{n}$. Use this fact to determine whether or not 701 is prime. 
+
+    \begin{mdframed}
+        \begin{proof}
+            Suppose $n$ is composite. Then, we can write \[n = ab\] such that $a, b$ are integers and $1 < a < n$, $1 < b < n$, and WLOG $a \leq b$.
+            
+            \bigskip 
+            
+            Further suppose that $a > \sqrt{n}$. Then, $b \geq a > \sqrt{n}$. However, if $b \geq a > \sqrt{n}$, then \[ab > \sqrt{n}\sqrt{n} = n,\] a contradiction (since we wrote that $n = ab$). Therefore, $a \leq \sqrt{n}.$ We know that there exists some prime $p$ which divides $a$, so it follows that $p \leq a$ and $p \leq \sqrt{n}$.  
+        \end{proof}
+    \end{mdframed}
+\end{mdframed}
+
+\subsubsection{Ubiquity of Primes}
+Every positive integer $n \geq 2$ can be written as a product of primes. For example, $18 = 2 \cdot 3^2$ and both 2 and 3 are primes. An expression of an integer $n \geq 2$ as a product of primes is called a \emph{prime factorization} of $n$.
+
+\begin{theorem}{Fundamental Theorem of Arithmetic}{}
+    Any positive integer $n \geq 2$ has a unique prime factorization. In other words, there exists an expression \[n = p_1^{e_1} p_2^{e_2} \hdots p_r^{e_r}\] such that $p_1, \hdots, p_r$ are primes and $e_1, \hdots, e_r$ are positive integers, and the expression is unique up to reordering the indices. 
+\end{theorem}
+For example, $60 = 2^2 \cdot 3^1 \cdot 5^1$ is a unique prime factorization of 60; the only other prime factorization involves reordering the factors around. 
+
+\begin{mdframed}
+    (Example.) Find the prime factorizations of 1231 and of 1232.
+
+    \begin{mdframed}
+        \begin{itemize}
+            \item For 1231, note that 
+            \[1231 = 1231 \cdot 1.\]
+
+            \item For 1232, note that 
+            \[1232 = 616 \cdot 2 = 308 \cdot 2^2 = 154 \cdot 2^3 = 77 \cdot 2^4 = 11 \cdot 7 \cdot 2^4.\]
+        \end{itemize}
+    \end{mdframed}
+\end{mdframed}
+
+
+\begin{mdframed}
+    (Exercise.) 
+    \begin{enumerate}
+        \item Find all prime factors of $50!$. (Just a list of the prime factors is sufficient; you don't need to find the exponents of the prime factorization for this part.)
+        \begin{mdframed}
+            Note that \[50! = 50 \cdot 49 \cdot 48 \cdot \hdots \cdot 3 \cdot 2 \cdot 1.\]
+            In particular, any composite number less than or equal to 50 can be decomposed into primes that are also less than or equal to 50. Thus, we have \[2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47.\] 
+        \end{mdframed}
+        \item Find the prime factorization of $10!$. 
+        \begin{mdframed}
+            We know that 
+            \[10! = 10 \cdot 9 \cdot 8 \cdot 7 \cdot 6 \cdot 5 \cdot 4 \cdot 3 \cdot 2,\]
+            where 
+            \[10 = 5 \cdot 2,\]
+            \[9 = 3^2,\]
+            \[8 = 2^3,\]
+            \[7 = 7 \cdot 1,\]
+            \[6 = 3 \cdot 2,\]
+            \[5 = 5 \cdot 1,\]
+            \[4 = 2 \cdot 2,\]
+            \[3 = 3 \cdot 1,\]
+            \[2 = 2 \cdot 1.\]
+            So, 
+            \[10! = 2^8 \cdot 3^4 \cdot 5^2 \cdot 7.\]
+        \end{mdframed}
+        \item Find the prime factorization of $11! / 2^8$. 
+        \begin{mdframed}
+            We know that
+            \begin{equation*}
+                \begin{aligned}
+                    \frac{11!}{2^8} &= \frac{11 \cdot 10 \cdot 9 \cdot 8 \cdot 7 \cdot 6 \cdot 5 \cdot 4 \cdot 3 \cdot 2}{2^8} \\ 
+                        &= \frac{11 \cdot (5 \cdot 2) \cdot (3^2) \cdot (2^3) \cdot 7 \cdot (2 \cdot 3) \cdot 5 \cdot (2^2) \cdot 3 \cdot 2}{2^8} \\ 
+                        &= 11 \cdot 5 \cdot (3^2) \cdot 7 \cdot 3 \cdot 5 \cdot 3 \\ 
+                        &= (3^2) \cdot 3 \cdot 3 \cdot 5 \cdot 5 \cdot 7 \cdot 11 \\ 
+                        &= 3^4 \cdot 5^2 \cdot 7 \cdot 11.
+                \end{aligned}
+            \end{equation*}
+            Alternatively, 
+            \begin{equation*}
+                \begin{aligned}
+                    \frac{11!}{2^8} &= \frac{11 \cdot 10!}{2^8} \\
+                        &= \frac{11 \cdot 2^8 \cdot 3^4 \cdot 5^2 \cdot 7}{2^8} \\ 
+                        &= 11 \cdot 3^4 \cdot 5^2 \cdot 7.
+                \end{aligned}
+            \end{equation*}
+        \end{mdframed}
+    \end{enumerate}
+\end{mdframed}
+
+\begin{lemma}{Euclid's Lemma}{}
+    Suppose $a$ and $b$ are integers and that $d$ is a divisor of $ab$ such that $\gcd(a, b) = 1$. Then, $d$ is a divisor of $b$. 
+\end{lemma}
+
+\begin{proof}
+    By Bezout's theorem, there exists $x$ and $y$ such that \[1 = \gcd(a, d) = ax + dy.\] Multiplying this by $b$ gives us \[b = abx + bdy.\] Observe that $d$ divides $bdy$, and it also divides $ab$. Thus, $d$ divides the sum $abx + bdy = b$. 
+\end{proof}
+
+\subsubsection{Scarcity of Primes \& Difficulty of Factoring}
+Having made the observation that primes are ``ubiquitous,'' we should also note that primes are ``scarce.'' The first sense is a literal sense: as a proportion of all integers, very few integers end up being prime. The second sense is that prime factorizations are difficult to actually calculate, even for moderately large numbers. 
+
+\bigskip 
+
+The naive way to find a prime factorization is to figure out what the factors are.
+\begin{mdframed}
+    (Example.) Suppose we want to find the prime factorization of 75. First, we note that 2 does not divide 75. We then see that 3 does divide 75, and so we're left with 25 ($75 / 3 = 25$). Now, 3 no longer divides 25, and neither does 4. However, 5 does divide 25, so we're left with 5 ($25 / 5 = 5$). Since 5 divides itself, we're left with 1 ($5 / 5 = 1$), so the prime factorizations are \[75 = 3^1 \cdot 5^2.\]
+\end{mdframed}
+This process is extremely slow as the number gets larger or, more specifically, as the prime factors of the number get larger. 
+
+\bigskip 
+
+There are a number of deep, sophisticated, and clever techniques to speed this process up\footnote{Which will not be covered in this course.}, but no one has yet found a factorization algorithm for classical computers that is substantially better than the naive method we just described. The difficulty of factoring can be leveraged to build modern cryptosystems that are in widespread use today. 
+
+\bigskip 
+
+Some things to further consider: 
+\begin{itemize}
+    \item Just because there are no substantially better algorithm for finding the prime factorizations doesn't mean one does exist. In other words, there could be an algorithm for finding prime factorizations in an efficient way, but we haven't found it. 
+    \item Efficient factorization algorithms exist for \emph{quantum computers}, but quantum computing hardware has not yet caught up to our theoretical knowledge, so our modern cryptosystems are still safe for now. That being said, this won't last for much longer and so we will soon need new cryptosystems that are secure against quantum computers.
+\end{itemize}
+
+\bigskip 
+
+The difficulty of factoring suggests that the function $\mu$, which takes as input two prime numbers $p$ and $q$ and outputs the product \[\mu(p, q) = pq\] is our first example of a \textbf{one-way} function. It's very easy to compute the product of two primes but, if the primes are large, it'll be very hard to invert this function (i.e., find the prime factors of some given number that has two large prime factors). This is the one-way function on which RSA is based, as we will soon see. 
+
+
+\subsection{Euler's Phi Function}
+\begin{definition}{Euler's Phi Function}{}
+    For a positive integer $n$, let $\phi(n)$ denote the number of integers $r$ with $0 \leq r < n$ and $\gcd(n, r) = 1$. The function $n \mapsto \phi(n)$ is called \emph{Euler's phi function} (or \emph{Euler's totient function}).
+\end{definition}
+
+For example, when we were counting that there are 312 affine encryption functions available in English, part of the process involved counting the number of numbers relatively prime to 26, and we found it was 12. Now, we can say this as \[\phi(26) = 12.\]
+
+\begin{mdframed}
+    (Exercise.) Compute $\phi(12)$, $\phi(13)$, $\phi(14)$, and $\phi(15)$. 
+    \begin{mdframed}
+        \begin{itemize}
+            \item For $\phi(12)$, we know that 
+            \[\gcd(1, 12) = \gcd(5, 12) = \gcd(7, 12) = \gcd(11, 12) = 4,\]
+            so $\phi(12) = 4$. 
+
+            \item Because $13$ is prime, $\phi(13) = 12$. 
+            
+            \item For $\phi(14)$, we know that 
+            \[\gcd(1, 14) = \gcd(3, 14) = \gcd(5, 14) = \gcd(9, 14) = \gcd(11, 14) = \gcd(13, 14) = 1,\]
+            so $\phi(14) = 6$.
+
+
+            \item By the same reasoning, $\phi(15) = 8$. 
+        \end{itemize}
+    \end{mdframed}
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) Explain why, in a language that uses an alphabet with $n$ letters, the number of distinct affine encryption functions is $n\phi(n)$. 
+
+    \begin{mdframed}
+        Recall that the affine encryption function is of the form \[E(x) = (ax + b) \Mod{n}.\] There are $n$ possible options for $b$, and $\phi(n)$ possible options for $a$ (otherwise, there's no inverse for $a$). This gives us $\phi(n) \cdot n$. 
+    \end{mdframed}
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) Suppose $p$ is prime. 
+    \begin{enumerate}
+        \item Explain why $\phi(p) = p - 1$. 
+        \begin{mdframed}
+            If $p$ is prime, then its only positive divisors are 1 and itself. So, in particular, 
+            \[\phi(1, p) = \phi(2, p) = \hdots = \phi(p - 1, p) = 1\]
+            and 
+            \[\phi(p, p) = p.\]
+        \end{mdframed}
+
+        \item Explain why $\phi(p^e) = p^e - p^{e - 1}$ for any $e \geq 1$. 
+        \begin{mdframed}
+            A number is relatively prime with $p^e$ if and only if it is not divisible by $p$, so there are $p^e$ numbers in total, \[\{1, 2, \hdots, p^e\}.\] From those, exactly $p^{e - 1}$ are divisible by $p$, \[\{1p, 2p, 3p, \hdots, p^{e - 1}p\}.\] Therefore, there are $p^e - p^{e - 1}$ numbers in the list not divisible by $p$.
+        \end{mdframed}
+    \end{enumerate}
+\end{mdframed}
+
+\begin{lemma}{}{}
+    If $\gcd(a, b) = 1$, then $\phi(ab) = \phi(a)\phi(b)$. 
+\end{lemma}
+With this in mind, the formula for $\phi(n)$ is 
+\[\phi(n) = p_{1}^{e_1 - 1}(p_1 - 1) \cdot \hdots \cdot p_{r}^{e_r - 1}(p_r - 1)\]
+
+\begin{mdframed}
+    (Exercise.) Use the formula for Euler's phi function to calculate $\phi(n)$ for each of the following values of $n$. 
+    \begin{enumerate}[(a)]
+        \item $n = 20 = 2^2 \cdot 5$. 
+        \begin{mdframed}
+            \[\phi(20) = 2^{2 - 1}(2 - 1) \cdot 5^{1 - 1}(5 - 1) = 2 \cdot 4 = 8.\]
+        \end{mdframed}
+        \item $n = 25 = 5^2$. 
+        \begin{mdframed}
+            \[\phi(25) = 5^{2 - 1}(5 - 1) = 5 \cdot 4 = 20.\]
+        \end{mdframed}
+        \item $n = 30 = 2 \cdot 3 \cdot 5$. 
+        \begin{mdframed}
+            \[\phi(30) = 2^{1 - 1}(2 - 1) \cdot 3^{1 - 1}(3 - 1) \cdot 5^{1 - 1}(5 - 1) = 1 \cdot 2 \cdot 4 = 8.\]
+        \end{mdframed}
+        \item $n = 35 = 5 \cdot 7$. 
+        \begin{mdframed}
+            \[\phi(35) = 5^{1 - 1}(5 - 1) \cdot 7^{1 - 1}(7 - 1) = 4 \cdot 6 = 24.\]
+        \end{mdframed}
+        \item $n = 40 = 2^3 \cdot 5$. 
+        \begin{mdframed}
+            \[\phi(40) = 2^{3 - 1}(2 - 1) \cdot 5^{1 - 1}(5 - 1) = 2^2 \cdot 4 = 16.\]
+        \end{mdframed}
+    \end{enumerate}
+\end{mdframed}
+We should also note that \[\phi(n) = n \prod_{p | n} \left(1 - \frac{1}{p}\right).\]
+
+\begin{theorem}{Euler's Theorem}{}
+    Suppose $n$ is a positive integer and $a$ is another integer with $\gcd(a, n) = 1$. Then, \[a^{\phi(n)} \equiv 1 \Mod{n}.\]
+\end{theorem}
+
+\begin{mdframed}
+    (Example.) We know that $20 = 2^2 \cdot 5$ so $\phi(20) = 8$. This means that \[a^{\phi(20)} = a^8 \equiv 1 \Mod{20}\] for any $a$ that is relatively prime to 20. For example, when $a = 3$, we have $\gcd(3, 20) = 1$ and, using the Modular Arithmetic Theorem, we have 
+    \begin{equation*}
+        \begin{aligned}
+            &3^2 = 9 \\ 
+            &3^4 = (3^2)^2 \equiv 9^2 = 81 \equiv 1 \Mod{20} \\ 
+            &3^8 = (3^4)^2 \equiv 1^2 = 1 \Mod{20}.
+        \end{aligned}
+    \end{equation*}
+    We can use this theorem to compute very large powers of some number. For example, to compute $7^{20232023} \Mod{20}$, we notice that $20232020$ is divisible by 8 so 
+    \[20232023 = 20232000 + 23 \equiv 23 \equiv 7 \Mod{8}.\]
+    So, $20232023 = 8q + 7$ for some $q \geq 0$, so 
+    \[7^{20232023} = 7^{8q + 7} = (7^8)^q 7^7 = 1^q 7^7 = 7^7 \Mod{20}.\]
+    Then, to compute $7^7 \Mod{20}$, we can do 
+    \begin{equation*}
+        \begin{aligned}
+            &7^2 = 49 \equiv 9 \Mod{20} \\ 
+            &7^4 = (7^2)^2 \equiv 9^2 = 81 \equiv 1 \Mod{20} \\ 
+            &7^7 = 7^4 \cdot 7^2 \cdot 7 \equiv 1 \cdot 9 \cdot 7 = 63 \equiv 3 \Mod{20}.
+        \end{aligned}
+    \end{equation*}
+    So, $7^{20232023} \Mod{20} = 3$. 
+\end{mdframed}
+Notice how we could do this remainder calculation without having to compute $7^{20232023}$. This is important, since RSA will require us that to similar remainder calculations even when the numbers are so large that it is infeasible for computers to calculate the result of the exponentiation. 
+
+\begin{mdframed}
+    (Exercise.) Use Euler's Theorem to show that 51 divides $10^{32n + 9} - 7$ for any integer $n \geq 0$. 
+
+    \begin{mdframed}
+        Recall that \[\phi(51) = 32,\]
+    \end{mdframed}
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) Find the units digit of $3^{100}$ using Euler's theorem.
+
+    \begin{mdframed}
+        
+    \end{mdframed}
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) Fix a prime number $p$. There are two versions of ``Fermat's little theorem.''
+    \begin{enumerate}
+        \item If $a$ is an integer that is not divisible by $p$, then $a^{p - 1} \equiv 1 \Mod{p}$. 
+        
+        \begin{mdframed}
+            Recall that $\phi(p) = p - 1$, so 
+            \[a^{\phi(p)} \equiv 1 \Mod{p} \implies a^{p - 1} \equiv 1 \Mod{p}.\]
+        \end{mdframed}
+
+        \item For any integer $a$, we have $a^p \equiv a \Mod{p}$. 
+        
+        \begin{mdframed}
+            Note that 
+            \[a^{p - 1} = a^p \frac{1}{a} \equiv 1 \Mod{p}\]
+            by part (1), so multiplying both sides by $a$ gives us 
+            \[a^p \equiv a \Mod{p}.\]
+        \end{mdframed}
+    \end{enumerate}
+\end{mdframed}
+
+\end{document}
