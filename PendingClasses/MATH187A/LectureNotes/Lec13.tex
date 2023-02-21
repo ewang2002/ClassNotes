@@ -294,7 +294,9 @@ Notice how we could do this remainder calculation without having to compute $7^{
     (Exercise.) Use Euler's Theorem to show that 51 divides $10^{32n + 9} - 7$ for any integer $n \geq 0$. 
 
     \begin{mdframed}
-        Recall that \[\phi(51) = 32,\]
+        Recall that \[\phi(51) = 32,\] so in particular \[a^{32} \equiv 1 \Mod{51}\] for any $a$ that is relatively prime to 51. Then, it follows that 
+        \[10^{32n + 9} - 7 = 10^{32n} 10^9 - 7 = (10^{32})^{n} 10^9 - 7 \equiv 10^9 - 7 \Mod{51}.\] Note here that $10^{32n}$ and 51 are relatively prime. In any case, it follows that 
+        \[10^9 - 7 \Mod{51} = 0.\]
     \end{mdframed}
 \end{mdframed}
 
@@ -302,7 +304,13 @@ Notice how we could do this remainder calculation without having to compute $7^{
     (Exercise.) Find the units digit of $3^{100}$ using Euler's theorem.
 
     \begin{mdframed}
-        
+        We have $\phi(10) = 4$ so 
+        \[a^{4} \equiv 1 \Mod{10}\]
+        for some $a$ that is relatively prime to 10. Now, we note that 
+        \[3^{100} = 3^{4 \cdot 25} = (3^4)^{25}\]
+        and so 
+        \[(3^4)^{25} \equiv 1^{25} = 1 \Mod{10}.\]
+        Therefore, the unit digit of $3^{100}$ is 1.
     \end{mdframed}
 \end{mdframed}
 
