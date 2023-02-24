@@ -1,0 +1,301 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{csquotes}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Math 187A}
+\chead{Friday, February 24, 2023}
+\lhead{Lecture 14}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\section{Modern Cryptography}
+(Continued from previous notes.)
+
+
+\subsection{Interlude: Binary Exponentiation}
+With Euler's theorem in mind, we can compute large powers in modular arithmetic very quickly. Let's now explain the process more systematically. Suppose we have a positive integer $n$ and an integer $a$ with $\gcd(a, n) = 1$, and that we want to compute $a^m \Mod{n}$ for some large number $n$.
+
+\bigskip 
+
+The first step is to calculate $r = m \Mod{\phi(n)}$. If we do this, we'll have $m = \phi(n)q + r$, so \begin{equation}
+    a^m = a^{\phi(n) q + r} = (a^{\phi(n)})^q a^r \equiv 1^q a^r = a^r \Mod{n}.
+\end{equation}
+from Euler's Theorem and the Modular Arithmetic Theorem. This immediately reduces the power we have the compute substantially. From there, we can compute $a^r \Mod{n}$ using a technique called \textbf{binary exponentation.} The idea is fairly straightforward in examples, so let's look at an example. 
+
+\begin{mdframed}
+    (Example.) Suppose we find that $r = 25$. How can we compute $a^r \Mod{n}$? One thing we could do is multiply $a$ by itself mod $n$ repeatedly, but this would require 25 multiplications mod $n$. Here's another thing we can try; we square repeatedly: 
+    \begin{itemize}
+        \item Find $a^2 \Mod{n}$. 
+        \item Find $a^4 = (a^2)^2 \Mod{n}$ by squaring the result of the previous step.
+        \item Find $a^8 = (a^4)^2 \Mod{n}$ by squaring the result of the previous step.
+        \item Find $a^{16} = (a^8)^2 \Mod{n}$ by squaring the result of the previous step.
+    \end{itemize}
+    Squaring this again would go past $r = 25$, so we stop at 16. We now want to figure out how to find $a^{25}$ using the powers of $a$ that we computed already. Notice that \[25 = 16 + 8 + 1\] so \[a^{25} = a^{16 + 8 + 1} = a^{16}a^{8}a^{1},\] and we already know $a^{16}, a^8, a^1 \Mod{n}$, so we can compute $a^{25} \Mod{n} n$ by multiplying these three values together mod $n$. This only requires 6 multiplication in total, much less than 25.
+\end{mdframed}
+
+\begin{mdframed}
+    (Example.) Suppose we want to compute $3^{4398391} \Mod{80}$. First, note that $\phi(80) = 32$ and $4398391 \equiv 23 \Mod{32}$, so $3^{4398391} \equiv 3^{23} \Mod{80}$ by Euler's Theorem. Now, using binary exponentation, we have 
+    \begin{equation*}
+        \begin{aligned}
+            &3^2 = 9 \\ 
+            &3^4 = (3^2)^2 = 9^2 = 81 \equiv 1 \Mod{80} \\ 
+            &3^8 = (3^4)^2 \equiv 1^2 = 1 \Mod{80} \\ 
+            &3^{16} = (3^8)^2 \equiv 1^2 = 1 \Mod{80} \\ 
+            &3^{23} = 3^{16 + 4 + 2 + 1} = 3^{16}3^4 3^2 3 \equiv 1 \cdot 1 \cdot 9 \cdot 3 = 27 \Mod{80}.
+        \end{aligned}
+    \end{equation*}
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) Compute $3^{293423948903859017} \Mod{50}$. 
+
+    \begin{mdframed}
+        Note that $\phi(50) = 20$ and $293423948903859017 \equiv 17 \Mod{20}$, so 
+        \[3^{293423948903859017} \equiv 3^{17} \Mod{50}.\]
+        Using binary exponentation, we have 
+        \begin{equation*}
+            \begin{aligned}
+                &3^2 = 9 \\ 
+                &3^4 = (3^2)^2 = 9^2 = 81 \equiv 31 \Mod{50} \\ 
+                &3^8 = (3^4)^2 = 31^2 \equiv 11 \Mod{50} \\ 
+                &3^{16} = (3^8)^2 = 11^2 = 121 \equiv 21 \Mod{50}.
+            \end{aligned}
+        \end{equation*}
+        From this, $17 = 16 + 1$ and so \[3^{17} = 3^{16 + 1} = 3^{16} 3^1 \equiv 21 \cdot 3 = 13 \Mod{50}.\]
+    \end{mdframed}
+\end{mdframed}
+
+The ``repeated squaring and then multiply together'' part of this process is very closely related to finding binary representations of integers. Here is the definition: 
+\begin{definition}{}{l14-1}
+    Let $r$ be a non-negative integer. The \textbf{binary representation} of $r$ is a string $b_{k} \hdots b_{1}b_{0}$ where each $b_i$ is either 0 or 1, and where 
+    \[r = b_0 + b_1 2 + b_2 2^2 + \hdots + b_k 2^k.\]
+    The number $b_i$ is called the $i$th bit of $r$. We call $b_0$ the rightmost bit and $b_k$ the leftmost bit. 
+\end{definition}
+For example, the binary representation of 25 is \code{11001} because \[1 + 0 \cdot 2 + 0 \cdot 2^2 + 1 \cdot 2^3 + 1 \cdot 2^4 = 1 + 8 + 16 = 25.\] To \emph{find} the binary representation, consider the following algorithm: 
+\begin{mdframed}
+    (Algorithm.) Let $r$ be a non-negative integer. To find the binary representation of $r$, divide $r$ by 2, then divide the quotient by 2, and then divide that quotient by 2, and so forth, until you hit a quotient of 2. The remainders of these divisions are the binary representation, with the last remainder corresponding to the leftmost bit. 
+\end{mdframed}
+\textbf{Remark:} This is an algorithm for humans, not for computers. Computers represent integers in binary form. 
+
+\begin{mdframed}
+    (Example.) To calculate the binary representation of 193, we divide 193 by 2, and then repeatedly divide the quotient by 2: 
+    \begin{equation*}
+        \begin{aligned}
+            193 &= 96 \cdot 2 + 1 \\ 
+            96 &= 48 \cdot 2 + 0 \\ 
+            48 &= 24 \cdot 2 + 0 \\ 
+            24 &= 12 \cdot 2 + 0 \\ 
+            12 &= 6 \cdot 2 + 0 \\ 
+            6 &= 3 \cdot 2 + 0 \\ 
+            3 &= 1 \cdot 2 + 1 \\ 
+            1 &= 0 \cdot 2 + 1
+        \end{aligned}
+    \end{equation*}
+    Since we hit a quotient of 0, we stop dividing. The binary representation is the sequence of remainders we found, with the leftmost bit being the last remainder we found and the rightmost bit being the first remainder we found. In other words, the binary representation of 193 is \code{11000001}.
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) Find binary representations of the following integers. 
+    \begin{enumerate}
+        \item 37 
+        \begin{mdframed}
+            \begin{equation*}
+                \begin{aligned}
+                    37 &= 18 \cdot 2 + 1 \\ 
+                    18 &= 9 \cdot 2 + 0 \\ 
+                    9 &= 4 \cdot 2 + 1 \\ 
+                    4 &= 2 \cdot 2 + 0 \\ 
+                    2 &= 1 \cdot 2 + 0 \\ 
+                    1 &= 0 \cdot 2 + 1.
+                \end{aligned}
+            \end{equation*}
+            The resulting binary string is \code{100101}.
+        \end{mdframed}
+        \item 123
+        \begin{mdframed}
+            \begin{equation*}
+                \begin{aligned}
+                    123 &= 61 \cdot 2 + 1 \\ 
+                    61 &= 30 \cdot 2 + 1 \\ 
+                    30 &= 15 \cdot 2 + 0 \\ 
+                    15 &= 7 \cdot 2 + 1 \\ 
+                    7 &= 3 \cdot 2 + 1 \\ 
+                    3 &= 1 \cdot 2 + 1 \\ 
+                    1 &= 0 \cdot 2 + 1.
+                \end{aligned}
+            \end{equation*}
+            The resulting binary string is \code{1111011}.
+        \end{mdframed}
+        \item 290 
+        \begin{mdframed}
+            \begin{equation*}
+                \begin{aligned}
+                    290 &= 145 \cdot 2 + 0 \\ 
+                    145 &= 72 \cdot 2 + 1 \\ 
+                    72 &= 36 \cdot 2 + 0 \\ 
+                    36 &= 18 \cdot 2 + 0 \\ 
+                    18 &= 9 \cdot 2 + 0 \\ 
+                    9 &= 4 \cdot 2 + 1 \\ 
+                    4 &= 2 \cdot 2 + 0 \\ 
+                    2 &= 1 \cdot 2 + 0 \\ 
+                    1 &= 0 \cdot 2 + 1.
+                \end{aligned}
+            \end{equation*}
+            The resulting binary string is \code{100100010}.
+        \end{mdframed}
+        \item 300 
+        \begin{mdframed}
+            \begin{equation*}
+                \begin{aligned}
+                    300 &= 150 \cdot 2 + 0 \\ 
+                    150 &= 75 \cdot 2 + 0 \\ 
+                    75 &= 37 \cdot 2 + 1 \\ 
+                    37 &= 18 \cdot 2 + 1 \\ 
+                    18 &= 9 \cdot 2 + 0 \\ 
+                    9 &= 4 \cdot 2 + 1 \\ 
+                    4 &= 2 \cdot 2 + 0 \\ 
+                    2 &= 1 \cdot 2 + 0 \\ 
+                    1 &= 0 \cdot 2 + 1.
+                \end{aligned}
+            \end{equation*}
+            The resulting binary string is \code{100101100}.
+        \end{mdframed}
+    \end{enumerate}
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) Why must the rightmost bit in the binary representation of an even number must be 0?
+
+    \begin{mdframed}
+        Note that $2^i$ is even if $i > 0$ and odd if $i = 0$. In particular, when $i = 0$, it follows that $2^0 = 1$. But, by using the above ``algorithm,'' we find that the binary representation of 1 is just \code{1} ($1 = 0 \cdot 2 + 1$). Also note that 
+        \begin{itemize}
+            \item adding two even numbers yields an even number,
+            \item adding an even and an odd number yields an odd number,
+            \item and multiplying a number by an even number yields an even number. 
+        \end{itemize}
+        Looking at the formula in (\ref{def:l14-1}), we notice that all the components aside from $b_0$ will be even (or 0). The only component that can be odd is $b_0$, and that's when $b_0 = 1$. So, if $b_0 = 1$, then we know that $r$ must be odd and hence the odd number must have rightmost bit 1. Conversely, when $r$ is even, the rightmost bit must be 0.
+    \end{mdframed}
+\end{mdframed}
+
+We can now state the general fact about binary exponentation below: 
+\begin{lemma}{}{}
+    Let $n$ be a positive integer, and let $b_k \hdots b_1 b_0$ be the binary representation of a non-negative integer $r$. To compute $a^r \Mod{n}$ for some integer $a$, first compute $a^{2^i} \Mod{n}$ for $i = 0, 1, \hdots, k$ by repeated squaring. Then, to get $a^r$, multiply together all of the $2^{a^i}$ where $b_i = 1$. In other words, 
+    \[a^r \equiv \prod_{b_i = 1} a^{2^i} \Mod{n}.\]
+\end{lemma}
+
+
+\subsection{Interlude: Primality Testing}
+How can we quickly figure out if a number is prime? Remember that factoring is computationally expensive, so it's not a good idea to try to figure out that a number is prime by factoring it! There are a number of tests we can do, although we'll focus on one called the \textbf{Miller-Rabin test}. Before we talk about the test, we should establish some important background results. 
+
+\begin{lemma}{}{}
+    If $n$ is prime, the only solutions to $x^2 \equiv 1 \Mod{n}$ are $x \equiv \pm 1 \Mod{n}$.
+\end{lemma}
+
+\begin{lemma}{Miller-Rabin}{}
+    Suppose $n$ is a positive \emph{odd} integer and write $n - 1 = 2^s d$ for some positive integer $s$ and some odd number $d$. Suppose $a$ is an integer between 1 and $n - 1$. If $n$ is prime, then one of the following congruence relations must hold true: 
+    \[a^d \equiv 1 \Mod{n}\]
+    \[a^d \equiv -1 \Mod{n}\]
+    \[a^{2d} \equiv -1 \Mod{n}\]
+    \[a^{2^2 d} \equiv -1 \Mod{n}\]
+    \[\vdots\]
+    \[a^{2^{s - 1}d} \equiv -1 \Mod{n}\]
+\end{lemma}
+
+\begin{mdframed}
+    (Example.) Consider $n = 41$, a prime number. We have 
+    \[n - 1 = 40 = 2^3 5.\]
+    In other words, we can take $s = 3$ and $d = 5$ in the above lemma. Fix some integer $a = 17$. Since $s = 3$, we have 4 congruences in our list, and one of them should then be true, so let's check which one. 
+    \[17^5 \equiv 27 \Mod{41} \neq \pm 1.\]
+    \[17^{2 \cdot 5} = (17^5)^2 \equiv 27^2 \equiv 32 \Mod{41} \neq -1.\]
+    \[17^{2^2 \cdot 5} = (17^{2 \cdot 5})^2 \equiv 32^2 \equiv 40 \equiv -1 \Mod{41}.\]
+    Here, the last congruence is true.
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) For each of the following integers $n$, find the integers $s$ and $d$ such that $n - 1 = 2^s d$, where $d$ is odd. 
+
+    \begin{enumerate}[(a)]
+        \item 43 
+        \begin{mdframed}
+            We have 
+            \[n - 1  = 43 - 1 = 42.\]
+            Trying different combinations of $d$, we note that 
+            \[42 = 2^1 \cdot 21.\]
+            So, $d = 21$ and $s = 1$. 
+        \end{mdframed}
+
+        \item 49 
+        \begin{mdframed}
+            For $n - 1 = 49 - 1 = 48$, we have \[48 = 2^4 \cdot 3\] so that $s = 4$ and $d = 3$.
+        \end{mdframed}
+        
+        \item 65 
+        \begin{mdframed}
+            For $n - 1 = 64$, we have \[64 = 2^6 \cdot 1\] so that $s = 6$ and $d = 1$. 
+        \end{mdframed}
+    \end{enumerate}
+\end{mdframed}
+
+\begin{definition}{}{}
+    Suppose $n$ is a positive odd integer and write $n - 1 = 2^s d$ for some positive integer $s$ and an odd number $d$. Suppose $a$ is an integer between 1 and $n - 1$. We say that $n$ is a strong probable prime to base $a$ if one of the following congruences is true: 
+    \[a^d \equiv 1 \Mod{n}\]
+    \[a^d \equiv -1 \Mod{n}\]
+    \[a^{2d} \equiv -1 \Mod{n}\]
+    \[a^{2^2 d} \equiv -1 \Mod{n}\]
+    \[\vdots\]
+    \[a^{2^{s - 1} d} \equiv -1 \Mod{n}\]
+    If $n$ is not a \emph{strong probable prime} to base $a$, then $a$ is called a \emph{witness for the compositness} of $a$, or a Miller-Rabin witness for $a$. 
+\end{definition}
+With this definition, the Miller-Rabin Lemma states that ``every prime number is a strong probable prime to any base.'' Equivalently, ``if $n$ is not a strong probable prime to some base $a$, then $n$ must be composite.''
+
+\begin{mdframed}
+    (Example.) For $n = 25$, we see that $n - 1 = 24 = 2^3 \cdot 3$, so we have $s = d = 3$. Suppose we choose a base of $a = 7$; then, 
+    \[7^3 \equiv 18 \Mod{25} \neq \pm 1\]
+    \[7^{2 \cdot 3} \equiv (7^3)^2 \equiv 18^2 \equiv 24 \equiv -1 \Mod{25} = -1,\]
+    so this says that 25 is a strong probable prime to base 7.
+
+    \bigskip 
+
+    Now, if we let $a = 2$, notice how 
+    \[2^3 = 8 \neq \pm 1.\]
+    \[2^{2 \cdot 3} = (2^3)^2 = 8^2 = 64 \equiv 14 \Mod{25} \neq -1.\]
+    \[2^{2^2 \cdot 3} = (2^{2 \cdot 3})^2 \equiv 14^2 \equiv 21 \Mod{25} \neq -1.\]
+    Thus, this $n$ is not a strong probable prime to base 2, and 2 is a witness to the compositness of 25. 
+\end{mdframed}
+If $n$ is composite, the most of the possible choices of base $2 \leq a \leq n - 2$ will in fact be witnesses for the compositness of $n$. So, if we try several such bases and none of them turn out to be a witness for compositness, then we can be quite sure that $n$ is in fact prime. 
+
+\begin{mdframed}
+    (Miller-Rabin Primality Test.) Suppose $n$ is a positive integer. If $n$ is 2, output \code{True}. Otherwise, if $n$ is even, output \code{False}. Otherwise, repeat the following step some fixed pre-determined number of times: 
+    \begin{itemize}
+        \item Choose a random base $2 \leq a \leq n - 2$. If $a$ is a witness for the compositness of $n$, output \code{False}. 
+    \end{itemize}
+    If we reach the end without having output \code{False}, then output \code{True}.
+\end{mdframed}
+If we do $k$ repetitions, the probability of a false positive is less than $4^{-k}$. This gets small very quickly; for example, if we do just 10 repetitions, the probability of a false positive is about one in a million.
+
+\bigskip 
+
+With this algorithm in mind, we can quickly check if a number is prime without having to factor it. This also gives us an algorithm for generating large prime numbers: basically, just keep generating random numbers until we find one that's prime!
+\begin{mdframed}
+    (Algorithm for Generating Large Primes.) Let $r$ be a positive integer. To generate an $r$-bit prime, run the following steps: 
+    \begin{itemize}
+        \item Pick a random odd integer $n$ between $2^{r - 1}$ and $2^{r} - 1$. 
+        \item Check if $n$ is prime. 
+        \begin{itemize}
+            \item If it is, return $n$. 
+            \item Otherwise, return to the first step. 
+        \end{itemize}
+    \end{itemize}
+\end{mdframed}
+
+
+\end{document}
