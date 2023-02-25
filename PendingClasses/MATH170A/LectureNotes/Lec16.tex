@@ -1,0 +1,119 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+\usepackage{csquotes}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Math 170A}
+\chead{Wednesday, February 22, 2023}
+\lhead{Lecture 17}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+\newcommand{\0}{\mathbf{0}}
+\newcommand{\y}{\mathbf{y}}
+\renewcommand{\b}{\mathbf{b}}
+\newcommand{\x}{\mathbf{x}}
+\newcommand{\e}{\mathbf{e}}
+\newcommand{\rr}{\mathbf{r}}
+\newcommand{\vv}{\mathbf{v}}
+\renewcommand{\u}{\mathbf{u}}
+
+\begin{document}
+
+\section{Singular Value Decomposition, Continued (4.1, 4.2)}
+(Continued from previous notes.)
+
+\subsection{Relationship to Norm and Condition Number}
+Recall that we defined the matrix 2-norm as  
+\[||A|| = \max_{\x \neq \0} \frac{||A\x||_2}{||\x||} = \sigma_1,\] where $\sigma_1$ is the largest singular value. Note that this definition also makes sense for $A \in \R^{n \times m}$. 
+
+\begin{theorem}{}{}
+    \[||A||_2 = \sigma_1.\]
+\end{theorem}
+
+Since $A$ and $A^T$ have the same singular values, we have the following corollary. 
+\begin{corollary}{}{}
+    \[||A||_2 = ||A^T||_2.\]
+\end{corollary}
+Since $A$ is nonsingular, $A$ has full rank, i.e., rank $n$. $A$ has $n$ strictly positive singualr values, $\sigma_1 \geq \sigma_2 \geq \hdots \geq \sigma_n > 0$. Now, 
+\[A^{-1} Av_i = A^{-1}(\sigma_i u-i) \implies v_i = \sigma_i A^{-1} u_i \implies A^{-1} u_i = \frac{1}{\sigma_i} v_i,\] so in particular we can map each $\sigma$ like so: 
+\begin{center}
+    \begin{tabular}{p{2in} p{2in}}
+        \[A\] & \[A^{-1}\] \\ 
+        \[v_1 \xrightarrow[\sigma_1]{} u_1\]
+        \[v_2 \xrightarrow[\sigma_2]{} u_2\]
+        \[v_3 \xrightarrow[\sigma_3]{} u_3\]
+        \[\vdots\]
+        \[v_n \xrightarrow[\sigma_n]{} u_n\] &
+        \[u_1 \xrightarrow[\sigma_1^{-1}]{} v_1\]
+        \[u_2 \xrightarrow[\sigma_2^{-1}]{} v_2\]
+        \[u_3 \xrightarrow[\sigma_3^{-1}]{} v_3\]
+        \[\vdots\]
+        \[u_{n} \xrightarrow[\sigma_n^{-1}]{} v_n\]
+    \end{tabular}
+\end{center}
+This tells us that the singular values of $A^{-1}$ must be \[\frac{1}{\sigma_n} \geq \frac{1}{\sigma_{n - 1}} \geq \hdots \geq \frac{1}{\sigma_2} \geq \frac{1}{\sigma_1} > 0\]
+such that 
+\[\Sigma^{-1} = \begin{bmatrix}
+    \frac{1}{\sigma_1} & 0 & 0 & 0 \\ 
+    0 & \frac{1}{\sigma_2} & 0 & 0 \\ 
+    0 & 0 & \ddots & 0 \\ 
+    0 & 0 & 0 & \frac{1}{\sigma_n} 
+\end{bmatrix}.\]
+And, in particular, \[||A^{-1}||_2 = \frac{1}{\sigma_n} \qquad ||A||_2 = \sigma_1.\]
+
+\begin{theorem}{}{}
+    Let $A \in \R^{n \times n}$ be a nonsingular matrix with singular values $\sigma_1 \geq \hdots \geq \sigma_n > 0$. Then, 
+    \[\kappa_{2}(A) = \frac{\sigma_1}{\sigma_n}.\]
+\end{theorem}
+
+\subsection{More on SVD}
+Remember that there are two types of SVD: 
+\begin{itemize}
+    \item Full SVD.
+    \[A = U\Sigma V^T,\]
+    where $A$ is $n \times m$, $U$ is $n \times n$, $\Sigma$ is $n \times m$, and $V^T$ is $m \times m$. Here, $\text{rank}(A) = r \leq m$ and $n \geq m$. 
+
+    \item Reduced SVD 
+    \[A = \hat{U}\hat{\Sigma}\hat{V^T},\]
+    where $A$ is $n \times m$, $\hat{U}$ is $n \times r$, $\hat{\Sigma}$ is $r \times r$, and $\hat{V}^T$ is $r \times m$.
+\end{itemize}
+In any case, we now know that \[||A||_2 = \sigma_1 \qquad \kappa_{2}(A) = \frac{\sigma_1}{\sigma_n}.\]
+
+\subsection{Rank-1 Decomposition}
+\begin{theorem}{}{}
+    Let $A \in \R^{n \times m}$ be a nonzero matrix with rank $r$. Let $\sigma_1, \hdots, \sigma_r$ be the singular values of $A$, with associated right and left singular vectors $v_1, \hdots, v_r$ and $u_1, \hdots, u_r$, respectively. Then, 
+    \[A = \sum_{j = 1}^{r} \sigma_j u_j v_j^T,\]
+    where $u_j \in \R^{n}$, $v_j \in \R^{m}$, and $u_j v_j^T \in \R^{n \times m}$. 
+\end{theorem}
+To see why this theorem works, 
+\begin{equation*}
+    \begin{aligned}
+        A &= \hat{U}\hat{\Sigma}\hat{V^T} \\ 
+            &= \underbrace{\begin{bmatrix}
+                u_1 & v_2 & \hdots & u_r
+            \end{bmatrix}}_{\hat{U}} \underbrace{\begin{bmatrix}
+                \sigma_1 & 0 & 0 & 0 \\ 
+                0 & \sigma_2 & 0 & 0 \\ 
+                0 & 0 & \ddots & 0 \\ 
+                0 & 0 & 0 & \sigma_r
+            \end{bmatrix}}_{\hat{\Sigma}} \underbrace{\begin{bmatrix}
+                v_1^T \\ v_2^T \\ \vdots \\ v_r^T
+            \end{bmatrix}}_{\hat{V}} \\ 
+            &= \begin{bmatrix}
+                \sigma_1 u_1 & \sigma_2 u_2 & \hdots & \sigma_r u_r
+            \end{bmatrix} \begin{bmatrix}
+                v_1^T \\ v_2^T \\ \vdots \\ v_r^T
+            \end{bmatrix} \\ 
+            &= \sigma_1 u_1 v_1^T + \sigma_2 u_2 v_2^T + \hdots + \sigma_r u_r v_r^T \\ 
+            &= \sum_{i = 1}^{r} \sigma_i u_i v_{i}^T.
+    \end{aligned}
+\end{equation*}
+
+
+\end{document}

@@ -263,20 +263,4 @@ We'll introduce this section with an example.
     Let $A \in \R^{n \times m}$ be a nonzero matrix of rank $r$. Then, there exists $\hat{U} \in \R^{n \times r}$, $\hat{\Sigma} \in \R^{r \times r}$, and $\hat{V} \in \R^{m \times r}$, such that $\hat{U}$ and $\hat{V}$ are isometries, and $\hat{\Sigma}$ is a diagonal matrix with main-diagonal entries $\sigma_1 \geq \sigma_2 \geq \hdots \geq \sigma_r > 0$ and \[A = \hat{U}\hat{\Sigma}\hat{V^T}.\]
 \end{theorem}
 
-\subsubsection{Relationship to Norm and Condition Number}
-Recall that we defined the matrix 2-norm as  
-\[||A|| = \max_{\x \neq \0} \frac{||A\x||_2}{||\x||} = \sigma_1,\] where $\sigma_1$ is the largest singular value. Note that this definition also makes sense for $A \in \R^{n \times m}$. 
-
-\begin{theorem}{}{}
-    \[||A||_2 = \sigma_1.\]
-\end{theorem}
-\begin{proof}
-    In next lecture.
-\end{proof}
-
-Since $A$ and $A^T$ have the same singular values, we have the following corollary. 
-\begin{corollary}{}{}
-    \[||A||_2 = ||A^T||_2.\]
-\end{corollary}
-
 \end{document}
