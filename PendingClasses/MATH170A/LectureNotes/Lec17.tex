@@ -1,0 +1,147 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+\usepackage{csquotes}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Math 170A}
+\chead{Friday, February 24, 2023}
+\lhead{Lecture 18}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+\newcommand{\0}{\mathbf{0}}
+\newcommand{\y}{\mathbf{y}}
+\renewcommand{\b}{\mathbf{b}}
+\newcommand{\x}{\mathbf{x}}
+\newcommand{\e}{\mathbf{e}}
+\newcommand{\rr}{\mathbf{r}}
+\newcommand{\vv}{\mathbf{v}}
+\renewcommand{\u}{\mathbf{u}}
+
+\begin{document}
+
+\section{Pseudoinverse (4.3)}
+We will solve the least squares with the SVD with full rank matrix $A$. Using SVD also works when the rank of $A$ is not full. Recall that 
+\[A \in \R^{n \times m} \qquad n \geq m \qquad \min_{\x \in \R^m} ||\b - A\x||_2^2.\]
+
+\subsection{Brief Review}
+Recall that, for a full rank $A$, i.e., $\text{rank}(A) = m$, we can use full QR decomposition ($A = QR$) or reduced QR decomposition ($A = \hat{Q}\hat{R}$). In particular, for reduced QR, $A = \hat{Q}\hat{R}$ where $\hat{Q} \in \R^{n \times m}$ and $\hat{R} \in \R^{m \times m}$. Recall that $A\x = \b$ as well, so 
+\begin{equation*}
+    \begin{aligned}
+        A\x &= \b \\ 
+            &\implies \hat{Q}\hat{R}\x = \b \\ 
+            &\implies \hat{Q}^{T}\hat{Q}\hat{R}\x = \hat{Q}^{T}\b \\ 
+            &\implies \hat{R}\x = \hat{Q}^{T}\b && \text{Since } Q^T Q = I.
+    \end{aligned}
+\end{equation*}
+Remember that, because $\hat{Q}$ is orthogonal, $\hat{Q} \hat{Q}^T = I_{n \times n}$ and $\hat{Q}^T \hat{Q} = I_{m \times m}$. Now, remember that if $\hat{R}$ has full rank, then it'll look like 
+\[\hat{R} = \begin{bmatrix}
+    * & * & * & * & \hdots & * \\ 
+    0 & * & * & * & \hdots & * \\ 
+    0 & 0 & * & * & \hdots & * \\ 
+    0 & 0 & 0 & * & \hdots & * \\ 
+    \vdots & \vdots & \vdots & \vdots & \ddots & \vdots \\ 
+    0 & 0 & 0 & 0 & \hdots & * \\ 
+\end{bmatrix}.\]
+Then, the associated equation will have a unique solution since it has $m$ equations and $m$ unknowns. \textbf{Now}, what if $\text{rank}(R) = r < m$? Then, it is not full rank and it'll look like 
+\[\hat{R} = \begin{bmatrix}
+    * & * & * & * & \hdots & * \\ 
+    0 & * & * & * & \hdots & * \\ 
+    0 & 0 & * & * & \hdots & * \\ 
+    0 & 0 & 0 & 0 & \hdots & 0 \\ 
+    \vdots & \vdots & \vdots & \vdots & \ddots & \vdots \\ 
+    0 & 0 & 0 & 0 & \hdots & 0 \\ 
+\end{bmatrix}.\]
+In particular, some of the diagonal entries are 0's. So, $\hat{R}\x = \hat{Q}^T \b$. We have $m$ unknowns, but we only have $r$ independent equations. Those equations are not helpful since we can't use them to solve for the unknowns -- we'll end up with infinitely many solutions. So, we'll have to choose one of these infinitely many solutions based on $||\x||_2$. 
+
+\subsection{A New Problem}
+We now have a new problem to solve. 
+\begin{itemize}
+    \item Find $\min||\b - A\x||_2^2$ (infinitely many solutions.)
+    \item Pick $\x$ with minimal $||\x||_2$. 
+\end{itemize}
+With the above two minimizers, there \emph{will} be a unique solution $\x$. We will see that the unique $\x$ can be written as $\x = A^+ \b$, where $A^+$ is known as the \textbf{pseudoinverse}\footnote{Note that if $A$ is invertible, then $\x = A^{-1}\b$, so in some sense $A^+$ is mimicking $A^{-1}$.}.
+
+\bigskip 
+
+With this in mind, how do we find the least squares solution of the minimal 2-norm? With $A = U\Sigma V^T$, we have 
+\begin{equation*}
+    \begin{aligned}
+        ||\b - A\x||_2^2 &= ||\b - U\Sigma V^T \x||_2^2 \\ 
+            &= ||U(U^T \b) - U(\Sigma V^T \x)||_2^2 && \text{Recall that } UU^T = U^T U = I \\ 
+            &= ||U(U^T \b - \Sigma V^T \x)||_2^2 \\ 
+            &= ||U^T \b - \Sigma V^T \x||_2^2 \\ 
+            &= \left|\left| \underbrace{\begin{bmatrix}
+                \hat{c} \\ 
+                d
+            \end{bmatrix}}_{U^T \b \in \R^{n \times 1}} - \left[
+                \begin{array}{c|c}
+                    \hat{\Sigma} & \makebox{0} \\ 
+                    \hline 
+                    \makebox{0} & \makebox{0}
+                \end{array}
+            \right] \underbrace{\begin{bmatrix}
+                \hat{y} \\ z
+            \end{bmatrix}}_{V^T \x \in \R^{m \times 1}} \right|\right|_2^2 && \text{See remark.} \\ 
+            &= \left|\left| \begin{bmatrix}
+                \hat{c} \\ 
+                d
+            \end{bmatrix} - \begin{bmatrix}
+                \hat{\Sigma} \hat{y} \\ 
+                \0
+            \end{bmatrix} \right|\right|_2^2  \\ 
+            &= \left|\left| \begin{bmatrix}
+                \hat{c} - \hat{\Sigma} \hat{y} \\ 
+                d
+            \end{bmatrix} \right|\right|_2^2 \\ 
+            &= ||\hat{c} - \hat{\Sigma} \hat{y}||_2^2 + ||d||_2^2
+    \end{aligned}
+\end{equation*}
+\textbf{Remarks:}
+\begin{itemize}
+    \item Note that $\hat{c} \in \R^r$ and $d \in \R^{n - r}$ and $\hat{y} \in \R^r$ and $z \in \R^{m - r}$.
+    \item Additionally, \[\Sigma = \left[
+        \begin{array}{c|c}
+            \hat{\Sigma} & \makebox{0} \\ 
+            \hline 
+            \makebox{0} & \makebox{0}
+        \end{array}
+    \right]\] where $\hat{\Sigma}$ is an $r \times r$ matrix. 
+
+    \item $d$ is independent of $\x$ when minimizing over $\x$. 
+\end{itemize}
+In any case, we want to minimize $||\hat{c} - \hat{\Sigma} \hat{y}||_2^2$. This can be done by solving \[\hat{c} = \hat{\Sigma}\hat{y}.\] This yields \[\begin{bmatrix}
+    \sigma_1 & & & & \\ 
+    & \sigma_2 & & & \\ 
+    & & \sigma_3 & & \\ 
+    & & & \ddots & \\ 
+    & & & & \sigma_r
+\end{bmatrix} \begin{bmatrix}
+    \hat{y}_1 \\ \hat{y}_2 \\ \vdots \\ \hat{y}_r
+\end{bmatrix} = \begin{bmatrix}
+    \hat{c}_1 \\ \hat{c}_2 \\ \vdots \\ \hat{c}_r
+\end{bmatrix}.\]
+And this gives us 
+\[\hat{y}_i = \frac{\hat{c}_i}{\sigma_i}, i = 1, \hdots, r.\] To find $\x$, we do \[V^T \x = \begin{bmatrix}
+    \hat{y} \\ z
+\end{bmatrix} \implies \x = V\begin{bmatrix}
+    \hat{y} \\ z 
+\end{bmatrix}.\]
+No matter the value of $z$, it won't affect the value of $\hat{y}$. We can define many $\x$ values such that the least square problems has the minimum. However, we want to define the unique solution $\x$, so how do we choose $z$ so we can find the minimized $||\x||_2$? 
+\[||\x||_2^2 = \left|\left|V \begin{bmatrix}
+    \hat{y} \\ z
+\end{bmatrix}\right|\right|_2^2 = \left|\left|\begin{bmatrix}
+    \hat{y} \\ 
+    z
+\end{bmatrix}\right|\right|_2^2 = ||\hat{y}||_2^2 + ||z||_2^2,\] where recall that $V$ is orthogonal. So, $||\x||_2^2$ is minimized when $z = \0$. So, in summary, $\boxed{\x = V\begin{bmatrix}
+    \hat{y} \\ \0
+\end{bmatrix}}$ is the unique solution.
+
+% last few minutes of lecture 19 for summary
+
+\end{document}

@@ -114,6 +114,46 @@ To see why this theorem works,
             &= \sum_{i = 1}^{r} \sigma_i u_i v_{i}^T.
     \end{aligned}
 \end{equation*}
+This is called the \textbf{rank-1 decomposition} because $A$ is written as a sum of rank-1 matrices ($u_i v_i^T$ is a rank-1 matrix.)
+
+\subsubsection{Low Rank Approximation}
+We know that \[A = \sum_{i = 1}^{r} \sigma_i u_i v_i^T = \sigma_1 u_1 v_1^T + \sigma_2 u_2 v_2^T + \hdots + \sigma_r u_r v_r^T.\] We also know that $\sigma_1 \geq \sigma_2 \geq \hdots \geq \sigma_r$. So, we can choose some $k \leq r$ and define \[A_k = \sum_{i = 1}^{k} \sigma_i u_i v_i^T.\] Then, $A_k$ is called the rank-$k$ approximation of $A$ (it's of type ``low-rank'' when $k < r$). 
+
+\bigskip 
+
+Essentially, we cut-off parts of the sum belonging to small singular values, producing an approximation ($A_k$) to the original matrix ($A$). It should, then, be noted that $\text{rank}(A_k) = k$, with each $u_i v_i^T$ having rank 1. 
+
+\begin{theorem}{}{}
+    \[||A - A_k||_2 = \sigma_{k + 1}.\]
+\end{theorem}
+
+\begin{proof}
+    We know that $A = \hat{U}\hat{\Sigma}\hat{V}^T$ and $A_k = \hat{U}\hat{\Sigma}_k \hat{V}^T$. So, \[\hat{\Sigma} = \begin{bmatrix}
+        \sigma_1 & & &  \\ 
+        & \sigma_2 & & \\ 
+        & & \ddots & \\ 
+        & & & \sigma_r
+    \end{bmatrix} \qquad \hat{\Sigma}_k = \begin{bmatrix}
+        \sigma_1 & & &  \\ 
+        & \ddots & & \\ 
+        & & \sigma_k & \\ 
+        & & & 0 
+    \end{bmatrix}.\]
+    From this, \[\begin{aligned}
+        A - A_k &= \hat{U}(\hat{\Sigma} - \hat{\Sigma}_k) \hat{V}^T \\ 
+            &= \hat{U}\begin{bmatrix}
+                0 & & & & & & \\ 
+                & 0 & & & & & \\ 
+                & & \ddots & & & & \\ 
+                & & & 0 & & & \\ 
+                & & & & \sigma_{k + 1} & & \\ 
+                & & & & & \ddots & \\ 
+                & & & & & & \sigma_r
+            \end{bmatrix} \hat{V}^T
+    \end{aligned},\]
+    as desired.
+\end{proof}
+In addition, $A_k$ is the matrix of rank $k$ that is closest to $A$ (in the 2-norm). In other words, $\min||A - B||_2$ with minimum over all matrix $B$ of rank $k$ is $A_k$. 
 
 
 \end{document}
