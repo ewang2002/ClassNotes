@@ -1,0 +1,226 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage{hyperref}
+\usepackage{csquotes}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Math 187A}
+\chead{Wednesday, March 01, 2023}
+\lhead{Lecture 15}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\section{Modern Cryptography}
+(Continued from previous notes.)
+
+\subsection{RSA}
+\textbf{RSA} is a cryptosystem named after Ron Rivest, Adi Shamir, and Leonard Adleman, who publicly described the algorithm in 1977. The GCHQ mathematician Clifford Cocks developed an equivalent system back in 1973, but his work was not declassified until 1997.
+
+\subsection{Converting Text Messages to Numbers}
+We first need to talk about how to convert text messages into integers, since RSA only allows us to transfer integers. A variety of methods could be employed to make this happen, but one simple idea is for someone to encode a message in the usual way (remove all non-alphabet characters and capitalize everything) and regard the resulting string as a number in base 26. 
+
+\begin{mdframed}
+    (Example.) Suppose Alice has a message \code{HIBOB}. Using the usual letter-to-number correspondence (where \code{A} is \code{0}, \code{B} is \code{1}, and so on), these numbers correspond to \code{7}, \code{8}, \code{1}, \code{14}, \code{1}, in that order. Then, we can construct the base 26 integer, \[1 \cdot 26^0 + 14 \cdot 26^1 + 1 \cdot 26^2 + 8 \cdot 26^3 + 7 \cdot 26^4 = 3340481_{26}.\]
+    This is an \textbf{integer representation} of the message \code{HIBOB} in the sense that there is a straightforward algorithm to recover the plaintext; we can use the same algorithm we used to write a number, but dividing repeatedly by 26 instead, to recover the letter-to-number correspondence: 
+    \begin{equation*}
+        \begin{aligned}
+            3340481 &= 128480 \cdot 26 + 1 \\ 
+            128480 &= 4941 \cdot 26 + 14 \\ 
+            4941 &= 190 \cdot 26 + 1 \\ 
+            190 &= 7 \cdot 26 + 8 \\ 
+            7 &= 0 \cdot 26 + 7.
+        \end{aligned}
+    \end{equation*}
+    Looking at the remainders, from bottom to top, gives us \code{7 8 1 14 1}, which is exactly the correspondence.
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) 
+    \begin{itemize}
+        \item Find the integer representation of \code{GAIA}.
+        \begin{mdframed}
+            Each letter in \code{GAIA} corresponds to the numbers \code{6 0 8 0}, respectively. So, 
+            \[0 \cdot 26^0 + 8 \cdot 26^1 + 0 \cdot 26^2 + 6 \cdot 26^3 = 105664_{26}.\]
+        \end{mdframed}
+        \item Find the text corresponding to the integer \code{245405438}.
+        \begin{mdframed}
+            We have 
+            \begin{equation*}
+                \begin{aligned}
+                    245405438 &= 26 \cdot 9438670 + 18 \\ 
+                    9438670 &= 26 \cdot 363025 + 20 \\ 
+                    363025 &= 26 \cdot 13962 + 13 \\ 
+                    13962 &= 26 \cdot 537 + 0 \\ 
+                    537 &= 26 \cdot 20 + 17 \\ 
+                    20 &= 26 \cdot 0 + 20.
+                \end{aligned}
+            \end{equation*}
+            Looking at the remainders from bottom to top gives us \code{20 17 0 13 20 18}, which is \code{URANUS}.
+        \end{mdframed}
+    \end{itemize}
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) Let's say you wanted to preserve spaces in your message. How would you modify the above method of associating an integer to text to make this happen?
+
+    \begin{mdframed}
+        Instead of base 26 (which only allows for all 26 capital letters), we can use base 27, where numbers 0-25 corresponds to a letter and number $26$ corresponds to a space. Then, the usual process of converting text to integer and integer to text is exactly the same.
+    \end{mdframed}
+\end{mdframed}
+
+\subsection{How RSA Works}
+Bob starts by picking two distinct \underline{large} integers $p$ and $q$. He computes $n = pq$ and $\phi(n) = (p - 1)(q - 1)$. He picks a random integer $d$ between 0 and $\phi(n)$ such that $\gcd(d, \phi(n)) = 1$. He then computes $e \equiv d^{-1} \Mod{\phi(n)}$ (recall that this is the \emph{inverse} of $d$ mod $\phi(n)$.), for example by using the extended Euclidean algorithm. He then publishes the pair $(n, e)$ for the world to see; this is his \textbf{public encryption key}. He keeps the remaining numbers private.
+
+\bigskip 
+
+Suppose Alice has a secret integer $m$ between 0 and $n - 1$ and she wants to send that integer to Bob. She encrypts $m$ by computing $c = m^e \Mod{n}$, and this is the ciphertext that she sends to Bob. 
+
+\bigskip 
+
+When Bob receives $c$, he computes $c^d \Mod{n}$. As it turns out, this must be $m$, so he has received Alices' message. 
+
+\begin{mdframed}
+    (Exercise.) Suppose Bob picks the primes $p = 3$ and $q = 5$. We have $n = pq = 15$ and $\phi(n) = (p - 1)(q - 1) = 8$. Suppose Bob further chooses $d = 3$ (which is relatively prime to 8). 
+
+    \begin{enumerate}
+        \item What is Bob's public encryption key? 
+        \begin{mdframed}
+            We have $n$, so we need to find $e$. To do so, we make use of the Modular Inversion Theorem to find the inverse of $3$ mod $8$, which in particular means we need to find the Bezout coefficients. We begin by computing $\gcd(3, 8)$ (trivially, we know this is 1, but we'll still do it);
+            \begin{center}
+                \begin{tabular}{|c|c|c|c|c|}
+                    \hline 
+                    $\mathbf{a}$ & $\mathbf{b}$ & $\mathbf{b = aq + r}$ & $\mathbf{q}$ & $\mathbf{r}$ \\ 
+                    \hline 
+                    3 & 8 & $8 = 3q + r$ & 2 & 2 \\
+                    2 & 3 & $3 = 2q + r$ & 1 & 1 \\ 
+                    1 & 2 & $2 = 1q + r$ & 2 & 0 \\ 
+                    \hline 
+                \end{tabular}
+            \end{center}
+            Here, we find that $\gcd(3, 8) = 1$. Notice that the operations we performed are 
+            \begin{itemize}
+                \item (Eq. 1) $8 = 3 \cdot 2 + 2 \implies 2 = 8 + 3 (-2)$
+                \item (Eq. 2) $3 = 2 \cdot 1 + 1 \implies 1 = 3 + 2 (-1)$ 
+                \item (Eq. 3) $2 = 1 \cdot 2 + 0$
+            \end{itemize}
+            So, working backwards from the last equation with a remainder, we have 
+            \begin{equation*}
+                \begin{aligned}
+                    1 &= 3 + 2 (-1) \\ 
+                        &= 3 + (\underbrace{8 + 3(-2)}_{\text{Eq. 1}}) (-1) \\ 
+                        &= 3 + 8(-1) + 3 (-2)(-1) \\ 
+                        &= 3 + 8(-1) + 3(2) \\ 
+                        &= 3(3) + 8(-1).
+                \end{aligned}
+            \end{equation*}
+            From this, it follows that the Bezout coefficients are 3 and -1. In particular, we find that $x = 3$ and so 3 is the inverse of 3 mod 8. Therefore, Bob's public encryption key is $(n, e) = \boxed{(15, 3)}$. 
+        \end{mdframed}
+
+        \item Suppose Alice wants to send Bob the message $m = 7$. What is the ciphertext $c$ that Alice sends Bob? 
+        \begin{mdframed}
+            We have \[c = m^e \Mod{n} = 7^3 \Mod{15} = 13,\]
+            where $e = 3$ and $n = 15$ from Bob's encryption key. 
+        \end{mdframed}
+
+        \item Check that, if Alice sends the ciphertext $c$ corresponding to $m = 7$ to Bob, that Bob actually recovers the original plaintext. 
+        \begin{mdframed}
+            Bob computes \[c^d \Mod{n} = 13^3 \Mod{15} = 7,\] which is exactly the message that Alice sent.
+        \end{mdframed}
+
+        \item Suppose Alice sends the ciphertext $c = 2$ to Bob. What is the corresponding plaintext? 
+        \begin{mdframed}
+            Bob again computes \[2^3 \Mod{15} = 8.\]
+        \end{mdframed}
+    \end{enumerate}
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) Let's now take Eve's perspective to see why choosing large primes is crucial. Suppose Bob's RSA public key is $(35, 7)$ and Alice has just sent Bob the ciphertext $c = 17$. What is Bob's decryption key? What is Alice's plaintext message? 
+
+    \begin{mdframed}
+        We know that Bob's public key is $(n, e) = (35, 7)$. So, \[n = pq \implies 35 = 5 \cdot 7.\] Therefore, $p = 5$ and $q = 7$. With this in mind, we know that \[\phi(n) = \phi(35) = (5 - 1)(7 - 1) = 24.\] With this in mind, we want to find the inverse of $e$ mod $\phi(n)$; that is, \[d \equiv e^{-1} \Mod{\phi(n)}.\] Once again, we need to use the Modular Inversion Theorem to find the inverse of 7 mod 24. Let's begin by finding $\gcd(7, 24)$; 
+        \begin{center}
+            \begin{tabular}{|c|c|c|c|c|}
+                \hline 
+                $\mathbf{a}$ & $\mathbf{b}$ & $\mathbf{b = aq + r}$ & $\mathbf{q}$ & $\mathbf{r}$ \\ 
+                \hline 
+                7 & 24 & $24 = 7q + r$ & 3 & 3 \\ 
+                3 & 7 & $7 = 3q + r$ & 2 & 1 \\ 
+                1 & 3 & $3 = 1q + r$ & 3 & 0 \\ 
+                \hline 
+            \end{tabular}
+        \end{center}
+        We find that $\gcd(7, 24) = 1$ and, more importantly, the equations used to get us to this value are 
+        \begin{itemize}
+            \item (Eq. 1) $24 = 7(3) + 3 \implies 3 = 24 + 7(-3)$
+            \item (Eq. 2) $7 = 3(2) + 1 \implies 1 = 7 + 3(-2)$
+            \item (Eq. 3) $3 = 1(3) + 0$.
+        \end{itemize}
+        Starting from the last equation with a remainder and working backwards, we have 
+        \begin{equation*}
+            \begin{aligned}
+                1 &= 7 + 3(-2) \\ 
+                    &= 7 + (\underbrace{24 + 7(-3)}_{\text{Eq. 1}})(-2) \\ 
+                    &= 7 + 24(-2) + 7(-3)(-2) \\ 
+                    &= 7 + 24(-2) + 7(6) \\ 
+                    &= 7(7) + 24(-2).
+            \end{aligned}
+        \end{equation*}
+        In particular, we find that the inverse of 7 mod 24 is 7, so $d = 7$ and this is Bob's decryption key. 
+
+        \bigskip 
+
+        With this decryption key in hand, we can decrypt Alice's plaintext message: 
+        \[17^7 \Mod{35} = 3.\]
+    \end{mdframed}
+\end{mdframed}
+
+\subsection{Why RSA Works}
+\begin{theorem}{RSA}{}
+    Suppose $p, q$ are distinct primes and $n = pq$, that $d$ is an integer with $1 \leq d \leq \phi(n)$ and $\gcd(d, \phi(n)) = 1$, and that $e \equiv d^{-1} \Mod{\phi(n)}$. If $0 \leq m \leq n - 1$ and $c = m^e \Mod{n}$, then \[c^d \Mod{n} = m.\]
+\end{theorem}
+
+
+\subsection{Why RSA is Probably Secure}
+If Eve is eavesdropping on Alice and Bob's communication, she knows Bob's public key $(n, e)$ and she sees Alice's ciphertext $c$. She knows that $c$ is the $e$th power mod $n$ of Alice's original message $m$, so the security of RSA relies on the presumed difficulty of the following problem: 
+\begin{mdframed}
+    (Discrete Root Problem.) Suppose you are given positive integers $n$, $e$, and $c$, and you know further that 
+    \begin{itemize}
+        \item $n$ is a product of two distinct primes (but you don't know which ones),
+        \item $e$ is invertible mod $\phi(n)$ (but you don't know which $\phi(n)$), and 
+        \item $c$ is an $e$th power mod $n$.
+    \end{itemize}
+    Find the unique $e$th root of $c$ mod $n$, i.e., the unique integer $m$ such that $0 \leq m \leq n - 1$ such that $m^e \equiv c \Mod{n}$. 
+\end{mdframed}
+There is most likely no fast way of doing this, except for the way that Bob uses, which requires some secret knowledge. Bob needs to know the decryption exponent $d$, which is an inverse of $e$ mod $\phi(n)$, and knowing that would seem to require knowing $\phi(n)$. The following lemma shows that knowledge of $\phi(n)$ is actually equivalent to a knowledge of a factorization of $n$, which is believed to be hard to find quickly. 
+
+\begin{lemma}{}{}
+    Suppose $p$ and $q$ are distinct primes and $n = pq$. If Eve knows $n$ and can quickly calculate $\phi(n)$< then she can also quickly find $p$ and $q$. 
+\end{lemma}
+In other words, the lemma tells us that, since it is believed that there is no fast factoring algorithm for classical (ie, non-quantum) computers, this tells us that Eve probably does not have a quick way of finding the decryption exponent $d$ in the same way that Bob does. 
+
+% \begin{mdframed}
+%     (Exercise.) Bob's public key is $(\mathbf{n}, \mathbf{e})$, where 
+%     \[\mathbf{n} = 717426848223284193177165144369883618288687316631460708260937\]
+%     \[\mathbf{e} = 31883625115837871682689851305708348256252087949589953972423\]
+%     Unfortunately for Bob, he has chosen his public key to be too small: this $n$ is small enough that it can be factored by modern computers in a few seconds. Eve has just intercepted the ciphertext 
+%     \[\mathbf{c} = 35831783079824311094981278118129411294275821240128031455119\]
+%     that Alice was trying to send to Bob. Find the plaintext (as text, not just as a number).
+% 
+%     \begin{mdframed}
+%         Using a computer, we find that 
+%         \[\mathbf{n} = \underbrace{712424173017244001766346670161}_p \cdot \underbrace{1007022045847845063561332676217}_q.\]
+%         So, 
+%         \[\phi(\mathbf{n}) = 717426848223284193177165144368164172069822227566133028914560.\]
+%         With this in mind, we want to find the inverse of $e \Mod{\phi(\mathbf{n})}$. 
+%     \end{mdframed}
+% \end{mdframed}
+
+\end{document}
