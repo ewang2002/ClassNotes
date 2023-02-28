@@ -1,0 +1,143 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+\usepackage{csquotes}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Math 170A}
+\chead{Monday, February 27, 2023}
+\lhead{Lecture 19}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+\newcommand{\0}{\mathbf{0}}
+\newcommand{\y}{\mathbf{y}}
+\renewcommand{\b}{\mathbf{b}}
+\newcommand{\x}{\mathbf{x}}
+\newcommand{\e}{\mathbf{e}}
+\newcommand{\rr}{\mathbf{r}}
+\newcommand{\vv}{\mathbf{v}}
+\renewcommand{\u}{\mathbf{u}}
+
+\begin{document}
+
+\section{Eigenvector and Eigenvalues (5.1, 5.2)}
+Fundamentally, we want to solve \begin{equation}{\label{eq:2-27:1}}
+    Av = \lambda v,
+\end{equation} where
+\begin{itemize}
+    \item $A$ is a matrix either in $\R^{n \times n}$ or $\C^{n \times n}$, and 
+    \item $\lambda \in \C$ (the \emph{eigenvalue}), and 
+    \item $v \in \C^n$ (the \emph{eigenvector}).
+\end{itemize}
+The pair $(\lambda, v)$ is called an \textbf{eigenpair} of $A$. Whereas each eigenvector has a unique eigenvalue associated with it, each eigenvalue is associated with many eigenvectors. For example, if $v$ is an eigenvector of $A$ associated with the eigenvalue $\lambda$, then every nonzero multiple of $v$ is also an eigenvector of $A$ associated with $\lambda$. Now, note that 
+\[Av = \lambda v \implies Av = \lambda I v \implies \0 = Av - \lambda I v \implies  \0 = (A - \lambda I)v,\]
+where $I$ is the $n \times n$ identity matrix. In any case, if $v$ is an eigenvector with eigenvalue $\lambda$, then $v$ is a nonzero solution of the homogeneous matrix equation \[(A - \lambda I)v = \0.\] Therefore, the matrix is singular\footnote{Not invertible.} and $\det(A - \lambda I) = 0$. This establishes the following theorem. 
+
+\begin{theorem}{}{2-27:2}
+    $\lambda$ is an eigenvalue of $A$ if and only if 
+    \[\det(A - \lambda I) = 0.\]
+    This equation is known as the \textbf{characteristic equation} of $A$.
+\end{theorem}
+\textbf{Remark:} Although this is useful theoretically, this equation has little value for actual computations, as we will see later. 
+
+We note that $\det(A - \lambda I)$ is a polynomial in $\lambda$ of degree $n$; it is called the \textbf{characteristic polynomial} of $A$. Therefore, the eigenvalues, $\lambda$, are the roots of this polynomial. There are exactly $n$ roots, not all real (i.e., some complex), and thus $n$ eigenvalues.
+
+\begin{mdframed}
+    (Exercise.) Find the characteristic polynomial of \[B = \begin{bmatrix}
+        1 & 2 \\ 3 & 4
+    \end{bmatrix}.\]
+
+    \begin{mdframed}
+        We have 
+        \begin{equation*}
+            \begin{aligned}
+                \det(B - \lambda I) &= \det\left(\begin{bmatrix}
+                    1 & 2 \\ 3 & 4
+                \end{bmatrix} - \lambda \begin{bmatrix}
+                    1 & 0 \\ 0 & 1
+                \end{bmatrix}\right) \\ 
+                    &= \det\left(\begin{bmatrix}
+                        1 - \lambda & 2 \\ 
+                        3 & 4 - \lambda
+                    \end{bmatrix}\right) \\ 
+                    &= (1 - \lambda)(4 - \lambda) - 3(2) \\ 
+                    &= 4 - \lambda - 4\lambda + \lambda^2 - 6 \\ 
+                    &= \lambda^2 - 5\lambda - 2.
+            \end{aligned}
+        \end{equation*}
+    \end{mdframed}
+\end{mdframed}
+
+\subsection{Getting Eigenvectors}
+We can get the eigenvectors by solving \begin{equation}{\label{eq:2-27:3}}
+    (A - \lambda I)v = \0,
+\end{equation}
+where $\lambda$ are the eigenvalues that we found by solving (\ref{th:2-27:2}). Note that 
+\begin{itemize}
+    \item Eigenvalues are the roots of the polynomials of (\ref{th:2-27:2}).
+    \item Roots can be complex, thus eigenvalues can also be complex \emph{even} when $A$ is real. 
+\end{itemize}
+
+\begin{mdframed}
+    (Example.) Consider \[A = \begin{bmatrix}
+        0 & -1 \\ 1 & 0
+    \end{bmatrix} \in \R^{2 \times 2}.\] 
+    \begin{itemize}
+        \item To find the eigenvalues, we have 
+        \[\det(A - \lambda I) = \det\left(\begin{bmatrix}
+            -\lambda & -1 \\ 1 & -\lambda
+        \end{bmatrix}\right) = \lambda^2 + 1.\]
+        Then, we can solve \[\lambda^2 + 1 = 0,\] giving us $\lambda = \pm i$, which is \emph{complex}.  
+
+        \item To find the eigenvectors, we use the formula (\ref{eq:2-27:3}) for each eigenvalue.
+        \begin{itemize}
+            \item For $\lambda = i$, we have 
+            \[\left(\begin{bmatrix}
+                0 & - 1 \\ 1 & 0 
+            \end{bmatrix} - \begin{bmatrix}
+                i & 0 \\ 
+                0 & i
+            \end{bmatrix}\right)v = \0 \implies \begin{bmatrix}
+                -i & -1 \\ 
+                1 & -i
+            \end{bmatrix}v = \0 \implies v = \begin{bmatrix}
+                i \\ 1
+            \end{bmatrix}.\]
+            
+            \item For $\lambda = -i$, we have 
+            \[\left(\begin{bmatrix}
+                0 & -1 \\ 1 & 0
+            \end{bmatrix} - \begin{bmatrix}
+                -i & 0 \\ 
+                0 & -i
+            \end{bmatrix}\right)v = \0 \implies \begin{bmatrix}
+                i & -1 \\ 1 & i
+            \end{bmatrix}v = \0 \implies v = \begin{bmatrix}
+                -i \\ 1
+            \end{bmatrix}.\]
+        \end{itemize}
+    \end{itemize}
+\end{mdframed}
+
+\subsection{Eigenvectors \& Eigenvalues for Large Matrices}
+Suppose we have a matrix of size $200 \times 200$. The characteristic equation will be a polynomial of degree 200. This means that there are 200 roots and thus 200 eigenvalues. Now, we should note that there is no formula to find the roots when $r > 4$ (we have the quadratic equation when $r = 2$, for example), so this process is tedious. Additionally, numerically finding the roots is ill-conditioned\footnote{Small perturbations to the coefficients lead to large changes in the roots.}.
+
+\bigskip 
+
+So, how do we find the eigenvalues numerically? As implied earlier, the characteristic equation is not useful for finding eigenvalues numerically, so we will perform iterative methods to find eigenvalues. 
+
+\subsubsection{QR Iteration}
+Before we begin this section, let's note a theorem. 
+\begin{theorem}{}{}
+    Let $T \in \C^{n \times n}$ be a (lower- or upper-) triangular matrix. Then, the eigenvalues of $T$ are the main-diagonal entries $t_{11}, \hdots, t_{nn}$. 
+\end{theorem}
+We will construct a sequence of matrices with the same eigenvalues that converge to a triangular matrix. The reason why we choose a triangular matrix is because its eigenvalues are on the diagonal. 
+
+
+
+\end{document}
