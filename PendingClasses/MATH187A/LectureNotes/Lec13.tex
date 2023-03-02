@@ -259,7 +259,7 @@ With this in mind, the formula for $\phi(n)$ is
         \end{mdframed}
     \end{enumerate}
 \end{mdframed}
-We should also note that \[\phi(n) = n \prod_{p | n} \left(1 - \frac{1}{p}\right).\]
+We should also note that \[\phi(n) = n \prod_{\substack{p | n \\ p \text{ prime}}} \left(1 - \frac{1}{p}\right).\]
 
 \begin{theorem}{Euler's Theorem}{}
     Suppose $n$ is a positive integer and $a$ is another integer with $\gcd(a, n) = 1$. Then, \[a^{\phi(n)} \equiv 1 \Mod{n}.\]
