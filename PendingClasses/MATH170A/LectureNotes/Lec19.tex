@@ -1,0 +1,69 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+\usepackage{csquotes}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Math 170A}
+\chead{Wednesday, March 01, 2023}
+\lhead{Lecture 20}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+\newcommand{\0}{\mathbf{0}}
+\newcommand{\y}{\mathbf{y}}
+\renewcommand{\b}{\mathbf{b}}
+\newcommand{\x}{\mathbf{x}}
+\newcommand{\e}{\mathbf{e}}
+\newcommand{\rr}{\mathbf{r}}
+\newcommand{\vv}{\mathbf{v}}
+\renewcommand{\u}{\mathbf{u}}
+
+\begin{document}
+
+\section{The Power Method (5.3)}
+Let $A \in \C^{n \times n}$, and assume that $A$ is semisimple. Let $\lambda_1, \lambda_2, \hdots, \lambda_n$ denote the eigenvalues associated with $v_1, \hdots, v_n$, respectively. Assume that the vectors are ordered so that $|\lambda_1| \geq |\lambda_2| \geq \hdots \geq |\lambda_n|$. If $|\lambda_1| > |\lambda_2|$, then $\lambda_1$ is called the \textbf{dominant eigenvalue}\footnote{Basically, the largest absolute eigenvalue.} and $v_1$ is called the \textbf{dominant eigenvector} of $A$.  
+
+\subsection{The Iterative Power Method}
+Assuming we have $|\lambda_1| > |\lambda_2|$ as described above (otherwise, this method may not work), the general idea behind the iterative power method is that we can pick $q \in \R^n$ randomly. Then, we can form the sequence of vectors
+\[q, Aq, A^2 q, A^3 q, \hdots.\]
+To calculate this sequence, we don't necessarily need to form the powers of $A$ explicitly. Each vector in the sequence can be obtained by multiplying the previous vector by $A$, e.g., $A^{j + 1}q = A(A^j q)$. It's easy to show that the sequence converge, in a sense, to a dominant eigenvector, for almost all choices of $q$. Since $v_1, \hdots, v_n$ form a basis for $\C^n$, there exists constants $c_1, \hdots, c_n$ such that  
+\[q = c_1 v_1 + c_2 v_2 + \hdots + c_n v_n.\]
+We don't know what $v_1, \hdots, v_n$ are, so we don't know what $c_1, \hdots, c_n$ are, either. However, it's clear that, for any choice of $q$, $c_1$ will be nonzero. The argument that follows is valid for every $q$ for which $c_1 \neq 0$; multiplying by $A$, we have 
+\begin{equation*}
+    \begin{aligned}
+        Aq &= c_1 Av_1 + c_2 Ac_2 + \hdots + c_n Av_n \\ 
+            &= c_1 \lambda_1 v_1 + c_2 \lambda_2 v_2 + \hdots + c_n  \lambda_n v_n.
+    \end{aligned}
+\end{equation*}
+Similarly, 
+\begin{equation*}
+    \begin{aligned}
+        A^2 q &= A(c_1 \lambda_1 v_1 + c_2 \lambda_2 v_2 + \hdots + c_n  \lambda_n v_n) \\
+            &= c_1 \lambda_1 (Av_1) + c_2 \lambda_2 (Av_2) + \hdots + c_n \lambda_n (Av_n) \\ 
+            &= c_1 \lambda_1 (\lambda_1 v_1) + c_2 \lambda_2 (\lambda_2 v_2) + \hdots + c_n \lambda_n (\lambda_n v_n) \\ 
+            &= c_1 \lambda_1^2 v_1 + c_2 \lambda_2^2 v_2 + \hdots + c_n \lambda_n^2 v_n.
+    \end{aligned}
+\end{equation*}
+In general, we have 
+\begin{equation*}
+    \begin{aligned}
+        A^j q &= c_1 \lambda_1^j v_1 + c_2 \lambda_2^j v_2 + \hdots + c_n \lambda_n^j v_n \\ 
+            &= \lambda_1^j \left(c_1 v_1 + c_2 \left(\frac{\lambda_2}{\lambda_1}\right)^j v_2 + \hdots + c_n \left(\frac{\lambda_n}{\lambda_1}\right)^j v_n\right).
+    \end{aligned}
+\end{equation*}
+In particular, we have 
+\[\frac{1}{\lambda_1^j} A^i q = c_1 v_1 + c_2 \left(\frac{\lambda_2}{\lambda_1}\right)^j v_2 + \hdots + c_n \left(\frac{\lambda_n}{\lambda_1}\right)^j v_n.\]
+Notice that $\lim_{j \mapsto \infty} \left(\frac{\lambda_i}{\lambda_1}\right)^j = 0$, so \[\lim_{j \mapsto \infty} \frac{1}{\lambda_1^j} A^j q = c_1 v_1,\]
+the dominant eigenvector.
+
+\bigskip 
+
+\textbf{Remark:} This only works if $\lambda_1$ is known. 
+
+
+\end{document}
