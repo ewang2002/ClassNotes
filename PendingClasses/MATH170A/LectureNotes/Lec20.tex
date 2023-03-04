@@ -1,0 +1,37 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+\usepackage{csquotes}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Math 170A}
+\chead{Friday, March 03, 2023}
+\lhead{Lecture 21}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+\newcommand{\0}{\mathbf{0}}
+\newcommand{\y}{\mathbf{y}}
+\renewcommand{\b}{\mathbf{b}}
+\newcommand{\x}{\mathbf{x}}
+\newcommand{\e}{\mathbf{e}}
+\newcommand{\rr}{\mathbf{r}}
+\newcommand{\vv}{\mathbf{v}}
+\renewcommand{\u}{\mathbf{u}}
+
+\begin{document}
+
+\section{Similar Matrices (5.4)}
+Two matrices, $A, B \in \R^{n \times n}$, are \textbf{similar} if there exists an invertible matrix $S \in \R^{n \times n}$ such that $AS = SB$. Equivalently, \[A = SBS^{-1} \qquad B = S^{-1}AS.\]
+$A$ and $B$ are called \textbf{orthogonally similar} if $S$ is orthogonal and $A = SBS^{-1}$. IN this case, we actually have $A = SBS^T$. 
+
+\begin{theorem}{}{}
+    Similar matrices have the same eigenvalues. 
+\end{theorem}
+That is, if $B = S^{-1}AS$ and $v$ is an eigenvector of $A$ to the eigenvalue $\lambda$, then $S^{-1} v$ is an eigenvector of $B$ with respect to $\lambda$. 
+
+\end{document}
