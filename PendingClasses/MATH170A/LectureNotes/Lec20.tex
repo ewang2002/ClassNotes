@@ -9,8 +9,8 @@
 \pagestyle{fancy}
 \fancyhf{}
 \rhead{Math 170A}
-\chead{Friday, March 03, 2023}
-\lhead{Lecture 21}
+\chead{March 03, 2023 \& March 05, 2023}
+\lhead{Lecture 21 \& 22}
 \rfoot{\thepage}
 
 \setlength{\parindent}{0pt}
@@ -25,13 +25,159 @@
 
 \begin{document}
 
-\section{Similar Matrices (5.4)}
+\section{Similar Matrices \& QR Iteration Introduction (5.4)}
 Two matrices, $A, B \in \R^{n \times n}$, are \textbf{similar} if there exists an invertible matrix $S \in \R^{n \times n}$ such that $AS = SB$. Equivalently, \[A = SBS^{-1} \qquad B = S^{-1}AS.\]
-$A$ and $B$ are called \textbf{orthogonally similar} if $S$ is orthogonal and $A = SBS^{-1}$. IN this case, we actually have $A = SBS^T$. 
+$A$ and $B$ are called \textbf{orthogonally similar} if $S$ is orthogonal and $A = SBS^{-1}$. In this case, we actually have $A = SBS^T$. 
 
 \begin{theorem}{}{}
     Similar matrices have the same eigenvalues. 
 \end{theorem}
 That is, if $B = S^{-1}AS$ and $v$ is an eigenvector of $A$ to the eigenvalue $\lambda$, then $S^{-1} v$ is an eigenvector of $B$ with respect to $\lambda$. 
+
+\begin{proof}
+    We have 
+    \begin{equation}
+        \begin{aligned}
+            Av = \lambda v &\implies SBS^{-1}v = \lambda v \\ 
+                &\implies S^{-1} (SBS^{-1})v = S^{-1}(\lambda v) \\ 
+                &\implies (S^{-1} S)BS^{-1}v = \lambda S^{-1}v \\
+                &\implies BS^{-1}v = \lambda S^{-1} v.
+        \end{aligned}
+    \end{equation}
+    This means that $S^{-1}v$ is an eigenvalue of $B$ with respect to $\lambda$. 
+\end{proof}
+
+\begin{lemma}{Diagonalizing Semisimple Matrices}{}
+    Let $A$ be a matrix in $\R^{n \times n}$. $A$ is semisimple if and only if there exists an invertible matrix $V \in \R^{n \times n}$ and a diagonal matrix $D \in \R^{n \times n}$ such that \[A = VDV^{-1}.\]
+\end{lemma}
+\textbf{Remarks:}
+\begin{itemize}
+    \item $A$ and $D$ are similar, meaning they have the same eigenvalues\footnote{The eigenvalues of a diagonal matrix is just the entries on the diagonal.}.
+    \item $A = VDV^{-1}$ is equivalent to $AV = VD$. This is an eigenvalue/vector equation. 
+\end{itemize} 
+\emph{Proof Idea.} If $D = \begin{bmatrix}
+    \lambda_1 & 0 & \hdots & 0 \\ 
+    0 & \lambda_2 & \hdots & 0 \\ 
+    \vdots & \vdots & \ddots & \vdots \\ 
+    0 & 0 & \hdots & \lambda_n
+\end{bmatrix}$ contains eigenvalues and $V = \begin{bmatrix}
+    v_1 & v_2 & \hdots & v_n
+\end{bmatrix}$ contains eigenvectors, then $V$ is invertible implies that $\begin{bmatrix}
+    v_1 & v_2 & \hdots & v_n
+\end{bmatrix}$ are linearly independent. Thus, $A$ is semisimple. How do we find the eigenvalues of $A$? 
+
+\subsection{Interlude: Complex Matrices}
+Let $\alpha = a + bi \in \C$, where $a, b \in \R$. Then, 
+\begin{itemize}
+    \item The complex conjugate, $\bar{\alpha} = a - bi \in \C$.
+    \item Also, $|\alpha| = \sqrt{a^2 + b^2}$.
+\end{itemize}
+ % TODO get graph from lecture
+
+Regarding complex matrices, 
+\begin{itemize}
+    \item \textbf{Generalization of Transpose:} Let $A \in \C^{n \times n}$. Then, $A^* = \bar{A}^T$, known as the generalization of a transposition. $\bar{A}$ is the complex conjugate of every entry. 
+    \item \textbf{Generalization of Orthogonality:} Recall that $Q \in \R^{n \times n}$ is orthogonal if $QQ^T = Q^T Q = I$. How do we generalize this to complex matrices? Let $U \in \C^{n \times n}$. $U$ is called \textbf{unitary} if $UU^* = U^*U = I$. 
+\end{itemize}
+
+\begin{theorem}{Schur}{}
+    Let $A \in \C^{n \times n}$. Then, there exists a unitary matrix $U \in \C^{n \times n}$ and an upper triangular matrix $T \in \C^{n \times n}$ such that $A = UTU^*$.
+\end{theorem}
+\textbf{Remark:} $A$ is unitarily similar to $T$. So, $A$ and $T$ has the same eignevalues. 
+
+\subsection{Back to Real Matrices}
+If $A \in \R^{n \times n}$, we can still apply Schur's theorem\footnote{Recall that $\R \subset \C$.}; that is, \[A = UTU^* \qquad U, T \in \C^{n \times n}.\]
+Another version of Schur's Theorem, known as the Real Schur's Theorem, states the following.
+\begin{theorem}{Real Schur}{}
+    If $A \in \R^{n \times n}$. Then, there exists an orthogonal $Q \in \R^{n \times n}$ and an ``almost'' upper triangular matrix $T \in \R^{n \times n}$ such that $A = QTQ^T$. 
+\end{theorem}
+We can think of diagonal entries of $T$ as consisting of size $1 \times 1$ or size $2 \times 2$ blocks.
+
+\begin{mdframed}
+    (Example.) If $A \in \R^{4 \times 4}$ with eigenvalues $2 + i$, $2 - i$, $5$, and $6$. Then, 
+    \begin{itemize}
+        \item the complex Schur is 
+        \[T = \begin{bmatrix}
+            2 + i & * & * & * \\ 
+            0 & 2 - i & * & * \\ 
+            0 & 0 & 5 & * \\ 
+            0 & 0 & 0 & 6
+        \end{bmatrix} \in \C^{4 \times 4}.\]
+        Note that $\alpha = a + bi$ and $\bar{\alpha} = a - bi$, so \[\alpha \bar{\alpha} = \alpha^2 + b^2.\]
+
+        \item the real Schur is 
+        \[T = \begin{bmatrix}
+            2 & 1 & * & * \\ 
+            -1 & 2 & * & * \\ 
+            0 & 0 & 5 & * \\ 
+            0 & 0 & 0 & 6
+        \end{bmatrix} \in \R^{4 \times 4}.\]
+        Notice how we have the $2 \times 2$ ``block'' at the top-left corner, representing the complex eigenvalues $2 + i$ and $2 - i$, respectively. 
+    \end{itemize}
+\end{mdframed}
+\textbf{Remark:} Note that complex eigenvalues always come in \textbf{complex conjugate pairs}. If $a + bi$ is an complex eigenvalue, then $a - bi$ is also a complex eigenvalue. 
+
+\subsection{QR Iteration: A Basic Idea}
+The aim is to find the eigenvalues of a matrix $A \in \C^{n \times n}$. The idea behind the iterative procedure is as follows:
+\begin{enumerate}
+    \item Step-by-step transform $A$ without changing eigenvalues (similarity transformation).
+    \item Change into an upper-triangular matrix ($T$ from Schur).  
+\end{enumerate}
+This method is based on the QR decomposition that we discussed earlier in the quarter.
+
+\bigskip 
+
+\subsubsection{Basic Idea: The Reals}
+Consider\footnote{The complex matrix works the same} $A \in \R^{n \times n}$. We know that $A = QR$, where $Q$ is an orthogonal matrix. Then, 
+\[A = QR \implies Q^T A = Q^T Q R = R \implies Q^T A Q = RQ.\]
+Here, $A$ and $RQ$ have the same eigenvalues. 
+
+\bigskip 
+
+So, the iterative procedure begins by defining $A_0 = A$. The new matrix in iteration is $A_1 = RQ$. $A_0$ and $A_1$ have the same eigenvalues, so we can continue the process. So, the iterative procedure can be described in detailed as follows:
+\begin{enumerate}
+    \item Iteratively compute QR decomposition. 
+    \item Change multiplication order. 
+    \item This converges to $T$, the upper-triangular from Schur. 
+\end{enumerate}
+So, starting with $A_1$, and look for its eigenvalues. Let $A_0 = A$. We can define \[\boxed{A_k = R_k Q_k},\] with $R_k, Q_k$ from the QR decomposition of $A_{k - 1}$; in other words, \[\boxed{A_{k - 1} = Q_k R_k}.\] Then, $A_{k - 1}$ and $A_k$ have the same eigenvalues. 
+
+\bigskip 
+
+More formally, 
+\begin{enumerate}
+    \item Let $A_0 = A = Q_1 R_1$. Then, $A_1 = R_1 Q_1$. Here, $A_0$ and $A_1$ have the same eigenvalues. 
+    \item Let $A_1 = Q_2 R_2$. Then, $A_2 = R_2 Q_2$. Here, $A_1$ and $A_2$ have the same eigenvalues and, in particular, $A_0, A_1, A_2$ all have the same eigenvalues. 
+    \item Continue the process\dots
+\end{enumerate}
+Eventually, $\lim_{k \mapsto \infty} A_k = T$, with $T$ from the Schur decomposition. 
+
+\bigskip 
+
+\textbf{At the end,} the eigenvalues of $A$ are on the diagonal of $T$. If $A$ is real, then $T$ is ``almost'' upper triangular (real Schur decomposition). 
+
+\bigskip 
+
+Because this is an iterative method, we need a stopping criterion\footnote{To be discussed later.}.
+
+\subsubsection{Disadvantages}
+There are some significant disadvantages with doing QR iteration. 
+\begin{itemize}
+    \item \textbf{Flop Count:} QR decomposition needs $\BigO(n^3)$ flops\footnote{$n$ represents the size of the matrix.}, and we need one QR decomposition in every step of the iteration. This is too much work. 
+    \item \textbf{Convergence Rate:} Convergence may be slow if the eigenvalues are close together in the absolute value. In case of distinct eigenvalues, $|\lambda_1| > |\lambda_2| > \hdots > |\lambda_n|$, applying QR iteration to $A$ means the elements below the diagonal goes to 0 by the following rate\footnote{$a_{ij}^{(k)}$ means the entry $(i, j)$ in matrix $A_k$.}
+    \[(a_{ij}^{(k)}) = \BigO\left(\left|\frac{\lambda_i}{\lambda_j}\right|^k\right)\] for $i > j$ ($i$ below diagonal). 
+\end{itemize}
+
+\subsection{Upper Hessenberg Matrix}
+\begin{definition}{Upper Hessenberg Matrix}
+    An $n \times n$ matrix $H$ is called \textbf{upper Hessenberg} if $h_{ij} = 0$ for $i > j + 1$. 
+\end{definition}
+\textbf{Note:} If $H$ is also symmetric ($A = A^T$), then we get tridiagonal.
+
+% TODO get matrix representation.
+
+
+
+
 
 \end{document}
