@@ -32,7 +32,7 @@ For example, suppose $n = 7$ and $a = 2$. We then compute
 \[2^3 = 8 \equiv 1 \Mod{7}.\]
 Here, 3 is the smallest positive exponent such that raising 2 to the power gives us something congruent 1 mod 7, which means $\ord_{7}(2) = 3$.
 
-\subsection{Order Lemmas}
+\subsubsection{Order Lemmas}
 Note that $\phi(7) = 6$ and $\ord_{7}(2) = 3$ happens to be a divisor of 6. This is no coincidence. 
 
 \begin{lemma}{First Order Lemma}{3-3:2}
@@ -99,7 +99,7 @@ So, $\ord_{7}(3)$ cannot be 1, 2, or 3 and thus must be 6.
     Fix a positive integer $n$ and an integer $a$ with $\gcd(a, n) = 1$ and let $k = \ord_{n}(a)$. Then, $a^i \equiv a^k \Mod{n}$ if and only if $i \equiv j \Mod{k}$. In particular, the numbers $a^0, a^1, a^2, a^3, \hdots, a^{k - 1}$ are all incongruent mod $n$. 
 \end{lemma}
 
-\subsection{Primitive Roots and Discrete Logarithms}
+\subsubsection{Primitive Roots and Discrete Logarithms}
 The First Order Lemma tells us that $\phi(n)$ is the largest possible order mod $n$ that any integer could have, since the order must always be a divisor of $\phi(n)$. The situation when this maximum is achieved gets a special name.
 
 \begin{definition}{Primitive Root}{3-3:4}
@@ -284,7 +284,7 @@ So, our calculations above show that the discrete log base 3 of 6 mod 7 is 3, si
     \end{enumerate}
 \end{mdframed}
 
-\subsection{Existence of Primitive Roots}
+\subsubsection{Existence of Primitive Roots}
 We haven't yet shown that primitive roots always exist, and in fact, it is not true that primitive roots always exist. Here is the statement:
 \begin{theorem}{Primitive Root Theorem}{3-3:6}
     Fix an integer $n \geq 2$. Then, there exists a primitive root mod $n$ if and only if $n = 2, 4, p^k, 2p^k$ for an odd prime $p$ and a positive integer $k$. In particular, there always exists a primitive root mod $p$ (a prime). 
