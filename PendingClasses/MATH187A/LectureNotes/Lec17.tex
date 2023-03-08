@@ -96,6 +96,18 @@ thus allowing him to recover Alice's message $m$.
     \end{mdframed}
 \end{mdframed}
 
+\begin{mdframed}
+    (Exercise.) Bob's Eigamal public key has $p = 29$, $g = 3$, and $h = 27$. Alice wants to send Bob the message \code{C}. She generates an ephemeral key $y = 10$. What is the ciphertext that she sends Bob? 
+
+    \begin{mdframed}
+        Encoding \code{C} gives us $m = 2$, the base 26 representation. Now, note that 
+        \[s = h^y \Mod{p} = 27^{10} \Mod{29} = (-2)^{10} \Mod{29} = 9 \Mod{29},\]
+        \[c_1 = g^y \Mod{p} = 3^{10} \Mod{29} = 5 \Mod{29},\]
+        \[c_2 = ms \Mod{p} = 2(9) \Mod{29} = 18 \Mod{29}.\]
+        Therefore, Alice sends Bob $(c_1, c_2) = (5, 18)$.
+    \end{mdframed}
+\end{mdframed}
+
 \subsubsection{Why Elgamal is Probably Secure (For Now...)}
 There are at least two strategies Eve might employ to recover the plaintext $m$ from the ciphertext $(c_1, c_2)$. 
 \begin{itemize}
@@ -130,6 +142,36 @@ Thus, Alice and Bob now share a secret, $s$. Neither of them have full control o
     \begin{mdframed}
         The shared secret is \[s = y^a \Mod{p} = 5^3 \Mod{11} = 4.\]
     \end{mdframed}
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) Alice and Bob agree to perform a Diffie-Hellman key exchange using $p = 31$ and $g = 3$. 
+    
+    \begin{enumerate}[(a)]
+        \item Alice chooses the secret integer $a = 11$. What is the integer $x$ that she sends to Bob?
+        \begin{mdframed}
+            We know that 
+            \[x = g^a \Mod{p},\]
+            so 
+            \[x = 3^{11} \Mod{31} = 13 \Mod{31}.\] 
+        \end{mdframed}
+
+        \item Using $a = 11$, Alice receives the integer $y = 2$ from Bob. What is her shared secret with Bob? 
+        \begin{mdframed}
+            We know that 
+            \[s = y^a \Mod{p},\]
+            so 
+            \[s = 2^{11} \Mod{31} = 2 \Mod{31}.\]
+        \end{mdframed}
+
+        \item Eve sees Alice send Bob the integer $x = 9$ and Bob send Alice the integer $y = 27$. What is Alice and Bob's shared secret? 
+        \begin{mdframed}
+            We know that 
+            \[x = g^a \Mod{p} = 3^a \Mod{31}.\]
+            Here, $a = 2$. Note that, in general, Eve needs to try values of $a = 0, 1, \hdots, 30$ until she finds 9. With $a = 2$, we know that 
+            \[s = y^a \Mod{p} = 27^{2} \Mod{31} = 16 \Mod{31}.\]
+        \end{mdframed}
+    \end{enumerate}
 \end{mdframed}
 
 
