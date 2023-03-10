@@ -9,7 +9,7 @@
 \pagestyle{fancy}
 \fancyhf{}
 \rhead{Math 170A}
-\chead{March 03, 2023 \& March 05, 2023}
+\chead{March 03, 2023 \& March 06, 2023}
 \lhead{Lecture 21 \& 22}
 \rfoot{\thepage}
 
@@ -167,17 +167,6 @@ There are some significant disadvantages with doing QR iteration.
     \item \textbf{Convergence Rate:} Convergence may be slow if the eigenvalues are close together in the absolute value. In case of distinct eigenvalues, $|\lambda_1| > |\lambda_2| > \hdots > |\lambda_n|$, applying QR iteration to $A$ means the elements below the diagonal goes to 0 by the following rate\footnote{$a_{ij}^{(k)}$ means the entry $(i, j)$ in matrix $A_k$.}
     \[(a_{ij}^{(k)}) = \BigO\left(\left|\frac{\lambda_i}{\lambda_j}\right|^k\right)\] for $i > j$ ($i$ below diagonal). 
 \end{itemize}
-
-\subsection{Upper Hessenberg Matrix}
-\begin{definition}{Upper Hessenberg Matrix}
-    An $n \times n$ matrix $H$ is called \textbf{upper Hessenberg} if $h_{ij} = 0$ for $i > j + 1$. 
-\end{definition}
-\textbf{Note:} If $H$ is also symmetric ($A = A^T$), then we get tridiagonal.
-
-% TODO get matrix representation.
-
-
-
 
 
 \end{document}

@@ -1,0 +1,228 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+\usepackage{csquotes}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Math 170A}
+\chead{March 08, 2023}
+\lhead{Lecture 23}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+\newcommand{\0}{\mathbf{0}}
+\newcommand{\y}{\mathbf{y}}
+\renewcommand{\b}{\mathbf{b}}
+\newcommand{\x}{\mathbf{x}}
+\newcommand{\e}{\mathbf{e}}
+\newcommand{\rr}{\mathbf{r}}
+\newcommand{\vv}{\mathbf{v}}
+\renewcommand{\u}{\mathbf{u}}
+
+\begin{document}
+
+\section{Reduction to Hessenberg and Triangular Form (5.5)}
+One of the issues with the QR iteration is its computational cost; it's not very efficient. In this section, we'll learn about how we can convert $A$ into a matrix that is faster to compute with. 
+
+\subsection{Upper Hessenberg Matrix}
+\begin{definition}{Upper Hessenberg Matrix}{}
+    An $n \times n$ matrix $H$ is called \textbf{upper Hessenberg} if $h_{ij} = 0$ for $i > j + 1$. 
+\end{definition}
+\textbf{Remarks:} 
+\begin{itemize}
+    \item An upper Hessenberg matrix might look like 
+    \[\begin{bmatrix}
+        * & * & * & * & * & * & * \\ 
+        * & * & * & * & * & * & * \\
+        0 & * & * & * & * & * & * \\
+        0 & 0 & * & * & * & * & * \\ 
+        0 & 0 & 0 & * & * & * & * \\ 
+        0 & 0 & 0 & 0 & * & * & * \\ 
+        0 & 0 & 0 & 0 & 0 & * & *
+    \end{bmatrix}\]
+    \item If $H$ is also symmetric ($A = A^T$), then we get a tridiagonal matrix. This matrix might look like 
+    \[\begin{bmatrix}
+        * & * & 0 & 0 & 0 & 0 & 0 \\ 
+        * & * & * & 0 & 0 & 0 & 0 \\
+        0 & * & * & * & 0 & 0 & 0 \\
+        0 & 0 & * & * & * & 0 & 0 \\ 
+        0 & 0 & 0 & * & * & * & 0 \\ 
+        0 & 0 & 0 & 0 & * & * & * \\ 
+        0 & 0 & 0 & 0 & 0 & * & *
+    \end{bmatrix}\]
+\end{itemize}
+% TODO get matrix representation.
+
+\begin{mdframed}
+    (Example.) Is the following matrix 
+    \[H = \begin{bmatrix}
+        4 & 0 & -1 & 2 \\ 
+        -8 & -3 & 5 & 6 \\ 
+        0 & -5 & 2 & 7 \\ 
+        0 & 0 & 4 & 1
+    \end{bmatrix}\]
+    an upper Hessenberg matrix? 
+
+    \begin{mdframed}
+        Yes. 
+    \end{mdframed}
+\end{mdframed}
+
+\subsection{Revised QR Iteration: Preconditioning}
+We want to transform $A$ to an upper Hessenberg matrix. This process is known as \textbf{preconditioning}. The process is as follows: 
+\begin{enumerate}
+    \item The idea is that we want to find an $H$ such that \[A = QHQ^T \text{ or } A = QHQ^{*}\]
+    for some unitary $Q$ matrix. This can be found in finite steps, unlike Schur. Remember that $A$ and $H$ should have the same eigenvalues, since they are similar matrices. 
+    \item Apply QR iteration to $H$. The QR iteration of $H$ only needs $\BigO(n^2)$ flops. In addition, the QR iteration on a Hessenberg matrix stays within the set of Hessenberg matrices. That is, for $H_0 = H$ where $H$ is Hessenberg, then all $H_k$ obtained by QR iteration are also Hessenberg matrices. 
+\end{enumerate}
+
+\[\begin{bmatrix}
+    * & \hdots & * \\ 
+    * & \hdots & * \\ 
+    \vdots & & \vdots \\ 
+    * & * \hdots & *
+\end{bmatrix} \xrightarrow[\text{Step 1}]{\text{Preconditioning}} \underbrace{\begin{bmatrix}
+    \underline{*} & * & * & \hdots & * \\
+    \underline{*} & \underline{*} & * & \hdots & * \\ 
+    0 & \underline{*} & \underline{*} & \hdots & * \\ 
+    \vdots & \vdots & \vdots & \ddots & \vdots \\ 
+    0 & 0 & 0 & \hdots & \underline{*} 
+    \end{bmatrix}}_{\text{H: Hessenberg}} \xrightarrow[\text{Step 2}]{\text{QR Iteration}} \underbrace{\dots}_{H_k} \xrightarrow{\text{QR Iteration}} \underbrace{\begin{bmatrix}
+        * & * & * & \hdots & * \\
+        0 & * & * & \hdots & * \\ 
+        0 & 0 & * & \hdots & * \\ 
+        \vdots & \vdots & \vdots & \ddots & \vdots \\ 
+        0 & 0 & 0 & \hdots & *
+\end{bmatrix}}_{T: \text{Upper Triangular}}\]
+The idea is, as we apply the iteration more times, we eventually end up with $T$; that is, 
+\[\lim_{k \mapsto \infty} H_k = T.\]
+
+\subsubsection{Why Does It Work?}
+\begin{theorem}{}{}
+    An $A \in \R^{n \times n}$ matrix can be decomposed as $A = QHQ^T$  with $H$ upper Hessenberg and $Q$ orthogonal. For $B \in \C^{n \times n}$, the decomposition becomes $B = UHU^*$ with $U$ being unitary. 
+\end{theorem}
+
+\begin{proof}
+    The idea is very similar to QR decomposition in the sense that we need reflectors. Note that the QR process looks like \[Q_n \hdots Q_1 Q_1 A \mapsto R,\] but with this process the eigenvalues are changed. So, we need \[Q_n \hdots Q_2 Q_1 A Q_1^T Q_2^T \hdots Q_n^T \mapsto H.\]
+    Here, $H$ is similar to $A$. 
+\end{proof}
+
+\begin{mdframed}
+    (Example.) Consider 
+    \[A = \begin{bmatrix}
+        a_{11} & a_{12} & a_{13} & a_{14} \\ 
+        a_{21} & a_{22} & a_{23} & a_{24} \\ 
+        a_{31} & a_{32} & a_{33} & a_{34} \\ 
+        a_{41} & a_{42} & a_{43} & a_{44} \\ 
+    \end{bmatrix}.\]
+    Consider \[\x = \begin{bmatrix}
+        a_{21} \\ a_{31} \\ a_{41}
+    \end{bmatrix} \quad \y = \begin{bmatrix}
+        a_{12} \\ a_{13} \\ a_{14}
+    \end{bmatrix}.\]
+    This gives us 
+    \[A = \begin{bmatrix}
+        a_{11} & \y^T \\ 
+        \x & B
+    \end{bmatrix}.\]
+    So, we can map $\x$ to $\begin{bmatrix}
+        ||x||_2 \\ 0
+    \end{bmatrix}$ using a reflector $\hat{Q}_1 \in \R^{3 \times 3}$. Then, 
+    \[Q_1 = \begin{bmatrix}
+        1 & 0 \\ 0 & \hat{Q}_1
+    \end{bmatrix} \in \R^{4 \times 4}\] is still orthogonal. From there, \[Q_1 A = \begin{bmatrix}
+        1 & 0 \\ 0 & \hat{Q}_1
+    \end{bmatrix} \begin{bmatrix}
+        a_{11} & \y^T \\ 
+        \x & B 
+    \end{bmatrix} = \begin{bmatrix}
+        a_{11} & y^T \\ 
+        \hat{Q}_1 \x & \hat{Q}_1 B
+    \end{bmatrix}.\]
+    From there, 
+    \[Q_1 A Q_1^T = \begin{bmatrix}
+        a_{11} & y^T \\ 
+        \hat{Q}_1 \x & \hat{Q}_1 B
+    \end{bmatrix} \begin{bmatrix}
+        1 & 0 \\ 
+        0 & \hat{Q}_1^T
+    \end{bmatrix} = \begin{bmatrix}
+        a_{11} & \y^T \hat{Q}_1^T \\ 
+        \hat{Q}_1 \x & \hat{Q}_1 B \hat{Q}_1^T 
+    \end{bmatrix} = \begin{bmatrix}
+        a_{11} & * & * & * \\ 
+        ||x||_2 & c_{11} & c_{12} & c_{13} \\ 
+        0 & c_{21} & c_{22} & c_{23} \\ 
+        0 & c_{31} & c_{32} & c_{33}
+    \end{bmatrix}.\]
+    At this point, we now only look at the matrix formed by the $c_{ij}$ elements. We need to do $Q_2(Q_1 A Q_1^T)Q_2^T$ to make $c_{31}$ into 0 using a reflector. Then, we'll get 
+    \[H = \begin{bmatrix}
+        * & * & * & * \\ 
+        * & * & * & * \\ 
+        0 & * & * & * \\ 
+        0 & 0 & * & * 
+    \end{bmatrix}.\]
+\end{mdframed}
+\textbf{Remark:} If $A$ is $n \times n$, then we need more reflectors, i.e., 
+\[Q_{n - 1} \hdots Q_2 Q_1 A Q_1^T Q_2^T \hdots Q_{n - 1}^T.\]
+
+
+\subsubsection{QR Iteration on Hessenberg}
+If $H$ is an Hessenberg matrix, then all $H_k$ obtained via QR iteration are Hessenberg matrices as well. With that said, the QR iteration algorithm is as follows: 
+
+\begin{enumerate}
+    \item Find $H$; $A = QHQ^T$ with $H$ being Hessenberg. We can use the MATLAB command \code{H = hess(A)} to get the Hessenberg matrix. 
+    \item We can perform QR iteration on $H$ to get $H_0 = H$. Using a for- or while- loop, we can run \[[Q_k, R_k] = \code{qr}(H_k) \qquad H_{k + 1} = R_k Q_k.\]
+    We stop iteration when the subdiagonal of $H_{k + 1}$ is smaller than a threshold $\epsilon > 0$. That is, when the underlined portion is less than $\epsilon$. 
+    \[\begin{bmatrix}
+        * & * & * & * & * & * & * \\ 
+        \underline{*} & * & * & * & * & * & * \\
+        0 & \underline{*} & * & * & * & * & * \\
+        0 & 0 & \underline{*} & * & * & * & * \\ 
+        0 & 0 & 0 & \underline{*} & * & * & * \\ 
+        0 & 0 & 0 & 0 & \underline{*} & * & * \\ 
+        0 & 0 & 0 & 0 & 0 & \underline{*} & *
+    \end{bmatrix}\]
+    Put it a different way, when 
+    \[\sqrt{\sum_{i = 1}^{n - 1} H_{k + 1} (i + 1, i)^2} < \epsilon.\]
+
+    \item The eigenvalues are on the diagonal of $H_{k + 1}$. 
+\end{enumerate}
+
+
+\subsubsection{Flop Count}
+In summary, the flop count is \[\BigO\left(\frac{10}{3}n^3\right) + \BigO\left(n^2 N\right),\]
+where $N$ is the number of iterations and $n$ is the size of $H$. Then, 
+\begin{itemize}
+    \item $\BigO\left(\frac{10}{3}n^3\right)$ represents the operation for getting the Hessenberg matrix, and 
+    \item $\BigO\left(n^2 N\right)$ represents the operation of finding the QR decomposition of $H$.
+\end{itemize}
+\textbf{Note:} If we didn't use the Hessenberg matrix, the flop count of QR iteration is $\BigO(n^3 N)$. 
+
+\textbf{Conclusion:} When $N$ is large, Hessenberg will be very helpful in reducing computational costs.
+
+\begin{mdframed}
+    (Example: Hermition Matrices.) The \textbf{Hermition Matrix} is a matrix $A$ such that $A = A^*$. If we do an Hessenberg matrix, then\footnote{$(CD)^* = D^* C^*$.} \[A^* = UH^* U^*.\] In particular, 
+    \[A = A^* \implies UHU^* = UH^* U^* \implies H = H^*.\] 
+    The QR decomposition of a tridiagonal matrix is only $\BigO(n)$, so the iteration part in the QR iteration reduces to $\BigO(nN)$. So, less work for % TODO 
+\end{mdframed}
+\textbf{Remark:} The Hermition matrix mimics the symmetric matrix in the reals.
+
+\section{Note on SVD Computation (5.8)}
+For $A \in \R^{n \times m}, n \geq m$, the eigenvalues of $AA^T$ and $A^T A$ are $\sigma_1^2, \hdots, \sigma_r^2, 0, \hdots, 0$ (with $\sigma_i$ singular values of $A$, $r = \text{rank}(A)$). Remember that 
+\begin{itemize}
+    \item $AA^T$ is an $n \times n$ matrix, and 
+    \item $A^T A$ is an $m \times m$ matrix.
+\end{itemize}
+So, to find the SVD of $A$, we can find the eigenvalues and eigenvectors of $AA^T$ and $A^T A$. Note that both $AA^T$ and $A^T A$ are symmetric. 
+
+\bigskip 
+
+Then, it follows that \[\kappa_{2}(AA^T) = \kappa_{2}(A)^2.\] If $\kappa_{2}(A)$ is large, then for $AA^T$, the operation is \emph{squared}, thus affecting accuracy. So, we generally want to avoid finding eigenvalues of $AA^T$ and $A^T A$ directly.
+
+
+\end{document}
