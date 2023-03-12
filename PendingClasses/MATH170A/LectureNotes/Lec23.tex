@@ -1,0 +1,118 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+\usepackage{csquotes}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Math 170A}
+\chead{March 10, 2023}
+\lhead{Lecture 24}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+\newcommand{\0}{\mathbf{0}}
+\newcommand{\y}{\mathbf{y}}
+\renewcommand{\b}{\mathbf{b}}
+\newcommand{\x}{\mathbf{x}}
+\newcommand{\e}{\mathbf{e}}
+\newcommand{\rr}{\mathbf{r}}
+\newcommand{\vv}{\mathbf{v}}
+\renewcommand{\u}{\mathbf{u}}
+
+\begin{document}
+
+\section{Iterative Methods: Jacobi Method (8.1)}
+We now return to the problem from the beginning of the class: solving $A\x = \b$, for $A \in \R^{n \times n}$ and $\b \in \R^n$. Recall that we performed Gauss elimination directly, resulting in a flop count of $\BigO(n^3)$. The problem with this is that, if $n$ is large (hundreds of thousands of equations), then Gauss elimination may not be feasible. 
+
+\bigskip 
+
+Aside from Gaussian Elimination, there are iterative methods that we can run to solve $A\x = \b$. The idea is that we need an initial guess $\x^{(0)}$. Then, from $\x^{(k)}$, we hope to somehow iterate to $\x^{(k + 1)}$. The idea is that, as $k \mapsto \infty$, $\x^{(k)} \mapsto \x^*$, where $\x^*$ is the solution to $A\x = \b$ (i.e., $A\x^* = \b$). Some advantages of this process include 
+\begin{itemize}
+    \item If $\x^{(0)}$ is already close to $\x^*$, then the iterative method converges \emph{fast}.
+    \item We can stop at any point of the iteration, depending on how accurate the approximation of $\x^*$ (by $\x^{(k)}$) should be. 
+\end{itemize}
+
+\subsection{The Jacobi Method}
+The idea is that $i$th equation in the system $A\x = \b$ is 
+\[\sum_{j = 1}^{n} a_{ij}x_j = b_i.\]
+This can be rewritten by solving for $x_i$ and assuming that $a_{ii} \neq 0$ as 
+\[x_i = \frac{1}{a_{ii}}\left(b_{i} - \sum_{\substack{j = 1 \\ j \neq i}}^n a_{ij}x_{j}\right) \qquad i = 1, 2, \hdots, n.\]
+The iteration process, then, is 
+\[\boxed{x_{i}^{(k + 1)} = \frac{1}{a_{ii}} \left(b_{i} - \sum_{\substack{j = 1 \\ j \neq i}}^n a_{ij}x_{j}^{(k)}\right)} \qquad i = 1, 2, \hdots, n.\]
+As mentioned, this is an iterative process, so we \textbf{stop} when $||\x^{(k + 1)} - \x^{(k)}|| < \epsilon$, where we can choose any vector norm. 
+
+\subsection{Matrix Representation}
+We can also represent this process using matrices. In equation form, we have 
+\[x_{i}^{(k + 1)} = \frac{1}{a_{ii}} \left(b_{i} - \sum_{\substack{j = 1 \\ j \neq i}}^n a_{ij}x_{j}^{(k)}\right) \qquad i = 1, 2, \hdots, n.\]
+Notice that, for $i = 1, 2, \hdots, n$, $\sum_{\substack{j = 1 \\ j \neq i}}^n a_{ij}x_{j}^{(k)}$ is the same thing as saying 
+\[\sum_{i = 1}^{n} a_{ij}x_{j}^{(k)} - a_{ii}x_i^{(k)} \implies A\x^{(k)} - D\x^{(k)},\]
+where 
+\[D = \begin{bmatrix}
+    a_{11} &        &        &        \\
+           & a_{22} &        &        \\  
+           &        & \ddots &        \\  
+           &        &        & a_{nn}   
+\end{bmatrix}.\]
+Therefore, translating our equation into matrix form means translating each component into matrix form. This gives us  
+\[\x^{(k + 1)} = \begin{bmatrix}
+    x_1^{(k + 1)} \\ 
+    x_2^{(k + 1)} \\ 
+    x_3^{(k + 1)} \\
+    \vdots \\  
+    x_n^{(k + 1)} \\ 
+\end{bmatrix} = \underbrace{\begin{bmatrix}
+    \frac{1}{a_{11}} & 0 & 0 & \hdots & 0 \\ 
+    0 & \frac{1}{a_{22}} & 0 & \hdots & 0 \\ 
+    0 & 0 & \frac{1}{a_{33}} & \hdots & 0 \\
+    \vdots & \vdots & \vdots & \ddots & \vdots \\  
+    0 & 0 & 0 & \hdots & \frac{1}{a_{nn}}
+\end{bmatrix}}_{D^{-1}} \left(\b - (A - D)\x^{(k)}\right).\]
+This further gives us, for $k \geq 0$ and $a_{ii} \neq 0$ for all $i$, 
+\[\boxed{x^{(k + 1)} = D^{-1}(\b - (A - D)\x^{(k)})}.\]
+
+\subsection{Convergence}
+Let $\x^*$ be the true solution, i.e., $A\x^* = \b$. Does $\x^{(k)} \mapsto \x^*$ as $k \mapsto \infty$? In other words, does $\x^{(k)} - \x^* \mapsto 0$ as $k \mapsto \infty$? 
+
+\bigskip 
+
+Let $e^{(k)} = \x^* - \x^{(k)}$. We want to show that $e^{(k)} \mapsto \infty$. So, 
+\begin{equation*}
+    \begin{aligned}
+        e^{(k + 1)} &= \x^* - \x^{(k + 1)} \\ 
+            &= \x^* - (D^{-1} (\b - (A - D)\x^{(k)})) \\ 
+            &= \x^* - (D^{-1} (\b - A\x^{(k)} + D\x^{(k)})) \\ 
+            &= \x^* - D^{-1} (\b - A\x^{(k)}) - (D^{-1}D)(\x^{(k)}) \\ 
+            &= \x^* - D^{-1} (\b - A\x^{(k)}) - \x^{(k)} \\ 
+            &= e^{(k)} - D^{-1} (\b - A\x^{(k)}) && \x^* - \x^{(k)} = e^{(k)} \\
+            &= e^{(k)} - D^{-1} (\underbrace{\b - A\x^*}_{\0} + \underbrace{A\x^* - A\x^{(k)}}_{Ae^{(k)}}) \\ 
+            &= e^{(k)} - D^{-1}Ae^{(k)} \\ 
+            &= (I - D^{-1}A)e^{(k)} 
+    \end{aligned}
+\end{equation*}
+Therefore, 
+\begin{equation*}
+    \begin{aligned}
+        e^{(k + 1)} &= (I - D^{-1}A)e^{(k)}  \\ 
+            &= (I - D^{-1} A)^2 e^{(k - 1)} \\ 
+            &= (I - D^{-1} A)^3 e^{(k - 2)} \\ 
+            &= \hdots \\ 
+            &= (I - D^{-1} A)^{k + 1} e^{(0)},
+    \end{aligned}
+\end{equation*}
+where $e^{(0)} = \x^* - \x^{(0)}$ and $\x^{(0)}$ is the initial guess we described above. In any case, $e^{(k + 1)} \mapsto 0$ as $k \mapsto \infty$ only if $I - D^{-1}A$ is ``small.''
+
+\subsection{Result}
+If all eigenvalues $\lambda$ of $B = I - D^{-1}A$ satisfy $|\lambda| < 1$, then the Jacobi method converges to $\x^*$ for every choice of $\x^{(0)}$. Put it differently, if the Jacobi method converges to $\x^*$ for all $\x^{(0)}$, then all eigenvalues $\lambda$ of $B$ satisfy $|\lambda| < 1$. 
+
+\bigskip 
+
+Why? Recall from the power method 
+\[e^{(0)} = \sum_{i = 1}^{n} c_i v_i,\]
+where the $v_i$'s are the eigenvectors of $B$. Then, 
+\[B^k e^{(0)} = \sum_{i = 1}^{n} c_i \lambda_i^k v_i = \sum_{i = 1}^{n} \lambda_i^k (c_i v_i) \mapsto 0.\] Note that if all $|\lambda_i| < 1$, then $\lambda_i^k \mapsto 0$ if $k \mapsto \infty$.  
+
+\end{document}
