@@ -2401,7 +2401,1317 @@ We'll base our algorithm on the MATLAB code above.
 \end{mdframed}
 
 
+\section{Condition Numbers \& Perturbation (Section 2.2, 2.3)}
+We are now interested in the \emph{sensitivity} of $A\x = \b$ with respect to perturbations (i.e., error). In other words, does noise in $A$ or $\b$ strongly affect the solution $\x$? Here, we'll deal with two types of perturbations: in $\b$, and in $A$. Eventually, we'll talk about the case when there's noise in both. 
+
+\subsection{Motivating Example}
+To see what we mean, consider the following two examples.
+\begin{mdframed}
+    (Example.) Consider the system 
+    \[\underbrace{\begin{bmatrix}
+        1 & 1 \\ 0 & 1 
+    \end{bmatrix}}_A \underbrace{\begin{bmatrix}
+        x_1 \\ x_2
+    \end{bmatrix}}_{\x} = \underbrace{\begin{bmatrix}
+        2 \\ 0
+    \end{bmatrix}}_{\b}.\]
+
+    \begin{enumerate}
+        \item Solve for $\x$. 
+        \begin{mdframed}
+            Note that \[\x = \begin{bmatrix}
+                2 \\ 0
+            \end{bmatrix}\] by backwards substitution.
+        \end{mdframed}
+
+        \item Suppose we introduce a very small error to the entries of $\b$ such that $\hat{\b} = \begin{bmatrix}
+            2 \\ 0.001
+        \end{bmatrix}.$ Our system now becomes \[\underbrace{\begin{bmatrix}
+            1 & 1 \\ 0 & 1 
+        \end{bmatrix}}_A \underbrace{\begin{bmatrix}
+            \hat{x_1} \\ \hat{x_2}
+        \end{bmatrix}}_{\hat{\x}} = \underbrace{\begin{bmatrix}
+            2 \\ 0.001
+        \end{bmatrix}}_{\hat{\b}}.\] Solve for $\hat{\x}$. In other words, what happens to $\x$ if we perturb $\b$?  
+
+        \begin{mdframed}
+            Here, we have \[\hat{\x} = \begin{bmatrix}
+                1.999 \\ 0.001
+            \end{bmatrix}.\]
+            Here, $\hat{\x}$ is known as a perturbed solution. Notice how the difference between the solution and the perturbed solution is very small, to the point that both $\x$ and $\hat{x}$ are \emph{similar}.
+        \end{mdframed}
+
+        \item Compute the error in $\b$ and in $\x$.
+        \begin{mdframed}
+            The error in $\b$ can be found by using the $L_2$-norm. So, for $\b$, we have 
+            \[||\b - \hat{\b}||_2 = \left|\left| \begin{bmatrix}
+                2 \\ 0
+            \end{bmatrix} - \begin{bmatrix}
+                2 \\ 0.001
+            \end{bmatrix} \right|\right|_2 = \left|\left| \begin{bmatrix}
+                0 \\ -0.001
+            \end{bmatrix} \right|\right|_2 = 0.001\]
+            Likewise, for $\x$, we have 
+            \[||\x - \hat{\x}||_2 = \left|\left| \begin{bmatrix}
+                2 \\ 0
+            \end{bmatrix} - \begin{bmatrix}
+                1.999 \\ 0.001
+            \end{bmatrix} \right|\right|_2 = \left|\left| \begin{bmatrix}
+                0.001 \\ -0.001
+            \end{bmatrix} \right|\right|_2 = \sqrt{2} \cdot 0.001 \approx 0.0014.\]
+        \end{mdframed}
+    \end{enumerate}
+\end{mdframed}
 
 
+\begin{mdframed}[nobreak=true]
+    (Example.) Consider a similar system 
+    \[\underbrace{\begin{bmatrix}
+        1 & 1 \\ 0 & 0.001 
+    \end{bmatrix}}_A \underbrace{\begin{bmatrix}
+        x_1 \\ x_2
+    \end{bmatrix}}_{\x} = \underbrace{\begin{bmatrix}
+        2 \\ 0
+    \end{bmatrix}}_{\b}.\]
+
+    \begin{enumerate}
+        \item Solve for $\x$. 
+        \begin{mdframed}
+            We have 
+            \[\x = \begin{bmatrix}
+                2 \\ 0
+            \end{bmatrix},\] which we found by backwards substitution. 
+        \end{mdframed}
+
+        \item Suppose we introduce a very small error to the entries of $\b$ such that $\hat{\b} = \begin{bmatrix}
+            2 \\ 0.001
+        \end{bmatrix}.$ Our system now becomes \[\underbrace{\begin{bmatrix}
+            1 & 1 \\ 0 & 0.001 
+        \end{bmatrix}}_A \underbrace{\begin{bmatrix}
+            \hat{x_1} \\ \hat{x_2}
+        \end{bmatrix}}_{\hat{\x}} = \underbrace{\begin{bmatrix}
+            2 \\ 0.001
+        \end{bmatrix}}_{\hat{\b}}.\] Solve for $\hat{\x}$.
+
+        \begin{mdframed}
+            Here, we have \[\hat{x} = \begin{bmatrix}
+                1 \\ 1
+            \end{bmatrix}.\]
+            One important thing to notice is that the perturbed solution is \emph{quite different} from the actual solution. So, unlike the previous example, $\x$ and $\hat{x}$ are \emph{different}. 
+        \end{mdframed}
+
+        \item Compute the error in $\b$ and in $\x$.
+        \begin{mdframed}
+            The error in $\b$ is the same as in the previous example; therefore,  
+            \[||\b - \hat{\b}||_2 = 0.001\]
+            But, for $\x$, notice how 
+            \[||\x - \hat{\x}||_2 = \left|\left| \begin{bmatrix}
+                2 \\ 0
+            \end{bmatrix} - \begin{bmatrix}
+                1 \\ 1
+            \end{bmatrix} \right|\right|_2 = \left|\left| \begin{bmatrix}
+                1 \\ -1
+            \end{bmatrix} \right|\right|_2 = \sqrt{2} \approx 1.41.\]
+            In particular, $0.001$ is $10^3$ larger than 1.41. So, in this linear system, when we perturb $\b$ a little, we can cause a \emph{large} error. 
+        \end{mdframed}
+    \end{enumerate}
+\end{mdframed}
+
+\textbf{Remark:} From this, it follows that the error in $\x$ depends on the matrix $A$ as well. 
+
+
+\subsection{Condition Number}
+How do we measure the dependence on the matrix $A$? This is related to the \textbf{condition number}, known as \code{cond(A)} in MATLAB. The condition number is a simple but useful measure of the sensitivity of the linear system $A\x = \b$. Although we haven't defined the condition number yet, consider the following examples, which showcase the difference in condition number: 
+\begin{itemize}
+    \item $\cond\left(\begin{bmatrix}
+        1 & 1 \\ 0 & 1
+    \end{bmatrix}\right) \approx 2.1618$, which is a small condition number. 
+    
+    \item $\cond\left(\begin{bmatrix}
+        1 & 1 \\ 0 & 0.001
+    \end{bmatrix}\right) \approx 2 \cdot 10^3$, which is a large condition number, and the error is amplified by this large condition number. 
+\end{itemize}
+
+\subsection{Perturbation of \texorpdfstring{$\b$}{b}}
+Now, we want to solve $A\x = \b$, where $A$ is invertible. Instead of $\b$, we only have access to \[\hat{\b} = \b + \delta\b,\] where $\delta\b$ is the (very small) error, known as the perturbation in $\b$. Then, we can consider the linear system \[A\hat{\x} = \hat{\b}.\] If $\hat{\b}$ is close to $\hat{\b}$, is it true that $\hat{\x}$ is close to $\hat{\x}$ as well? \textbf{This depends} on the condition number of $A$. In particular, we'll later see that \begin{equation}{\label{2-13:1}}
+    \boxed{\frac{||\x - \hat{\x}||}{||\x||} \leq \kappa(A) \frac{||\b - \hat{\b}||}{||\b||}}.
+\end{equation} Here, 
+\begin{itemize}
+    \item $\frac{||\x - \hat{\x}||}{||\x||}$ is the \emph{relative error} of $\x$, 
+    \item $\frac{||\b - \hat{\b}||}{||\b||}$ is the \emph{relative error} of $\b$. 
+    \item $\kappa(A)$ is the condition number of the invertible matrix $A$.
+\end{itemize}
+The relative error of $\x$ is bounded by the condition number of matrix $A$ multiplifed by the relative error of $\b$. 
+
+\bigskip 
+
+What is $\kappa(A)$? We can define it like so:  
+\[\kappa(A) = ||A|| \cdot ||A^{-1}||,\] where $||\cdot||$ can be any vector norm. We will use the notation 
+\begin{itemize}
+    \item $\kappa_p$ for the $p$-norm; that is, \[\kappa_{p}(A) = ||A||_p \cdot ||A^{-1}||_p.\]
+    \item $\kappa_\infty$ for the $\infty$-norm; that is, \[\kappa_\infty(A) = ||A||_\infty \cdot ||A^{-1}||_\infty.\]
+\end{itemize}
+
+With this in mind, let's prove the inequality in (\ref{2-13:1}).
+\begin{proof}
+    We can break this down into two steps. 
+    \begin{itemize}
+        \item Let $\hat{\b} = \b + \delta\b$ (the perturbed $\b$) and $\hat{\x} = \x + \delta\x$ (the perturbed $\x$). So, 
+        \begin{equation*}
+            \begin{aligned}
+                A\hat{\x} = \hat{\b} &\implies A(\x + \delta\x) = \b + \delta\b \\ 
+                    &\implies A\x + A\delta\x = \b + \delta\b \\ 
+                    &\implies A\delta\x = \delta\b && \text{Recall that } A\x = \b \\ 
+                    &\implies \delta\x = A^{-1}\delta\b && A \text{ is invertible} \\ 
+                    &\implies ||\delta\x|| = ||A^{-1} \delta\b||.
+            \end{aligned}
+        \end{equation*}
+        Recall that $||A|| = \max_{\x \neq \0} \frac{||A\x||}{||\x||}$ is the matrix norm induced by the vector norm. Additionally, note that $||A^{-1}|| = \max_{\x \neq \0} \frac{||A^{-1}\x||}{||\x||}$. Then,
+        \[||A^{-1}|| = \max_{\x \neq \0} \frac{||A^{-1}\x||}{||\x||} \geq \frac{||A^{-1}\delta\b||}{||\delta\b||} \implies ||A^{-1}|| \cdot ||\delta\b|| \geq ||A^{-1}\delta\b||.\]
+        So, 
+        \[||\delta\x|| = ||A^{-1} \delta\b|| \leq ||A^{-1}|| \cdot ||\delta\b|| \implies ||\delta\x|| \leq ||A^{-1}|| \cdot ||\delta\b||.\]
+
+        \item Recall that $\b = A\x$. So, 
+        \[\b = A\x \implies ||\b|| = ||A\x|| \leq ||A|| \cdot ||\x||.\]
+        Then, we can divide both sides by $||\b|| \cdot ||\x||$ to get 
+        \[\frac{1}{||\x||} \leq ||A||\frac{1}{||\b||}.\]
+    \end{itemize}
+    With all this, we can combine the inequalities
+    \[||\delta\x|| \leq ||A^{-1}|| \cdot ||\delta\b||\]
+    \[\frac{1}{||\x||} \leq ||A||\frac{1}{||\b||}\]
+    to get 
+    \[\underbrace{\frac{||\delta\x||}{||\x||}}_{\substack{\text{Relative error} \\ \text{in } \x}} \leq \underbrace{||A^{-1}|| \cdot ||A||}_{\substack{\kappa(A) \\ \text{Condition number.}}} \cdot \underbrace{\frac{||\delta\b||}{||\b||}}_{\substack{\text{Relative error} \\ \text{in } \b}}.\]
+   This simplifies to $\frac{||\delta\x||}{||\x||} \leq \kappa(A)\frac{||\delta\b||}{||\b||}$, as desired.  
+\end{proof}
+\textbf{Remarks:}
+\begin{itemize}
+    \item The matrix norm is the induced matrix norm, e.g., if the vector norm is 2-norm, then the matrix norm is 2-norm. That is, 
+    \[||A||_p = \max_{\x \neq \0} \frac{||A\x||_p}{||\x||_p}\]
+    \[||A||_\infty = \max_{\x \neq \0} \frac{||A\x||_\infty}{||\x||_\infty}\]
+    This means that we can use whatever vector norm we want for (\ref{2-13:1}) as long as all vectors use the same norm. Additionally, the induced matrix norm for $A$ should be the same as the one used for the vector norm. \textbf{The norms must be consistent in the inequality.}
+    \item When interpreting $\kappa(A)$, 
+    \begin{itemize}
+        \item If $\kappa(A)$ is small (close to 1), then $A$ is called ``well-conditioned.''
+        \item If $\kappa(A)$ is large, then $A$ is called ``ill-conditioned.''
+    \end{itemize}
+    \item A tall matrix does not have a condition matrix because it's not invertible. 
+\end{itemize} 
+
+\subsection{Properties of the Induced Matrix Norm}
+\begin{proposition}
+    Let $||\cdot||$ be an induced matrix norm \[||A|| = \max_{\x \neq \0} \frac{||A\x||}{||\x||}.\] Then, 
+    \begin{enumerate}
+        \item $||I|| = 1$. Here, $I$ is the identity matrix; the condition number of the identity matrix is 1. 
+        \item $\kappa(A) \geq 1$. In particular, the condition number of some matrix will be \emph{at least} 1. 
+    \end{enumerate}
+\end{proposition}
+\begin{proof}
+    Note that 
+    \[||I|| = \max_{\x \neq \0} \frac{||I\x||}{||\x||} = 1.\]
+    Also, 
+    \[I = AA^{-1} \implies 1 = ||I|| = ||AA^{-1}|| \leq ||A|| \cdot ||A^{-1}|| = \kappa(A),\]
+    so we're done.
+\end{proof}
+
+\textbf{Remarks:}
+\begin{itemize}
+    \item For \#2 of the proposition, if we introduce an error in $\b$, the condition number will not make the error smaller.
+    \item $\kappa(I) = 1$. In particular, 
+    \[\kappa(I) = ||I|| \cdot ||I^{-1}|| = 1 \cdot 1 = 1.\]
+    \item The Feobenius norm is not an induced matrix norm. In particular, the above results do not hold for the Feobenius norm $||I||_F$ as $||I||_F \neq 1$. Recall that 
+    \[||A||_F = \sqrt{\sum_{i = 1}^{n} \sum_{j = 1}^{n} (a_{ij})^2}.\]
+    However, for $I \in \R^{n \times n}$, 
+    \[||I_n||_F = \sqrt{n} \neq 1.\]
+\end{itemize}
+
+\subsection{Perturbation of \texorpdfstring{$A$}{A}}
+\begin{theorem}{}{}
+    Let $A$ be nonsingular, $\b \neq 0$, and let $\x$ and $\hat{\x} = \x + \delta \x$ be solutions to $A\x = \b$ and $(A + \delta A) \hat{\x} = \b$, respectively. Then, 
+    \[\frac{||\delta \x||}{||\hat{\x}||} \leq \kappa(A) \frac{||\delta A||}{||A||}.\]
+\end{theorem}
+
+\begin{proof}
+    We have 
+    \begin{equation*}
+        \begin{aligned}
+            (A + \delta A) \hat{\x} = \b &\implies (A + \delta A) (\x + \delta\x) = \b && \text{We defined } \hat{\x} = \x = \delta\x \\ 
+                &\implies A\x + A\delta\x + \delta A\x + \delta A \delta \x = \b \\ 
+                &\implies A\x + A\delta\x + \delta A (\x + \delta \x) = \b \\ 
+                &\implies A\x + A\delta\x + \delta A \hat{\x} = \b \\ 
+                &\implies A\delta\x + \delta A \hat{\x} = \0 && \text{Recall that } A\x = \b \\ 
+                &\implies A\delta \x = -\delta A \hat{\x} \\ 
+                &\implies \delta\x = -\underbrace{A^{-1}}_{\text{Matrix}} \underbrace{\delta A}_{\text{Matrix}} \underbrace{\hat{\x}}_{\text{Vector}}.
+        \end{aligned}
+    \end{equation*}
+    From here, it follows that
+    \begin{equation*}
+        \begin{aligned}
+            ||\delta\x|| &= ||-A^{-1} \delta A\hat{\x}|| \\ 
+                &\leq ||A^{-1}|| \cdot ||\delta A \hat{\x}|| \\ 
+                &\leq ||A^{-1}|| \cdot ||\delta A|| \cdot ||\hat{\x}||
+        \end{aligned}
+    \end{equation*}
+    Dividing through by $||\hat{\x}||$, we have 
+    \[\frac{||\delta\x||}{||\hat{\x}||} \leq ||A^{-1}|| \cdot ||\delta A||.\]
+    Recall that $\kappa(A) = ||A|| \cdot ||A^{-1}|| \implies ||A^{-1}|| = \frac{\kappa(A)}{||A||}$, so 
+    \[\frac{||\delta\x||}{||\hat{\x}||} \leq \kappa(A) \frac{||\delta A||}{||A||}\] 
+    as desired.
+\end{proof}
+\textbf{Remark:} $\delta$, in this case, is not a scalar. We can think of $\delta\x$ as $\x$ with a very tiny (and arbitrary) error introduced. Analogously, we can think of $\delta A$ as $A$ with a very tiny (and arbitrary) error. 
+
+\subsection{Perturbation of \texorpdfstring{$A$}{A} and \texorpdfstring{$\b$}{b}}
+\begin{theorem}{}{}
+    Instead of $A\x = \b$, we now consider $\hat{A}\hat{\x} = \hat{\b}$ with $\hat{A} = A + \delta A$ and $\hat{\b} = \b + \delta\b$. Then, 
+    \[\frac{||\delta \x||}{||\hat{\hat{x}}||} \leq \kappa(A) \left(\frac{||\delta A||}{||A||} + \frac{||\delta \b||}{||\hat{\b}||} \cdot \frac{||\delta A||}{||A||} + \frac{||\delta \b||}{||\hat{\b}||}\right)\]
+\end{theorem}
+
+\begin{proof}
+    We can break this down into two steps.
+    \begin{itemize}
+        \item For $\hat{A}\hat{\x} = \hat{\b}$, we have 
+        \begin{equation*}
+            \begin{aligned}
+                \hat{A}\hat{\x} = \hat{\b} &\implies (A + \delta A)(\x + \delta \x) = \b + \delta \b \\ 
+                    &\implies A\x + A\delta\x + \delta A \x + \delta A \delta \x = \b + \delta \b \\ 
+                    &\implies A\delta\x + \delta A \x + \delta A \delta \x = \delta \b && \text{Recall that } A\x = \b \\ 
+                    &\implies A\delta\x + \delta A(\x + \delta \x) = \delta \b \\ 
+                    &\implies A\delta\x + \delta A\hat{\x} = \delta\b \\ 
+                    &\implies A\delta\x = \delta\b - \delta A \hat{\x} \\ 
+                    &\implies \delta\x = A^{-1}(\delta \b - \delta A \hat{\x}).
+            \end{aligned}
+        \end{equation*}
+        Now, 
+        \begin{equation*}
+            \begin{aligned}
+                ||\delta\x|| &= ||A^{-1}(\delta \b - \delta A \hat{\x})|| \\
+                    &\leq ||A^{-1}|| \cdot ||\delta \b - \delta A \hat{\x}|| \\ 
+                    &\leq ||A^{-1}|| (||\delta\b|| + ||\delta A|| \cdot ||\hat{\x}||) && \text{See remark below}.
+            \end{aligned}
+        \end{equation*}
+        Thus, 
+        \begin{equation*}
+            \begin{aligned}
+                ||\delta\x|| &\leq ||A^{-1}|| (||\delta\b|| + ||\delta A|| \cdot ||\hat{\x}||) \\ 
+                    &= \frac{||A^{-1}||}{||\hat{\x}||} (||\delta\b|| + ||\delta A|| \cdot ||\hat{\x}||) \\ 
+                    &= ||A^{-1}|| \left(\frac{||\delta\b||}{||\hat{\x}||} + \frac{||\delta A|| \cdot ||\hat{\x}||}{||\hat{\x}||}\right) \\ 
+                    &= ||A^{-1}|| \left(\frac{||\delta\b||}{||\hat{\x}||} + ||\delta A||\right) \\ 
+                    &= \frac{\kappa(A)}{||A||} \left(\frac{||\delta\b||}{||\hat{\x}||} + ||\delta A||\right) && \kappa(A) = ||A|| \cdot ||A^{-1}|| \implies ||A^{-1}|| = \frac{\kappa(A)}{||A||} \\ 
+                    &= \kappa(A) \left(\frac{||\delta\b||}{||A|| \cdot ||\hat{\x}||} + \frac{||\delta A||}{||A||}\right).
+            \end{aligned}
+        \end{equation*}
+
+        \item Again, from $\hat{A}\hat{\x} = \hat{\b}$, we have 
+        \[\hat{A}\hat{\x} = \hat{\b} \implies (A + \delta A) \hat{\x} = \hat{\b}.\]
+        Then, 
+        \[||\hat{\b}|| = ||(A + \delta A) \hat{\x}|| \leq ||A + \delta A|| \cdot ||\hat{\x}||.\]
+        Therefore, dividing by $||\hat{\x}|| \cdot ||\hat{\b}||$ we get 
+        \[\frac{1}{||\hat{\x}||} \leq \frac{||A + \delta A||}{||\b||} \leq \frac{||A|| + ||\delta A||}{||\delta \b||}.\]
+    \end{itemize}
+    Combining the results of the previous two steps yields the desired result.
+\end{proof}
+
+% \begin{equation*}
+%     \begin{aligned}
+%         ||\delta\x|| \frac{1}{||\hat{\x}||} &\leq \kappa(A) \left(\frac{||\delta\b||}{||A|| \cdot ||\hat{\x}||} + \frac{||\delta A||}{||A||}\right) \frac{||A|| + ||\delta A||}{||\delta \b||} \\ 
+%             &= \kappa(A) \left(\frac{||\delta\b||}{||A|| \cdot ||\hat{\x}||} \frac{||A|| + ||\delta A||}{||\delta \b||} + \frac{||\delta A||}{||A||} \frac{||A|| + ||\delta A||}{||\delta \b||}\right) \\ 
+%             &= \kappa(A) \left(\frac{||\delta \b||(||A|| + ||\delta A||)}{||A|| \cdot ||\hat{\x}|| \cdot ||\delta \b||} + \frac{||\delta A||(||A|| + ||\delta A||)}{||A|| \cdot ||\delta \b||}\right) \\
+%             &= \kappa(A) \left(\frac{||\delta \b|| \cdot ||A|| + ||\delta \b|| \cdot ||\delta A||}{||A|| \cdot ||\hat{\x}|| \cdot ||\delta \b||} + \frac{||\delta A|| \cdot ||A|| + ||\delta A|| \cdot ||\delta A||}{||A|| \cdot ||\delta \b||}\right) \\
+%             &= \kappa(A) \left(\frac{||\delta \b|| \cdot ||A||}{||A|| \cdot ||\hat{\x}|| \cdot ||\delta \b||} + \frac{||\delta \b|| \cdot ||\delta A||}{||A|| \cdot ||\hat{\x}|| \cdot ||\delta \b||} + \frac{||\delta A|| \cdot ||A||}{||A|| \cdot ||\delta \b||} + \frac{||\delta A|| \cdot ||\delta A||}{||A|| \cdot ||\delta \b||}\right) \\
+%             &= \kappa(A) \left(\frac{1}{||\hat{\x}||} + \frac{||\delta A||}{||A|| \cdot ||\hat{\x}||} + \frac{||\delta A||}{||\delta \b||} + \frac{||\delta A|| \cdot ||\delta A||}{||A|| \cdot ||\delta \b||}\right) \\
+%     \end{aligned}
+% \end{equation*}
+
+\textbf{Remark:} To see why this equality works, consider the following diagram:
+\begin{center}
+    \includegraphics[scale=0.8]{assets/triangle_min_plu.png}
+\end{center}
+
+\section{Singular Value Decomposition \& Basic Applications (Section 4.1, 4.2)}
+The singular value decomposition, known as \textbf{SVD}, is a matrix decomposition (similar to eigenvector, eigenvalues, but less restrictive). SVD is used for 
+\begin{itemize}
+    \item low rank approximation (imaging).
+    \item least squares when rank is not full. 
+\end{itemize}
+
+\begin{theorem}{SVD Theorem}{}
+    Let $A \in \R^{n \times m}$, with $A \neq 0$ and assume $n \geq m$ with $\text{rank}(A) = r \leq m$. Then, there exists orthogonal matrices $U \in \R^{n \times n}$ and $V \in \R^{m \times m}$ and positive numbers $\sigma_1 \geq \sigma_2 \geq \hdots \geq \sigma_r > 0$ such that \[A = U \Sigma V^T\] with \[\Sigma = \begin{bmatrix}
+        \sigma_1 & 0 & 0 & 0 & 0 & \hdots & 0 \\ 
+        0 & \sigma_2 & 0 & 0 & 0 & \hdots & 0 \\ 
+        0 & 0 & \ddots & 0 & 0 & \hdots & 0 \\ 
+        0 & 0 & 0 & \sigma_r & 0 & \hdots & 0 \\ 
+        0 & 0 & 0 & 0 & 0 & \hdots & 0 \\ 
+        \vdots & \vdots & \vdots & \vdots & \vdots & \ddots & \vdots \\ 
+        0 & 0 & 0 & 0 & 0 & \hdots & 0
+    \end{bmatrix} \in \R^{n \times m}.\]
+    (Note that $\Sigma$ is a rectangular ``diagonal'' matrix.)
+\end{theorem}
+This is called a full SVD\footnote{Later, we will introduced a reduced SVD.} Here, $\sigma_1, \sigma_2, \hdots, \sigma_r$ are called the \emph{singular values}.
+
+\textbf{Remarks:}
+\begin{itemize}
+    \item Notice that $A = U\Sigma V^T \implies AV = U\Sigma V^T V = U\Sigma$. If you compare this to eigenvectors and eigenvalues, you will notice that $AV = V\Lambda$. 
+    
+    \item The SVD is not unique. Instead of $U$, we can try $-U$; likewise, instead of $V$, we can use $-V$. 
+\end{itemize}
+
+\subsection{Other Forms of the SVD Theorem}
+
+\begin{theorem}{Geometric Singular Value Decomposition Theorem}{}
+    Let $A \in \R^{n \times m}$ be a nonzero matrix with rank $r$. Then, $\R^m$ has an orthonormal basis $v_1, v_2, \hdots, v_m$, $\R^n$ has an orthonormal basis $u_1, u_2, \hdots, u_n$, and there exists $\sigma_1 \geq \sigma_2 \geq \hdots \geq \sigma_r > 0$ such that 
+    \[Av_i = \begin{cases}
+        \sigma_i u_i & i = 1, \hdots, r \\ 
+        \0 & i = r + 1, \hdots, m
+    \end{cases} \qquad A^T u_i = \begin{cases}
+        \sigma_i v_i & i = 1, \hdots, r \\ 
+        \0 & i = r + 1, \hdots, n
+    \end{cases}.\]
+    For SVD, there exists orthogonal matrices $U \in \R^{n \times n}$ and $V \in \R^{m \times m}$ such that \[A = U \Sigma V^T\] with \[\Sigma = \begin{bmatrix}
+        \sigma_1 & 0 & 0 & 0 & 0 & \hdots & 0 \\ 
+        0 & \sigma_2 & 0 & 0 & 0 & \hdots & 0 \\ 
+        0 & 0 & \ddots & 0 & 0 & \hdots & 0 \\ 
+        0 & 0 & 0 & \sigma_r & 0 & \hdots & 0 \\ 
+        0 & 0 & 0 & 0 & 0 & \hdots & 0 \\ 
+        \vdots & \vdots & \vdots & \vdots & \vdots & \ddots & \vdots \\ 
+        0 & 0 & 0 & 0 & 0 & \hdots & 0
+    \end{bmatrix} \in \R^{n \times m}.\]
+\end{theorem}
+\textbf{Remarks:}
+\begin{itemize}
+    \item This is called a full SVD\footnote{Later, we will introduced a reduced SVD.} Here, $\sigma_1, \sigma_2, \hdots, \sigma_r$ are called the \emph{singular values}.
+    \item Note that we can write $U$ and $V$ as a vector of vectors, 
+    \[U = \begin{bmatrix}
+        u_1, u_2, \hdots, u_n
+    \end{bmatrix}, u_i \in \R^{n}\]
+    and \[V = \begin{bmatrix}
+        v_1, v_2, \hdots, v_m
+    \end{bmatrix}, v_m \in \R^m.\]
+\end{itemize}
+
+\subsection{Intuition}
+To get some intuition, let's suppose we start with $A = U\Sigma V^T$. Then, we know that \[AV = U\Sigma V^T V \implies AV = U\Sigma.\] Rewriting $V$ and $U$ as columns, we have 
+\begin{equation}{\label{lec15:1}}
+    A\begin{bmatrix}
+        v_1 & v_2 & \hdots & v_m
+    \end{bmatrix} = \begin{bmatrix}
+        u_1 & u_2 & \hdots & u_n
+    \end{bmatrix} \begin{bmatrix}
+        \sigma_1 & 0 & 0 & 0 & 0 & \hdots & 0 \\ 
+        0 & \sigma_2 & 0 & 0 & 0 & \hdots & 0 \\ 
+        0 & 0 & \ddots & 0 & 0 & \hdots & 0 \\ 
+        0 & 0 & 0 & \sigma_r & 0 & \hdots & 0 \\ 
+        0 & 0 & 0 & 0 & 0 & \hdots & 0 \\ 
+        \vdots & \vdots & \vdots & \vdots & \vdots & \ddots & \vdots \\ 
+        0 & 0 & 0 & 0 & 0 & \hdots & 0
+    \end{bmatrix}.
+\end{equation}
+For some matrix 
+\[B = \begin{bmatrix}
+    b_1 & b_2 & \hdots & b_m
+\end{bmatrix},\] then \[B \begin{bmatrix}
+    \sigma_1 & 0 & 0 & \hdots & 0 \\ 
+    0 & 0 & 0 & \hdots & 0 \\ 
+    0 & 0 & 0 & \hdots & 0 \\ 
+    \vdots & \vdots & \vdots & \ddots & \vdots \\
+    0 & 0 & 0 & \hdots & 0
+\end{bmatrix} = \begin{bmatrix}
+    b_1 & b_2 & \hdots & b_m
+\end{bmatrix}\begin{bmatrix}
+    \sigma_1 & 0 & 0 & \hdots & 0 \\ 
+    0 & 0 & 0 & \hdots & 0 \\ 
+    0 & 0 & 0 & \hdots & 0 \\ 
+    \vdots & \vdots & \vdots & \ddots & \vdots \\
+    0 & 0 & 0 & \hdots & 0
+\end{bmatrix} = \begin{bmatrix}
+    \sigma_1 b_1 & \0 & \hdots & \0
+\end{bmatrix}.\]
+Likewise, \[B \begin{bmatrix}
+    0 & 0 & 0 & \hdots & 0 \\ 
+    0 & \sigma_2 & 0 & \hdots & 0 \\ 
+    0 & 0 & 0 & \hdots & 0 \\ 
+    \vdots & \vdots & \vdots & \ddots & \vdots \\
+    0 & 0 & 0 & \hdots & 0
+\end{bmatrix} = \begin{bmatrix}
+    b_1 & b_2 & \hdots & b_m
+\end{bmatrix}\begin{bmatrix}
+    0 & 0 & 0 & \hdots & 0 \\ 
+    0 & \sigma_2 & 0 & \hdots & 0 \\ 
+    0 & 0 & 0 & \hdots & 0 \\ 
+    \vdots & \vdots & \vdots & \ddots & \vdots \\
+    0 & 0 & 0 & \hdots & 0
+\end{bmatrix} = \begin{bmatrix}
+    \0 & \sigma_2 b_2 & \hdots & \0
+\end{bmatrix}.\] 
+Notice how $\sigma_i$ scales the $i$th column of $B$. Now, let's suppose we combine the operations above into one matrix: 
+\[B \begin{bmatrix}
+    \sigma_1 & 0 & 0 & \hdots & 0 \\ 
+    0 & \sigma_2 & 0 & \hdots & 0 \\ 
+    0 & 0 & 0 & \hdots & 0 \\ 
+    \vdots & \vdots & \vdots & \ddots & \vdots \\
+    0 & 0 & 0 & \hdots & 0
+\end{bmatrix} = \begin{bmatrix}
+    0 & b_2 & \hdots & 0
+\end{bmatrix}\begin{bmatrix}
+    \sigma_1 & 0 & 0 & \hdots & 0 \\ 
+    0 & \sigma_2 & 0 & \hdots & 0 \\ 
+    0 & 0 & 0 & \hdots & 0 \\ 
+    \vdots & \vdots & \vdots & \ddots & \vdots \\
+    0 & 0 & 0 & \hdots & 0
+\end{bmatrix} = \begin{bmatrix}
+    \sigma_1 b_1 & \sigma_2 b_2 & \hdots & \0
+\end{bmatrix}.\] 
+Here, both column 1 and 2 are scaled. So, going back to equation (\ref{lec15:1}), we have 
+\[\begin{bmatrix}
+    \sigma_1 u_1 & \sigma_2 u_2 & \hdots & \sigma_r u_r & \0 & \hdots & \0
+\end{bmatrix}.\]
+This gives us the formula,
+\[Av_i = \begin{cases}
+    \sigma_i u_i & i = 1, \hdots, r \\ 
+    \0 & i = r + 1, \hdots, m
+\end{cases}.\]
+
+Likewise, let's consider $A^T$; 
+\begin{equation*}
+    \begin{aligned}
+        A^T &= (U\Sigma V^T)^T \\ 
+            &= (V^T) \Sigma^T U^T \\ 
+            &= V\Sigma U^T.
+    \end{aligned}
+\end{equation*}
+From there, we have $A^T U = V\Sigma^T U^T U = V\Sigma^T.$ Expanding out the matrices, we have 
+\[A^T \begin{bmatrix}
+    u_1 & u_2 & \hdots & u_n
+\end{bmatrix} = \begin{bmatrix}
+    v_1 & v_2 & \hdots & v_m
+\end{bmatrix} \begin{bmatrix}
+    \sigma_1 & 0 & 0 & \hdots & 0 \\ 
+    0 & \sigma_2 & 0 & \hdots & 0 \\ 
+    0 & 0 & \sigma_r & \hdots & 0 \\ 
+    \vdots & \vdots & \vdots & \ddots & \vdots \\
+    0 & 0 & 0 & \hdots & 0
+\end{bmatrix} = \begin{bmatrix}
+    \sigma_1 v_1 & \sigma_2 v_2 & \hdots & \sigma_r v_r & \0 & \hdots
+\end{bmatrix}.\]
+Note that $\Sigma^T$ is not a tall matrix, but a wide one; instead of being $n \times m$, it's $m \times n$. This gives us the formula
+\[A^T u_i = \begin{cases}
+    \sigma_i v_i & i = 1, \hdots, r \\ 
+    \0 & i = r + 1, \hdots, m
+\end{cases}.\] In particular, we can see that 
+\begin{center}
+    \begin{tabular}{p{2in} p{2in}}
+        \[v_1 \xrightarrow[\sigma_1]{A} u_1\]
+        \[v_2 \xrightarrow[\sigma_2]{} u_2\]
+        \[v_3 \xrightarrow[\sigma_3]{} u_3\]
+        \[\vdots\]
+        \[v_r \xrightarrow[\sigma_r]{} u_r\]
+        \[v_{r + 1} \xrightarrow{} \0\]
+        \[\vdots\]
+        \[v_{m} \xrightarrow{} \0\] &  
+        \[u_1 \xrightarrow[\sigma_1]{A^T} v_1\]
+        \[u_2 \xrightarrow[\sigma_2]{} v_2\]
+        \[u_3 \xrightarrow[\sigma_3]{} v_3\]
+        \[\vdots\]
+        \[u_r \xrightarrow[\sigma_r]{} v_r\]
+        \[u_{r + 1} \xrightarrow{} \0\]
+        \[\vdots\]
+        \[u_{n} \xrightarrow{} \0\]
+    \end{tabular}
+\end{center}
+So, in particular, the range of matrix A, $\mathcal{R}(A)$, is spanned by 
+\[v_1 \xrightarrow[\sigma_1]{A} u_1\]
+\[v_2 \xrightarrow[\sigma_2]{} u_2\]
+\[v_3 \xrightarrow[\sigma_3]{} u_3\]
+\[\vdots\]
+\[v_r \xrightarrow[\sigma_r]{} u_r.\]
+The null space of $A$, $\mathcal{N}(A)$, is spanned by 
+\[v_{r + 1} \xrightarrow{} \0\]
+\[\vdots\]
+\[v_{m} \xrightarrow{} \0.\]
+For $A^T$, this is analogous.
+
+\subsection{Fundamental Subspaces}
+The SVD displays orthogonal bases for the four Fundamental subspaces, $\mathcal{R}(A)$, $\mathcal{N}(A)$, $\mathcal{R}(A^T)$, and $\mathcal{N}(A^T)$, where $\mathcal{R}$ is the \emph{range} and $\mathcal{N}$ is the null space. 
+\[\mathcal{R}(A) = \text{span}\{u_1, u_2, \hdots, u_r\}.\]
+\[\mathcal{N}(A) = \text{span}\{v_{r + 1}, v_{r + 2}, \hdots, v_m\}.\]
+\[\mathcal{R}(A^T) = \text{span}\{v_1, v_2, \hdots, v_r\}.\]
+\[\mathcal{N}(A^T) = \text{span}\{u_{r + 1}, u_{r + 2}, \hdots, u_n\}.\]
+In particular, 
+\[\mathcal{R}(A) + \mathcal{N}(A^T) = \text{span}\{u_1, u_2, \hdots, u_n\}.\]
+\[\mathcal{R}(A^T) + \mathcal{N}(A) = \text{span}\{v_1, v_2, \hdots, v_m\}.\]
+We can see that $\mathcal{R}(A^T) = \mathcal{N}(A)^{\perp}$ and $\mathcal{R}(A) = \mathcal{N}(A^T)^{\perp}.$
+
+\begin{corollary}{}{}
+    Let $A \in \R^{n \times m}$. Then, $\dim(\mathcal{R}(A)) + \dim(\mathcal{N}(A)) = m$ and $\dim(\mathcal{R}(A^T)) + \dim(\mathcal{N}(A^T)) = n$.
+\end{corollary}
+
+\subsection{Reduced SVD}
+We'll introduce this section with an example. 
+
+\begin{mdframed}
+    (Example.) Suppose we have a $3 \times 3$ matrix of rank\footnote{It has 3 rows but only has 2 non-zero singular values, $\sigma_1$ and $\sigma_2$} 2. Then, 
+    \begin{equation*}
+        \begin{aligned}
+            A &= \underbrace{\begin{bmatrix}
+                u_{11} & u_{12} & u_{13} \\ 
+                u_{21} & u_{22} & u_{23} \\ 
+                u_{31} & u_{32} & u_{33} 
+            \end{bmatrix}}_{U} \underbrace{\begin{bmatrix}
+                \sigma_1 & 0 & 0 \\ 
+                0 & \sigma_2 & 0 \\ 
+                0 & 0 & 0 
+            \end{bmatrix}}_{\Sigma} \underbrace{\begin{bmatrix}
+                v_{11} & v_{21} & v_{31} \\ 
+                v_{12} & v_{22} & v_{32} \\ 
+                v_{13} & v_{23} & v_{33} 
+            \end{bmatrix}}_{V^T} \\ 
+                &= \begin{bmatrix}
+                    \sigma_1 u_{11} & \sigma_2 u_{12} & 0 \\ 
+                    \sigma_1 u_{21} & \sigma_2 u_{22} & 0 \\ 
+                    \sigma_1 u_{31} & \sigma_2 u_{32} & 0 
+                \end{bmatrix} \begin{bmatrix}
+                    v_{11} & v_{21} & v_{31} \\ 
+                    v_{12} & v_{22} & v_{32} \\ 
+                    v_{13} & v_{23} & v_{33} 
+                \end{bmatrix}.
+        \end{aligned}
+    \end{equation*} 
+    As a result, we'll end up multiplying $v_{13}$, $v_{23}$, $v_{33}$ by 0. So, instead, what if we have: 
+    \[A = \underbrace{\begin{bmatrix}
+        u_{11} & u_{12} \\ 
+        u_{21} & u_{22} \\ 
+        u_{31} & u_{32} 
+    \end{bmatrix}}_{\hat{U}} \underbrace{\begin{bmatrix}
+        \sigma_1 & 0 \\ 
+        0 & \sigma_2
+    \end{bmatrix}}_{\hat{\Sigma}} \underbrace{\begin{bmatrix}
+        v_{11} & v_{21} & v_{31} \\ 
+        v_{12} & v_{22} & v_{32}
+    \end{bmatrix}}_{\hat{V^T}}.\]
+    This is known as the reduced SVD. 
+\end{mdframed}
+
+\begin{theorem}{Condensed SVD Theorem}{}
+    Let $A \in \R^{n \times m}$ be a nonzero matrix of rank $r$. Then, there exists $\hat{U} \in \R^{n \times r}$, $\hat{\Sigma} \in \R^{r \times r}$, and $\hat{V} \in \R^{m \times r}$, such that $\hat{U}$ and $\hat{V}$ are isometries, and $\hat{\Sigma}$ is a diagonal matrix with main-diagonal entries $\sigma_1 \geq \sigma_2 \geq \hdots \geq \sigma_r > 0$ and \[A = \hat{U}\hat{\Sigma}\hat{V^T}.\]
+\end{theorem}
+
+
+\subsection{Relationship to Norm and Condition Number}
+Recall that we defined the matrix 2-norm as  
+\[||A|| = \max_{\x \neq \0} \frac{||A\x||_2}{||\x||} = \sigma_1,\] where $\sigma_1$ is the largest singular value. Note that this definition also makes sense for $A \in \R^{n \times m}$. 
+
+\begin{theorem}{}{}
+    \[||A||_2 = \sigma_1.\]
+\end{theorem}
+
+Since $A$ and $A^T$ have the same singular values, we have the following corollary. 
+\begin{corollary}{}{}
+    \[||A||_2 = ||A^T||_2.\]
+\end{corollary}
+Since $A$ is nonsingular, $A$ has full rank, i.e., rank $n$. $A$ has $n$ strictly positive singualr values, $\sigma_1 \geq \sigma_2 \geq \hdots \geq \sigma_n > 0$. Now, 
+\[A^{-1} Av_i = A^{-1}(\sigma_i u-i) \implies v_i = \sigma_i A^{-1} u_i \implies A^{-1} u_i = \frac{1}{\sigma_i} v_i,\] so in particular we can map each $\sigma$ like so: 
+\begin{center}
+    \begin{tabular}{p{2in} p{2in}}
+        \[A\] & \[A^{-1}\] \\ 
+        \[v_1 \xrightarrow[\sigma_1]{} u_1\]
+        \[v_2 \xrightarrow[\sigma_2]{} u_2\]
+        \[v_3 \xrightarrow[\sigma_3]{} u_3\]
+        \[\vdots\]
+        \[v_n \xrightarrow[\sigma_n]{} u_n\] &
+        \[u_1 \xrightarrow[\sigma_1^{-1}]{} v_1\]
+        \[u_2 \xrightarrow[\sigma_2^{-1}]{} v_2\]
+        \[u_3 \xrightarrow[\sigma_3^{-1}]{} v_3\]
+        \[\vdots\]
+        \[u_{n} \xrightarrow[\sigma_n^{-1}]{} v_n\]
+    \end{tabular}
+\end{center}
+This tells us that the singular values of $A^{-1}$ must be \[\frac{1}{\sigma_n} \geq \frac{1}{\sigma_{n - 1}} \geq \hdots \geq \frac{1}{\sigma_2} \geq \frac{1}{\sigma_1} > 0\]
+such that 
+\[\Sigma^{-1} = \begin{bmatrix}
+    \frac{1}{\sigma_1} & 0 & 0 & 0 \\ 
+    0 & \frac{1}{\sigma_2} & 0 & 0 \\ 
+    0 & 0 & \ddots & 0 \\ 
+    0 & 0 & 0 & \frac{1}{\sigma_n} 
+\end{bmatrix}.\]
+And, in particular, \[||A^{-1}||_2 = \frac{1}{\sigma_n} \qquad ||A||_2 = \sigma_1.\]
+
+\begin{theorem}{}{}
+    Let $A \in \R^{n \times n}$ be a nonsingular matrix with singular values $\sigma_1 \geq \hdots \geq \sigma_n > 0$. Then, 
+    \[\kappa_{2}(A) = \frac{\sigma_1}{\sigma_n}.\]
+\end{theorem}
+
+\subsection{More on SVD}
+Remember that there are two types of SVD: 
+\begin{itemize}
+    \item Full SVD.
+    \[A = U\Sigma V^T,\]
+    where $A$ is $n \times m$, $U$ is $n \times n$, $\Sigma$ is $n \times m$, and $V^T$ is $m \times m$. Here, $\text{rank}(A) = r \leq m$ and $n \geq m$. 
+
+    \item Reduced SVD 
+    \[A = \hat{U}\hat{\Sigma}\hat{V^T},\]
+    where $A$ is $n \times m$, $\hat{U}$ is $n \times r$, $\hat{\Sigma}$ is $r \times r$, and $\hat{V}^T$ is $r \times m$.
+\end{itemize}
+In any case, we now know that \[||A||_2 = \sigma_1 \qquad \kappa_{2}(A) = \frac{\sigma_1}{\sigma_n}.\]
+
+\subsection{Rank-1 Decomposition}
+\begin{theorem}{}{}
+    Let $A \in \R^{n \times m}$ be a nonzero matrix with rank $r$. Let $\sigma_1, \hdots, \sigma_r$ be the singular values of $A$, with associated right and left singular vectors $v_1, \hdots, v_r$ and $u_1, \hdots, u_r$, respectively. Then, 
+    \[A = \sum_{j = 1}^{r} \sigma_j u_j v_j^T,\]
+    where $u_j \in \R^{n}$, $v_j \in \R^{m}$, and $u_j v_j^T \in \R^{n \times m}$. 
+\end{theorem}
+To see why this theorem works, 
+\begin{equation*}
+    \begin{aligned}
+        A &= \hat{U}\hat{\Sigma}\hat{V^T} \\ 
+            &= \underbrace{\begin{bmatrix}
+                u_1 & v_2 & \hdots & u_r
+            \end{bmatrix}}_{\hat{U}} \underbrace{\begin{bmatrix}
+                \sigma_1 & 0 & 0 & 0 \\ 
+                0 & \sigma_2 & 0 & 0 \\ 
+                0 & 0 & \ddots & 0 \\ 
+                0 & 0 & 0 & \sigma_r
+            \end{bmatrix}}_{\hat{\Sigma}} \underbrace{\begin{bmatrix}
+                v_1^T \\ v_2^T \\ \vdots \\ v_r^T
+            \end{bmatrix}}_{\hat{V}} \\ 
+            &= \begin{bmatrix}
+                \sigma_1 u_1 & \sigma_2 u_2 & \hdots & \sigma_r u_r
+            \end{bmatrix} \begin{bmatrix}
+                v_1^T \\ v_2^T \\ \vdots \\ v_r^T
+            \end{bmatrix} \\ 
+            &= \sigma_1 u_1 v_1^T + \sigma_2 u_2 v_2^T + \hdots + \sigma_r u_r v_r^T \\ 
+            &= \sum_{i = 1}^{r} \sigma_i u_i v_{i}^T.
+    \end{aligned}
+\end{equation*}
+This is called the \textbf{rank-1 decomposition} because $A$ is written as a sum of rank-1 matrices ($u_i v_i^T$ is a rank-1 matrix.)
+
+\subsubsection{Low Rank Approximation}
+We know that \[A = \sum_{i = 1}^{r} \sigma_i u_i v_i^T = \sigma_1 u_1 v_1^T + \sigma_2 u_2 v_2^T + \hdots + \sigma_r u_r v_r^T.\] We also know that $\sigma_1 \geq \sigma_2 \geq \hdots \geq \sigma_r$. So, we can choose some $k \leq r$ and define \[A_k = \sum_{i = 1}^{k} \sigma_i u_i v_i^T.\] Then, $A_k$ is called the rank-$k$ approximation of $A$ (it's of type ``low-rank'' when $k < r$). 
+
+\bigskip 
+
+Essentially, we cut-off parts of the sum belonging to small singular values, producing an approximation ($A_k$) to the original matrix ($A$). It should, then, be noted that $\text{rank}(A_k) = k$, with each $u_i v_i^T$ having rank 1. 
+
+\begin{theorem}{}{}
+    \[||A - A_k||_2 = \sigma_{k + 1}.\]
+\end{theorem}
+
+\begin{proof}
+    We know that $A = \hat{U}\hat{\Sigma}\hat{V}^T$ and $A_k = \hat{U}\hat{\Sigma}_k \hat{V}^T$. So, \[\hat{\Sigma} = \begin{bmatrix}
+        \sigma_1 & & &  \\ 
+        & \sigma_2 & & \\ 
+        & & \ddots & \\ 
+        & & & \sigma_r
+    \end{bmatrix} \qquad \hat{\Sigma}_k = \begin{bmatrix}
+        \sigma_1 & & &  \\ 
+        & \ddots & & \\ 
+        & & \sigma_k & \\ 
+        & & & 0 
+    \end{bmatrix}.\]
+    From this, \[\begin{aligned}
+        A - A_k &= \hat{U}(\hat{\Sigma} - \hat{\Sigma}_k) \hat{V}^T \\ 
+            &= \hat{U}\begin{bmatrix}
+                0 & & & & & & \\ 
+                & 0 & & & & & \\ 
+                & & \ddots & & & & \\ 
+                & & & 0 & & & \\ 
+                & & & & \sigma_{k + 1} & & \\ 
+                & & & & & \ddots & \\ 
+                & & & & & & \sigma_r
+            \end{bmatrix} \hat{V}^T
+    \end{aligned},\]
+    as desired.
+\end{proof}
+In addition, $A_k$ is the matrix of rank $k$ that is closest to $A$ (in the 2-norm). In other words, $\min||A - B||_2$ with minimum over all matrix $B$ of rank $k$ is $A_k$. 
+
+
+\section{Pseudoinverse (Section 4.3)}
+We will solve the least squares with the SVD with full rank matrix $A$. Using SVD also works when the rank of $A$ is not full. Recall that 
+\[A \in \R^{n \times m} \qquad n \geq m \qquad \min_{\x \in \R^m} ||\b - A\x||_2^2.\]
+
+\subsection{Brief Review}
+Recall that, for a full rank $A$, i.e., $\text{rank}(A) = m$, we can use full QR decomposition ($A = QR$) or reduced QR decomposition ($A = \hat{Q}\hat{R}$). In particular, for reduced QR, $A = \hat{Q}\hat{R}$ where $\hat{Q} \in \R^{n \times m}$ and $\hat{R} \in \R^{m \times m}$. Recall that $A\x = \b$ as well, so 
+\begin{equation*}
+    \begin{aligned}
+        A\x &= \b \\ 
+            &\implies \hat{Q}\hat{R}\x = \b \\ 
+            &\implies \hat{Q}^{T}\hat{Q}\hat{R}\x = \hat{Q}^{T}\b \\ 
+            &\implies \hat{R}\x = \hat{Q}^{T}\b && \text{Since } Q^T Q = I.
+    \end{aligned}
+\end{equation*}
+Remember that, because $\hat{Q}$ is orthogonal, $\hat{Q} \hat{Q}^T = I_{n \times n}$ and $\hat{Q}^T \hat{Q} = I_{m \times m}$. Now, remember that if $\hat{R}$ has full rank, then it'll look like 
+\[\hat{R} = \begin{bmatrix}
+    * & * & * & * & \hdots & * \\ 
+    0 & * & * & * & \hdots & * \\ 
+    0 & 0 & * & * & \hdots & * \\ 
+    0 & 0 & 0 & * & \hdots & * \\ 
+    \vdots & \vdots & \vdots & \vdots & \ddots & \vdots \\ 
+    0 & 0 & 0 & 0 & \hdots & * \\ 
+\end{bmatrix}.\]
+Then, the associated equation will have a unique solution since it has $m$ equations and $m$ unknowns. \textbf{Now}, what if $\text{rank}(R) = r < m$? Then, it is not full rank and it'll look like 
+\[\hat{R} = \begin{bmatrix}
+    * & * & * & * & \hdots & * \\ 
+    0 & * & * & * & \hdots & * \\ 
+    0 & 0 & * & * & \hdots & * \\ 
+    0 & 0 & 0 & 0 & \hdots & 0 \\ 
+    \vdots & \vdots & \vdots & \vdots & \ddots & \vdots \\ 
+    0 & 0 & 0 & 0 & \hdots & 0 \\ 
+\end{bmatrix}.\]
+In particular, some of the diagonal entries are 0's. So, $\hat{R}\x = \hat{Q}^T \b$. We have $m$ unknowns, but we only have $r$ independent equations. Those equations are not helpful since we can't use them to solve for the unknowns -- we'll end up with infinitely many solutions. So, we'll have to choose one of these infinitely many solutions based on $||\x||_2$. 
+
+\subsection{A New Problem}
+We now have a new problem to solve. 
+\begin{itemize}
+    \item Find $\min||\b - A\x||_2^2$ (infinitely many solutions.)
+    \item Pick $\x$ with minimal $||\x||_2$. 
+\end{itemize}
+With the above two minimizers, there \emph{will} be a unique solution $\x$. We will see that the unique $\x$ can be written as $\x = A^+ \b$, where $A^+$ is known as the \textbf{pseudoinverse}\footnote{Note that if $A$ is invertible, then $\x = A^{-1}\b$, so in some sense $A^+$ is mimicking $A^{-1}$.}.
+
+\bigskip 
+
+With this in mind, how do we find the least squares solution of the minimal 2-norm? With $A = U\Sigma V^T$, we have 
+\begin{equation*}
+    \begin{aligned}
+        ||\b - A\x||_2^2 &= ||\b - U\Sigma V^T \x||_2^2 \\ 
+            &= ||U(U^T \b) - U(\Sigma V^T \x)||_2^2 && \text{Recall that } UU^T = U^T U = I \\ 
+            &= ||U(U^T \b - \Sigma V^T \x)||_2^2 \\ 
+            &= ||U^T \b - \Sigma V^T \x||_2^2 \\ 
+            &= \left|\left| \underbrace{\begin{bmatrix}
+                \hat{c} \\ 
+                d
+            \end{bmatrix}}_{U^T \b \in \R^{n \times 1}} - \left[
+                \begin{array}{c|c}
+                    \hat{\Sigma} & \makebox{0} \\ 
+                    \hline 
+                    \makebox{0} & \makebox{0}
+                \end{array}
+            \right] \underbrace{\begin{bmatrix}
+                \hat{y} \\ z
+            \end{bmatrix}}_{V^T \x \in \R^{m \times 1}} \right|\right|_2^2 && \text{See remark.} \\ 
+            &= \left|\left| \begin{bmatrix}
+                \hat{c} \\ 
+                d
+            \end{bmatrix} - \begin{bmatrix}
+                \hat{\Sigma} \hat{y} \\ 
+                \0
+            \end{bmatrix} \right|\right|_2^2  \\ 
+            &= \left|\left| \begin{bmatrix}
+                \hat{c} - \hat{\Sigma} \hat{y} \\ 
+                d
+            \end{bmatrix} \right|\right|_2^2 \\ 
+            &= ||\hat{c} - \hat{\Sigma} \hat{y}||_2^2 + ||d||_2^2
+    \end{aligned}
+\end{equation*}
+\textbf{Remarks:}
+\begin{itemize}
+    \item Note that $\hat{c} \in \R^r$ and $d \in \R^{n - r}$ and $\hat{y} \in \R^r$ and $z \in \R^{m - r}$.
+    \item Additionally, \[\Sigma = \left[
+        \begin{array}{c|c}
+            \hat{\Sigma} & \makebox{0} \\ 
+            \hline 
+            \makebox{0} & \makebox{0}
+        \end{array}
+    \right]\] where $\hat{\Sigma}$ is an $r \times r$ matrix. 
+
+    \item $d$ is independent of $\x$ when minimizing over $\x$. 
+\end{itemize}
+In any case, we want to minimize $||\hat{c} - \hat{\Sigma} \hat{y}||_2^2$. This can be done by solving \[\hat{c} = \hat{\Sigma}\hat{y}.\] This yields \[\begin{bmatrix}
+    \sigma_1 & & & & \\ 
+    & \sigma_2 & & & \\ 
+    & & \sigma_3 & & \\ 
+    & & & \ddots & \\ 
+    & & & & \sigma_r
+\end{bmatrix} \begin{bmatrix}
+    \hat{y}_1 \\ \hat{y}_2 \\ \vdots \\ \hat{y}_r
+\end{bmatrix} = \begin{bmatrix}
+    \hat{c}_1 \\ \hat{c}_2 \\ \vdots \\ \hat{c}_r
+\end{bmatrix}.\]
+And this gives us 
+\[\hat{y}_i = \frac{\hat{c}_i}{\sigma_i}, i = 1, \hdots, r.\] To find $\x$, we do \[V^T \x = \begin{bmatrix}
+    \hat{y} \\ z
+\end{bmatrix} \implies \x = V\begin{bmatrix}
+    \hat{y} \\ z 
+\end{bmatrix}.\]
+No matter the value of $z$, it won't affect the value of $\hat{y}$. We can define many $\x$ values such that the least square problems has the minimum. However, we want to define the unique solution $\x$, so how do we choose $z$ so we can find the minimized $||\x||_2$? 
+\[||\x||_2^2 = \left|\left|V \begin{bmatrix}
+    \hat{y} \\ z
+\end{bmatrix}\right|\right|_2^2 = \left|\left|\begin{bmatrix}
+    \hat{y} \\ 
+    z
+\end{bmatrix}\right|\right|_2^2 = ||\hat{y}||_2^2 + ||z||_2^2,\] where recall that $V$ is orthogonal. So, $||\x||_2^2$ is minimized when $z = \0$. So, in summary, $\boxed{\x = V\begin{bmatrix}
+    \hat{y} \\ \0
+\end{bmatrix}}$ is the unique solution.
+
+
+
+
+
+
+
+\section{Eigenvector and Eigenvalues (Section 5.1, 5.2)}
+Fundamentally, we want to solve \begin{equation}{\label{eq:2-27:1}}
+    Av = \lambda v,
+\end{equation} where
+\begin{itemize}
+    \item $A$ is a matrix either in $\R^{n \times n}$ or $\C^{n \times n}$, and 
+    \item $\lambda \in \C$ (the \emph{eigenvalue}), and 
+    \item $v \in \C^n$ (the \emph{eigenvector}).
+\end{itemize}
+The pair $(\lambda, v)$ is called an \textbf{eigenpair} of $A$. Whereas each eigenvector has a unique eigenvalue associated with it, each eigenvalue is associated with many eigenvectors. For example, if $v$ is an eigenvector of $A$ associated with the eigenvalue $\lambda$, then every nonzero multiple of $v$ is also an eigenvector of $A$ associated with $\lambda$. Now, note that 
+\[Av = \lambda v \implies Av = \lambda I v \implies \0 = Av - \lambda I v \implies  \0 = (A - \lambda I)v,\]
+where $I$ is the $n \times n$ identity matrix. In any case, if $v$ is an eigenvector with eigenvalue $\lambda$, then $v$ is a nonzero solution of the homogeneous matrix equation \[(A - \lambda I)v = \0.\] Therefore, the matrix is singular\footnote{Not invertible.} and $\det(A - \lambda I) = 0$. This establishes the following theorem. 
+
+\begin{theorem}{}{2-27:2}
+    $\lambda$ is an eigenvalue of $A$ if and only if 
+    \[\det(A - \lambda I) = 0.\]
+    This equation is known as the \textbf{characteristic equation} of $A$.
+\end{theorem}
+\textbf{Remark:} Although this is useful theoretically, this equation has little value for actual computations, as we will see later. 
+
+We note that $\det(A - \lambda I)$ is a polynomial in $\lambda$ of degree $n$; it is called the \textbf{characteristic polynomial} of $A$. Therefore, the eigenvalues, $\lambda$, are the roots of this polynomial. There are exactly $n$ roots, not all real (i.e., some complex), and thus $n$ eigenvalues.
+
+\begin{mdframed}
+    (Exercise.) Find the characteristic polynomial of \[B = \begin{bmatrix}
+        1 & 2 \\ 3 & 4
+    \end{bmatrix}.\]
+
+    \begin{mdframed}
+        We have 
+        \begin{equation*}
+            \begin{aligned}
+                \det(B - \lambda I) &= \det\left(\begin{bmatrix}
+                    1 & 2 \\ 3 & 4
+                \end{bmatrix} - \lambda \begin{bmatrix}
+                    1 & 0 \\ 0 & 1
+                \end{bmatrix}\right) \\ 
+                    &= \det\left(\begin{bmatrix}
+                        1 - \lambda & 2 \\ 
+                        3 & 4 - \lambda
+                    \end{bmatrix}\right) \\ 
+                    &= (1 - \lambda)(4 - \lambda) - 3(2) \\ 
+                    &= 4 - \lambda - 4\lambda + \lambda^2 - 6 \\ 
+                    &= \lambda^2 - 5\lambda - 2.
+            \end{aligned}
+        \end{equation*}
+    \end{mdframed}
+\end{mdframed}
+
+\subsection{Getting Eigenvectors}
+We can get the eigenvectors by solving \begin{equation}{\label{eq:2-27:3}}
+    (A - \lambda I)v = \0,
+\end{equation}
+where $\lambda$ are the eigenvalues that we found by solving (\ref{th:2-27:2}). Note that 
+\begin{itemize}
+    \item Eigenvalues are the roots of the polynomials of (\ref{th:2-27:2}).
+    \item Roots can be complex, thus eigenvalues can also be complex \emph{even} when $A$ is real. 
+\end{itemize}
+
+\begin{mdframed}
+    (Example.) Consider \[A = \begin{bmatrix}
+        0 & -1 \\ 1 & 0
+    \end{bmatrix} \in \R^{2 \times 2}.\] 
+    \begin{itemize}
+        \item To find the eigenvalues, we have 
+        \[\det(A - \lambda I) = \det\left(\begin{bmatrix}
+            -\lambda & -1 \\ 1 & -\lambda
+        \end{bmatrix}\right) = \lambda^2 + 1.\]
+        Then, we can solve \[\lambda^2 + 1 = 0,\] giving us $\lambda = \pm i$, which is \emph{complex}.  
+
+        \item To find the eigenvectors, we use the formula (\ref{eq:2-27:3}) for each eigenvalue.
+        \begin{itemize}
+            \item For $\lambda = i$, we have 
+            \[\left(\begin{bmatrix}
+                0 & - 1 \\ 1 & 0 
+            \end{bmatrix} - \begin{bmatrix}
+                i & 0 \\ 
+                0 & i
+            \end{bmatrix}\right)v = \0 \implies \begin{bmatrix}
+                -i & -1 \\ 
+                1 & -i
+            \end{bmatrix}v = \0 \implies v = \begin{bmatrix}
+                i \\ 1
+            \end{bmatrix}.\]
+            
+            \item For $\lambda = -i$, we have 
+            \[\left(\begin{bmatrix}
+                0 & -1 \\ 1 & 0
+            \end{bmatrix} - \begin{bmatrix}
+                -i & 0 \\ 
+                0 & -i
+            \end{bmatrix}\right)v = \0 \implies \begin{bmatrix}
+                i & -1 \\ 1 & i
+            \end{bmatrix}v = \0 \implies v = \begin{bmatrix}
+                -i \\ 1
+            \end{bmatrix}.\]
+        \end{itemize}
+    \end{itemize}
+\end{mdframed}
+
+\subsection{Eigenvectors \& Eigenvalues for Large Matrices}
+Suppose we have a matrix of size $200 \times 200$. The characteristic equation will be a polynomial of degree 200. This means that there are 200 roots and thus 200 eigenvalues. Now, we should note that there is no formula to find the roots when $r > 4$ (we have the quadratic equation when $r = 2$, for example), so this process is tedious. Additionally, numerically finding the roots is ill-conditioned\footnote{Small perturbations to the coefficients lead to large changes in the roots.}.
+
+\bigskip 
+
+So, how do we find the eigenvalues numerically? As implied earlier, the characteristic equation is not useful for finding eigenvalues numerically, so we will perform iterative methods to find eigenvalues. 
+
+\subsubsection{QR Iteration}
+Before we begin this section, let's note a theorem. 
+\begin{theorem}{}{}
+    Let $T \in \C^{n \times n}$ be a (lower- or upper-) triangular matrix. Then, the eigenvalues of $T$ are the main-diagonal entries $t_{11}, \hdots, t_{nn}$. 
+\end{theorem}
+We will construct a sequence of matrices with the same eigenvalues that converge to a triangular matrix. The reason why we choose a triangular matrix is because its eigenvalues are on the diagonal. 
+
+\subsection{Semisimple Matrices}
+\begin{definition}{Semisimple Matrix}{}
+    A matrix $A \in \R^{n \times n}$ is called \textbf{semisimple} if it has $n$ linearly independent eigenvectors. Otherwise, it is called \textbf{defective.}
+\end{definition}
+
+\begin{mdframed}
+    (Example.) Consider \[I = \begin{bmatrix}
+        1 & 0 \\ 0 & 1
+    \end{bmatrix}.\] Its characteristic polynomial is given by \[\det(I - \lambda I) = (1 -\lambda)^2.\] Solving $(1 - \lambda)^2 = 0$ yields $\lambda_1 = \lambda_2 = 1$. So, we find $v_1 = \begin{bmatrix}
+        1 \\ 0
+    \end{bmatrix}$ and $v_2 = \begin{bmatrix}
+        0 \\ 1
+    \end{bmatrix},$ which are are linearly independent, which means that $I$ is semisimple.
+\end{mdframed}
+\textbf{Remark:} Any vector, except $\0$, can be an eigenvector.
+
+\begin{mdframed}
+    (Example.) Consider \[A = \begin{bmatrix}
+        1 & 3 \\ 0 & 1
+    \end{bmatrix}.\] Its characteristic polynomial is given by \[\det(A - \lambda I) = \det\left(\begin{bmatrix}
+        1 - \lambda & 3 \\ 0 & 1 - \lambda
+    \end{bmatrix}\right) = (1 - \lambda)^2.\] Solving $(1 - \lambda)^2 = 0$ yields $\lambda_1 = \lambda_2 = 1$. To get the eigenvectors, we solve \[(A - \lambda I)v = \0,\] so in particular \[\left(\begin{bmatrix}
+        1 & 3 \\ 0 & 1
+    \end{bmatrix} - 1 \cdot \begin{bmatrix}
+        1 & 0 \\ 0 & 1
+    \end{bmatrix}\right)v = \0 \implies \begin{bmatrix}
+        0 & 3 \\ 0 & 0
+    \end{bmatrix} \begin{bmatrix}
+        v_1 \\ v_2
+    \end{bmatrix} = \0 \implies \begin{cases}
+        0v_1 + 3v_2 = 0 \\ 
+        0v_1 + 0v_2 = 0
+    \end{cases}.\] We find that $3v_2 = 0 \implies v_2 = 0$ and $v_1$ can be any arbitrary value \emph{except} 0 (because eigenvectors cannot be $\0$). In particular, every vector of the form \[v = \begin{bmatrix}
+        v_1 \\ 0 
+    \end{bmatrix} = v_1 \begin{bmatrix}
+        1 \\ 0
+    \end{bmatrix}\] is an eigenvector. However, this implies that there is only one linearly independent eigenvector hence $A$ is defective.
+\end{mdframed}
+
+\subsubsection{Reminders}
+Recall that 
+\begin{itemize}
+    \item if $v$ is an eigenvector of $A$ with respect to $\lambda$, then $cv$ for some $c \in \R \setminus \{0\}$ is also an eigenvector of $A$ with respect to $\lambda$. In particularm 
+    \[A(cv) = c(Av) = c(\lambda v) = \lambda(cv) \implies A(cv) = \lambda(cv).\]
+
+    \item if $v$ is an eigenvector of $A$ with respect to $\lambda$, then $v$ is also an eigenvector of $A^{-1}$ with respect to $\lambda^{-1}$. 
+    \[Av = \lambda v \implies A^{-1}(Av) = A^{-1}(\lambda v) \implies v = \lambda A^{-1}v \implies \lambda^{-1} v = A^{-1} v.\]
+\end{itemize}
+This brings us to another theorem. 
+\begin{theorem}{}{}
+    If $\lambda_1, \lambda_2, \hdots, \lambda_k$ are distinct eigenvalues of $A$, then the associated eigenvectors $v_1, v_2, \hdots, v_k$ are linearly independent. 
+\end{theorem}
+
+
+
+
+\section{The Power Method (Section 5.3)}
+Let $A \in \C^{n \times n}$, and assume that $A$ is semisimple. Let $\lambda_1, \lambda_2, \hdots, \lambda_n$ denote the eigenvalues associated with the linearly independent eigenvectors, $v_1, \hdots, v_n$, respectively. Assume that the vectors are ordered so that $|\lambda_1| \geq |\lambda_2| \geq \hdots \geq |\lambda_n|$. If $|\lambda_1| > |\lambda_2|$, then $\lambda_1$ is called the \textbf{dominant eigenvalue}\footnote{Basically, the largest absolute eigenvalue.} and $v_1$ is called the \textbf{dominant eigenvector} of $A$.  
+
+\subsection{The Iterative Power Method}
+Assuming we have $|\lambda_1| > |\lambda_2|$ as described above (otherwise, this method may not work), the general idea behind the iterative power method is that we can pick $q \in \R^n$ randomly. Then, we can form the sequence of vectors
+\[q, Aq, A^2 q, A^3 q, \hdots.\]
+To calculate this sequence, we don't necessarily need to form the powers of $A$ explicitly. Each vector in the sequence can be obtained by multiplying the previous vector by $A$, e.g., $A^{j + 1}q = A(A^j q)$. It's easy to show that the sequence converge, in a sense, to a dominant eigenvector, for almost all choices of $q$. Since $v_1, \hdots, v_n$ form a basis for $\C^n$, there exists constants $c_1, \hdots, c_n$ such that  
+\[q = c_1 v_1 + c_2 v_2 + \hdots + c_n v_n.\]
+We don't know what $v_1, \hdots, v_n$ are, so we don't know what $c_1, \hdots, c_n$ are, either. However, it's clear that, for any choice of $q$, $c_1$ will be nonzero. The argument that follows is valid for every $q$ for which $c_1 \neq 0$; multiplying by $A$, we have 
+\begin{equation*}
+    \begin{aligned}
+        Aq &= c_1 Av_1 + c_2 Ac_2 + \hdots + c_n Av_n \\ 
+            &= c_1 \lambda_1 v_1 + c_2 \lambda_2 v_2 + \hdots + c_n  \lambda_n v_n.
+    \end{aligned}
+\end{equation*}
+Similarly, 
+\begin{equation*}
+    \begin{aligned}
+        A^2 q &= A(c_1 \lambda_1 v_1 + c_2 \lambda_2 v_2 + \hdots + c_n  \lambda_n v_n) \\
+            &= c_1 \lambda_1 (Av_1) + c_2 \lambda_2 (Av_2) + \hdots + c_n \lambda_n (Av_n) \\ 
+            &= c_1 \lambda_1 (\lambda_1 v_1) + c_2 \lambda_2 (\lambda_2 v_2) + \hdots + c_n \lambda_n (\lambda_n v_n) \\ 
+            &= c_1 \lambda_1^2 v_1 + c_2 \lambda_2^2 v_2 + \hdots + c_n \lambda_n^2 v_n.
+    \end{aligned}
+\end{equation*}
+In general, we have 
+\begin{equation*}
+    \begin{aligned}
+        A^j q &= c_1 \lambda_1^j v_1 + c_2 \lambda_2^j v_2 + \hdots + c_n \lambda_n^j v_n \\ 
+            &= \lambda_1^j \left(c_1 v_1 + c_2 \left(\frac{\lambda_2}{\lambda_1}\right)^j v_2 + \hdots + c_n \left(\frac{\lambda_n}{\lambda_1}\right)^j v_n\right).
+    \end{aligned}
+\end{equation*}
+So, 
+\[\frac{1}{\lambda_1^j} A^i q = c_1 v_1 + c_2 \left(\frac{\lambda_2}{\lambda_1}\right)^j v_2 + \hdots + c_n \left(\frac{\lambda_n}{\lambda_1}\right)^j v_n.\]
+Notice that $\lim_{j \mapsto \infty} \left(\frac{\lambda_i}{\lambda_1}\right)^j = 0$ (because $|\lambda_1| > |\lambda_2| \geq |\lambda_3| \geq \hdots \geq |\lambda_n|$), so \[\lim_{j \mapsto \infty} \frac{1}{\lambda_1^j} A^j q = c_1 v_1,\]
+the dominant eigenvector.
+
+\bigskip 
+
+\textbf{Remark:} In fact, when we use the power method to converge to a dominant eigenvector, we need to know all the eigenvalues and then check whether they're strictly greater or not. So, this only works if $\lambda_1$ is known and it is strictly greater than $\lambda_2$ and so on. 
+
+\subsection{Scaling}
+Notice how we went from $A_j q$ to $\frac{1}{\lambda_1^j} A^j q$? In some sense, we can say we're scaling $A_j q$. Now, what if we don't know what the value of $\lambda_1$ is, but we need to do \emph{some} scaling to get a reasonable convergence? In this case, we can still do some scaling, but not necessarily with $\lambda_1$. 
+
+\bigskip 
+
+Let's start with a random $q \in \R^n$; let $q_0 = q$. We want to use the iterative power formula method, 
+\[\boxed{q_{j + 1} = \frac{1}{s_{j + 1}} Aq_j \qquad j = 0, 1, 2, \hdots},\]
+where $\frac{1}{s_{j + 1}}$ is a scalar. Here, 
+\[s_{j + 1} = ||Aq_j||_\infty.\]
+In particular, all entries of $q_{j + 1}$ have absolute value $\leq 1$. With this scaling, as $j \mapsto \infty$, 
+\[q_j \mapsto \text{Dominant eigenvector.}\]
+\[s_j \mapsto \text{Dominant eigenvalue (in absolute value sense).}\]
+Notice how $s_j$ will eventually converge to the absolute value of the dominant eigenvalue. What if we want the actual value of $\lambda_1$? There is another version of the scalar. which is just 
+\[s_{j + 1} = \sgn((Aq_{j})_i) \cdot ||Aq_j||_\infty,\]
+where $i$ is the index of the first entry of the vector $Aq_j$ such that $|(Aq_j)_{i}| = ||Aq_j||_\infty$, i.e., the absolute value of the entry at index $i$ is equal to the infinity norm of $Aq_j$. Then, $\sgn((Aq_{j})_i)$ is the sign function, which returns either $-1$ or 1 based on the sign of $(Aq_{j})_i$.  
+
+\begin{mdframed}
+    (Example.) Suppose \[Aq_j = \begin{bmatrix}
+        -1 \\ 0 \\ 1/2 \\ 1 \\ 0
+    \end{bmatrix}.\]
+    We know that \[||Aq_j||_\infty = 1.\] So, \[s_{j + 1} = ||Aq_j||_\infty = 1.\]
+    To find the sign, we note that there are two values in $Aq_j$ such that its absolute value equals $||Aq_j||_\infty = 1$; 
+    \begin{itemize}
+        \item Value $-1$ at index $i = 1$ (top value),
+        \item Value $1$ at index $i = 4$ (second-to-bottom value).
+    \end{itemize}
+    We want the \emph{first} entry, so $i = 1$. Therefore, $\sgn((Aq_j)_1) = \sgn(-1) = -1$ and so 
+    \[s_{j + 1} = \sgn((Aq_j)_i) \cdot ||Aq_j||_\infty = -1 \cdot 1 = -1.\]
+\end{mdframed}
+
+\subsubsection{Stopping Criterion}
+Because this method is an iterative method, we need to stop at some point. We can set a threshold at $\epsilon > 0$. Stop the iteration when $||q_{j + 1} - q_j||_\infty < \epsilon$, basically $q_{j + 1} \approx q_j$. So, 
+\[\frac{1}{s_{j + 1}}Aq_j \approx q_j \implies Aq_j \approx s_{j + 1} q_j.\]
+Notice how this formula looks very similar to $Av = \lambda v$; in that sense, we can say that $q_j$ is the approximated eigenvector and $s_{j + 1}$ is the approximated eigenvalue.
+
+\subsubsection{Flop Count and Rate of Convergence}
+Recall again $|\lambda_1| > |\lambda_2| \geq \hdots \geq |\lambda_n|$. Let's look at the flop count; notice that we have $\BigO(n^2)$ in every step of the iteration (matrix-vector multiplication). If we do $N$ iterations, then the overall flop count is $\BigO(Nn^2)$. 
+
+\bigskip 
+
+Additionally, the convergence of the power method can be \emph{slow}. In particular, 
+\begin{itemize}
+    \item If $|\lambda_2 / \lambda_1|$ is small (e.g., $|1 / 1000|$), this means that $|\lambda_1| \gg |\lambda_2$ and convergence is fast. 
+    \item If $|\lambda_2 / \lambda_1| \approx 1$ (e.g., $|0.99 / 1|$), then $|\lambda_1| \approx |\lambda_2|$ and convergence is slow.
+\end{itemize}
+
+\begin{mdframed}
+    (Example.) Suppose \[A = \begin{bmatrix}
+        3 & 1 \\ 1 & 1
+    \end{bmatrix}.\] Suppose you need to apply 3 steps of the power method to approximate $\lambda_1$ and $v_1$. 
+
+    \begin{itemize}
+        %  We know that $||q_0||_\infty = 1$.
+        \item $j = 0$: Let's start with\footnote{Remember that the initial vector is randomly chosen.} $q_0 = \begin{bmatrix}
+            1 \\ 1
+        \end{bmatrix}$. Then, 
+        \[Aq_0 = \begin{bmatrix}
+            3 & 1 \\ 1 & 1
+        \end{bmatrix} \begin{bmatrix}
+            1 \\ 1
+        \end{bmatrix} = \begin{bmatrix}
+            4 \\ 2
+        \end{bmatrix}.\]
+        We're now interested in the sign of $s_{1}$. To find the sign, we need to find the index $i$ of the first entry of the vector $Aq_0$ such that $|(Aq_0)_i| = ||Aq_0||_\infty$. We know that $||Aq_0||_\infty = \max\{4, 2\} = 4$, so we find that $i = 1$ and so $\sgn((Aq_0)_1) = \sgn(4) = 1$. 
+
+        \bigskip 
+
+        Thus, $s_{1} = 1 \cdot 4 = 4$ and so \[q_1 = \frac{1}{s_1}Aq_0 = \frac{1}{4}Aq_0 = \begin{bmatrix}
+            1 \\ 1/2
+        \end{bmatrix}.\]
+
+        \item $j = 1$: With $q_1 = \begin{bmatrix}
+            1 \\ 1/2
+        \end{bmatrix}$, we have \[Aq_1 = \begin{bmatrix}
+            3 & 1 \\ 1 & 1
+        \end{bmatrix} \begin{bmatrix}
+            1 \\ 1 / 2
+        \end{bmatrix} = \begin{bmatrix}
+            7 / 2 \\ 3 / 2
+        \end{bmatrix}.\]
+        We know that $||Aq_1||_\infty = \frac{7}{2}$ and so we find the index at $i = 1$ and $\sgn((Aq_1)_1) = \sgn(7 / 2) = 1$. Thus, $s_2 = 1 \cdot \frac{7}{2} = \frac{7}{2}$ and so 
+        \[q_2 = \frac{1}{s_2}Aq_1 = \frac{2}{7}\begin{bmatrix}
+            7/2 \\ 3/2
+        \end{bmatrix} = \begin{bmatrix}
+            1 \\ 3 / 7
+        \end{bmatrix}.\]
+
+        \item $j = 3$: With $q_2 = \begin{bmatrix}
+            1 \\ 3/7
+        \end{bmatrix}$, we have 
+        \[Aq_2 = \begin{bmatrix}
+            3 & 1 \\ 1 & 1
+        \end{bmatrix} \begin{bmatrix}
+            1 \\ 3/7
+        \end{bmatrix} = \begin{bmatrix}
+            24 / 7 \\ 10 / 7
+        \end{bmatrix}.\] We find that $||Aq_2||_\infty = 24 / 7$ and so, again, $i = 1$ and $\sgn((Aq_2)_1) = \sgn(24 / 7) = 1$. Thus, $s_3 = 1 \cdot \frac{24}{7} = \frac{24}{7}$ and 
+        \[q_3 = \frac{1}{s_3}Aq_2 = \frac{7}{24}\begin{bmatrix}
+            24 / 7 \\ 10 / 7
+        \end{bmatrix} = \begin{bmatrix}
+            1 \\ 5 / 12
+        \end{bmatrix}.\]
+    \end{itemize}
+    With this, we find that $s_3 = 24 / 7 \approx 3.429$ and $q_3 = \begin{bmatrix}
+        1 \\ 5/12
+    \end{bmatrix} \approx \begin{bmatrix}
+        1 \\ 0.4167
+    \end{bmatrix}$. In actuality, the eigenvalue is $\lambda_1 = 3.4142$ and the eigenvector is $v_1 = \begin{bmatrix}
+        1 \\ 0.4142
+    \end{bmatrix}$, so after \emph{three} steps, the approximation is very close.
+\end{mdframed}
+\textbf{Remarks:}
+\begin{itemize}
+    \item The power method is easy to implement. 
+    \item The power method does \emph{not} converge if $|\lambda_1| = |\lambda_2|$. 
+\end{itemize}
+
+\section{Similar Matrices \& QR Iteration Introduction (Section 5.4)}
+Two matrices, $A, B \in \R^{n \times n}$, are \textbf{similar} if there exists an invertible matrix $S \in \R^{n \times n}$ such that $AS = SB$. Equivalently, \[A = SBS^{-1} \qquad B = S^{-1}AS.\]
+$A$ and $B$ are called \textbf{orthogonally similar} if $S$ is orthogonal and $A = SBS^{-1}$. In this case, we actually have $A = SBS^T$. 
+
+\begin{theorem}{}{}
+    Similar matrices have the same eigenvalues. 
+\end{theorem}
+That is, if $B = S^{-1}AS$ and $v$ is an eigenvector of $A$ to the eigenvalue $\lambda$, then $S^{-1} v$ is an eigenvector of $B$ with respect to $\lambda$. 
+
+\begin{proof}
+    We have 
+    \begin{equation}
+        \begin{aligned}
+            Av = \lambda v &\implies SBS^{-1}v = \lambda v \\ 
+                &\implies S^{-1} (SBS^{-1})v = S^{-1}(\lambda v) \\ 
+                &\implies (S^{-1} S)BS^{-1}v = \lambda S^{-1}v \\
+                &\implies BS^{-1}v = \lambda S^{-1} v.
+        \end{aligned}
+    \end{equation}
+    This means that $S^{-1}v$ is an eigenvalue of $B$ with respect to $\lambda$. 
+\end{proof}
+
+\begin{lemma}{Diagonalizing Semisimple Matrices}{}
+    Let $A$ be a matrix in $\R^{n \times n}$. $A$ is semisimple if and only if there exists an invertible matrix $V \in \R^{n \times n}$ and a diagonal matrix $D \in \R^{n \times n}$ such that \[A = VDV^{-1}.\]
+\end{lemma}
+\textbf{Remarks:}
+\begin{itemize}
+    \item $A$ and $D$ are similar, meaning they have the same eigenvalues\footnote{The eigenvalues of a diagonal matrix is just the entries on the diagonal.}.
+    \item $A = VDV^{-1}$ is equivalent to $AV = VD$. This is an eigenvalue/vector equation. 
+\end{itemize} 
+\emph{Proof Idea.} If $D = \begin{bmatrix}
+    \lambda_1 & 0 & \hdots & 0 \\ 
+    0 & \lambda_2 & \hdots & 0 \\ 
+    \vdots & \vdots & \ddots & \vdots \\ 
+    0 & 0 & \hdots & \lambda_n
+\end{bmatrix}$ contains eigenvalues and $V = \begin{bmatrix}
+    v_1 & v_2 & \hdots & v_n
+\end{bmatrix}$ contains eigenvectors, then $V$ is invertible implies that $\begin{bmatrix}
+    v_1 & v_2 & \hdots & v_n
+\end{bmatrix}$ are linearly independent. Thus, $A$ is semisimple. How do we find the eigenvalues of $A$? 
+
+\subsection{Interlude: Complex Matrices}
+Let $\alpha = a + bi \in \C$, where $a, b \in \R$. Then, 
+\begin{itemize}
+    \item The complex conjugate, $\bar{\alpha} = a - bi \in \C$.
+    \item Also, $|\alpha| = \sqrt{a^2 + b^2}$.
+\end{itemize}
+ % TODO get graph from lecture
+
+Regarding complex matrices, 
+\begin{itemize}
+    \item \textbf{Generalization of Transpose:} Let $A \in \C^{n \times n}$. Then, $A^* = \bar{A}^T$, known as the generalization of a transposition. $\bar{A}$ is the complex conjugate of every entry. 
+    \item \textbf{Generalization of Orthogonality:} Recall that $Q \in \R^{n \times n}$ is orthogonal if $QQ^T = Q^T Q = I$. How do we generalize this to complex matrices? Let $U \in \C^{n \times n}$. $U$ is called \textbf{unitary} if $UU^* = U^*U = I$. 
+\end{itemize}
+
+\begin{theorem}{Schur}{}
+    Let $A \in \C^{n \times n}$. Then, there exists a unitary matrix $U \in \C^{n \times n}$ and an upper triangular matrix $T \in \C^{n \times n}$ such that $A = UTU^*$.
+\end{theorem}
+\textbf{Remark:} $A$ is unitarily similar to $T$. So, $A$ and $T$ has the same eignevalues. 
+
+\subsection{Back to Real Matrices}
+If $A \in \R^{n \times n}$, we can still apply Schur's theorem\footnote{Recall that $\R \subset \C$.}; that is, \[A = UTU^* \qquad U, T \in \C^{n \times n}.\]
+Another version of Schur's Theorem, known as the Real Schur's Theorem, states the following.
+\begin{theorem}{Real Schur}{}
+    If $A \in \R^{n \times n}$. Then, there exists an orthogonal $Q \in \R^{n \times n}$ and an ``almost'' upper triangular matrix $T \in \R^{n \times n}$ such that $A = QTQ^T$. 
+\end{theorem}
+We can think of diagonal entries of $T$ as consisting of size $1 \times 1$ or size $2 \times 2$ blocks.
+
+\begin{mdframed}
+    (Example.) If $A \in \R^{4 \times 4}$ with eigenvalues $2 + i$, $2 - i$, $5$, and $6$. Then, 
+    \begin{itemize}
+        \item the complex Schur is 
+        \[T = \begin{bmatrix}
+            2 + i & * & * & * \\ 
+            0 & 2 - i & * & * \\ 
+            0 & 0 & 5 & * \\ 
+            0 & 0 & 0 & 6
+        \end{bmatrix} \in \C^{4 \times 4}.\]
+        Note that $\alpha = a + bi$ and $\bar{\alpha} = a - bi$, so \[\alpha \bar{\alpha} = \alpha^2 + b^2.\]
+
+        \item the real Schur is 
+        \[T = \begin{bmatrix}
+            2 & 1 & * & * \\ 
+            -1 & 2 & * & * \\ 
+            0 & 0 & 5 & * \\ 
+            0 & 0 & 0 & 6
+        \end{bmatrix} \in \R^{4 \times 4}.\]
+        Notice how we have the $2 \times 2$ ``block'' at the top-left corner, representing the complex eigenvalues $2 + i$ and $2 - i$, respectively. 
+    \end{itemize}
+\end{mdframed}
+\textbf{Remark:} Note that complex eigenvalues always come in \textbf{complex conjugate pairs}. If $a + bi$ is an complex eigenvalue, then $a - bi$ is also a complex eigenvalue. 
+
+\subsection{QR Iteration: A Basic Idea}
+The aim is to find the eigenvalues of a matrix $A \in \C^{n \times n}$. The idea behind the iterative procedure is as follows:
+\begin{enumerate}
+    \item Step-by-step transform $A$ without changing eigenvalues (similarity transformation).
+    \item Change into an upper-triangular matrix ($T$ from Schur).  
+\end{enumerate}
+This method is based on the QR decomposition that we discussed earlier in the quarter.
+
+\bigskip 
+
+\subsubsection{Basic Idea: The Reals}
+Consider\footnote{The complex matrix works the same} $A \in \R^{n \times n}$. We know that $A = QR$, where $Q$ is an orthogonal matrix. Then, 
+\[A = QR \implies Q^T A = Q^T Q R = R \implies Q^T A Q = RQ.\]
+Here, $A$ and $RQ$ have the same eigenvalues. 
+
+\bigskip 
+
+So, the iterative procedure begins by defining $A_0 = A$. The new matrix in iteration is $A_1 = RQ$. $A_0$ and $A_1$ have the same eigenvalues, so we can continue the process. So, the iterative procedure can be described in detailed as follows:
+\begin{enumerate}
+    \item Iteratively compute QR decomposition. 
+    \item Change multiplication order. 
+    \item This converges to $T$, the upper-triangular from Schur. 
+\end{enumerate}
+So, starting with $A_1$, and look for its eigenvalues. Let $A_0 = A$. We can define \[\boxed{A_k = R_k Q_k},\] with $R_k, Q_k$ from the QR decomposition of $A_{k - 1}$; in other words, \[\boxed{A_{k - 1} = Q_k R_k}.\] Then, $A_{k - 1}$ and $A_k$ have the same eigenvalues. 
+
+\bigskip 
+
+More formally, 
+\begin{enumerate}
+    \item Let $A_0 = A = Q_1 R_1$. Then, $A_1 = R_1 Q_1$. Here, $A_0$ and $A_1$ have the same eigenvalues. 
+    \item Let $A_1 = Q_2 R_2$. Then, $A_2 = R_2 Q_2$. Here, $A_1$ and $A_2$ have the same eigenvalues and, in particular, $A_0, A_1, A_2$ all have the same eigenvalues. 
+    \item Continue the process\dots
+\end{enumerate}
+Eventually, $\lim_{k \mapsto \infty} A_k = T$, with $T$ from the Schur decomposition. 
+
+\bigskip 
+
+\textbf{At the end,} the eigenvalues of $A$ are on the diagonal of $T$. If $A$ is real, then $T$ is ``almost'' upper triangular (real Schur decomposition). 
+
+\bigskip 
+
+Because this is an iterative method, we need a stopping criterion\footnote{To be discussed later.}.
+
+\subsubsection{Disadvantages}
+There are some significant disadvantages with doing QR iteration. 
+\begin{itemize}
+    \item \textbf{Flop Count:} QR decomposition needs $\BigO(n^3)$ flops\footnote{$n$ represents the size of the matrix.}, and we need one QR decomposition in every step of the iteration. This is too much work. 
+    \item \textbf{Convergence Rate:} Convergence may be slow if the eigenvalues are close together in the absolute value. In case of distinct eigenvalues, $|\lambda_1| > |\lambda_2| > \hdots > |\lambda_n|$, applying QR iteration to $A$ means the elements below the diagonal goes to 0 by the following rate\footnote{$a_{ij}^{(k)}$ means the entry $(i, j)$ in matrix $A_k$.}
+    \[(a_{ij}^{(k)}) = \BigO\left(\left|\frac{\lambda_i}{\lambda_j}\right|^k\right)\] for $i > j$ ($i$ below diagonal). 
+\end{itemize}
 
 \end{document}
