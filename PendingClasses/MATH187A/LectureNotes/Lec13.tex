@@ -231,8 +231,11 @@ For example, when we were counting that there are 312 affine encryption function
 \begin{lemma}{}{}
     If $\gcd(a, b) = 1$, then $\phi(ab) = \phi(a)\phi(b)$. 
 \end{lemma}
-With this in mind, the formula for $\phi(n)$ is 
-\[\phi(n) = p_{1}^{e_1 - 1}(p_1 - 1) \cdot \hdots \cdot p_{r}^{e_r - 1}(p_r - 1)\]
+This brings us to the following formula:
+\begin{theorem}{}{}
+    Suppose $n = p_1^{e_1} \hdots p_r^{e_r}$ is the prime factorization of $n$. Then, the formula for $\phi(n)$ is 
+    \[\phi(n) = p_{1}^{e_1 - 1}(p_1 - 1) \cdot \hdots \cdot p_{r}^{e_r - 1}(p_r - 1)\]
+\end{theorem}
 
 \begin{mdframed}
     (Exercise.) Use the formula for Euler's phi function to calculate $\phi(n)$ for each of the following values of $n$. 
