@@ -368,7 +368,7 @@ We'll typically consider only solutions $(x, y)$ where $0 \leq x, y < p$ in orde
         \begin{itemize}
             \item If $P \neq Q$ and $x_2 - x_1$ is not invertible mod $p$, set \[P + Q = O.\]
             \item If $P = Q$ and $y_1$ is not invertible mod $p$, set $P + Q = 2P = O$. 
-            \item Otherwise, define 
+            \item Otherwise, define\footnote{You compute the inverse mod $p$ first, and then multiply that and mod that by $p$.}
             \[\lambda = \begin{cases}
                 (y_2 - y_1)(x_2 - x_1)^{-1} \Mod{p} & \text{if } P \neq Q \\ 
                 (3x_1^2 + a)(2y_1)^{-1} \Mod{p} & \text{if } P = Q 
