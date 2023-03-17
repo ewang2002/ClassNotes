@@ -2990,4 +2990,268 @@ The process (computing expected counts, finding an observed value of $G$, using 
     \end{mdframed}
 \end{mdframed}
 
+
+
+\subsection{Breaking Rectangular Transposition}
+Suppose you're given a long passage of ciphertext (with 2808 characters) that is known to be encrypted using rectangular transposition. How do we break the code? We'll talk about a strategy for breaking the code. 
+\begin{enumerate}
+    \item First, start by making an arbitrary guess for the ``period,'' i.e., the length of the key word. We know that the period has to be a \emph{divisor} of the length of the ciphertext. Note that 2808 has 32 possible divisors: 
+    \[\{1,2,3,4,6,8,9,12,13,18,24,26,27,\hdots,234,312,351,468,702,936,1404,2808\}.\]
+    Since there are only 26 characters in the English alphabet, the period can be at most 26. This means that the period must be one of the following: 
+    \[\{1,2,3,4,6,8,9,12,13,18,24,26\}.\]
+    Suppose we guess that the period is 6.
+
+    \item Next, we can arrange our ciphertext into a rectangle of length 6 (the period we guessed). Note that our rectangle will have height $N = \frac{2808}{6} = 468$, so for the sake of being concise only the first few rows will be shown: 
+    \begin{verbatim}
+    OIPWMJ
+    ALWSLE
+    LJLYEA
+    MENUAB
+    IHSDAC
+    ESRTIE
+    EMKHAO
+    AMNPAI
+    IELNAP
+       .
+       .
+       .\end{verbatim}
+
+    \item For every pair of numbers $i \neq j$ between 1 and 6 (the period we guessed), we consider the tall column of width 2 we would get by placing the $i$th and $j$th column of the above rectangle next to each other. For example, if $i = 4$ and $j = 2$, we would get the following $468 \times 2$ rectangle:
+    \begin{verbatim}
+        WI
+        SL
+        YJ
+        UE
+        DH
+        TS
+        HM
+        PM
+        NE
+        .
+        .
+        .\end{verbatim}
+
+
+    \item We can think of this as 468 observations of a pair of English letters \emph{if} the columns $i$ and $j$ were consecutive in the plaintext.In particular, for every pair of letters $\alpha$ and $\beta$, we count the number of times that we see the sequence $\alpha \beta$ appearing in this column. Let $O_{\alpha\beta}^{(i, j)}$ be this number. In our truncated example above (in step 3), notice that $O_{\text{WI}}^{(4, 2)}$, $O_{\text{SL}}^{(4, 2)}$, etc. are all at least 1.
+    
+    \bigskip 
+
+    On the other hand, we can use a large sample of English to calculate the probability $p_{\alpha\beta}$ of the pair $\alpha\beta$ occurring in the English text. We can use these to calculate the expected counts $E_{\alpha\beta} = Np_{\alpha\beta} = 468p_{\alpha\beta}$ and then calculate a corresponding value of $G$ using the observed counts $O_{\alpha\beta}^{(i, j)}$. We can call this $G^{(i, j)}$; in other words, 
+    \[G^{(i, j)} = \sum_{\alpha\beta} O_{\alpha\beta}^{(i, j)} \ln\left(\frac{O_{\alpha\beta}^{(i, j)}}{E_{\alpha\beta}}\right).\]
+    We can then assemble all of these values\footnote{Note that all the diagonal entries of this box are set to $\infty$ since we only compute $G^{(i, j)}$ when $i \neq j$. This is an \underline{arbitrary} convention and the diagonal entries should just be ignored.} of $G^{(i, j)}$ as $i \neq j$ varies into a box of numbers: 
+    \[\begin{bmatrix}
+        \infty     & G^{(1, 2)} & G^{(1, 3)} & G^{(1, 4)} & G^{(1, 5)} & G^{(1, 6)} \\ 
+        G^{(2, 1)} & \infty     & G^{(2, 3)} & G^{(2, 4)} & G^{(2, 5)} & G^{(2, 6)} \\ 
+        G^{(3, 1)} & G^{(3, 2)} & \infty     & G^{(3, 4)} & G^{(3, 5)} & G^{(3, 6)} \\ 
+        G^{(4, 1)} & G^{(4, 2)} & G^{(4, 3)} & \infty     & G^{(4, 5)} & G^{(4, 6)} \\ 
+        G^{(5, 1)} & G^{(5, 2)} & G^{(5, 3)} & G^{(5, 4)} & \infty     & G^{(5, 6)} \\ 
+        G^{(6, 1)} & G^{(6, 2)} & G^{(6, 3)} & G^{(6, 4)} & G^{(6, 5)} & \infty
+    \end{bmatrix}.\]
+    If we guessed the period correctly, then we should find that every row except \emph{one of them} has \emph{one} number that's much smaller than all the others. This tells us something about how to permute the letters to find the plaintext. For example, if we find in the first row that $G^{(1, 4)}$ is \emph{much} smaller than the other numbers, that tells us that rows 1 and 4 are likely to be \emph{consecutive} in the plaintext, because the frequency distribution of the pairs that occur in the long $468 \times 2$ rectangle displayed earlier is close to the frequency distribution of pairs that occur in the English plaintext.
+
+    \bigskip 
+
+    Note that there are \emph{many} calculations to do by hand. Therefore, we will make use of a compute to do these calculations for us. 
+\end{enumerate}
+
+\begin{mdframed}
+    (Example.) Suppose our ``$G$-box'' is 
+    \[\begin{bmatrix}
+        \infty & 1151.3 & 1090.2 & \underline{\textbf{485.5}} & 1069.3 & 1005.0 \\ 
+        1234.4 & \infty & 1228.3 & 1049.6 & \underline{\textbf{440.2}} & 1148.6 \\ 
+        \underline{\textbf{437.5}} & 1044.1 & \infty & 1004.1 & 1164.5 & 933.4 \\ 
+        1154.7 & 1088.6 & 977.3 & \infty & 1115.7 & 1023.6 \\ 
+        1137.2 & 1221.9 & \underline{\textbf{425.9}} & 1100.0 & \infty & 1070.0 \\ 
+        1003.7 & \underline{\textbf{442.3}} & 944.9 & 1021.6 & 1086.1 & \infty
+    \end{bmatrix}.\]
+    The numbers themselves are not very important. \emph{However}, what's important is how every row except one has a number that's significantly smaller than the other numbers on that row. The numbers that are smaller than the others on the same row are bolded and underlined. Notice that every row except the fourth row has a bolded/underlined entry. Now, 
+    \begin{itemize}
+        \item the fact that, in row 1, the 4th column is much smaller than the other entries in that row suggests that columns 1 and 4 in our $468 \times 6$ rectangle are consecutive.
+        \item notice that, in row 2, the 5th column is much smaller than the other entries suggests that columns 2 and 5 are consecutive.
+        \item the 4th row not having an entry that's much smaller than the others corresponds to the fact that the 4th column gets reordered to the end. 
+    \end{itemize} 
+    Observing all the relations this way, and then putting them together, we find that the above $G$-box leads us to think that the ordering of the columns is \boxed{6, 2, 5, 3, 1, 4}.
+
+    \bigskip 
+
+    To clarify how the ordering was obtained, notice how 
+    \begin{itemize}
+        \item in row 1, the smallest number is in column 4.
+        \item in row 2, the smallest number is in column 5.
+        \item in row 3, the smallest number is in column 1.
+        \item in row 4, no number is significantly smaller, so we can assume that the 4th column was reordered to the end. 
+        \item in row 5, the smallest number is in column 3.
+        \item in row 6, the smallest number is in column 2.
+    \end{itemize}
+    With this in mind, notice how we have pairs $(1, 4)$, $(2, 5)$, $(3, 1)$, $(5, 3)$, and $(6, 2)$. If we ``connect'' the pairs, we end up with 
+    \[(6, 2), (2, 5), (5, 3), (3, 1), (1, 4).\]
+    Removing the connecting duplicate numbers yields 
+    \[6, 2, 5, 3, 1, 4.\]
+\end{mdframed}
+
+
+\begin{mdframed}
+    (Exercise.) Suppose that, when trying to break rectangular transposition, you find ``$G$-boxes'' of the following forms, where the exclamation mark indicates an entry that is much smaller than every other entry on its row. Write down the corresponding decrypting permutation (i.e., the ordering of the columns in the plaintext) that this configuration of values suggests.
+
+    \begin{enumerate}[(a)]
+        \item $\begin{bmatrix}
+            . & . & . & ! & . \\ 
+            . & . & . & . & ! \\ 
+            . & . & . & . & . \\ 
+            . & ! & . & . & . \\ 
+            . & . & ! & . & .
+        \end{bmatrix}$
+        \begin{mdframed}
+            Notice how 
+            \begin{itemize}
+                \item in row 1, the exclamation mark is in column 4.
+                \item in row 2, the exclamation mark is in column 5. 
+                \item in row 3, no exclamation mark exists, implying that 3 will be at the end of the ordering. 
+                \item in row 4, the exclamation mark is in column 2. 
+                \item in row 5, the exclamation mark is in column 3. 
+            \end{itemize}
+            With this in mind, we have the pairs $(1, 4)$, $(2, 5)$, $(4, 2)$, and $(5, 3)$. If we ``connect'' the pairs, we end up with 
+            \[(1, 4), (4, 2), (2, 5), (5, 3).\]
+            Joining the pairs (and removing the consecutive equal numbers) yields 
+            \[1, 4, 2, 5, 3.\]
+        \end{mdframed}
+
+        \item $\begin{bmatrix}
+            . & ! & . & . & . \\ 
+            . & . & . & . & . \\ 
+            ! & . & . & . & . \\ 
+            . & . & ! & . & . \\ 
+            . & . & . & ! & . 
+        \end{bmatrix}$
+        \begin{mdframed}
+            We have the pairs $(1, 2)$, $(3, 1)$, $(4, 3)$, and $(5, 4)$. ``Connecting'' them gives us 
+            \[(5, 4), (4, 3), (3, 1), (1, 2).\]
+            Joining the pairs, removing the consecutive equal numbers, yields 
+            \[5, 4, 3, 1, 2.\]
+        \end{mdframed}
+
+        \item $\begin{bmatrix}
+            . & . & . & ! & . & . & . \\ 
+            . & . & . & . & . & . & ! \\ 
+            . & ! & . & . & . & . & . \\ 
+            . & . & ! & . & . & . & . \\ 
+            . & . & . & . & . & . & . \\ 
+            . & . & . & . & ! & . & . \\ 
+            . & . & . & . & . & ! & .
+        \end{bmatrix}$
+        \begin{mdframed}
+            We have the pairs $(1, 4), (2, 7), (3, 2), (4, 3), (6, 5), (7, 6)$. Connecting them yields 
+            \[(1, 4), (4, 3), (3, 2), (2, 7), (7, 6), (6, 5)\]
+            Joining the pairs, removing the consecutive equal numbers, yields 
+            \[1, 4, 3, 2, 7, 6, 5.\]
+        \end{mdframed}
+    \end{enumerate}
+\end{mdframed}
+
+\subsection{Interlude: Conditional Probability}
+Suppose Kambili and Amaka both secretly flip two fair coins. 
+\begin{itemize}
+    \item Kambili announces that her second flip was heads. 
+    \item Amaka announces that she had at least one heads.
+\end{itemize}
+Who is more likely to have flipped two heads? In other words, if you had to make a bet about who flipped more heads, who would you bet on? 
+
+\begin{definition}{Conditional Probability}{}
+    Fix a probability space. Given two events $A$ and $B$, we define the \textbf{conditional probability} $\PR[A | B]$ by 
+    \[\PR[A | B] = \frac{\PR[A \cap B]}{\PR[B]}.\]
+\end{definition}
+The intuition here is that $\PR[A | B]$ represents how confident we are that $A$ happens, \emph{given that we already know} that $B$ happens.
+
+\begin{mdframed}
+    (Example.) Consider the example with Kambili and Amaka. Intuitively, the answer is that ``both are equally likely''; that is, both Kambili and Amaka have an equal chance of getting two heads. This is not correct. 
+
+    \bigskip 
+
+    To formalize this argument, consider the following: 
+    \begin{itemize}
+        \item The experiment that we're considering involves two coin flips, so we're working with 
+        \[\Omega = \{HH, HT, TH, TT\}.\]
+        \item We're interested in the event
+        \[A = \{HH\}.\]
+    \end{itemize}
+    In Kambili's situation, we know that her second flip was heads. So, in other words, we're restricting ourselves to the event 
+    \[B_1 = \{HH, TH\}\] and we have 
+    \[\PR[A | B_1] = \frac{\PR[A \cap B_1]}{\PR[B_1]} = \frac{\PR[A]}{\PR[B_1]} = \frac{1/4}{1/2} = \frac{1}{2}.\]
+    Therefore, \textbf{the probability that Kambili has two heads} is $\frac{1}{2}$. In Amaka's situation, we only know that one of her flips was heads. In other words, we have the event 
+    \[B_2 = \{HH, TH, HT\}.\]
+    Then, 
+    \[\PR[A | B_2] = \frac{\PR[A \cap B_2]}{\PR[B_2]} = \frac{\PR[A]}{\PR[B_2]} = \frac{1/4}{3/4} = \frac{1}{3}.\]
+    Therefore, \textbf{the probability that Amaka has two heads} is $\frac{1}{3}$. In other words, Kambili is more likely to have two heads than Amaka.  
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) There are three coins in a bag. One is a normal quarter: one side is heads, the other side is tails. The second coin is almost identical except that both sides are heads; similarly, both sides of the third coin are tails. You shake the bag around to shuffle the coins. You then close your eyes, pull one coin out at random, put it down on a table, and then open your eyes. You see heads. What is the probability that the other side of the coin is also heads?
+
+    \begin{mdframed}
+        Consider the following tree diagram: 
+        \begin{center}
+            \includegraphics[scale=0.73]{assets/coin.png}
+        \end{center}
+        So, we want to find the probability that, given we got heads initially, the otherwise will also have heads. This gives us 
+        \[\PR[\text{heads} | \text{got heads}] = \frac{\PR[\text{heads given heads}]}{\PR[\text{got heads}]} = \frac{1/3 \cdot 1}{1/2} = \frac{2}{3}.\]
+        Note that one way we can think about getting heads is by thinking about the possible face we \emph{can} get; in this case, we can either get $\{H, H, H, T, T, T\}$. We have a $\frac{3}{6} = \frac{1}{2}$ chance of getting heads. 
+    \end{mdframed}
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) Suppose 80\% of people like peanut butter, 89\% like jelly, and 78\% like both. Given that a randomly sampled person likes peanut butter, what's the probability that they also like jelly?
+
+    \begin{mdframed}
+        Let $J$ be the event that someone likes jelly and $B$ be the event that someone likes peanut butter. We know that 
+        \[PR[B] = 0.80.\]
+        We also know that $\PR[J \cap B] = 0.78$ since 78\% of people like \emph{both} peanut butter and jelly. So, 
+        \[\PR[J|B] = \frac{\PR[J \cap B]}{\PR[B]} = \frac{0.78}{0.80} = 0.975.\]
+    \end{mdframed}
+\end{mdframed}
+
+\begin{mdframed}
+    Lupus is a medical phenomenon where antibodies that are supposed to attack foreign cells to prevent infections instead see plasma proteins as foreign bodies, leading to a high risk of blood clotting. It is believed that 2\% of the population suffers from this disease. A test for lupus is 98\% accurate if a person actually has the disease, and 74\% accurate if a person does not have the disease. There is a line from the Fox television show House that is often used after a patient tests positive for lupus: ``It's never lupus.'' Do you think there is truth to this statement? Use appropriate probabilities to support your answer.
+
+    \begin{mdframed}
+        Consider the following tree diagram: 
+        \begin{center}
+            \includegraphics[scale=0.73]{assets/lupus.png}
+        \end{center}
+        Then, 
+        \[\PR[\text{has lupus} | \text{tested positive}] =\frac{\PR[\text{has lupus + tested positive}]}{\PR[\text{tested positive}]} = \frac{0.02 \cdot 0.98}{0.02 \cdot 0.98 + 0.98 \cdot 0.26} \approx 0.07142.\]
+        So, there is some truth to the statement since if someone tests positive for lupus, there's only 7.14\% that they have lupus. 
+    \end{mdframed}
+\end{mdframed}
+
+\begin{definition}{Independent Events}{10:1}
+    Fix a probability space. We say that two events $A$ and $B$ are independent if 
+    \[\PR[A \cap B] = \PR[A]\PR[B].\]
+\end{definition}
+Often, it's convenient to reformulate this definition slightly. In the case that $\PR[B] > 0$, \[\PR[A \cap B] = \PR[A] \PR[B] \iff \frac{\PR[A \cap B]}{\PR[B]} = \PR[A].\] However, notice that \[\frac{\PR[A \cap B]}{\PR[B]} = \PR[A | B]\] so it follows that the independence of $A$ and $B$ is equivalent to asserting that \[\PR[A | B] = \PR[A].\] We could interpret this statement as follows: if $A$ and $B$ are independent, then our confidence in $A$ happening does not change at all even if we're told that $B$ happened (or did not happen). More loosely, knowing whether or not $B$ happens tells us ``nothing'' about whether or not $A$ happenes.
+
+\begin{mdframed}
+    (Exercise.) The American Community Survey is an ongoing survey that provides data every year to give communities the current information they need to plan investments and services. The 2010 American Community Survey estimates that 14.6\% of Americans live below the poverty line, 20.7\% speak a language other than English at home, and 4.2\% fall into both categories. Is the event that a randomly chosen American lives below the poverty line independent of the event that the person speaks a language other than English at home?
+
+    \begin{mdframed}
+        Define 
+        \[\PR[\text{Below Poverty Line}] = 0.146,\]
+        \[\PR[\text{Speak Language Other Than English}] = 0.207,\]
+        \[\PR[\text{Below Poverty Line AND Speak Language Other Than English}] = 0.042.\]
+        Using the formula in (\ref{def:10:1}), notice how \[0.042 \neq 0.146(0.207) = 0.030222.\]
+    \end{mdframed}
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) A bag contains 5 red marbles and 3 blue marbles. Two marbles are drawn randomly from the bag: Alejandra takes the first one and Beatrice takes the second. Is the event that Alejandra's marble is blue independent of the event that Beatrice's marble is blue?
+
+    \begin{mdframed}
+        No. If Alejandra takes the first marble and doesn't put it back, then it's possible that she took the blue marble, which affects the probability that Beatrice gets a blue marble.
+    \end{mdframed}
+\end{mdframed}
+
+\begin{definition}{}{}
+    Fix a probability space. Two random variables $X$ and $Y$ are \textbf{independent} if the events $X = a$ and $Y = b$ are independent for all pairs $(a, b)$ where $a$ is a value of $X$ and $b$ a value of $Y$.
+\end{definition}
+
+
 \end{document}
