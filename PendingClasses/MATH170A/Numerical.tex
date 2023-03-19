@@ -3714,4 +3714,466 @@ There are some significant disadvantages with doing QR iteration.
     \[(a_{ij}^{(k)}) = \BigO\left(\left|\frac{\lambda_i}{\lambda_j}\right|^k\right)\] for $i > j$ ($i$ below diagonal). 
 \end{itemize}
 
+
+
+\section{Reduction to Hessenberg and Triangular Form (Section 5.5)}
+One of the issues with the QR iteration is its computational cost; it's not very efficient. In this section, we'll learn about how we can convert $A$ into a matrix that is faster to compute with. 
+
+\subsection{Upper Hessenberg Matrix}
+\begin{definition}{Upper Hessenberg Matrix}{}
+    An $n \times n$ matrix $H$ is called \textbf{upper Hessenberg} if $h_{ij} = 0$ for $i > j + 1$. 
+\end{definition}
+\textbf{Remarks:} 
+\begin{itemize}
+    \item An upper Hessenberg matrix might look like 
+    \[\begin{bmatrix}
+        * & * & * & * & * & * & * \\ 
+        * & * & * & * & * & * & * \\
+        0 & * & * & * & * & * & * \\
+        0 & 0 & * & * & * & * & * \\ 
+        0 & 0 & 0 & * & * & * & * \\ 
+        0 & 0 & 0 & 0 & * & * & * \\ 
+        0 & 0 & 0 & 0 & 0 & * & *
+    \end{bmatrix}\]
+    \item If $H$ is also symmetric ($A = A^T$), then we get a tridiagonal matrix. This matrix might look like 
+    \[\begin{bmatrix}
+        * & * & 0 & 0 & 0 & 0 & 0 \\ 
+        * & * & * & 0 & 0 & 0 & 0 \\
+        0 & * & * & * & 0 & 0 & 0 \\
+        0 & 0 & * & * & * & 0 & 0 \\ 
+        0 & 0 & 0 & * & * & * & 0 \\ 
+        0 & 0 & 0 & 0 & * & * & * \\ 
+        0 & 0 & 0 & 0 & 0 & * & *
+    \end{bmatrix}\]
+\end{itemize}
+% TODO get matrix representation.
+
+\begin{mdframed}
+    (Example.) Is the following matrix 
+    \[H = \begin{bmatrix}
+        4 & 0 & -1 & 2 \\ 
+        -8 & -3 & 5 & 6 \\ 
+        0 & -5 & 2 & 7 \\ 
+        0 & 0 & 4 & 1
+    \end{bmatrix}\]
+    an upper Hessenberg matrix? 
+
+    \begin{mdframed}
+        Yes. 
+    \end{mdframed}
+\end{mdframed}
+
+\subsection{Revised QR Iteration: Preconditioning}
+We want to transform $A$ to an upper Hessenberg matrix. This process is known as \textbf{preconditioning}. The process is as follows: 
+\begin{enumerate}
+    \item The idea is that we want to find an $H$ such that \[A = QHQ^T \text{ or } A = QHQ^{*}\]
+    for some unitary $Q$ matrix. This can be found in finite steps, unlike Schur. Remember that $A$ and $H$ should have the same eigenvalues, since they are similar matrices. 
+    \item Apply QR iteration to $H$. The QR iteration of $H$ only needs $\BigO(n^2)$ flops. In addition, the QR iteration on a Hessenberg matrix stays within the set of Hessenberg matrices. That is, for $H_0 = H$ where $H$ is Hessenberg, then all $H_k$ obtained by QR iteration are also Hessenberg matrices. 
+\end{enumerate}
+
+\[\begin{bmatrix}
+    * & \hdots & * \\ 
+    * & \hdots & * \\ 
+    \vdots & & \vdots \\ 
+    * & * \hdots & *
+\end{bmatrix} \xrightarrow[\text{Step 1}]{\text{Preconditioning}} \underbrace{\begin{bmatrix}
+    \underline{*} & * & * & \hdots & * \\
+    \underline{*} & \underline{*} & * & \hdots & * \\ 
+    0 & \underline{*} & \underline{*} & \hdots & * \\ 
+    \vdots & \vdots & \vdots & \ddots & \vdots \\ 
+    0 & 0 & 0 & \hdots & \underline{*} 
+    \end{bmatrix}}_{\text{H: Hessenberg}} \xrightarrow[\text{Step 2}]{\text{QR Iteration}} \underbrace{\dots}_{H_k} \xrightarrow{\text{QR Iteration}} \underbrace{\begin{bmatrix}
+        * & * & * & \hdots & * \\
+        0 & * & * & \hdots & * \\ 
+        0 & 0 & * & \hdots & * \\ 
+        \vdots & \vdots & \vdots & \ddots & \vdots \\ 
+        0 & 0 & 0 & \hdots & *
+\end{bmatrix}}_{T: \text{Upper Triangular}}\]
+The idea is, as we apply the iteration more times, we eventually end up with $T$; that is, 
+\[\lim_{k \mapsto \infty} H_k = T.\]
+
+\subsubsection{Why Does It Work?}
+\begin{theorem}{}{}
+    An $A \in \R^{n \times n}$ matrix can be decomposed as $A = QHQ^T$  with $H$ upper Hessenberg and $Q$ orthogonal. For $B \in \C^{n \times n}$, the decomposition becomes $B = UHU^*$ with $U$ being unitary. 
+\end{theorem}
+
+\begin{proof}
+    The idea is very similar to QR decomposition in the sense that we need reflectors. Note that the QR process looks like \[Q_n \hdots Q_1 Q_1 A \mapsto R,\] but with this process the eigenvalues are changed. So, we need \[Q_n \hdots Q_2 Q_1 A Q_1^T Q_2^T \hdots Q_n^T \mapsto H.\]
+    Here, $H$ is similar to $A$. 
+\end{proof}
+
+\begin{mdframed}
+    (Example.) Consider 
+    \[A = \begin{bmatrix}
+        a_{11} & a_{12} & a_{13} & a_{14} \\ 
+        a_{21} & a_{22} & a_{23} & a_{24} \\ 
+        a_{31} & a_{32} & a_{33} & a_{34} \\ 
+        a_{41} & a_{42} & a_{43} & a_{44} \\ 
+    \end{bmatrix}.\]
+    Consider \[\x = \begin{bmatrix}
+        a_{21} \\ a_{31} \\ a_{41}
+    \end{bmatrix} \quad \y = \begin{bmatrix}
+        a_{12} \\ a_{13} \\ a_{14}
+    \end{bmatrix}.\]
+    This gives us 
+    \[A = \begin{bmatrix}
+        a_{11} & \y^T \\ 
+        \x & B
+    \end{bmatrix}.\]
+    So, we can map $\x$ to $\begin{bmatrix}
+        ||x||_2 \\ 0
+    \end{bmatrix}$ using a reflector $\hat{Q}_1 \in \R^{3 \times 3}$. Then, 
+    \[Q_1 = \begin{bmatrix}
+        1 & 0 \\ 0 & \hat{Q}_1
+    \end{bmatrix} \in \R^{4 \times 4}\] is still orthogonal. From there, \[Q_1 A = \begin{bmatrix}
+        1 & 0 \\ 0 & \hat{Q}_1
+    \end{bmatrix} \begin{bmatrix}
+        a_{11} & \y^T \\ 
+        \x & B 
+    \end{bmatrix} = \begin{bmatrix}
+        a_{11} & y^T \\ 
+        \hat{Q}_1 \x & \hat{Q}_1 B
+    \end{bmatrix}.\]
+    From there, 
+    \[Q_1 A Q_1^T = \begin{bmatrix}
+        a_{11} & y^T \\ 
+        \hat{Q}_1 \x & \hat{Q}_1 B
+    \end{bmatrix} \begin{bmatrix}
+        1 & 0 \\ 
+        0 & \hat{Q}_1^T
+    \end{bmatrix} = \begin{bmatrix}
+        a_{11} & \y^T \hat{Q}_1^T \\ 
+        \hat{Q}_1 \x & \hat{Q}_1 B \hat{Q}_1^T 
+    \end{bmatrix} = \begin{bmatrix}
+        a_{11} & * & * & * \\ 
+        ||x||_2 & c_{11} & c_{12} & c_{13} \\ 
+        0 & c_{21} & c_{22} & c_{23} \\ 
+        0 & c_{31} & c_{32} & c_{33}
+    \end{bmatrix}.\]
+    At this point, we now only look at the matrix formed by the $c_{ij}$ elements. We need to do $Q_2(Q_1 A Q_1^T)Q_2^T$ to make $c_{31}$ into 0 using a reflector. Then, we'll get 
+    \[H = \begin{bmatrix}
+        * & * & * & * \\ 
+        * & * & * & * \\ 
+        0 & * & * & * \\ 
+        0 & 0 & * & * 
+    \end{bmatrix}.\]
+\end{mdframed}
+\textbf{Remark:} If $A$ is $n \times n$, then we need more reflectors, i.e., 
+\[Q_{n - 1} \hdots Q_2 Q_1 A Q_1^T Q_2^T \hdots Q_{n - 1}^T.\]
+
+
+\subsubsection{QR Iteration on Hessenberg}
+If $H$ is an Hessenberg matrix, then all $H_k$ obtained via QR iteration are Hessenberg matrices as well. With that said, the QR iteration algorithm is as follows: 
+
+\begin{enumerate}
+    \item Find $H$; $A = QHQ^T$ with $H$ being Hessenberg. We can use the MATLAB command \code{H = hess(A)} to get the Hessenberg matrix. 
+    \item We can perform QR iteration on $H$ to get $H_0 = H$. Using a for- or while- loop, we can run \[[Q_k, R_k] = \code{qr}(H_k) \qquad H_{k + 1} = R_k Q_k.\]
+    We stop iteration when the subdiagonal of $H_{k + 1}$ is smaller than a threshold $\epsilon > 0$. That is, when the underlined portion is less than $\epsilon$. 
+    \[\begin{bmatrix}
+        * & * & * & * & * & * & * \\ 
+        \underline{*} & * & * & * & * & * & * \\
+        0 & \underline{*} & * & * & * & * & * \\
+        0 & 0 & \underline{*} & * & * & * & * \\ 
+        0 & 0 & 0 & \underline{*} & * & * & * \\ 
+        0 & 0 & 0 & 0 & \underline{*} & * & * \\ 
+        0 & 0 & 0 & 0 & 0 & \underline{*} & *
+    \end{bmatrix}\]
+    Put it a different way, when 
+    \[\sqrt{\sum_{i = 1}^{n - 1} H_{k + 1} (i + 1, i)^2} < \epsilon.\]
+
+    \item The eigenvalues are on the diagonal of $H_{k + 1}$. 
+\end{enumerate}
+
+
+\subsubsection{Flop Count}
+In summary, the flop count is \[\BigO\left(\frac{10}{3}n^3\right) + \BigO\left(n^2 N\right),\]
+where $N$ is the number of iterations and $n$ is the size of $H$. Then, 
+\begin{itemize}
+    \item $\BigO\left(\frac{10}{3}n^3\right)$ represents the operation for getting the Hessenberg matrix, and 
+    \item $\BigO\left(n^2 N\right)$ represents the operation of finding the QR decomposition of $H$.
+\end{itemize}
+\textbf{Note:} If we didn't use the Hessenberg matrix, the flop count of QR iteration is $\BigO(n^3 N)$. 
+
+\textbf{Conclusion:} When $N$ is large, Hessenberg will be very helpful in reducing computational costs.
+
+\begin{mdframed}
+    (Example: Hermition Matrices.) The \textbf{Hermition Matrix} is a matrix $A$ such that $A = A^*$. If we do an Hessenberg matrix, then\footnote{$(CD)^* = D^* C^*$.} \[A^* = UH^* U^*.\] In particular, 
+    \[A = A^* \implies UHU^* = UH^* U^* \implies H = H^*.\] 
+    The QR decomposition of a tridiagonal matrix is only $\BigO(n)$, so the iteration part in the QR iteration reduces to $\BigO(nN)$. So, less work for % TODO 
+\end{mdframed}
+\textbf{Remark:} The Hermition matrix mimics the symmetric matrix in the reals.
+
+\section{Note on SVD Computation (5.8)}
+For $A \in \R^{n \times m}, n \geq m$, the eigenvalues of $AA^T$ and $A^T A$ are $\sigma_1^2, \hdots, \sigma_r^2, 0, \hdots, 0$ (with $\sigma_i$ singular values of $A$, $r = \text{rank}(A)$). Remember that 
+\begin{itemize}
+    \item $AA^T$ is an $n \times n$ matrix, and 
+    \item $A^T A$ is an $m \times m$ matrix.
+\end{itemize}
+So, to find the SVD of $A$, we can find the eigenvalues and eigenvectors of $AA^T$ and $A^T A$. Note that both $AA^T$ and $A^T A$ are symmetric. 
+
+\bigskip 
+
+Then, it follows that \[\kappa_{2}(AA^T) = \kappa_{2}(A)^2.\] If $\kappa_{2}(A)$ is large, then for $AA^T$, the operation is \emph{squared}, thus affecting accuracy. So, we generally want to avoid finding eigenvalues of $AA^T$ and $A^T A$ directly.
+
+
+
+
+\section{Iterative Methods: Jacobi Method (Section 8.1)}
+We now return to the problem from the beginning of the class: solving $A\x = \b$, for $A \in \R^{n \times n}$ and $\b \in \R^n$. Recall that we performed Gauss elimination directly, resulting in a flop count of $\BigO(n^3)$. The problem with this is that, if $n$ is large (hundreds of thousands of equations), then Gauss elimination may not be feasible. 
+
+\bigskip 
+
+Aside from Gaussian Elimination, there are iterative methods that we can run to solve $A\x = \b$. The idea is that we need an initial guess $\x^{(0)}$. Then, from $\x^{(k)}$, we hope to somehow iterate to $\x^{(k + 1)}$. The idea is that, as $k \mapsto \infty$, $\x^{(k)} \mapsto \x^*$, where $\x^*$ is the solution to $A\x = \b$ (i.e., $A\x^* = \b$). Some advantages of this process include 
+\begin{itemize}
+    \item If $\x^{(0)}$ is already close to $\x^*$, then the iterative method converges \emph{fast}.
+    \item We can stop at any point of the iteration, depending on how accurate the approximation of $\x^*$ (by $\x^{(k)}$) should be. 
+\end{itemize}
+
+\subsection{The Jacobi Method}
+The idea is that $i$th equation in the system $A\x = \b$ is 
+\[\sum_{j = 1}^{n} a_{ij}x_j = b_i.\]
+This can be rewritten by solving for $x_i$ and assuming that $a_{ii} \neq 0$ as 
+\[x_i = \frac{1}{a_{ii}}\left(b_{i} - \sum_{\substack{j = 1 \\ j \neq i}}^n a_{ij}x_{j}\right) \qquad i = 1, 2, \hdots, n.\]
+The iteration process, then, is 
+\[\boxed{x_{i}^{(k + 1)} = \frac{1}{a_{ii}} \left(b_{i} - \sum_{\substack{j = 1 \\ j \neq i}}^n a_{ij}x_{j}^{(k)}\right)} \qquad i = 1, 2, \hdots, n.\]
+As mentioned, this is an iterative process, so we \textbf{stop} when $||\x^{(k + 1)} - \x^{(k)}|| < \epsilon$, where we can choose any vector norm. 
+
+\subsection{Matrix Representation}
+We can also represent this process using matrices. In equation form, we have 
+\[x_{i}^{(k + 1)} = \frac{1}{a_{ii}} \left(b_{i} - \sum_{\substack{j = 1 \\ j \neq i}}^n a_{ij}x_{j}^{(k)}\right) \qquad i = 1, 2, \hdots, n.\]
+Notice that, for $i = 1, 2, \hdots, n$, $\sum_{\substack{j = 1 \\ j \neq i}}^n a_{ij}x_{j}^{(k)}$ is the same thing as saying 
+\[\sum_{i = 1}^{n} a_{ij}x_{j}^{(k)} - a_{ii}x_i^{(k)} \implies A\x^{(k)} - D\x^{(k)},\]
+where 
+\[D = \begin{bmatrix}
+    a_{11} &        &        &        \\
+           & a_{22} &        &        \\  
+           &        & \ddots &        \\  
+           &        &        & a_{nn}   
+\end{bmatrix}.\]
+Therefore, translating our equation into matrix form means translating each component into matrix form. This gives us  
+\[\x^{(k + 1)} = \begin{bmatrix}
+    x_1^{(k + 1)} \\ 
+    x_2^{(k + 1)} \\ 
+    x_3^{(k + 1)} \\
+    \vdots \\  
+    x_n^{(k + 1)} \\ 
+\end{bmatrix} = \underbrace{\begin{bmatrix}
+    \frac{1}{a_{11}} & 0 & 0 & \hdots & 0 \\ 
+    0 & \frac{1}{a_{22}} & 0 & \hdots & 0 \\ 
+    0 & 0 & \frac{1}{a_{33}} & \hdots & 0 \\
+    \vdots & \vdots & \vdots & \ddots & \vdots \\  
+    0 & 0 & 0 & \hdots & \frac{1}{a_{nn}}
+\end{bmatrix}}_{D^{-1}} \left(\b - (A - D)\x^{(k)}\right).\]
+This further gives us, for $k \geq 0$ and $a_{ii} \neq 0$ for all $i$, 
+\[\boxed{x^{(k + 1)} = D^{-1}(\b - (A - D)\x^{(k)})}.\]
+
+\subsection{Convergence}
+Let $\x^*$ be the true solution, i.e., $A\x^* = \b$. Does $\x^{(k)} \mapsto \x^*$ as $k \mapsto \infty$? In other words, does $\x^{(k)} - \x^* \mapsto 0$ as $k \mapsto \infty$? 
+
+\bigskip 
+
+Let $e^{(k)} = \x^* - \x^{(k)}$. We want to show that $e^{(k)} \mapsto 0$. So, 
+\begin{equation*}
+    \begin{aligned}
+        e^{(k + 1)} &= \x^* - \x^{(k + 1)} \\ 
+            &= \x^* - (D^{-1} (\b - (A - D)\x^{(k)})) \\ 
+            &= \x^* - (D^{-1} (\b - A\x^{(k)} + D\x^{(k)})) \\ 
+            &= \x^* - D^{-1} (\b - A\x^{(k)}) - (D^{-1}D)(\x^{(k)}) \\ 
+            &= \x^* - D^{-1} (\b - A\x^{(k)}) - \x^{(k)} \\ 
+            &= e^{(k)} - D^{-1} (\b - A\x^{(k)}) && \x^* - \x^{(k)} = e^{(k)} \\
+            &= e^{(k)} - D^{-1} (\underbrace{\b - A\x^*}_{\0} + \underbrace{A\x^* - A\x^{(k)}}_{Ae^{(k)}}) \\ 
+            &= e^{(k)} - D^{-1}Ae^{(k)} \\ 
+            &= (I - D^{-1}A)e^{(k)} 
+    \end{aligned}
+\end{equation*}
+Therefore, 
+\begin{equation*}
+    \begin{aligned}
+        e^{(k + 1)} &= (I - D^{-1}A)e^{(k)}  \\ 
+            &= (I - D^{-1} A)^2 e^{(k - 1)} \\ 
+            &= (I - D^{-1} A)^3 e^{(k - 2)} \\ 
+            &= \hdots \\ 
+            &= (I - D^{-1} A)^{k + 1} e^{(0)},
+    \end{aligned}
+\end{equation*}
+where $e^{(0)} = \x^* - \x^{(0)}$ and $\x^{(0)}$ is the initial guess we described above. In any case, $e^{(k + 1)} \mapsto 0$ as $k \mapsto \infty$ only if $I - D^{-1}A$ is ``small.''
+
+\subsection{Result}
+If all eigenvalues $\lambda$ of $B = I - D^{-1}A$ satisfy $|\lambda| < 1$, then the Jacobi method converges to $\x^*$ for every choice of $\x^{(0)}$. Put it differently, if the Jacobi method converges to $\x^*$ for all $\x^{(0)}$, then all eigenvalues $\lambda$ of $B$ satisfy $|\lambda| < 1$. 
+
+\bigskip 
+
+Why? Recall from the power method 
+\[e^{(0)} = \sum_{i = 1}^{n} c_i v_i,\]
+where the $v_i$'s are the eigenvectors of $B$. Then, 
+\[B^k e^{(0)} = \sum_{i = 1}^{n} c_i \lambda_i^k v_i = \sum_{i = 1}^{n} \lambda_i^k (c_i v_i) \mapsto 0.\] Note that if all $|\lambda_i| < 1$, then $\lambda_i^k \mapsto 0$ if $k \mapsto \infty$.  
+
+
+\section{Iterative Methods: Gauss-Seidel Method (Section 8.1-8.3)}
+The Gauss-Seidel Method is another iterative method that is based on the Jacobi method discussed earlier. For any matrix $A$, we can write it into three parts: 
+\[A = D + L + U.\]
+Observing a $4 \times 4$ matrix, this might look like 
+\[\underbrace{\begin{bmatrix}
+    a_{11} & a_{12} & a_{13} & a_{14} \\ 
+    a_{21} & a_{22} & a_{23} & a_{24} \\ 
+    a_{31} & a_{32} & a_{33} & a_{34} \\ 
+    a_{41} & a_{42} & a_{43} & a_{44} 
+\end{bmatrix}}_{A} = \underbrace{\begin{bmatrix}
+    a_{11} & 0 & 0 & 0 \\ 
+    0 & a_{22} & 0 & 0 \\ 
+    0 & 0 & a_{33} & 0 \\ 
+    0 & 0 & 0 & a_{44} 
+\end{bmatrix}}_{D} + \underbrace{\begin{bmatrix}
+    0 & 0 & 0 & 0  \\
+    a_{21} & 0 & 0 & 0 \\ 
+    a_{31} & a_{32} & 0 & 0 \\ 
+    a_{41} & a_{42} & a_{43} & 0 
+\end{bmatrix}}_{L} + \underbrace{\begin{bmatrix}
+    0 & a_{12} & a_{13} & a_{14} \\ 
+    0 & 0 & a_{23} & a_{24}  \\
+    0 & 0 & 0 & a_{34}  \\
+    0 & 0 & 0 & 0
+\end{bmatrix}}_{U}\]
+
+\begin{mdframed}
+    (Example.) Suppose \[A = \begin{bmatrix}
+        3 & 0 & -8 \\ 
+        -2 & -1 & 7 \\ 
+        1 & 5 & 2
+    \end{bmatrix}.\]
+    If we decompose this into $D + L + U$, we have 
+    \[D = \begin{bmatrix}
+        3 & 0 & 0 \\ 0 & -1 & 0 \\ 0 & 0 & 2
+    \end{bmatrix}, \quad L = \begin{bmatrix}
+        0 & 0 & 0 \\ -2 & 0 & 0 \\ 1 & 5 & 0
+    \end{bmatrix}, \quad U = \begin{bmatrix}
+        0 & 0 & -8 \\ 0 & 0 & 7 \\ 0 & 0 & 0
+    \end{bmatrix}.\]
+\end{mdframed}
+
+\subsection{Deriving from Jacobi Method}
+Recall that we defined the iterative process for the Jacobi method 
+\[x_i = \frac{1}{a_{ii}}\left(b_{i} - \sum_{\substack{j = 1 \\ j \neq i}}^n a_{ij}x_{j}\right) \qquad i = 1, 2, \hdots, n \text{ and } a_{ii} \neq 0.\]
+With this in mind, notice that 
+\begin{equation*}
+    \begin{aligned}
+        x_{i}^{(k + 1)} &= \frac{1}{a_{ii}} \left(b_{i} - \sum_{\substack{j = 1 \\ j \neq i}}^{n} a_{ij} x_{j}^{(k)}\right) \\ 
+            &= \frac{1}{a_{ii}} \left(b_{i} - \sum_{j = 1}^{i - 1} a_{ij} x_{j}^{(k)} - \sum_{j = i + 1}^{n} a_{ij}x_{j}^{(k)}\right)
+    \end{aligned}
+\end{equation*}
+Note that $x_{j}^{(k + 1)}$, where $1 \leq j \leq i - 1$, is already known, so we can just use that. Thus, we have  
+\[\boxed{x_{i}^{(k + 1)} = \frac{1}{a_{ii}} \left(b_{i} - \sum_{j = 1}^{i - 1} a_{ij} x_{j}^{(k + 1)} - \sum_{j = i + 1}^{n} a_{ij}x_{j}^{(k)}\right)},\]
+the Gauss-Seidel Method. Representing and restructuring this in matrix form, we have 
+\begin{equation*}
+    \begin{aligned}
+        x^{(k + 1)} &= D^{-1} (b - Lx^{(k + 1)} - Ux^{(k)}) \\ 
+            &\implies D x^{(k + 1)} = b - Lx^{(k + 1)} - Ux^{(k)} \\ 
+            &\implies D x^{(k + 1)} + Lx^{(k + 1)} = b - Ux^{(k)} \\ 
+            &\implies (D + L)x^{(k + 1)} = b - Ux^{(k)} \\ 
+            &\implies \boxed{x^{(k + 1)} = (D + L)^{-1} (b - Ux^{(k)})}
+    \end{aligned}
+\end{equation*}
+\textbf{Remarks:}
+\begin{itemize}
+    \item $D + L$ is the lower part of $A$. It is invertible if and only if all diagonal entries ($a_{ii}$) are non-zero.
+    \item $D + L = A - U$. Thus, you can re-represent the Gauss-Seidel method as 
+    \[x^{(k + 1)} = (A - U)^{-1} (b - Ux^{(k)}).\]
+\end{itemize} 
+
+\begin{mdframed}
+    (Example.) Let $A = \begin{bmatrix}
+        3 & 0 & -8 \\ 
+        -2 & -1 & 7 \\ 
+        1 & 5 & 2
+    \end{bmatrix}$, $x^* = \begin{bmatrix}
+        1 \\ 1 \\ 1
+    \end{bmatrix}$, and $Ax^* = b = \begin{bmatrix}
+        -5 \\ 4 \\ 8
+    \end{bmatrix}$. Suppose we have the initial guess $x^{(0)} = \begin{bmatrix}
+        2 \\ 0 \\ 1
+    \end{bmatrix}$. \underline{Using the formula for each entry, we have the following example:}
+    \begin{itemize}
+        \item Starting at $k = 0$, for our first iteration, we have 
+        \begin{equation*}
+            \begin{aligned}
+                x_{1}^{(1)} &= \frac{1}{a_{11}} \left(b_{1} - \sum_{j = 1}^{1 - 1} a_{1j} x_{j}^{(0 + 1)} - \sum_{j = 1 + 1}^{3} a_{1j}x_{j}^{(0)}\right) \\
+                    &= \frac{1}{a_{11}} \left(b_{1} - \sum_{j = 1}^{0} a_{1j} x_{j}^{(1)} - \sum_{j = 2}^{3} a_{1j}x_{j}^{(0)}\right) \\
+                    &= \frac{1}{a_{11}} \left(b_{1} - \sum_{j = 2}^{3} a_{1j}x_{j}^{(0)}\right) \\ 
+                    &= \frac{1}{a_{11}} \left(b_{1} - (a_{12}x_{2}^{(0)} + a_{13}x_{3}^{(0)})\right).
+            \end{aligned}
+        \end{equation*}
+        \begin{equation*}
+            \begin{aligned}
+                x_{2}^{(1)} &= \frac{1}{a_{22}} \left(b_{2} - \sum_{j = 1}^{2 - 1} a_{2j} x_{j}^{(0 + 1)} - \sum_{j = 2 + 1}^{3} a_{2j}x_{j}^{(0)}\right) \\ 
+                    &= \frac{1}{a_{22}} \left(b_{2} - \sum_{j = 1}^{1} a_{2j} x_{j}^{(1)} - \sum_{j = 3}^{3} a_{2j}x_{j}^{(0)}\right) \\ 
+                    &= \frac{1}{a_{22}} \left(b_{2} - a_{21} x_{1}^{(1)} - (a_{23}x_{3}^{(0)})\right).
+            \end{aligned}
+        \end{equation*}
+        \begin{equation*}
+            \begin{aligned}
+                x_{3}^{(1)} &= \frac{1}{a_{33}} \left(b_{3} - \sum_{j = 1}^{3 - 1} a_{3j} x_{j}^{(0 + 1)} - \sum_{j = 3 + 1}^{3} a_{3j}x_{j}^{(0)}\right) \\ 
+                    &= \frac{1}{a_{33}} \left(b_{3} - \sum_{j = 1}^{2} a_{3j} x_{j}^{(1)} - \sum_{j = 4}^{3} a_{3j}x_{j}^{(0)}\right) \\ 
+                    &= \frac{1}{a_{33}} \left(b_{3} - \sum_{j = 1}^{2} a_{3j} x_{j}^{(1)}\right) \\
+                    &= \frac{1}{a_{33}} \left(b_{3} - (a_{31} x_{1}^{(1)} + a_{32} x_{2}^{(1)})\right).
+            \end{aligned}
+        \end{equation*}
+        This gives us $x^{(1)} = \begin{bmatrix}
+            x_{1}^{(1)} \\ 
+            x_{2}^{(1)} \\ 
+            x_{3}^{(1)} 
+        \end{bmatrix}$. The remaining iterations have the same idea.
+    \end{itemize}
+    \underline{Alternatively, using the matrix-based formula:}
+    \begin{itemize}
+        \item Starting at $k = 0$, for our first iteration, we have 
+        \[x^{(1)} = (D + L)^{-1}(b - Ux^{(0)}).\]
+        This requires us to find $(D + L)^{-1}$. Once we find this, we can perform the remaining iterations. 
+    \end{itemize}
+\end{mdframed}
+
+\subsection{Convergence Result}
+The Guass-Seidel method converges for every initial guess $x^{(0)}$ if all eigenvalues $\lambda$ of $G = I - (D + L)^{-1} A = I - (A - U)^{-1} A$ satisfy the following: 
+\begin{itemize}
+    \item All eigenvalues are distinct. 
+    \item $|\lambda| < 1$. 
+\end{itemize}
+\begin{proof}
+    The proof is similar to the proof for Jacobi. We want to show that $e^{(k)} = x^* - x^{(k)} \mapsto 0$. 
+    \begin{equation*}
+        \begin{aligned}
+            e^{(k + 1)} &= x^{*} - x^{(k + 1)} \\ 
+                &= x^* - (D + L)^{-1}(b - (A - L - D)x^{(k)}) \\
+                &= x^* - (D + L)^{-1}(b - Ax^{(k)} - (L + D)x^{(k)}) \\  
+                &= x^* - (D + L)^{-1}(b - Ax^{(k)}) - (D + L)^{-1}((L + D)x^{(k)}) \\ 
+                &= x^* - (D + L)^{-1}(b - Ax^{(k)}) - x^{(k)} \\ 
+                &= x^* - (D + L)^{-1}(b - A(x^* - e^{(k)})) - x^{(k)} \\ 
+                &= x^* - (D + L)^{-1}(b - Ax^* + Ae^{(k)}) - x^{(k)} \\  
+                &= x^* - (D + L)^{-1}(b - Ax^* + A(x^* - x^{(k)})) - x^{(k)} \\ 
+                &= x^* - (D + L)^{-1}(\underbrace{b - Ax^*}_{0} + Ax^* - Ax^{(k)}) - x^{(k)} \\ 
+                &= x^* - (D + L)^{-1}(Ax^* - Ax^{(k)}) - x^{(k)} \\ 
+                &= x^* - (D + L)^{-1}(A(x^* - x^{(k)})) - x^{(k)} \\ 
+                &= x^* - (D + L)^{-1}(Ae^{(k)}) - x^{(k)} \\ 
+                &= x^* - x^{(k)} - (D + L)^{-1}(Ae^{(k)}) \\ 
+                &= e^{(k)} - (D + L)^{-1}(Ae^{(k)}) \\ 
+                &= (I - (D + L)^{-1}A) e^{(k)} \\ 
+        \end{aligned}
+    \end{equation*}
+    Overall, $e^{(k + 1)} = (I - (D + L)^{-1}A)e^{(k)} = (I - (D + L)^{-1}A)^2 e^{(k - 1)} = \hdots = (I - (D + L)^{-1}A)^{k + 1} e^{(0)}$. So, \[e^{(k)} = (I - (D + L)^{-1} A)^k e^{(0)}.\] As $G = I - (D + L)^{-1} A$, we end up with \[e^{(k)} = G^k e^{(0)}.\] Since all eigenvalues are distinct, this means that $G$ has $n$ linearly independent eigenvectors $v_1, v_2, \hdots, v_n$. Let $\lambda_1, \hdots, \lambda_n$ denote the corresponding eigenvalues of $G$. Then, 
+    \[Gv_i = \lambda_i v_i \qquad i = 1, 2, \hdots, n.\]
+    As $\{v_i\}$ for $i = 1, 2, \hdots, n$ are linearly independent, we can express $e^{(0)}$ as a linear combination of them, 
+    \[e^{(0)} = c_1 v_1 + c_2 v_2 + \hdots + c_n v_n.\]
+    Then, the rest of the operation works similarly to the power method. That is, 
+    \[Ge^{(0)} = c_1 \lambda_1 v_1 + c_2 \lambda_2 v_2 + \hdots + c_n \lambda_n v_n.\]
+    \[G^2 e^{(0)} = c_1 \lambda_1^2 v_1 + c_2 \lambda_2^2 v_2 + \hdots + c_n \lambda_n^2 v_n.\]
+    \[G^k e^{(0)} = c_1 \lambda_1^k v_1 + c_2 \lambda_2^k v_2 + \hdots + c_n \lambda_n^k v_n.\]
+    Consequently, 
+    \[||e^{(k)}|| = ||G^k e^{(0)}|| \leq |c_1| |\lambda_1^k| ||v_1|| + |c_2| |\lambda_2^k| ||v_2|| + \hdots + |c_n| |\lambda_n^k| ||v_n||.\]
+    Since $|\lambda_i^k| \mapsto 0$ if and only if $|\lambda_i| < 1$, we have $||e^{(k)}|| \mapsto 0$ for every initial guess $x^{(0)}$ if all eigenvalues $|\lambda| < 1$. 
+\end{proof}
+\textbf{Remark:} In the proof of the convergence result, we only used distinct eigenvalues to show there are $n$ linearly independent eigenvectors so that any vector $e_0$ can be decomposed as a linear combination of eigenvectors. \emph{When you don't have distinct eigenvalues, you may still have $n$ linearly independent eigenvectors to form a basis.} Therefore, in reality, this iterative method will converge if
+\begin{itemize}
+    \item the eigenvalues of $G$ satisfy $|\lambda| < 1$, and 
+    \item there are $n$ linearly independent eigenvectors. 
+\end{itemize}
+
 \end{document}
