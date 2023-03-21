@@ -4,6 +4,7 @@
 \usepackage[english]{babel}
 \usepackage{fancyhdr}
 \usepackage[hidelinks]{hyperref}
+\usepackage{polynom}
 
 \pagestyle{fancy}
 \fancyhf{}
@@ -14,14 +15,7 @@
 
 \setlength{\parindent}{0pt}
 
-\newcommand{\0}{\mathbf{0}}
-\newcommand{\y}{\mathbf{y}}
-\renewcommand{\b}{\mathbf{b}}
-\newcommand{\x}{\mathbf{x}}
-\newcommand{\e}{\mathbf{e}}
-\newcommand{\rr}{\mathbf{r}}
-\newcommand{\vv}{\mathbf{v}}
-\renewcommand{\u}{\mathbf{u}}
+\DeclareMathOperator{\ord}{ord}
 
 \begin{document}
 
@@ -4233,5 +4227,1268 @@ With this algorithm in mind, we can quickly check if a number is prime without h
     \end{itemize}
 \end{mdframed}
 
+\subsection{RSA}
+\textbf{RSA} is a cryptosystem named after Ron Rivest, Adi Shamir, and Leonard Adleman, who publicly described the algorithm in 1977. The GCHQ mathematician Clifford Cocks developed an equivalent system back in 1973, but his work was not declassified until 1997.
+
+\subsubsection{Converting Text Messages to Numbers}
+We first need to talk about how to convert text messages into integers, since RSA only allows us to transfer integers. A variety of methods could be employed to make this happen, but one simple idea is for someone to encode a message in the usual way (remove all non-alphabet characters and capitalize everything) and regard the resulting string as a number in base 26. 
+
+\begin{mdframed}
+    (Example.) Suppose Alice has a message \code{HIBOB}. Using the usual letter-to-number correspondence (where \code{A} is \code{0}, \code{B} is \code{1}, and so on), these numbers correspond to \code{7}, \code{8}, \code{1}, \code{14}, \code{1}, in that order. Then, we can construct the base 26 integer, \[1 \cdot 26^0 + 14 \cdot 26^1 + 1 \cdot 26^2 + 8 \cdot 26^3 + 7 \cdot 26^4 = 3340481_{26}.\]
+    This is an \textbf{integer representation} of the message \code{HIBOB} in the sense that there is a straightforward algorithm to recover the plaintext; we can use the same algorithm we used to write a number, but dividing repeatedly by 26 instead, to recover the letter-to-number correspondence: 
+    \begin{equation*}
+        \begin{aligned}
+            3340481 &= 128480 \cdot 26 + 1 \\ 
+            128480 &= 4941 \cdot 26 + 14 \\ 
+            4941 &= 190 \cdot 26 + 1 \\ 
+            190 &= 7 \cdot 26 + 8 \\ 
+            7 &= 0 \cdot 26 + 7.
+        \end{aligned}
+    \end{equation*}
+    Looking at the remainders, from bottom to top, gives us \code{7 8 1 14 1}, which is exactly the correspondence.
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) 
+    \begin{itemize}
+        \item Find the integer representation of \code{GAIA}.
+        \begin{mdframed}
+            Each letter in \code{GAIA} corresponds to the numbers \code{6 0 8 0}, respectively. So, 
+            \[0 \cdot 26^0 + 8 \cdot 26^1 + 0 \cdot 26^2 + 6 \cdot 26^3 = 105664_{26}.\]
+        \end{mdframed}
+        \item Find the text corresponding to the integer \code{245405438}.
+        \begin{mdframed}
+            We have 
+            \begin{equation*}
+                \begin{aligned}
+                    245405438 &= 26 \cdot 9438670 + 18 \\ 
+                    9438670 &= 26 \cdot 363025 + 20 \\ 
+                    363025 &= 26 \cdot 13962 + 13 \\ 
+                    13962 &= 26 \cdot 537 + 0 \\ 
+                    537 &= 26 \cdot 20 + 17 \\ 
+                    20 &= 26 \cdot 0 + 20.
+                \end{aligned}
+            \end{equation*}
+            Looking at the remainders from bottom to top gives us \code{20 17 0 13 20 18}, which is \code{URANUS}.
+        \end{mdframed}
+    \end{itemize}
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) Let's say you wanted to preserve spaces in your message. How would you modify the above method of associating an integer to text to make this happen?
+
+    \begin{mdframed}
+        Instead of base 26 (which only allows for all 26 capital letters), we can use base 27, where numbers 0-25 corresponds to a letter and number $26$ corresponds to a space. Then, the usual process of converting text to integer and integer to text is exactly the same.
+    \end{mdframed}
+\end{mdframed}
+
+\subsubsection{How RSA Works}
+Bob starts by picking two distinct \underline{large} integers $p$ and $q$. He computes $n = pq$ and $\phi(n) = (p - 1)(q - 1)$. He picks a random integer $d$ between 0 and $\phi(n)$ such that $\gcd(d, \phi(n)) = 1$. He then computes $e \equiv d^{-1} \Mod{\phi(n)}$ (recall that this is the \emph{inverse} of $d$ mod $\phi(n)$.), for example by using the extended Euclidean algorithm. He then publishes the pair $(n, e)$ for the world to see; this is his \textbf{public encryption key}. He keeps the remaining numbers private.
+
+\bigskip 
+
+Suppose Alice has a secret integer $m$ between 0 and $n - 1$ and she wants to send that integer to Bob. She encrypts $m$ by computing $c = m^e \Mod{n}$, and this is the ciphertext that she sends to Bob. 
+
+\bigskip 
+
+When Bob receives $c$, he computes $c^d \Mod{n}$. As it turns out, this must be $m$, so he has received Alices' message. 
+
+\begin{mdframed}
+    (Exercise.) Suppose Bob picks the primes $p = 3$ and $q = 5$. We have $n = pq = 15$ and $\phi(n) = (p - 1)(q - 1) = 8$. Suppose Bob further chooses $d = 3$ (which is relatively prime to 8). 
+
+    \begin{enumerate}
+        \item What is Bob's public encryption key? 
+        \begin{mdframed}
+            We have $n$, so we need to find $e$. To do so, we make use of the Modular Inversion Theorem to find the inverse of $3$ mod $8$, which in particular means we need to find the Bezout coefficients. We begin by computing $\gcd(3, 8)$ (trivially, we know this is 1, but we'll still do it);
+            \begin{center}
+                \begin{tabular}{|c|c|c|c|c|}
+                    \hline 
+                    $\mathbf{a}$ & $\mathbf{b}$ & $\mathbf{b = aq + r}$ & $\mathbf{q}$ & $\mathbf{r}$ \\ 
+                    \hline 
+                    3 & 8 & $8 = 3q + r$ & 2 & 2 \\
+                    2 & 3 & $3 = 2q + r$ & 1 & 1 \\ 
+                    1 & 2 & $2 = 1q + r$ & 2 & 0 \\ 
+                    \hline 
+                \end{tabular}
+            \end{center}
+            Here, we find that $\gcd(3, 8) = 1$. Notice that the operations we performed are 
+            \begin{itemize}
+                \item (Eq. 1) $8 = 3 \cdot 2 + 2 \implies 2 = 8 + 3 (-2)$
+                \item (Eq. 2) $3 = 2 \cdot 1 + 1 \implies 1 = 3 + 2 (-1)$ 
+                \item (Eq. 3) $2 = 1 \cdot 2 + 0$
+            \end{itemize}
+            So, working backwards from the last equation with a remainder, we have 
+            \begin{equation*}
+                \begin{aligned}
+                    1 &= 3 + 2 (-1) \\ 
+                        &= 3 + (\underbrace{8 + 3(-2)}_{\text{Eq. 1}}) (-1) \\ 
+                        &= 3 + 8(-1) + 3 (-2)(-1) \\ 
+                        &= 3 + 8(-1) + 3(2) \\ 
+                        &= 3(3) + 8(-1).
+                \end{aligned}
+            \end{equation*}
+            From this, it follows that the Bezout coefficients are 3 and -1. In particular, we find that $x = 3$ and so 3 is the inverse of 3 mod 8. Therefore, Bob's public encryption key is $(n, e) = \boxed{(15, 3)}$. 
+        \end{mdframed}
+
+        \item Suppose Alice wants to send Bob the message $m = 7$. What is the ciphertext $c$ that Alice sends Bob? 
+        \begin{mdframed}
+            We have \[c = m^e \Mod{n} = 7^3 \Mod{15} = 13,\]
+            where $e = 3$ and $n = 15$ from Bob's encryption key. 
+        \end{mdframed}
+
+        \item Check that, if Alice sends the ciphertext $c$ corresponding to $m = 7$ to Bob, that Bob actually recovers the original plaintext. 
+        \begin{mdframed}
+            Bob computes \[c^d \Mod{n} = 13^3 \Mod{15} = 7,\] which is exactly the message that Alice sent.
+        \end{mdframed}
+
+        \item Suppose Alice sends the ciphertext $c = 2$ to Bob. What is the corresponding plaintext? 
+        \begin{mdframed}
+            Bob again computes \[2^3 \Mod{15} = 8.\]
+        \end{mdframed}
+    \end{enumerate}
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) Let's now take Eve's perspective to see why choosing large primes is crucial. Suppose Bob's RSA public key is $(35, 7)$ and Alice has just sent Bob the ciphertext $c = 17$. What is Bob's decryption key? What is Alice's plaintext message? 
+
+    \begin{mdframed}
+        We know that Bob's public key is $(n, e) = (35, 7)$. So, \[n = pq \implies 35 = 5 \cdot 7.\] Therefore, $p = 5$ and $q = 7$. With this in mind, we know that \[\phi(n) = \phi(35) = (5 - 1)(7 - 1) = 24.\] With this in mind, we want to find the inverse of $e$ mod $\phi(n)$; that is, \[d \equiv e^{-1} \Mod{\phi(n)}.\] Once again, we need to use the Modular Inversion Theorem to find the inverse of 7 mod 24. Let's begin by finding $\gcd(7, 24)$; 
+        \begin{center}
+            \begin{tabular}{|c|c|c|c|c|}
+                \hline 
+                $\mathbf{a}$ & $\mathbf{b}$ & $\mathbf{b = aq + r}$ & $\mathbf{q}$ & $\mathbf{r}$ \\ 
+                \hline 
+                7 & 24 & $24 = 7q + r$ & 3 & 3 \\ 
+                3 & 7 & $7 = 3q + r$ & 2 & 1 \\ 
+                1 & 3 & $3 = 1q + r$ & 3 & 0 \\ 
+                \hline 
+            \end{tabular}
+        \end{center}
+        We find that $\gcd(7, 24) = 1$ and, more importantly, the equations used to get us to this value are 
+        \begin{itemize}
+            \item (Eq. 1) $24 = 7(3) + 3 \implies 3 = 24 + 7(-3)$
+            \item (Eq. 2) $7 = 3(2) + 1 \implies 1 = 7 + 3(-2)$
+            \item (Eq. 3) $3 = 1(3) + 0$.
+        \end{itemize}
+        Starting from the last equation with a remainder and working backwards, we have 
+        \begin{equation*}
+            \begin{aligned}
+                1 &= 7 + 3(-2) \\ 
+                    &= 7 + (\underbrace{24 + 7(-3)}_{\text{Eq. 1}})(-2) \\ 
+                    &= 7 + 24(-2) + 7(-3)(-2) \\ 
+                    &= 7 + 24(-2) + 7(6) \\ 
+                    &= 7(7) + 24(-2).
+            \end{aligned}
+        \end{equation*}
+        In particular, we find that the inverse of 7 mod 24 is 7, so $d = 7$ and this is Bob's decryption key. 
+
+        \bigskip 
+
+        With this decryption key in hand, we can decrypt Alice's plaintext message: 
+        \[17^7 \Mod{35} = 3.\]
+    \end{mdframed}
+\end{mdframed}
+
+\subsubsection{Why RSA Works}
+\begin{theorem}{RSA}{}
+    Suppose $p, q$ are distinct primes and $n = pq$, that $d$ is an integer with $1 \leq d \leq \phi(n)$ and $\gcd(d, \phi(n)) = 1$, and that $e \equiv d^{-1} \Mod{\phi(n)}$. If $0 \leq m \leq n - 1$ and $c = m^e \Mod{n}$, then \[c^d \Mod{n} = m.\]
+\end{theorem}
+
+
+\subsubsection{Why RSA is Probably Secure}
+If Eve is eavesdropping on Alice and Bob's communication, she knows Bob's public key $(n, e)$ and she sees Alice's ciphertext $c$. She knows that $c$ is the $e$th power mod $n$ of Alice's original message $m$, so the security of RSA relies on the presumed difficulty of the following problem: 
+\begin{mdframed}
+    (Discrete Root Problem.) Suppose you are given positive integers $n$, $e$, and $c$, and you know further that 
+    \begin{itemize}
+        \item $n$ is a product of two distinct primes (but you don't know which ones),
+        \item $e$ is invertible mod $\phi(n)$ (but you don't know which $\phi(n)$), and 
+        \item $c$ is an $e$th power mod $n$.
+    \end{itemize}
+    Find the unique $e$th root of $c$ mod $n$, i.e., the unique integer $m$ such that $0 \leq m \leq n - 1$ such that $m^e \equiv c \Mod{n}$. 
+\end{mdframed}
+There is most likely no fast way of doing this, except for the way that Bob uses, which requires some secret knowledge. Bob needs to know the decryption exponent $d$, which is an inverse of $e$ mod $\phi(n)$, and knowing that would seem to require knowing $\phi(n)$. The following lemma shows that knowledge of $\phi(n)$ is actually equivalent to a knowledge of a factorization of $n$, which is believed to be hard to find quickly. 
+
+\begin{lemma}{}{}
+    Suppose $p$ and $q$ are distinct primes and $n = pq$. If Eve knows $n$ and can quickly calculate $\phi(n)$, then she can also quickly find $p$ and $q$. 
+\end{lemma}
+In other words, the lemma tells us that, since it is believed that there is no fast factoring algorithm for classical (ie, non-quantum) computers, this tells us that Eve probably does not have a quick way of finding the decryption exponent $d$ in the same way that Bob does. 
+
+
+\subsection{Interlude: Order}
+Consider the following definition of order: 
+\begin{definition}{Order}{3-3:1}
+    Fix a positive integer $n$. If $a$ is an integer with $\gcd(a, n) = 1$, the order of $a$ mod $n$, denoted $\ord_{n}(a)$, is the smallest positive integer $k$ such that $a^k \equiv 1 \Mod{n}$.
+\end{definition}
+For example, suppose $n = 7$ and $a = 2$. We then compute 
+\[2^2 = 4 \Mod{7}.\]
+\[2^3 = 8 \equiv 1 \Mod{7}.\]
+Here, 3 is the smallest positive exponent such that raising 2 to the power gives us something congruent 1 mod 7, which means $\ord_{7}(2) = 3$.
+
+\subsubsection{Order Lemmas}
+Note that $\phi(7) = 6$ and $\ord_{7}(2) = 3$ happens to be a divisor of 6. This is no coincidence. 
+
+\begin{lemma}{First Order Lemma}{3-3:2}
+    Fix a positive integer $n$ and an integer $a$ with $\gcd(a, n) = 1$. If $m$ is an integer with $a^m \equiv 1 \Mod{n}$, then $\ord_{n}(a)$ divides $m$. In particular, $\ord_{n}(a)$ divides $\phi(n)$. 
+\end{lemma}
+The First Order Lemma makes it easier to compute the order of an element. Suppose, for example, we are interested in $n = 7$ and $a = 3$. The lemma guarantees that $\ord_{7}(3)$ must be a divisor of $\phi(7) = 6$, so it can only be 1, 2, 3, or 6. We check
+\begin{equation*}
+    \begin{aligned}
+        &3^1 \not\equiv 1 \Mod{7} \\ 
+        &3^2 = 9 \equiv 2 \not\equiv 1 \Mod{7} \\ 
+        &3^3 = 27 \equiv 6 \not\equiv 1 \Mod{7} \\ 
+        &3^6 = 729 \equiv 1 \Mod{7}.
+    \end{aligned}
+\end{equation*}
+So, $\ord_{7}(3)$ cannot be 1, 2, or 3 and thus must be 6.
+
+\begin{mdframed}
+    (Exercise.) Calculate the following orders. 
+    \begin{enumerate}[(a)]
+        \item $\ord_{5}(2)$
+        \begin{mdframed}
+            We need to find the smallest integer $k$ such that $2^k \equiv 1 \Mod{5}$. We find 
+            \[2^1 = 2 \not\equiv 1 \Mod{5}\]
+            \[2^2 = 4 \not\equiv 1 \Mod{5}\]
+            \[2^3 = 8 \equiv 3 \not\equiv 1 \Mod{5}\]
+            \[2^4 = 16 \equiv 1 \Mod{5},\]
+            so $\ord_{5}(2) = 4$. 
+        \end{mdframed}
+        \item $\ord_{9}(4)$
+        \begin{mdframed}
+            We need to find the smallest integer $k$ such that $4^k \equiv 1 \Mod{9}$. We find 
+            \[4^1 = 4 \not\equiv 1 \Mod{9}\]
+            \[4^2 = 16 \not\equiv 1 \Mod{9}\]
+            \[4^3 = 64 \equiv 1 \Mod{9},\]
+            so $\ord_{9}(4) = 3$.
+        \end{mdframed}
+        \item $\ord_{10}(3)$
+        \begin{mdframed}
+            We need to find the smallest integer $k$ such that $3^k \equiv 1 \Mod{10}$. We find 
+            \[3^1 = 3 \not\equiv 1 \Mod{10}\]
+            \[3^2 = 9 \not\equiv 1 \Mod{10}\]
+            \[3^3 = 27 \not\equiv 1 \Mod{10}\]
+            \[3^4 = 81 \not\equiv 1 \Mod{10},\]
+            so $\ord_{10}(3) = 4$.     
+        \end{mdframed}
+
+        \item $\ord_{11}(7)$
+        \begin{mdframed}
+            We note that \[\phi(11) = 11\prod_{\substack{p | 11 \\ p \text{ prime}}}\left(1 - \frac{1}{p}\right) = 11\left(1 - \frac{1}{11}\right) = 11\left(\frac{10}{11}\right) = 10.\] By the First Order Lemma, we know that $\ord_{11}(7)$ divides $\phi(11)$. So, $\ord_{11}(7)$ can only be 1, 2, 5, or 10. Let's try the different values:
+            \[7^1 = 7 \not\equiv 1 \Mod{11}\]
+            \[7^2 = 49 \not\equiv 1 \Mod{11}\]
+            \[7^5 = 7^4 7 = (7^2)^2 7 = 49^2 7 \equiv 5^2 7 = 25 \cdot 7 \equiv 3 \cdot 7 = 21 \not\equiv 1 \Mod{11}\]
+            \[7^{10} = (7^2)^5 = 49^5 \equiv 5^5 = 5^4 5 = (5^2)^2 5 = 25^2 5 \equiv 3^2 5 = 45 \equiv 1 \Mod{11},\]
+            so $\ord_{11}(7) = 10$. 
+        \end{mdframed}
+        \item $\ord_{13}(1)$
+        \begin{mdframed}
+            As usual, we find the smallest integer $k$ such that $1^k \equiv 1 \Mod{13}$. Conveniently, we find that $k = 1$ and so $\ord_{13}(1) = 1$. 
+        \end{mdframed}
+    \end{enumerate}
+\end{mdframed}
+
+\begin{lemma}{Second Order Lemma}{3-3:3}
+    Fix a positive integer $n$ and an integer $a$ with $\gcd(a, n) = 1$ and let $k = \ord_{n}(a)$. Then, $a^i \equiv a^k \Mod{n}$ if and only if $i \equiv j \Mod{k}$. In particular, the numbers $a^0, a^1, a^2, a^3, \hdots, a^{k - 1}$ are all incongruent mod $n$. 
+\end{lemma}
+
+\subsubsection{Primitive Roots and Discrete Logarithms}
+The First Order Lemma tells us that $\phi(n)$ is the largest possible order mod $n$ that any integer could have, since the order must always be a divisor of $\phi(n)$. The situation when this maximum is achieved gets a special name.
+
+\begin{definition}{Primitive Root}{3-3:4}
+    Fix an integer $n \geq 2$. An integer $g$ with $\gcd(g, n) = 1$ and $\ord_{n}(g) = \phi(n)$ is called a primitive root mod $n$. 
+\end{definition}
+For example, we saw above that $\ord_{7}(3) = 6 = \phi(7)$, so 3 is a primitive root mod 7. The Second Order Lemma tells us that $3^0, 3^1, 3^2, 3^3, 3^4, 3^5$ are all incongruent mod 7, but there are only 6 nonzero congruence classes mod 7, so the fact that all the nonzero congruence classes mod 7 must be represented among the integers $3^0, 3^1, 3^2, 3^3, 3^4, 3^5$. Let's check this explicitly. 
+\[3^0 \equiv 1 \Mod{7}\]
+\[3^1 \equiv 3 \Mod{7}\]
+\[3^2 \equiv 2 \Mod{7}\]
+\[3^3 \equiv 6 \Mod{7}\]
+\[3^4 \equiv 4 \Mod{7}\]
+\[3^5 \equiv 5 \Mod{7}\]
+All of the nonzero remainders mod 7 appear in this list. This generalizes. 
+\begin{lemma}{Existence of Discrete Logarithms}{3-3:5}
+    Fix an integer $n \geq 2$ and suppose $g$ is a primitive root mod $n$. If $\gcd(a, n) = 1$, then there exists a unique $k$ such that $0 \leq k \leq \phi(n)$ and $g^k \equiv a \Mod{n}$. This integer $k$ is called the \emph{discrete log base} $g$ of $a$ mod $n$, and is denoted $\log_{g}(a \Mod{n})$.
+\end{lemma}
+So, our calculations above show that the discrete log base 3 of 6 mod 7 is 3, since $3^3 \equiv 6 \Mod{7}$. 
+
+\begin{mdframed}
+    (Exercise.) For each of the following, determine whether or not the proposed value of $g$ is actually a primitive root mod $n$. 
+    \begin{enumerate}[(a)]
+        \item $n = 11, g = 2$
+        \begin{mdframed}
+            Recall that $\phi(11) = 10$. By the First Order Lemma, $\ord_{11}(2)$ must either be 1, 2, 5, or 10. So, 
+            \[2^1 = 2 \not\equiv 1 \Mod{11},\]
+            \[2^2 = 4 \not\equiv 1 \Mod{11},\]
+            \[2^5 = 32 \equiv 10 \not\equiv 1 \Mod{11},\]
+            \[2^{10} = (2^5)^2 = 32^2 \equiv 10^2 = 100 \equiv 1 \Mod{11}.\]
+            So, in particular, we find that $\ord_{11}(2) = 10$. By the definition of the primitive root, since $\ord_{11}(2) = 10 = \phi(11)$, $g = 2$ is a primitive root. 
+        \end{mdframed}
+        \item $n = 11, g = 3$
+        \begin{mdframed}
+            Recall that $\phi(11) = 10$. By the First Order Lemma, $\ord_{11}(3)$ must either be 1, 2, 5, or 10. So, 
+            \[3^1 = 3 \not\equiv 1 \Mod{11},\]
+            \[3^2 = 9 \not\equiv 1 \Mod{11},\]
+            \[3^5 = 3^3 \cdot 3^2 = 27 \cdot 3^2 \equiv 5 \cdot 9 = 45 \equiv 1 \Mod{11}.\]
+            So, $\ord_{11}(3) = 5$, but because $\ord_{11}(3) \neq \phi(11)$, $g = 3$ is not a primitive root.
+        \end{mdframed}
+        \item $n = 11, g = 4$
+        \begin{mdframed}
+            Recall that $\phi(11) = 10$. By the First Order Lemma, $\ord_{11}(4)$ must either be 1, 2, 5, or 10. So, 
+            \[4^1 = 4 \not\equiv 1 \Mod{11},\]
+            \[4^2 = 16 \equiv 5 \not\equiv 1 \Mod{11},\]
+            \[4^5 = (4^2)^2 4 = 16^2 4 \equiv 5^2 4 = 25 \cdot 4 = 100 \equiv 1 \Mod{11}.\]
+            So, $\ord_{11}(4) = 5$, but because $\ord_{11}(4) \neq \phi(11)$, $g = 4$ is not primitive root.
+        \end{mdframed}
+    \end{enumerate}
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) For each of the following values of $n$, find \emph{all} of the primitive roots mod $n$. 
+    \begin{itemize}
+        \item $n = 5$
+        \begin{mdframed}
+            We find that \[\phi(5) = 5\prod_{\substack{p | 5 \\ p \text{ prime}}} \left(1 - \frac{1}{p}\right) = 5\left(1 - \frac{1}{5}\right) = 5\frac{4}{5} = 4.\]
+            By the definition of the Primitive Root (\ref{def:3-3:4}), we know that an integer $g$ with $\gcd(g, 5) = 1$ and $\ord_{5}(g) = \phi(5) = 4$ is called a primitive root.
+            
+            \bigskip 
+            
+            Let's consider all $1 \leq g \leq 4$ (since, for $g > 5$, we can mod $g$ such that it's between $0 \leq g \leq 4$; also, for $g = 0$, $g^n = 0$ and $\gcd(0, 5) = 5$.)
+
+            \begin{center}
+                \begin{tabular}{|c|c c c c|}
+                    \hline 
+                    $g$ & $g^1 \Mod{5}$ & $g^2 \Mod{5}$ & $g^3 \Mod{5}$ & $g^4 \Mod{5}$ \\ 
+                    \hline 
+                    1   & 1             &               &               &               \\ 
+                    2   & 2             & 4             & 3             & 1             \\ 
+                    3   & 3             & 4             & 2             & 1             \\ 
+                    4   & 4             & 1             &               &               \\ 
+                    \hline 
+                \end{tabular}
+            \end{center}
+            So, in particular, the order of  
+            \begin{itemize}
+                \item $g = 1$ is 1, 
+                \item $g = 2$ is 4, 
+                \item $g = 3$ is 4,
+                \item $g = 4$ is 1.
+            \end{itemize}
+            Because $\phi(5) = 4$ and $\ord_{5}(2) = \ord_{5}(3) = 4$, it follows that 2 and 3 are the primitive roots. 
+        \end{mdframed}
+        \item $n = 7$
+        \begin{mdframed}
+            We know that $\phi(7) = 6$. By the definition of the Primitive Root (\ref{def:3-3:4}), we know that an integer $g$ with $\gcd(g, 7) = 1$ and $\ord_{7}(g) = \phi(7) = 6$ is called a primitive root. 
+            
+            \bigskip 
+
+            Let's consider all $1 \leq g \leq 6$.
+            \begin{center}
+                \begin{tabular}{|c|c c c c c c|}
+                    \hline 
+                    $g$ & $g^1 \Mod{7}$ & $g^2 \Mod{7}$ & $g^3 \Mod{7}$ & $g^4 \Mod{7}$ & $g^5 \Mod{7}$ & $g^6 \Mod{7}$ \\ 
+                    \hline 
+                    1   & 1           &                 &               &                &              &               \\ 
+                    2   & 2           & 4               & 1             &                &              &               \\ 
+                    3   & 3           & 2               & 6             & 4              & 5            & 1             \\ 
+                    4   & 4           & 2               & 1             &                &              &               \\ 
+                    5   & 5           & 4               & 6             & 2              & 3            & 1             \\ 
+                    6   & 6           & 1               &               &                &              &               \\ 
+                    \hline 
+                \end{tabular}
+            \end{center}
+
+            So, in particular, the order of  
+            \begin{itemize}
+                \item $g = 1$ is 1, 
+                \item $g = 2$ is 3, 
+                \item $g = 3$ is 6,
+                \item $g = 4$ is 3, 
+                \item $g = 5$ is 6,
+                \item $g = 6$ is 2.
+            \end{itemize}
+            Because $\phi(7) = 6$ and $\ord_{7}(3) = \ord_{7}(5) = 6$, it follows that 3 and 5 are the primitive roots. 
+        \end{mdframed}
+        \item $n = 11$
+        \begin{mdframed}
+            We know that $\phi(11) = 10$. By the definition of the Primitive Root (\ref{def:3-3:4}), we know that an integer $g$ with $\gcd(g, 11) = 1$ and $\ord_{11}(g) = \phi(11) = 10$ is called a primitive root.
+            
+            \bigskip 
+
+            Let's consider all $1 \leq g \leq 10$ (note that the columns $g^x$ for $x = 1, 2, \hdots$ are mod 11.) 
+            \begin{center}
+                \begin{tabular}{|c|c c c c c c c c c c|}
+                    \hline 
+                    $g$ & $g^1$ & $g^2$ & $g^3$ & $g^4$ & $g^5$ & $g^6$ & $g^7$ & $g^8$ & $g^9$ & $g^{10}$ \\ 
+                    \hline 
+                    1   & 1     &       &       &       &       &       &       &       &       &          \\ 
+                    2   & 2     & 4     & 8     & 5     & 10    & 9     & 7     & 3     & 6     & 1        \\ 
+                    3   & 3     & 9     & 5     & 4     & 1     &       &       &       &       &          \\ 
+                    4   & 4     & 5     & 9     & 3     & 1     &       &       &       &       &          \\ 
+                    5   & 5     & 3     & 4     & 9     & 1     &       &       &       &       &          \\ 
+                    6   & 6     & 3     & 7     & 9     & 10    & 5     & 8     & 4     & 2     & 1        \\ 
+                    7   & 7     & 5     & 2     & 3     & 10    & 4     & 6     & 9     & 8     & 1        \\ 
+                    8   & 8     & 9     & 6     & 4     & 10    & 3     & 2     & 5     & 7     & 1        \\ 
+                    9   & 9     & 4     & 3     & 5     & 1     &       &       &       &       &          \\ 
+                    10  & 10    & 1     &       &       &       &       &       &       &       &          \\ 
+                    \hline 
+                \end{tabular}
+            \end{center}
+            So, in particular, because $\phi(11) = 10$ and $\ord_{11}(2) = \ord_{11}(6) = \ord_{11}(7) = \ord_{11}(8) = 10$, it follows that 2, 6, 7, 8 are the primitive roots.
+        \end{mdframed}
+    \end{itemize}
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) For each of the following, find the discrete log base $g$ of $a$ mod $n$. 
+    \begin{enumerate}[(a)]
+        \item $n = 7, g = 3, a = 5$
+        \begin{mdframed}
+            We know that $\phi(7) = 6$, so by lemma (\ref{lem:3-3:5}) there exists a unique integer $k$ such that $0 \leq k \leq 6$ and $3^k \equiv 5 \Mod{7}$. So, 
+            \[3^0 = 1 \not\equiv 5 \Mod{7},\]
+            \[3^1 = 3 \not\equiv 5 \Mod{7},\]
+            \[3^2 = 9 \equiv 2 \not\equiv 5 \Mod{7},\]
+            \[3^3 = 27 \equiv 6 \not\equiv 5 \Mod{7},\]
+            \[3^4 = 81 \equiv 4 \not\equiv 5 \Mod{7},\]
+            \[3^5 = 3^4 3 = 9^2 3 = 81(3) \equiv 4(3) = 12 \equiv 5 \Mod{7}.\]
+            So, in particular, $k = 5$. 
+        \end{mdframed}
+        \item $n = 5, g = 2, a = 4$
+        \begin{mdframed}
+            We know that $\phi(5) = 4$, so by lemma (\ref{lem:3-3:5}) there exists a unique integer $k$ such that $0 \leq k \leq 4$ and $2^k \equiv 4 \Mod{5}$. So, 
+            \[2^0 = 1 \not\equiv 4 \Mod{5},\]
+            \[2^1 = 2 \not\equiv 4 \Mod{5},\]
+            \[2^2 = 4 \Mod{5}.\]
+            By said lemma, we have $k = 2$. 
+        \end{mdframed}
+        \item $n = 11, g = 2, a = 3$
+        \begin{mdframed}
+            We know that $\phi(11) = 10$, so by lemma (\ref{lem:3-3:5}) there exists a unique integer $k$ such that $0 \leq k \leq 10$ and $2^k \equiv 3 \Mod{11}$. Additionally, by lemma (\ref{lem:3-3:3}) we know that $2^0, 2^1, \hdots, 2^8, 2^9$ are all incongruent mod 11, so we only care about $0 \leq k \leq 9$. So, 
+            \[2^0 = 1 \not\equiv 3 \Mod{11},\]
+            \[2^1 = 2 \not\equiv 3 \Mod{11},\]
+            \[2^2 = 4 \not\equiv 3 \Mod{11},\]
+            \[2^3 = 8 \not\equiv 3 \Mod{11},\]
+            \[2^4 = 16 \equiv 5 \not\equiv 3 \Mod{11},\]
+            \[2^5 = 2^4 2 \equiv 5 \cdot 2 = 10 \not\equiv 3 \Mod{11},\]
+            \[2^6 = 2^5 2 \equiv 10 \cdot 2 = 20 \equiv 9 \not\equiv 3 \Mod{11},\]
+            \[2^7 = 2^6 2 \equiv 9 \cdot 2 = 18 \equiv 7 \not\equiv 3 \Mod{11},\]
+            \[2^8 = 2^7 2 \equiv 7 \cdot 2 = 14 \equiv 3 \Mod{11}.\]
+            So, by said former lemma, $k = 8$. 
+        \end{mdframed}
+    \end{enumerate}
+\end{mdframed}
+
+\subsubsection{Existence of Primitive Roots}
+We haven't yet shown that primitive roots always exist, and in fact, it is not true that primitive roots always exist. Here is the statement:
+\begin{theorem}{Primitive Root Theorem}{3-3:6}
+    Fix an integer $n \geq 2$. Then, there exists a primitive root mod $n$ if and only if $n = 2, 4, p^k, 2p^k$ for an odd prime $p$ and a positive integer $k$. In particular, there always exists a primitive root mod $p$ (a prime). 
+\end{theorem}
+
+\begin{mdframed}
+    (Exercise.) Use the Primitive Root Theorem to find the 5 smallest integers $n \geq 2$ such that there does \emph{not} exist a primitive root mod $n$.
+
+    \begin{mdframed}
+        Referring to theorem (\ref{th:3-3:6}), we know that every prime has a primitive root. In other words, we know that 
+        \begin{itemize}
+            \item 2, 4 are special cases. 
+            \item 3, 5, 7, 11, 13, 17, 19, etc. are all primes.
+            \item 6, 10, 14, 22, 26, etc. all have primitive roots (these are just primes multiplied by 2, i.e., $2p^1$, but we omitted 2 since we only care about odd primes). 
+            \item 9, 25, 49, 121, etc. all have primitive roots (these are just the primes multiplied by themselves, i.e., $p^2$).
+            \item 18, 50, 98, etc. all have primitive roots (these are just $2p^2$, but notice how we omitted 8 because powers only apply to odd primes). 
+        \end{itemize} 
+        So, in particular, 8, 12, 15, 16, 20.
+    \end{mdframed}
+\end{mdframed}
+
+
+\subsection{Elgamal Cryptosystem}
+The Elgamal cryptosystem is a public-key cryptosystem like RSA, named after the Egyptian cryptographer Taher Elgamal.
+
+\subsubsection{How Elgamal Works}
+The process begins with Bob choosing a public key. He picks a prime number $p$ and a primitive root $g$ of $p$. He chooses a random integer $x$ with $0 \leq x < p - 1$. This is his \underline{private} key. He then computes $h = g^x \Mod{p}$ and his \underline{public} key is the triple $(p, g, h)$. 
+
+\bigskip 
+
+Suppose Alice wants to send Bob a message. She first encodes her message as an integer $m$ between $0$ and $p - 1$ (e.g., by using the same ``base 26'' strategy that we employed for RSA.) Then, she chooses a random integer $y$ between $0$ and $p - 1$ called the \textbf{ephemeral key}. Alice will have to choose a different ephemeral key for every message she sends, but Bob does not have to know the value of this key beforehand. Alice computes $s = h^y \Mod{p}$, $c_1 = g^y \Mod{p}$, and $c_2 = ms \Mod{p}$. Note that she can compute $s$ and $c_1$ quickly using binary exponentation. The pair $(c_1, c_2)$ is the ciphertext that she sends to Bob. 
+
+\bigskip 
+
+To decrypt the ciphertext $(c_1, c_2)$, Bob first computes $c_1^x \Mod{p}$. Bob can do this quickly with binary exponentation. Notice that 
+\[c_1^x \equiv (g^y)^x = g^{xy} = (g^x)^y \equiv h^y \equiv s \Mod{p}.\]
+In other words, Bob found the same value of $s$ that Alice had, even though he does not know the value of the ephemeral key $y$. He then computes an inverse mod $p$ of $c_1^x$ using the extended Euclidian algorithm. From there, he computes 
+\[c_2 (c_1^x)^{-1} \equiv c_2 s^{-1} \equiv (ms)s^{-1} \equiv m \cdot 1 = m \Mod{p},\]
+thus allowing him to recover Alice's message $m$.
+
+\begin{mdframed}
+    (Example.) Suppose Bob picks the prime $p = 4115549$ and $g = 2$ is his primitive root. He then picks a random integer $x = 2634326$. From there, he can compute \[h = g^x \Mod{p},\] getting $h = 1149114$. Thus, the triple $(4115549, 2, 1149114)$ is his public key. $x = 2634326$ must be kept secret. 
+
+    \bigskip 
+
+    Suppose Alice wants to send Bob the message \code{Hi Bob}. She begins by converting this message to the integer $m = 3340481$. Then, she chooses an ephemeral key $y = 2775147$. She keeps this value of $y$ secret, and then computes \[s = h^y \Mod{p} = 962840\] using binary exponentation. Alice also keeps $s$ a secret. She also computes \[c_1 = g^y \Mod{p} = 621674\] using binary exponentation. Finally, she computes \[c_2 = ms \Mod{p} = 1911501.\] From there, $(c_1, c_2) = (621674, 1911501)$ is the ciphertext she sends to Bob.
+
+    \bigskip 
+
+    Bob receives the pair $(c_1, c_2) = (621674, 1911501)$. He computes 
+    \[c_1^x \Mod{p} = 962840\]
+    using binary exponentation. This is the same value that Alice found for $s$. Then, he computes an inverse mod $p$ and finds $s^{-1} \equiv 2329074 \Mod{p} = 4115549$. From there, he computes \[c_2 s^{-1} \Mod{p} = 3340481,\] and then converts this message back to the text \code{HIBOB}. 
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) Suppose Bob picks the prime $p = 29$ and the primitive root $g = 2$. 
+    \begin{enumerate}[(a)]
+        \item Suppose Bob picks $x = 3$. What is his public key? 
+        \begin{mdframed}
+            We compute \[h = g^x \Mod{p} = 2^3 \Mod{29} = 8 \Mod{29}.\] Therefore, Bob's public key is the triple $(p, g, h) = (29, 2, 8)$. 
+        \end{mdframed}
+        \item Suppose Alice wants to send Bob the plaintext integer $m = 7$. What is the corresponding ciphertext pair? 
+        \begin{mdframed}
+            Suppose Alice selects ephemeral key $y = 3$. Then, Alice can compute \[s = h^y \Mod{p} = 8^3 \Mod{29} = 19 \Mod{29},\] \[c_1 = g^y \Mod{p} = 2^{3} \Mod{29} = 8 \Mod{29},\] \[c_2 = ms \Mod{p} = 7(19) \Mod{29} = 17 \Mod{29}.\] The pair, $(8, 17)$, is the ciphertext pair. 
+        \end{mdframed}
+        \item Suppose Bob receives the ciphertext pair $(3, 9)$ from Alice. What is the plaintext integer $m$? 
+        \begin{mdframed}
+            Bob computes \[c_1^x \Mod{p} = 3^3 \Mod{29} = 27 \Mod{29}.\] This value is $s$; that is, $s = 27 \Mod{29}$. From there, we want to find the inverse of $c_1^x = 27$ mod 29. To do this, let's find Bezout's coefficient; 
+            \[29 = 27q + r \implies 29 = 27(1) + 2 \implies 2 = 29 + 27(-1)\]
+            \[27 = 2q + r \implies 27 = 2(13) + 1 \implies 1 = 27 + 2(-13)\]
+            \[2 = 1q + r \implies 2 = 1(2) + 0.\]
+            From this, $\gcd(27, 29) = 1$ so we can find the Bezout coefficient.
+            \begin{equation*}
+                \begin{aligned}
+                    1 &= 27 + 2(-13) \\ 
+                        &= 27 + (29 + 27(-1))(-13) \\
+                        &= 27 + 29(-13) + 27(-1)(-13) \\ 
+                        &= 27 + 29(-13) + 27(13) \\ 
+                        &= 27(14) + 29(-13).
+                \end{aligned}
+            \end{equation*}
+            From this, it follows that the Bezout coefficients are $x = 14$ and $y = -13$; more importantly, we find that the inverse of $c_1^x = 27$ mod 29 is $x = 14$. So, 
+            \[c_2 s^{-1} \Mod{p} = 9(14) \Mod{29} = 10 \Mod{29},\]
+            so $m = 10$. 
+        \end{mdframed}
+    \end{enumerate}
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) If Bob wants to be able to receive messages with $r = 10$ characters, how large must he choose $p$ to be? What if $r = 100$? $r = 1000$? 
+
+    \begin{mdframed}
+        Assuming we choose to use the ``base 26'' strategy for encoding the message, the largest possible 10 character message would be \code{ZZZZZZZZZZ}. Here, \code{Z} corresponds to the number 25, so we can encode this message as follows: \[\sum_{i = 0}^{9} 25 \cdot 26^i = 26^{10} - 1.\] Recall that the integer encoding of the message $m$ must be between 0 and $p - 1$, i.e., $0 \leq m \leq p - 1$. So, $p > 26^{10} - 1 \implies p -1 > 26^{10} - 2$. The same reasoning applies for $r = 100$ and $r = 1000$. 
+    \end{mdframed}
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) Bob's Eigamal public key has $p = 29$, $g = 3$, and $h = 27$. Alice wants to send Bob the message \code{C}. She generates an ephemeral key $y = 10$. What is the ciphertext that she sends Bob? 
+
+    \begin{mdframed}
+        Encoding \code{C} gives us $m = 2$, the base 26 representation. Now, note that 
+        \[s = h^y \Mod{p} = 27^{10} \Mod{29} = (-2)^{10} \Mod{29} = 9 \Mod{29},\]
+        \[c_1 = g^y \Mod{p} = 3^{10} \Mod{29} = 5 \Mod{29},\]
+        \[c_2 = ms \Mod{p} = 2(9) \Mod{29} = 18 \Mod{29}.\]
+        Therefore, Alice sends Bob $(c_1, c_2) = (5, 18)$.
+    \end{mdframed}
+\end{mdframed}
+
+\subsubsection{Why Elgamal is Probably Secure (For Now...)}
+There are at least two strategies Eve might employ to recover the plaintext $m$ from the ciphertext $(c_1, c_2)$. 
+\begin{itemize}
+    \item Eve can try to find Bob's decryption key $x$ so she can follow Bob's decryption strategy but, in order to do this, she needs to find the discrete log base $g$ of $h$ mod $p$. 
+    \item Even can try to find Alice's ephemeral key $y$, but then she needs to find the discrete log base $h$ of $c_1$ mod $p$. 
+\end{itemize}
+In any case, Eve needs to find a discrete log base $g$ mod $p$. So, the security of the Elgamal cryptosystem relies on the presumed difficulty of the following: 
+\begin{mdframed}[nobreak=true]
+    (Discrete Logarithm Problem.) Suppose you are given a prime $p$, a primitive root $g$ mod $p$, and an integer $a$ not divisible by $p$. Find the discrete log base $g$ of $a$ mod $n$. In other words, find the unique integer $k$ such that $0 \leq k \leq p - 1$ such that $g^k \equiv a \Mod{p}$. 
+\end{mdframed}
+As $p$ gets larger, the problem becomes difficult for classical computers. The naive method to solving this problem would be to try all possible values of $k$ from 1 to $p - 1$, but this is linear in $p$ and exponential in the number of digits of $p$. Although there are faster algorithms out there, they are not faster by much\footnote{There are no known algorithm that accomplishes this task that is polynomial in the number of digits of $p$.}.
+
+
+\subsection{Diffie-Hellman Key Exchange}
+The Diffie-Hellman key exchange is \emph{not} quite a cryptosystem for exchanging messages, but rather it is a protocol that allows Alice and Bob to share a secret, but neither has full control over the content of the shared secret. The shared secret can be used as the key for a symmetric key cipher like a one-time pad. 
+
+\bigskip 
+
+The procedure is as follows:
+\begin{itemize}
+    \item Alice and Bob publicly agree to fix a prime $p$ and a primitive root $g$ mod $p$. 
+    \item Alice then chooses a secret integer $0 \leq a < p - 1$ and sends Bob $x = g^a \Mod{p}$. She can compute this value quickly using binary exponentation. 
+    \item Bob similarly chooses a secret integer $0 \leq b < p - 1$ and sends Alice $y = g^b \Mod{p}$. 
+    \item Alice computes $s = y^a \Mod{p}$ and Bob computes $s = x^b \Mod{p}$.  
+\end{itemize}
+The two values of $s$ that Alice and Bob computes are the same, because
+\[y^a \equiv (g^b)^a = g^{ab} = (g^a)^b \equiv x^b \Mod{p}.\]
+Thus, Alice and Bob now share a secret, $s$. Neither of them have full control over the shared secret, so this cannot be regarded as Alice or Bob sending a message to the other.
+\begin{mdframed}
+    (Exercise.) Suppose Alice and Bob agree to use $p = 11$ and $g = 2$. Alice chooses the integer $a = 3$. She receives the integer $y = 5$ from Bob. What is her shared secret $s$ with Bob? 
+
+    \begin{mdframed}
+        The shared secret is \[s = y^a \Mod{p} = 5^3 \Mod{11} = 4.\]
+    \end{mdframed}
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) Alice and Bob agree to perform a Diffie-Hellman key exchange using $p = 31$ and $g = 3$. 
+    
+    \begin{enumerate}[(a)]
+        \item Alice chooses the secret integer $a = 11$. What is the integer $x$ that she sends to Bob?
+        \begin{mdframed}
+            We know that 
+            \[x = g^a \Mod{p},\]
+            so 
+            \[x = 3^{11} \Mod{31} = 13 \Mod{31}.\] 
+        \end{mdframed}
+
+        \item Using $a = 11$, Alice receives the integer $y = 2$ from Bob. What is her shared secret with Bob? 
+        \begin{mdframed}
+            We know that 
+            \[s = y^a \Mod{p},\]
+            so 
+            \[s = 2^{11} \Mod{31} = 2 \Mod{31}.\]
+        \end{mdframed}
+
+        \item Eve sees Alice send Bob the integer $x = 9$ and Bob send Alice the integer $y = 27$. What is Alice and Bob's shared secret? 
+        \begin{mdframed}
+            We know that 
+            \[x = g^a \Mod{p} = 3^a \Mod{31}.\]
+            Here, $a = 2$. Note that, in general, Eve needs to try values of $a = 0, 1, \hdots, 30$ until she finds 9. With $a = 2$, we know that 
+            \[s = y^a \Mod{p} = 27^{2} \Mod{31} = 16 \Mod{31}.\]
+        \end{mdframed}
+    \end{enumerate}
+\end{mdframed}
+
+
+\subsection{Interlude: Elliptic Curves over the Reals}
+\begin{definition}{Weierstrass Equation}{}
+    A \textbf{Weierstrass equation} over the real numbers is an equation in $x$ and $y$ of the form 
+    \[y^2 = x^3 + ax + b,\]
+    where $a, b$ are fixed real numbers. The \textbf{discriminant} of the equation is 
+    \[\Delta = -16(4a^3 + 27b^2)\]
+    and the equation is singular when $\Delta = 0$. Otherwise, the equation is said to be nonsingular. 
+\end{definition}
+
+\begin{theorem}{}{}
+    The Weierstrass equation $y^2 = x^3 + ax + b$ is nonsingular if and only if the cubic equation $x^3 + ax + b = 0$ has no repeated roots in the complex numbers.
+\end{theorem}
+Generally speaking, these (nonsingular) equations will look like one of the following:
+\begin{center}
+    \begin{tabular}{p{3in}|p{3in}}
+
+        $y^2 = x^3 - x + 2$ & $y^2 = x^3 - x$ \\ 
+        \hline 
+        
+        \bigskip 
+
+        \includegraphics[scale=0.63]{assets/weiers_1.png}
+        &
+        
+        \bigskip 
+        
+        \includegraphics[scale=0.63]{assets/weiers_2.png}
+    \end{tabular}
+\end{center}
+These curves have a lot of important geometry. 
+\begin{itemize}
+    \item Observe that they are symmetric about the $x$-axis, i.e., they have vertical symmetry. Stated formally, if $(x, y)$ is a point satisfying $y^2 + x^3 + ax + b$, then its reflection $(x, -y)$ across the $x$-axis is also a point satisfying the same equation. If $P = (x, y)$ is a point on a curve defined by a Weierstrass equation, we define\footnote{We only invert the $y$-coordinate of $P$ to get $-P$, not both coordinates.} $-P$ to be this reflection $(x, -y)$.  
+    \item If we pick any two points on the curve, the unique line that passes through those two points will (almost) have a unique ``other'' point of intersection with the curve.
+\end{itemize}
+
+\begin{mdframed}
+    (Example.) Suppose we have the Weierstrass equation $y^2 = x^3 + 17$. This is nonsingular because \[\Delta = -16(4 \cdot 0^3 + 27 \cdot 17^2) = -16 \cdot 27 \cdot 17^2 \neq 0.\]
+    Consider the points $P = (-2, 3)$ and $Q = (-1, 4)$. Both of these lie on the curve (see exercise \textbf{A}). THere is a unique ``secant'' line that passes through these two points; we can calculate its slope using the usual slope formula, 
+    \[m = \frac{4 - 3}{(-1) - (-2)} = 1,\]
+    and then we can find the equation of the secant line itself using point-slope form: 
+    \[y - 4 = 1 \cdot (x - (-1)) \implies y = x + 5.\]
+    How do we intersect this secant line with the curbe? Remember that this will consist of all $(x, y)$ points that satisfy both $y = x + 5$ and $y^2 = x^3 + 17$, so substituting the first equation into the second gives us 
+    \begin{equation*}
+        \begin{aligned}
+            y^2 &= x^3 + 17 \\ 
+                &\implies (x+5)^2 = x^3 + 17 \\ 
+                &\implies x^2 + 10x + 25 = x^3 + 17 \\ 
+                &\implies x^3 - x^2 - 10x - 8 = 0.
+        \end{aligned}
+    \end{equation*}
+    We now need to solve this cubic equation. This generally isn't easy, but remember that we know $x = -2$ and $x = -1$ must be solutions to this equation, since $P = (-2, 3)$ and $Q = (-1, 4)$ are on the curve and on the line, and the $x$-coordinates of these points are precisely $-2$ and $-1$, respectively. Therefore, we know that 
+    \[(x + 2)(x + 1) = x^2 + 3x + 2\]
+    must divide $x^3 - x^2 - 10x - 8$. We can use polynomial long division to find the quotient (see exercise \textbf{B}). 
+
+    \bigskip 
+
+    We find that $x^3 - x^2 - 10x - 8 = (x + 2)(x + 1)(x - 4)$, so indeed the third solution to the cubic equation is $x = 4$ and thus plugging in $x = 4$ into the equation of line yields the point $R = (4, 9)$ (see exercise \textbf{C}). 
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise \textbf{A}.) Check that $P = (-2, 3)$ and $Q = (-1, 4)$ are both on the curve defined by $y^2 = x^3 + 17$. 
+
+    \begin{mdframed}
+        For $P = (-2, 3)$, we have $3^2 = (-2)^3 + 17 \implies 9 = -8 + 17 = 9$; because both sides are equal, this point is on the curve. 
+
+        \bigskip 
+
+        For $Q = (-1, 4)$, we have $4^2 = (-1)^3 + 17 \implies 16 = -1 + 17 = 16$, so again this point is on the curve.
+    \end{mdframed}
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise \textbf{B}.) Use polynomial long division to divide $x^3 - x^2 - 10x - 8$ by $x^2 + 3x + 2$ and check that the quotient is $x - 4$ and the remainder is 0.
+
+    \begin{mdframed}
+        After performing long division, we find that the result is $x - 4$: 
+
+        \smallskip 
+
+        \polylongdiv[style=A]{x^3 - x^2 - 10x - 8}{x^2 + 3x + 2}
+    \end{mdframed}
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise \textbf{C}.) Check that $R = (4, 9)$ is on the curve defined by $y^2 = x^3 + 17$. 
+
+    \begin{mdframed}
+        \[y^2 = 9^2 = 81,\]
+        \[x^3 + 17 = 4^3 + 17 = 64 + 17 = 81,\]
+        and since both sides are equal, $R$ is on the curve.
+    \end{mdframed}
+\end{mdframed}
+
+This is essentially what the example we've just gone over does: 
+\begin{center}
+    \includegraphics[scale=0.3]{assets/weiers_3.png}
+
+    \emph{Taken from Professor Agrawal's Notes.}
+\end{center}
+
+Notice here that we defined $P + Q = -R = (4, -9)$. In reality, however, this process may be more complicated than simply adding the $x$ and $y$ coordinates of the two points. 
+
+\begin{mdframed}
+    (Exercise.) 
+    \begin{enumerate}[(a)]
+        \item Let $S = (2, 5)$. Check that $S$ is on the same curve $y^2 = x^3 + 17$. 
+        \begin{mdframed}
+            \[y^2 = 25\]
+            and 
+            \[x^3 + 17 = 25,\]
+            so $S$ is also on this curve. 
+        \end{mdframed}
+        \item What is the third point of the intersection on between the curve $y^2 = x^3 + 17$ and the second line connecting $Q = (-1, 4)$ and $S$?
+        \begin{mdframed}
+            Given the two points $Q$ and $S$, we can find their slopes: 
+            \[m = \frac{4 - 5}{(-1) - 2} = \frac{-1}{-3} = \frac{1}{3}.\]
+            Once we have the slope, we can find the equation of the line that passes through both points: 
+            \[y - 4 = \frac{1}{3}(x - (-1)) \implies y - 4 = \frac{1}{3}(x + 1) \implies y = \frac{1}{3}x + \frac{1}{3} + 4 \implies y = \frac{1}{3}x + \frac{13}{3}.\]
+            Remember that the intersection of the curve and the secant line will consist of all points $(x, y)$ such that both $y = \frac{1}{3}x + \frac{13}{3}$ and $y^2 = x^3 + 17$ are satisfied, so 
+            \[y^2 = x^3 + 17 \implies \left(\frac{1}{3}x + \frac{13}{3}\right)^2 = x^3 + 17 \implies x^3 - \frac{1}{9}x^2 - \frac{26}{9}x + 17 - \frac{169}{9} = 0.\]
+            Since this is a cubic function, there are three solutions. We know that $x = -1$ and $x = 2$ are solutions to this equation, so we can use long division to find the last solution. In particular, by dividing $x^3 - \frac{1}{9}x^2 - \frac{26}{9}x + 17 - \frac{169}{9}$ by $(x - 2)(x + 1) = x^2 - x - 2$,  
+            
+            \smallskip 
+
+            \polylongdiv[style=A]{x^3 - \frac{1}{9}x^2 - \frac{26}{9}x + 17 - \frac{169}{9}}{x^2-x-2}
+
+            \smallskip 
+
+            we find that $x = -\frac{8}{9}$ is the last root. So, plugging this root into the equation of the line gives us \[\frac{1}{3}\left(-\frac{8}{9}\right) + \frac{13}{3} = \frac{109}{27},\] thus $R = \left(-\frac{8}{9}, \frac{109}{27}\right)$.
+        \end{mdframed}
+        \item What is $Q + S$? 
+        \begin{mdframed}
+            We have \[Q + S = -R = \left(-\frac{8}{9}, -\frac{109}{27}\right).\]
+        \end{mdframed}
+        \item With $P = (-2, 3)$ and $R = (4, 9)$ on $y^2 = x^3 + 17$ as above, what is $P + R$? 
+        \begin{mdframed}
+            The slope of $P$ and $R$ is 
+            \[m = \frac{9 - 3}{4 - (-2)} = \frac{6}{6} = 1,\]
+            so the equation of the line that passes through both points is \[y - 9 = 1(x - 4) \implies y = x - 4 + 9 \implies y = x + 5.\]
+            Plugging this secant line equation into the Weierstrass equation gives us 
+            \[y^2 = x^3 + 17 \implies (x + 5)^2 = x^3 + 17 \implies x^3 - x^2 - 10x - 8 = 0.\]
+            Knowing that the two solutions to the intersection of the curve and the secant line are $x = -2$ and $x = 4$, we know that $(x + 2)(x - 4) = x^2 - 2x - 8$ must divide $x^3 - x^2 - 10x - 8$, so 
+            
+            \polylongdiv[style=A]{x^3 - x^2 - 10x - 8}{x^2 - 2x - 8}
+
+            and so the last root must be $x = -1$. Plugging this $x = -1$ back into the secant line yields $y = 4$, so in particular $T = (-1, 4)$. Therefore, 
+            \[P + R = -T = (-1, 4).\]
+        \end{mdframed}
+    \end{enumerate}
+\end{mdframed}
+Remember how we mentioned the (almost) unique ``other'' point? There are several caveats to consider. 
+\begin{itemize}
+    \item Suppose we choose $P = (-2, 3)$, the same point from the example. What does it mean to pick $P + P$ or $2P$? There's not\footnote{This is a problem particularly because the first step of this process involves finding such a secant line.} a unique secant line that passes through $P$ and $P$. However, recall in calculus that, if we think about the secant line through two points on a curve, and take the limit as one of the two points approaches the other, what we end up with is the tangent line. So, we can use this. In other words, we can define $P + P$ by going through the same process as usual, but using the tangent line of the curve at $P$. 
+    
+    \bigskip 
+
+    Consider again $y^2 = x^3 + 17$. Using implicit differentiation, we have 
+    \[2y\frac{dy}{dx} = 3x^2.\]
+    Then, with $P = (x, y) = (-2, 3)$, plugging this in gives us 
+    \[2 \cdot 3 \cdot \frac{dy}{dx}\bigg\rvert_{P} = 3(-2)^2 \implies \frac{dy}{dx}\bigg\rvert_{P} = 2.\]
+    Finding the equation of the tangent line again using point-slope form like we did gives us 
+    \[y - 3 = 2(x - (-2)) \implies y = 2x + 7.\]
+    From there, the usual process follows. It should be noted that the $x$ in the point will be a double root of the cubic since the line is tangent to the curve \emph{at} $P$. 
+
+    \begin{mdframed}
+        (Exercise.) On the curve $y^2 = x^3 + 17$, define $2S$ where $S = (2, 5)$. Calculate $2S$. 
+
+        \begin{mdframed}
+            We have $2y\frac{dy}{dx} = 3x^2$, so with $S = (x, y) = (2, 5)$, we have 
+            \[2(5)\frac{dy}{dx}\bigg\rvert_{S} = 3(2)^2 \implies \frac{dy}{dx}\bigg\rvert_{S} = \frac{3(2)^2}{2(5)} = \frac{12}{10} = \frac{6}{5}.\] From there, we can find the equation of the secant line,
+            \[y - 5 = \frac{6}{5}(x - 2) \implies y = \frac{6}{5}(x - 2) + 5 \implies y = \frac{6}{5}x + \frac{13}{5}.\]
+            Plugging this back into the Weierstrass equation yields 
+            \[\left(\frac{6}{5}x + \frac{13}{5}\right)^2 = x^3 + 17 \implies \frac{36}{25}x^2 + \frac{156}{25}x + \frac{169}{25} = x^3 + 17 \implies x^3 - \frac{36}{25}x^2 - \frac{156}{25}x + \frac{256}{25} = 0.\] 
+            We know that $x = 2$ is the only root, so we know that this must be a double root. Thus, we know that $(x - 2)(x - 2) = x^2 - 4x + 4$ must divide $x^3 - \frac{36}{25}x^2 - \frac{156}{25}x + \frac{256}{25}$. Therefore, 
+
+            \polylongdiv[style=A]{x^3 - \frac{36}{25}x^2 - \frac{156}{25}x + \frac{256}{25}}{x^2 - 4x + 4}
+
+            and thus $x = -\frac{64}{25}$ is the other root. Plugging this back into the secant line gives us $y = -\frac{59}{125}$, thus $T = \left(-\frac{64}{25}, -\frac{59}{125}\right)$ and $2S = -T = \left(-\frac{64}{25}, \frac{59}{125}\right)$.
+        \end{mdframed}
+    \end{mdframed}
+
+    \item There is one situation when the line passing through two points(either the secant line through two distinct points or the tangent line at a single point) does not have a third point of intersection with the curve. This happens when the line ends up being vertical. We can deal with this \emph{by fiat}; that is, we declare that there is a point $O$ called the \emph{point at infinity}, which is a point on the curve defined by $y^2 = x^3 + 17$ and is also a point on every vertical line in the plane. It is its own negative. So, when we try to ``add'' two points and encounter the situation where a secant or tangent line is vertical, we declare the sum to be $O$.
+    
+    \begin{definition}{Elliptic Curve}{}
+        Fix a nonsingular Weierstrass equation $y^2 = x^3 + ax + b$. The \textbf{elliptic curve} $E$ defined by this equation is the set of points $(x, y)$ satisfying this equation, together with a \emph{point of infinity} denoted $O$ and assumed by fiat to 
+        \begin{itemize}
+            \item lie on the curve, 
+            \item lie on every vertical line in the plane, and 
+            \item be its own reflection across the $x$-axis. 
+        \end{itemize}
+    \end{definition}
+
+    \begin{theorem}{}{}
+        Given any $P \in E$, where $E$ is an elliptic curve, we define $-P$ to be the reflection of $P$ across the $x$-axis. Given any two points $P, Q \in E$, there is a unique secant or tangent line passing through $P$ and $Q$, and this line has a unique third point of intersection with the curve; we define $P + Q$ to be the negative of this third point of intersection. Then, 
+        \begin{itemize}
+            \item Associativity: for any $P, Q, R \in E$, $(P + Q) + R = P + (Q + R)$.
+            \item Commutativity: for any $P, Q \in E$, $P + Q = Q + P.$
+            \item Identity: for any $P \in E$, $P + O = P.$
+            \item Inverses: for any $P \in E$, $P + (-P) = O.$
+        \end{itemize}
+    \end{theorem}
+    \textbf{Remark:} The above is saying that $E$ is an ``abelian'' group\footnote{If you've taken group theory, this should be familiar. Don't worry if you aren't familiar with this.}.
+\end{itemize} 
+
+\begin{theorem}{Elliptic Curve Addition Formula}{3-10:1}
+    Suppose $P = (x_1, y_1)$ and $Q = (x_2, y_2)$ are both points on the curve $y^2 = x^3 + ax + b$. Then, define 
+    \[\lambda = \begin{cases}
+        \frac{y_2 - y_1}{x_2 - x_1} & \text{if } P \neq Q \\ 
+        \frac{3x_1^2 + a}{2y_1} & \text{if } P = Q 
+    \end{cases}.\]
+    If $\lambda$ is defined (i.e., the denominator above is nonzero), then set 
+    \[\nu = y_1 - \lambda x_1\]
+    \[x_3 = \lambda^2 - x_1 - x_2\]
+    \[y_3 = \lambda x_3 + \nu.\]
+    Then, $P + Q = (x_3, -y_3)$. 
+\end{theorem}
+
+\begin{mdframed}
+    (Exercise.) Consider the Weierstrass equation $y^2 = x^3 - 2x$. 
+
+    \begin{enumerate}[(a)]
+        \item Verify that this equation is nonsingular. Let $E$ be the corresponding elliptic curve. 
+        \begin{mdframed}
+            Computing the discriminant with $a = -2$ and $b = 0$ gives us
+            \[\Delta = -16(4(-2)^3 + 27(0)^2) = -16 \cdot 4(-2)^3 \neq 0,\]
+            so this equation is nonsingular. 
+        \end{mdframed}
+        \item Verify that $P = (0, 0)$ is on the curve. What is $2P$? 
+        \begin{mdframed}
+            The left-hand side has $0^2 = 0$ and the right-hand side has $0^3 - 2(0) = 0$, so it follows that $P$ is on the curve. 
+
+            \bigskip 
+
+            TODO 
+        \end{mdframed}
+        \item Verify that $Q = (-1, 1)$ is on the curve. What is $2Q$?
+        \begin{mdframed}
+            TODO 
+        \end{mdframed}
+        \item What is $P + Q$? 
+        \begin{mdframed}
+            TODO 
+        \end{mdframed}
+        \item What is $3Q$? 
+        \begin{mdframed}
+            TODO 
+        \end{mdframed}
+        \item What is $4Q$? 
+        \begin{mdframed}
+            TODO 
+        \end{mdframed}
+        \item What is $5Q$? 
+        \begin{mdframed}
+            TODO 
+        \end{mdframed}
+    \end{enumerate}
+\end{mdframed}
+
+\begin{definition}{Order}{}
+    Suppose $P$ is a point on an elliptic curve $E$. The order of $P$, denoted $\ord_{E}(P)$, is the smallest positive integer $n$ such that $nP = O$, if such an integer exists. Otherwise, the order of $P$ is $\infty$. 
+\end{definition}
+
+\begin{mdframed}
+    (Exercise.) Let $E$ be the elliptic curve defined by the Weierstrass equation $y^2 = x^3 - 4x$. Find the order of the following points. 
+    \begin{enumerate}[(a)]
+        \item $P = (-2, 0)$
+        \begin{mdframed}
+            TODO 
+        \end{mdframed}
+        \item $Q = (0, 0)$
+        \begin{mdframed}
+            TODO 
+        \end{mdframed}
+        \item $P + Q$
+        \begin{mdframed}
+            TODO 
+        \end{mdframed}
+    \end{enumerate}
+\end{mdframed}
+
+
+\subsection{Interlude: Elliptic Curves Mod a Prime}
+We now fix a prime $p$. For technical reasons that are not worth lingering on for our purposes here, we assume\footnote{In applications to cryptography, $p$ will be very large anyways.} that $p \geq 5$. 
+
+\begin{definition}{Integral Weierstrass Equation}{}
+    A Weierstrass equation $y^2 = x^3 + ax + b$ is \textbf{integral} if $a$ and $b$ are integers. We then say that the equation is singular mod $p$ if $\Delta \equiv 0 \Mod{p}$. Otherwise, it is nonsingular mod $p$. 
+\end{definition}
+
+\begin{mdframed}
+    (Example.) Suppose we have the Weierstrass equation $y^2 = x^3 + 17$. It is integral since $a = 0$ and $b = 17$ are integers. Then, we calculated earlier that \[\Delta = -16 \cdot 27 \cdot 17^2.\] The only primes this is divisible by are 2, 3, and 17. Thus, the equation $y^2 = x^3 + 17$ is singular mod $p = 17$, but nonsingular otherwise (recall that we are ruling out $p = 2, 3$).
+\end{mdframed}
+
+\begin{mdframed}
+    For each of the following integral Weierstrass equations, find all primes $p \geq 5$ such that the equation is singular mod $p$. 
+    \begin{enumerate}
+        \item $y^2 = x^3 - 2x$    
+        \begin{mdframed}
+            TODO 
+        \end{mdframed}
+        \item $y^2 = x^3 + x + 1$
+        \begin{mdframed}
+            TODO 
+        \end{mdframed}
+        \item $y^2 + x^3 - 1$
+        \begin{mdframed}
+            TODO 
+        \end{mdframed}
+    \end{enumerate}
+\end{mdframed}
+So, when we have an integral Weierstrass equation $y^2 = x^3 + ax + b$, we can consider its ``solutions mod $p$.'' By this, we mean integers $(x, y)$ such that $y^2 \equiv x^3 + ax + b \Mod{p}$. 
+
+\begin{mdframed}
+    (Example.) Suppose $p = 7$ and consider the Weierstrass equation $y^2 = x^3 + 17$. Then, $(1, 2)$ is a solution to the equation mod $p$ because 
+    \[y^2 = 2^2 = 4 \equiv 18 = 1^3 + 17 = x^3 + 17 \Mod{7}.\]
+\end{mdframed}
+Let's define that, if $x, y, x', y'$ are all integers, then 
+\[(x, y) \equiv (x', y') \Mod{p}\]
+means that $x \equiv x' \Mod{p}$ and $y \equiv y' \Mod{p}$. Notice that, if $(x, y)$ is a solution mod $p$ of $y^2 = x^3 + ax + b$, then so is any pair of integers that is congruent mod $p$. 
+\begin{mdframed}
+    (Example.) In the above example, $(1, 9), (8, 2), (-6, 9)$ are all congruent mod 7 to $(1, 2)$, and they are all also solutions mod 7 to $y^2 = x^3 + 17$. 
+\end{mdframed}    
+We'll typically consider only solutions $(x, y)$ where $0 \leq x, y < p$ in order to avoid having to list off all the congruent solutions.
+
+\begin{theorem}{}{}
+    Suppose $y^2 = x^3 + ax + b$ is an integral Weierstrass equation which is nonsingular mod $p$. The corresponding elliptic curve mod $p$ is the set $E$ of solutions mod $p$ to the equation, together with an extra point at infinity called $O$. 
+
+    \bigskip 
+
+    Suppose $P \in E$. We define $-P$ as follows: 
+    \begin{itemize}
+        \item If $P = O$, then $-P = O$ as well.
+        \item If $P = (x, y)$, then $-P = (x, -y \Mod{p})$. 
+    \end{itemize}
+    Then, $-P$ is in fact an element of $E$. 
+
+    \bigskip 
+
+    Moreover, suppose $P, Q \in E$. We define $P + Q$ as follows: 
+    \begin{itemize}
+        \item If $P = O$, then $P + Q = Q$. 
+        \item If $Q = O$, then $P + Q = P$. 
+        \item If $P = (x_1, y_1)$ and $Q = (x_2, y_2)$ are both solutions mod $p$ of $y^2 = x^3 + ax + b$, then 
+        \begin{itemize}
+            \item If $P \neq Q$ and $x_2 - x_1$ is not invertible mod $p$, set \[P + Q = O.\]
+            \item If $P = Q$ and $y_1$ is not invertible mod $p$, set $P + Q = 2P = O$. 
+            \item Otherwise, define\footnote{You compute the inverse mod $p$ first, and then multiply that and mod that by $p$.}
+            \[\lambda = \begin{cases}
+                (y_2 - y_1)(x_2 - x_1)^{-1} \Mod{p} & \text{if } P \neq Q \\ 
+                (3x_1^2 + a)(2y_1)^{-1} \Mod{p} & \text{if } P = Q 
+            \end{cases}.\]
+            Then, set 
+            \[\nu = y_1 - \lambda x_1 \Mod{p}\]
+            \[x_3 = \lambda^2 - x_1 - x_2 \Mod{p}\]
+            \[y_3 = \lambda x_3 + \nu \Mod{p}\]
+            Then, $R = (x_3, y_3)$ is a solution mod $p$ and we define $P + Q = -R = (x_3, -y_3 \Mod{p})$. 
+        \end{itemize}
+    \end{itemize}
+    Then, 
+    \begin{itemize}
+        \item Associativity: for any $P, Q, R \in E$, $(P + Q) + R = P + (Q + R)$.
+        \item Commutativity: for any $P, Q \in E$, $P + Q = Q + P.$
+        \item Identity: for any $P \in E$, $P + O = P.$
+        \item Inverses: for any $P \in E$, $P + (-P) = O.$
+    \end{itemize}
+\end{theorem}
+
+\begin{mdframed}
+    (Example.) Consider $p = 7$ and $y^2 = x^3 + 17 \equiv x^3 + 3 \Mod{7}$. We already saw that $P = (1, 2)$ is a solution to this equation. We also know that $Q = (3, 4)$ is also a solution to this equation. With this in mind, how do we compute $P + Q$ in ``two'' different ways?
+    \begin{itemize}
+        \item Using the above formula carefully, notice that $P \neq Q$ and $x_2 - x_1 = 3 - 1 = 2$ is invertible mod 7 because $\gcd(2, 7) = 1$. Its inverse\footnote{Generally, you would want to use the extended Euclidian algorithm.} is 4. Thus, 
+        \[\lambda = (y_2 - y_1)(x_2 - x_1)^{-1} \Mod{p} = (4 - 2)(3 - 1)^{-1} \Mod{7} = 2 \cdot 4 \Mod{7} = 1.\]
+        From there, 
+        \[\nu = y_1 - \lambda x_1 \Mod{p} = 1\]
+        \[x_3 = \lambda^2 - x_1 - x_2 \Mod{p} = 4\]
+        \[y_3 = \lambda x_3 + \nu \Mod{p} = 5.\]
+        Therefore, $R = (4, 5)$ and $P + Q = -R = (4, -5 \Mod{7}) = (4, 2)$. 
+
+        \item The other way is to remember the geometry that underlies these formulas and use the geometry to guide your calculations. Just remember that you're trying to do everything mod 7. So, begin by computing the slope of the two points using rise-over-run, but since we need to do this calculation mod 7, isntead of dividing, we multiply by a modular inverse. In other words, we compute 
+        \[m = (4 - 2)(3 - 1)^{-1} = 2 \cdot 2^{-1} \equiv 2 \cdot 4 = 8 \equiv 1 \Mod{7}.\]
+        This is the same value we found with $\lambda$ above. Now, the next step is to use the point-slope form to find the equation of the secant line; we know that it has slope 1, and it passes through the point $(1, 2)$, so its equation should be \[y - 2 = 1(x - 1) \implies y = x + 1.\]
+        The $y$-intercept here matches what we computed for $\nu$ above. We now want to intersect this secant line with the curve. So, we substitute $y = x + 1$ into $y^2 = x^3 + 3$ and get \[x^3 - x^2 - 2x + 2 = 0.\]
+        We now need to find the roots of this cubic mod 7. We know that 1 and 3 are roots, so $(x - 1)(x - 3) = x^2 - 4x + 3$ must divide this cubic. Performing polynomial long division ``mod 7'' gives us $x - 4$ as the result, so the third point of intersection of the secant line must have $x = 4$, so $y = 5$. This gives us $R = (4, 5)$. Therefore, 
+        \[P + Q = (1, 2) + (3, 4) = (4, -5 \Mod{7}) = (4, 2).\]
+    \end{itemize}
+\end{mdframed}
+
+\begin{definition}{Order}{}
+    Suppose $P$ is a point on an elliptic curve $E$ mod $p$. The \textbf{order} of $P$, denoted $\ord_{E}(P)$, is the smallest positive integer $n$ such that $nP = O$. 
+\end{definition}
+Unlike in the real case, we don't need to worru about the infinite order anymore. 
+
+\bigskip 
+
+We also have the analogs of the First and Second Lemmas about Orders. 
+\begin{lemma}{First Lemma About Orders for Elliptic Curves}{}
+    Let $E$ be an elliptic curve mod $p$ and suppose $P \in E$. If $mP = O$, then $\ord_{E}(P)$ divides $m$. 
+\end{lemma}
+
+\begin{lemma}{Second Lemma About Orders for Elliptic Curves}{}
+    Let $E$ be an elliptic curve mod $p$ and suppose $P \in E$. Let $k = \ord_{E}(P)$. Then, \[iP \equiv jP \Mod{p}\] if and only if $i \equiv j \Mod{k}$. In particular, the points $O, P, 2P, 3P, \hdots, (k - 1)P$ are all incongruent mod $p$.
+\end{lemma}
+Having developed this theory, we can now state the basic problem that underlies elliptic curve cryptography. 
+\begin{mdframed}
+    (Elliptic Curve Discrete Logarithm Problem.) Suppose that you're given a prime $p$, an elliptic curve $E \Mod{p}$, and a point $P \in E$. Further suppose that $Q \in E$ is known to be a multiple of $P$. Find the discrete logarithm base $P$ of $Q$, i.e., the unique integer $k$ such that $0 \leq k < \ord_{E}(P)$ such that $Q = mP$. 
+\end{mdframed}
+The naive method for doing this is to just try all values of $k$ starting from $k = 0$ to $k = \ord_{E}(P) - 1$, but if $\ord_{E}(P)$ is very large, then this will be very slow. There are no methods that can help us find $k$ substantially faster in general, so we can choose $p, E, P$ in a way that makes the Elliptic Curve Discrete Logarithm Problem intractable for an adversary. 
+
+
+\subsection{Elliptic Curve Diffie-Hellman}
+Suppose Alice and Bob publicly agree to fix a prime $p$, an elliptic curve $E$ mod $p$ (specified by integers $a, b$ such that the Weierstrass equation $y^2 = x^3 + ax + b$ is nonsingular mod $p$), and a point $P \in E$. To ensure security, we need for $\ord_{P}(E)$ to be large. The data $(p, E, P)$ is all shared publicly.
+
+\bigskip 
+
+Alice can choose a secret integer $0 \leq k_a < \ord_{E}(P)$ and send Bob $Q_a = k_a P$. She can compute this value quickly using binary multiplication. Similarly, Bob can choose a secret integer $0 \leq k_b < \ord_{E}(P)$ and send Alice $Q_b = k_b P$. Alice computes $R = k_a Q_b$ and Bob computes $R = k_b Q_a \Mod{p}$. The two values of $R$ that Alice and Bob compute are the same since \[k_a Q_b = k_a (k_b P) = k_a k_b P = k_b (k_a P) = k_b Q_a.\]
+Thus, Alice and Bob now share a secret point $R$ on the elliptic curve. 
+
+\begin{mdframed}
+    (Exercise.) Suppose Alice and Bob publicly agree to use the elliptic curve $y^2 = x^3 + 17 \Mod{p} = 7$ and the point $P = (1, 2)$. 
+    \begin{enumerate}[(a)]
+        \item Suppose Alice picks the number $k_a = 4$. What is the message $Q_a$ that she sends Bob? 
+        \begin{mdframed}
+            We know that \[Q_a = k_a P = 4P.\] Given this, we need to compute $4P$. Let's begin with $2P = P + P$. We know that $P = P$ and $y_1 = 2$ is invertible mod 7, so we define 
+            \[\lambda = (3(1)^2 + 0)(2(2))^{-1} \Mod{7} = (3)((4)^{-1} \Mod{7}).\]
+            Computing the inverse of 4 mod 7 gives us 2, so 
+            \[\lambda = 3(2) \Mod{7} = 6 \Mod{7}.\]
+            Then, we have 
+            \[\nu = 2 - 6(1) = -4 \Mod{7} = 3\]
+            \[x_3 = 6^2 - 1 - 1 = 34 \Mod{7} = 6\]
+            \[y_3 = 6(6) + 3 = 39 \Mod{7} = 4.\]
+            Therefore, we can define $R = (6, 4)$ and thus $P + P = -R = (6, -4 \Mod{7}) = (6, 3)$. Now that we have $2P$, we can compute $4P = 2P + 2P$. We know that $y_1 = 3$ is invertible mod 7, so 
+            \[\lambda = (3(6)^2 + 0)(2(3))^{-1} \Mod{7} = (108)(6)^{-1} \Mod{7}.\]
+            Computing the inverse of 6 mod 7 gives us 6, so 
+            \[\lambda = 108(6) \Mod{7} = 4.\]
+            Then, we have 
+            \[\nu = 3 - 4(6) \Mod{7} = 0\]
+            \[x_3 = 4^2 - 6 - 6 \Mod{7} = 4\]
+            \[y_3 = 4(4) + 0 \Mod{7} = 2.\]
+            Therefore, we can define $R = (4, 2)$ and thus $2P + 2P = -R = (4, -2 \Mod{7}) = (4, 5)$.
+        \end{mdframed}
+        \item Suppose Alice receives the point $Q_b = (5, 3)$ from Bob. What is her shared secret with Bob?
+        \begin{mdframed}
+            We know that 
+            \[R = k_a Q_b = k_a (5, 3).\] 
+        \end{mdframed}
+    \end{enumerate}
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) Suppose Alice and Bob publicly agree to use the elliptic curve $y^2 = x^3 + 17 \Mod{p} = 7$ and the point $P = (1, 2)$. This point has order 13, which is too small to be secure. Suppose Eve intercepts Alice and Bob's message: she sees that Alice sent Bob $Q_a = (3, 3)$ and that Bob sent Alice $Q_b = (6, 4)$. What is Alice and Bob's shared secret? 
+    \begin{mdframed}
+        
+    \end{mdframed}
+\end{mdframed}
+
+\subsection{Interlude: Quadratic Residues}
+A familiar feature of the real numbers is that some numbers do not have square roots (e.g., the negatives). The same thing happens when you mod an integer. For example, let $n = 5$. We know that the integer is congruent to 0, 1, 2, 3, or 4 mod 5. This means that any square must be congruent to $0^2 = 0$, $1^2 = 1$, $2^2 = 4$, $3^2 \equiv 4 \Mod{5}$, or $4^2 \equiv 1 \Mod{5}$. In other words, only 0, 1, or 4 have square roots mod 5, and 2 and 3 do not.
+
+\begin{definition}{Quadratic Residue}{}
+    Fix a positive integer $n$. We say that an integer $a$ is a \textbf{quadratic residue mod }$n$ if it has a square root mod $n$, i..e, if there exists an integer $x$ such that $x^2 \equiv a \Mod{n}$. 
+\end{definition}
+
+\begin{mdframed}
+    (Exercise.) Find all quadratic residues mod the following integers. 
+    \begin{enumerate}[(a)]
+        \item $n = 3$
+        \begin{mdframed}
+            
+        \end{mdframed}
+        \item $n = 7$
+        \begin{mdframed}
+            
+        \end{mdframed}
+        \item $n = 11$
+        \begin{mdframed}
+            
+        \end{mdframed}
+    \end{enumerate}
+\end{mdframed}
+
+We'll see below that it will be useful to quickly determine whether an integer $a$ is a quadratic residue mod $a$ prime $p \geq 3$. It turns out that there is a good way to do this; let's introduce the following notation. 
+\begin{definition}{Legendre Symbol}{}
+    Let $p \geq 3$ be prime. For any integer $a$, define the Legendre symbol $(a/n)$ by 
+    \[\left(\frac{a}{n}\right) = \begin{cases}
+        0 & \text{if } a \equiv 0 \Mod{p} \\ 
+        1 & \text{if } a \not\equiv 0 \Mod{p} \text{ and } a \text{ is a quadratic residue mod } p \\ 
+        -1 & \text{if } a \not\equiv 0 \Mod{p} \text{ and } a \text{ is not a quadratic residue mod } p
+    \end{cases}\]
+\end{definition}
+For example, we saw above that 4 is a quadratic residue mod 5, so 
+\[\left(\frac{4}{5}\right) = 1\]
+and we saw that 2 is not a quadratic residue mod 5, so 
+\[\left(\frac{2}{5}\right) = -1.\]
+We can now rephrase our goal: we would like a quick way of computing Legendre symbols. This is provided to us by combining binary exponentiation with the following: 
+\begin{lemma}{Euler's Criterion}{}
+    Let $p \geq 3$ be prime. For any integer $a$, 
+    \[\left(\frac{a}{n}\right) \equiv a^{\frac{p - 1}{2}} \Mod{p}.\]
+\end{lemma}
+
+Euler's Criterion means that we have an efficient algorithm for determining whether something is a quadratic residue: we simply use binary exponentiation to compute $a^{(p - 1) / 2} \Mod{p}$ and we can read off the answer. 
+
+\begin{mdframed}
+    (Example.) Suppose we want to know if $a = 37$ is a quadratic residue mod $p = 97$. We have $(p - 1) / 2 = 96 / 2 = 48$, so we compute $a^{(p - 1) / 2} = 37^{48} \Mod{97}$ using binary exponentiation, and we find that it is $96 \equiv -1 \Mod{97}.$ Euler's Criterion says that 
+    \[\left(\frac{37}{97}\right) \equiv 37^{(97 - 1) / 2} = 37^{48} \equiv -1 \Mod{97}.\]
+    Therefore, 37 is not a quadratic residue mod 97. 
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) Use Euler's Criterion to determine whether or not the following integers $a$ are quadratic residues mod $p = 19$. 
+    \begin{enumerate}[(a)]
+        \item $a = 3$
+        \begin{mdframed}
+            
+        \end{mdframed}
+        \item $a = 5$
+        \begin{mdframed}
+            
+        \end{mdframed}
+        \item $a = 11$
+        \begin{mdframed}
+            
+        \end{mdframed}
+    \end{enumerate}
+\end{mdframed}
+
+
+\subsection{Elliptic Curve Elgamal}
+There is a variant of the Elgamal cryptosystem using elliptic curves that can be used to exchange messages, but there is a nontrivial encoding step. To make Elgamal work with elliptic curves, we first need a way to encode a plaintext message as a point on an elliptic curve $E$ mod $p$. 
+
+\bigskip 
+
+For this, there's a probablistic algorithm that encodes plaintext as $x$-coordinate of a plain (but note that not every integer will occur as the $x$-integer of a point on an elliptic curve mod $p$). Specifically, if $E$ is given by $y^2 = x^3 + ax + b$ and if $P = (x, y)$ is a point on the curve, then the $x$-coordinate must have the property that $x^3 + ax + b$ is a quadratic residue mod $p$. 
+
+\subsubsection{The Process}
+Suppose Bob wants to receive messages of length $N$. 
+\begin{enumerate}
+    \item Bob will fix a positive integer $s$. We'll see that, the larger Bob chooses the integer, the higher the probability that encoding will succeed. 
+    \item Bob will then choose a prime $p > s26^N$ and an elliptic curve $E$ mod $p$ (defined by integers $a, b$ such that the integral Weierstrass equation $y^2 = x^3 + ax + b$ is nonsingular mod $p$), and a point $P \in E$. 
+    \item He then computes $\ord_{E}(P)$. 
+    \item Then, Bob chooses a secret integer $0 \leq k < \ord_{E}(P)$ to serve as his private key. He computes $Q = kP$, and this value is part of his public key. 
+\end{enumerate}
+In other words, Bob will share all of the data $(s, E, P, \ord_{E}(P), Q)$ publicly, and keep only the integer $k$ secret.
+
+\bigskip 
+
+Suppose now that Alice wants to send Bob a message.
+\begin{enumerate}
+    \item She converts her message into an integer $m$ using the same base 26 idea we used for RSA. 
+    \item She will then iterate through values of $r = 0, 1, 2, \hdots, s - 1$ until she finds the first value of $x = sm + r$ such that\footnote{Remember that this is the \textbf{Legendre Symbol}!}
+    \[\left(\frac{x^3 + ax + b}{p}\right) \neq -1.\]
+    Note that the maximum possible value of $m$ is $26^N - 1$, so 
+    \[x = sm + r < s(26^N - 1) + s = s26^N < p\]
+    since Bob chose $p$ to be larger than $s26^N$. There is a roughly $1/2$ chance that an integer in $[0, p)$ is not a quadratic residue mod $p$, and here we are iterating through $s$ integers in the range $[0, p)$, so there is a $\left(\frac{1}{2}\right)^s$ chance that $x^3 + ax + b$ is not a quadratic residue for any of the $s$ possible values of $x = sm + r$. If none of the $s$ integers are quadratic residues, encoding fails. However, if Bob chose $s$ to be even moderately large, encoding failure is very unlikely. If encoding does fail, Alice can just modify her message slightly\footnote{Rephrasing slightly or adding a nonsense letter.} and try encoding again. 
+    
+    \item Once Alice finds a value of $x$ such that $x^3 + ax + b$ is a quadratic residue mod $p$, then there is an integer $y$ such that $y^2 \equiv x^3 + ax + b \Mod{p}$, so the point $M = (x, y)$ is on $E$. This will be the \underline{encoding} of her plaintext.
+\end{enumerate}
+This is not the ciphertext, but she can now encrypt the encoded message using a process very similar to the Elgamal cryptosystem we discussed earlier. 
+\begin{enumerate}
+    \item First, Alice chooses an ``ephemeral key'' $h$ such that $0 \leq h < \ord_{E}(P)$.
+    \item She computes $S = hQ$, $R_1 = hP$, and $R_2 = M + S$. The pair, $(R_1, R_2)$, is the ciphertext she sends to Bob. 
+\end{enumerate}
+To decrypt the ciphertext $(R_1, R_2)$, Bob uses his private key $k$ to compute $S = kR_1$. Observe that 
+\[kR_1 = k(hP) = khP = h(kP) = hQ,\]
+so Bob has found the same value of $S$ that Alice had, even though he does not know the value of the ephemeral key $h$. He can then compute $-S$ by negating the $y$-coordinate, and he then calculates 
+\[R_2 - S = R_2 + (-S) = (M + S) + (-S) = M + (S + (-S)) = M + O = M.\]
+He has thus recovered Alice's encoded plaintext. 
+
+\bigskip 
+
+Finally, Bob just needs to decode $M$. If $M = (x, y)$, he can extract the first coordinate $x$. The quotient when he divides this by $s$ is the integer $m$ that represents the message in base 26, so he then finishes off by converting back to text using the same process we used for RSA above. 
+
+\subsubsection{Encoding and Decoding}
+\begin{mdframed}
+    (Exercise.) Suppose Bob's public key has $s = 2$, $p = 97$, $a = 31$, and $b = 20$. The elliptic curve $E$ is then the one given by $y^2 = x^3 + 31x + 20 \Mod{p = 97}$. 
+    \begin{enumerate}[(a)]
+        \item What is the encoding of the plaintext message \code{B}? Follow the process above to find the corresponding point $M \in E$. 
+        \begin{mdframed}
+            First, we encode \code{B} into base 26; this gives us $m = 1$. Then, we need to iterate through all $r$ such that $0 \leq r \leq 2 - 1 = 1$. We find that 
+            \begin{itemize}
+                \item For $r = 0$, we have $x = 2(1) + 0 = 2$ and 
+                \begin{equation*}
+                    \begin{aligned}
+                        \left(\frac{2^3 + 31(2) + 20}{97}\right) &= \left(\frac{90}{97}\right) \\ 
+                            &= 90^{\frac{97 - 1}{2}} \Mod{97} \\ 
+                            &= 90^{\frac{96}{2}} \Mod{97} \\ 
+                            &= 90^{48} \Mod{97}.
+                    \end{aligned}
+                \end{equation*}
+                With this in mind, we find that $90^{48} \equiv 96 \equiv -1 \Mod{97}$, so $r = 0$ is not an option. 
+
+                \item For $r = 1$, we have $x = 2(1) + 1 = 3$ and 
+                \begin{equation*}
+                    \begin{aligned}
+                        \left(\frac{3^3 + 31(3) + 20}{97}\right) &= \left(\frac{140}{97}\right) \\ 
+                            &= 140^{\frac{97 - 1}{2}} \Mod{97} \\ 
+                            &= 140^{48} \Mod{97} \\ 
+                            &= 1 \Mod{97}.
+                    \end{aligned}
+                \end{equation*}
+                Here, we find that $r = 1$ and thus $x = 3$ \emph{is} the option. 
+            \end{itemize}
+            Now that we have $x = 3$, we can compute \[y^2 \equiv 3^3 + 31(3) + 20 \Mod{97}.\] We find that $y \equiv 25$. Thus, \[M = (3, 25).\]
+        \end{mdframed}
+        \item Show that the encoding fails for the letter \code{K}. 
+        \begin{mdframed}
+            Encoding \code{K} gives us $m = 10$. Then, iterating through all $0 \leq r \leq 2 - 1 = 1$, we have 
+            \begin{itemize}
+                \item For $r = 0$, we have $x = 2(10) + 0 = 20$ and 
+                \begin{equation*}
+                    \begin{aligned}
+                        \left(\frac{20^3 + 31(20) + 20}{97}\right) &= \left(\frac{8640}{97}\right) \\ 
+                            &= 8640^{\frac{97 - 1}{2}} \Mod{97} \\ 
+                            &= 8640^{48} \Mod{97} \\ 
+                            &= 7^{48} \Mod{97} \\ 
+                            &= 96 \Mod{97}.
+                    \end{aligned}
+                \end{equation*}
+                This gives us $8640^{48} \equiv 96 \equiv -1 \Mod{97}$, so $r = 0$ is not an option. 
+
+                \item For $r = 1$, we have $x = 2(10) + 1 = 21$ and 
+                \begin{equation*}
+                    \begin{aligned}
+                        \left(\frac{21^3 + 31(21) + 21}{97}\right) &= \left(\frac{9933}{97}\right) \\ 
+                            &= 9933^{\frac{97 - 1}{2}} \Mod{97} \\ 
+                            &= 9933^{48} \Mod{97} \\ 
+                            &= 39^{48} \Mod{97} \\ 
+                            &= 96 \Mod{97}.
+                    \end{aligned}
+                \end{equation*}
+                Once again, this gives us $9933^{48} \equiv 96 \equiv -1 \Mod{97}$, so $r = 1$ is not an option. 
+            \end{itemize}
+            Because we got $-1$ for all valid $r$, encoding is not possible.  
+        \end{mdframed}
+        \item Follow the process described above to find the plaintext message that results from decoding the point $(25, 30) \in E$.
+        \begin{mdframed}
+            TODO % ask about this
+        \end{mdframed}
+    \end{enumerate}
+\end{mdframed}
 
 \end{document}

@@ -307,7 +307,7 @@ Remember how we mentioned the (almost) unique ``other'' point? There are several
 \subsection{Interlude: Elliptic Curves Mod a Prime}
 We now fix a prime $p$. For technical reasons that are not worth lingering on for our purposes here, we assume\footnote{In applications to cryptography, $p$ will be very large anyways.} that $p \geq 5$. 
 
-\begin{definition}{integral}{}
+\begin{definition}{Integral Weierstrass Equation}{}
     A Weierstrass equation $y^2 = x^3 + ax + b$ is \textbf{integral} if $a$ and $b$ are integers. We then say that the equation is singular mod $p$ if $\Delta \equiv 0 \Mod{p}$. Otherwise, it is nonsingular mod $p$. 
 \end{definition}
 
@@ -410,7 +410,7 @@ We'll typically consider only solutions $(x, y)$ where $0 \leq x, y < p$ in orde
 \end{mdframed}
 
 \begin{definition}{Order}{}
-    Suppose $P$ is a point on an elliptic curve $E$ mod $p$. The \textbf{order} of $P$, denoted $\ord_{E}(P)$< is the smallest positive integer $n$ such that $nP = O$. 
+    Suppose $P$ is a point on an elliptic curve $E$ mod $p$. The \textbf{order} of $P$, denoted $\ord_{E}(P)$, is the smallest positive integer $n$ such that $nP = O$. 
 \end{definition}
 Unlike in the real case, we don't need to worru about the infinite order anymore. 
 

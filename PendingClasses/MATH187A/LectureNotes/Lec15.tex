@@ -202,7 +202,7 @@ If Eve is eavesdropping on Alice and Bob's communication, she knows Bob's public
 There is most likely no fast way of doing this, except for the way that Bob uses, which requires some secret knowledge. Bob needs to know the decryption exponent $d$, which is an inverse of $e$ mod $\phi(n)$, and knowing that would seem to require knowing $\phi(n)$. The following lemma shows that knowledge of $\phi(n)$ is actually equivalent to a knowledge of a factorization of $n$, which is believed to be hard to find quickly. 
 
 \begin{lemma}{}{}
-    Suppose $p$ and $q$ are distinct primes and $n = pq$. If Eve knows $n$ and can quickly calculate $\phi(n)$< then she can also quickly find $p$ and $q$. 
+    Suppose $p$ and $q$ are distinct primes and $n = pq$. If Eve knows $n$ and can quickly calculate $\phi(n)$, then she can also quickly find $p$ and $q$. 
 \end{lemma}
 In other words, the lemma tells us that, since it is believed that there is no fast factoring algorithm for classical (ie, non-quantum) computers, this tells us that Eve probably does not have a quick way of finding the decryption exponent $d$ in the same way that Bob does. 
 
