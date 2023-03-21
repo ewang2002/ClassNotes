@@ -82,7 +82,7 @@ The ``repeated squaring and then multiply together'' part of this process is ver
 \end{definition}
 For example, the binary representation of 25 is \code{11001} because \[1 + 0 \cdot 2 + 0 \cdot 2^2 + 1 \cdot 2^3 + 1 \cdot 2^4 = 1 + 8 + 16 = 25.\] To \emph{find} the binary representation, consider the following algorithm: 
 \begin{mdframed}
-    (Algorithm.) Let $r$ be a non-negative integer. To find the binary representation of $r$, divide $r$ by 2, then divide the quotient by 2, and then divide that quotient by 2, and so forth, until you hit a quotient of 2. The remainders of these divisions are the binary representation, with the last remainder corresponding to the leftmost bit. 
+    (Algorithm.) Let $r$ be a non-negative integer. To find the binary representation of $r$, divide $r$ by 2, then divide the quotient by 2, and then divide that quotient by 2, and so forth, until you hit a quotient of 0. The remainders of these divisions are the binary representation, with the last remainder corresponding to the leftmost bit. 
 \end{mdframed}
 \textbf{Remark:} This is an algorithm for humans, not for computers. Computers represent integers in binary form. 
 

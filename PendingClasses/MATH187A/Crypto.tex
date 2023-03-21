@@ -170,8 +170,8 @@ For example, a 1-gram is just a single letter; a 2-gram (i.e., \emph{bigram}) is
 
 
 
-\subsection{Rectangular Tranposition}
-\textbf{Rectangular tranposition}, known also as \emph{regular columnar transposition}, is a tranposition cipher. The ciphertext is obtained by \emph{permuting} the letters of the plaintext in a particular pattern. The pattern is determined by a secret \emph{keyword}. 
+\subsection{Rectangular Transposition}
+\textbf{Rectangular transposition}, known also as \emph{regular columnar transposition}, is a transposition cipher. The ciphertext is obtained by \emph{permuting} the letters of the plaintext in a particular pattern. The pattern is determined by a secret \emph{keyword}. 
 
 \bigskip 
 
@@ -431,7 +431,7 @@ I O N X -> O X N I\end{verbatim}
 \end{mdframed}
 
 \begin{mdframed}
-    (Exercise.) Alice and Bob share the keyword \code{ZEUS}. Alice uses rectangular tranposition to encrypt the following nonsense message: 
+    (Exercise.) Alice and Bob share the keyword \code{ZEUS}. Alice uses rectangular transposition to encrypt the following nonsense message: 
     \begin{verbatim}
 MTSQAGXY\end{verbatim}
     What is the corresponding ciphertext? 
@@ -538,7 +538,7 @@ In this particular diagram, when we apply a shift, we apply the shift to the \em
     \end{center}
 \end{mdframed}
 
-As with rectangular tranposition, we should encode the message by removing any non-alphabetic characters and capitalizing everything. 
+As with rectangular transposition, we should encode the message by removing any non-alphabetic characters and capitalizing everything. 
 
 \begin{mdframed}
     (Exercise.) 
@@ -3252,6 +3252,986 @@ Often, it's convenient to reformulate this definition slightly. In the case that
 \begin{definition}{}{}
     Fix a probability space. Two random variables $X$ and $Y$ are \textbf{independent} if the events $X = a$ and $Y = b$ are independent for all pairs $(a, b)$ where $a$ is a value of $X$ and $b$ a value of $Y$.
 \end{definition}
+
+\subsection{Index of Coincidence}
+Imagine starting with some text consisting of only uppercase alphabet characters. Separate all of the letters from each other. Throw them all into in a bag to shuffle them up. Then draw two letters from it without replacement. What is the probability that the two letters you drew are the same?
+
+\bigskip
+
+We can let $N$ be the total number of letters in the bag. For each letter $\alpha$, let $N_\alpha$ be the number of times that $\alpha$ appears in the bag. Then, $\frac{N_\alpha}{N}$ is the probability that $\alpha$ is the first letter you draw from the bag. After you get that letter, there are $N - 1$ letters left in the bag and $\alpha$ occurs only $N_\alpha - 1$ times, so the probability of drawing $\alpha$ again is $\frac{N_\alpha - 1}{N - 1}$. The overall probability, then, of drawing $\alpha$ twice is \[\frac{N_\alpha (N_\alpha - 1)}{N(N - 1)}.\]
+
+Now, notice that this probability is for \emph{some} letter $\alpha$. However, the question we asked in the first paragraph asks what the probability is of drawing two of the same letters in a row. So, we need to consider every possible letter; therefore, the probability we're looking for is \[\sum_{\alpha \in \{A, \hdots, Z\}} \frac{N_\alpha (N_\alpha - 1)}{N(N - 1)}.\] 
+
+\begin{mdframed}
+    (Exercise.) Above we stated that the probability of drawing $\alpha$ for our first letter is $N_\alpha / N$ and the probability of drawing $\alpha$ for our second letter is $(N_\alpha - 1) / (N - 1)$, so the probability of drawing two $\alpha$'s in a row is the product of these. Justify this ``multiplication'' of probabilities using conditional probabilities.
+
+    \begin{mdframed}
+        Let $A_{\alpha}$ be the event that the first letter is $\alpha$, and let $B_\alpha$ be the event that the second letter is $\alpha$. Notice how $\PR[A_{\alpha}] = \frac{N_\alpha}{N}$ and $\PR[B_\alpha | A_\alpha] = \frac{N_\alpha - 1}{N - 1}$, so it follows that \[\PR[B_\alpha | A_\alpha] = \frac{\PR[B_\alpha \cap A_\alpha]}{\PR[A_\alpha]} \implies \PR[B_\alpha | A_\alpha] \PR[A_\alpha] = \PR[B_\alpha \cap A_\alpha] \implies \PR[B_\alpha \cap A_\alpha] = \frac{N_\alpha}{N} \frac{N_\alpha - 1}{N - 1}.\]
+    \end{mdframed}
+\end{mdframed}
+Since there are 26 letters in the English alphabet, it turns out to be convenient to normalize this probability we computed above by multiplying by 26. The resulting number gets a special name: 
+\begin{definition}{Index of Coincidence}{}
+    Let $N$ be the length of some text and, for each letter $\alpha$, let $N_\alpha$ be the number of times $\alpha$ occurs in this text. The \textbf{index of coincidence} of the text, denoted $IC$, is the number \[IC = 26 \sum_{\alpha \in \{A, \hdots, Z\}} \frac{N_\alpha (N_\alpha - 1)}{N(N - 1)}.\]
+\end{definition}
+
+\begin{mdframed}
+    Suppose that you start with a text where every letter appears equally often. What would the index of coincidence of such a text be?
+
+    \begin{mdframed}
+        If every letter appears equally often, then we know that there will be $\frac{1}{26}N$ of each letter. Then, the index of coincidence is given by 
+        \begin{equation*}
+            \begin{aligned}
+                IC &= 26 \sum_{\alpha \in \{A, \dots, Z\}} \frac{\frac{1}{26}N (\frac{1}{26}N - 1)}{N(N - 1)} \\ 
+                    &= 26 \frac{\frac{1}{26}N (\frac{1}{26}N - 1)}{N(N - 1)}  \sum_{\alpha \in \{A, \dots, Z\}} 1 \\ 
+                    &= 26 \frac{\frac{1}{26}N (\frac{1}{26}N - 1)}{N(N - 1)} 26 \\ 
+                    &= \frac{N (\frac{1}{26}N - 1)}{N(N - 1)} 26 \\ 
+                    &=  \frac{(\frac{1}{26}N - 1)}{(N - 1)} 26 \\ 
+                    &= \frac{N - 26}{N - 1} 
+            \end{aligned}
+        \end{equation*}
+        Notice how, as $N \mapsto \infty$, $\frac{N - 26}{N - 1} \approx 1$, so it follows that the index of coincidence would be approximately 1.0.
+    \end{mdframed}
+\end{mdframed}
+
+
+\begin{mdframed}
+    (Exercise.) What is the largest possible index of coincidence? What kind of text would result in an index of coincidence that's as large as possible?
+
+    \begin{mdframed}
+        Suppose only one letter was in some given text. Then, $N_\alpha = \begin{cases}
+            N & \text{if } \alpha \text{ is that letter} \\ 
+            0 & \text{otherwise}
+        \end{cases}$ and 
+        \begin{equation*}
+            \begin{aligned}
+                IC &= 26 \sum_{\alpha \in \{A, \hdots, Z\}} \frac{N_\alpha (N_\alpha - 1)}{N(N - 1)} \\
+                    &= 26 (\hdots + 0 + \frac{N(N - 1)}{N(N - 1)} + 0 + \hdots) \\ 
+                    &= 26 (\hdots + 0 + 1 + 0 + \hdots) \\ 
+                    &= 26 (1) \\ 
+                    &= 26.
+            \end{aligned}
+        \end{equation*}
+        So, the largest possible index of coincidence is 26 and the resulting text would only have one letter.
+    \end{mdframed}
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) Let $N$ be the length of some text and, for each letter $\alpha$, let $N_\alpha$ be the number of times $\alpha$ occurs in this text. Let $p_\alpha = N_\alpha / N$. Show that, if $N$ is very large, then 
+    \[IC \approx 26 \sum_{\alpha \in \{A, \hdots, Z\}} p_\alpha^2.\]
+
+    \begin{mdframed}
+        Note that 
+        \begin{equation*}
+            \begin{aligned}
+                IC &= 26 \sum_{\alpha \in \{A, \hdots, Z\}} \frac{N_\alpha (N_\alpha - 1)}{N(N - 1)} \\
+                    &\approx 26 \sum_{\alpha \in \{A, \hdots, Z\}} p_{\alpha} p_{\alpha} && \text{Assume } N \text{ is very large} \\ 
+                    &= 26 \sum_{\alpha \in \{A, \hdots, Z\}} p_\alpha^2.
+            \end{aligned}
+        \end{equation*}
+    \end{mdframed}
+\end{mdframed}
+
+As we've seen, relative frequencies of letters in English are roughly stable from text to text, at least for sufficiently long texts. Correspondingly, the index of coincidence is also roughly stable from text to text! Here is the relevant heuristic:
+
+\begin{mdframed}
+    (Heuristic.) The index of coincidence of long English plaintext is 
+    \begin{itemize}
+        \item typically around 1.75, and 
+        \item almost always between 1.5 and 2. 
+    \end{itemize}
+\end{mdframed}
+
+Note that, based on the exercise above,
+\[IC \approx 26 \sum_{\alpha \in \{A, \hdots, Z\}} p_\alpha^2.\]
+The right-hand side always exactly the same if we perform a simple substitution on our text. 
+\begin{mdframed}
+    (Example.) For example, suppose the letter \code{E} has a relative frequency of 13\% in some plaintext. Then, $p_E^2 \approx 0.13^2$ will appear as a summand in the above expression for the IC of this plaintext. 
+
+    \bigskip 
+
+    Now, suppose we perform a simple substitution that converts \code{E} to \code{Q}. Then, $p_Q^2 \approx 0.13^2$ will appear as a summand of the IC for the ciphertext.
+\end{mdframed} 
+The subscript is different, but the value is exactly the same. So, since we're summing over all the letters, the value of IC does not change when we performa  simple substitution.
+
+\begin{mdframed}
+    (Exercise.) Suppose some English plaintext is encrypted using a transposition cipher (e.g., rectangular transposition). How will the index of coincidence of the plaintext compare to that of the ciphertext?
+
+    \begin{mdframed}
+        Because rectangular transposition (and any cipher that just rearranges text around) simply rearranges the letters of the plaintext around, the index of coincidence for the plaintext will be exactly the same as the index of coincidence for the ciphertext.
+
+        \bigskip 
+
+        In particular, this means that the index of coincidence of the ciphertext will probably have the same properties as the described heuristic above.
+    \end{mdframed}
+\end{mdframed}
+
+
+\subsection{Breaking the Vigenere Cipher}
+With the index of coincidence in hand, we can now break the Vigenere cipher. Although this isn't the \href{https://en.wikipedia.org/wiki/Kasiski_examination}{first method} that was used to break said cipher, it does use the index of coincidence.
+
+\bigskip 
+
+Suppose we start with ciphertext which is known for being encrypted using the Vigenere cipher:
+\begin{mdframed}
+    \begin{verbatim}
+        IKGWERTZONXEULTEZWHWXTYHSZKEGQOJNENRUDJGFRNKUISLDZOMKDKWZHVU
+        OSJLFZEJJONQHWVRFEATRYIDIKKDKKEHNAEWOEYFIRMLNIENIFMAJKELXAMH
+        RKKDKKEEUOIVADUNVRNLNEERNKKNJHHWNAUKESXDYLSHGRVQTKGNUFOEVAEL
+        OFYRVSESZYVWSLOLCLDGTTCLKWHEZQGGATZQTZKDRUKFUWRQDAJOEWLAQESH
+        IFMLVITTEMPVEDLIEWHAYGILMZUUJHIUGNERTZKLGLTAYHROLTKGCDDONEEW
+        HWEL...\end{verbatim}
+\end{mdframed}
+Then, we can try to decrypt the ciphertext like so: 
+\begin{enumerate}
+    \item First, make a guess for the ``period'' (i.e., the length of the keyword). Suppose we guess a period of 5. Then, we can break the ciphertext into rows of that length. 
+    \begin{verbatim}
+        IKGWE 
+        RTZON 
+        XEULT 
+        EZWHW 
+        XTYHS 
+        ZKEG…\end{verbatim}
+
+    If the period we've guessed is correct, \textbf{each column of this rectangle was encryped using a Caesar cipher with the same shift}. This means that we should be able to detect that our guess for the period is correct by examining indices of coincidence. If every column has an index of coincidence in the range that's expected of English text, our guess for the period is probably correct. Otherwise, we should try a different period. 
+
+    \bigskip 
+
+    In our example above, if we guess a period of 5, it turns out that the indices of coincidence of the five columns are 1.13, 1.11, 1.18, 1.15, and 1.15, respectively. That's outside the range that's expected of English text, so our guess of 5 is probably is wrong. If we try a period of 6, we find that the indices of coincidence are 1.75, 1.77, 1.73, 1.72, 1.79, and 1.74, respectively -- all in the right range. So, the period of 6 is probably correct. 
+
+    \item Once we find a probable guess for the period, we're in the clear. Then, we just have to figure out what the shift is for each column, which we can do using basic frequency analysis. Recall that the most frequent letter in each column should correspond to \code{E}, so we should guess that the shift for that column is the shift that moves \code{E} to the most frequent letter (If that doesn't work we might try shifting so that the second most frequent letter in that column moves to \code{E} instead.)
+\end{enumerate}
+
+
+
+\subsection{Known-Plaintext Attack on Simple Substitution}
+So far, we've studied a few techniques for conducting ciphertext-only attacks on various ciphers, i.e., ciphers where the only information Eve knows to begin with is which cipher was used to encrypt a message and has no information about the message itself. 
+
+\bigskip 
+
+Now, let's suppose Eve \emph{does} have some partial information about the plaintext itself. Specifically, we'll consider the situation where Eve already knows that a certain word appears at least once in the plaintext. As it turns out, we can use the $G$-test statistic to help us make good guesses here. 
+
+\bigskip 
+
+Suppose, for example, Eve intercepts some ciphertext, known to be encrypted using a \textbf{simple substitution}:
+\begin{verbatim}
+    CUXQAUDRERAUFJUCKRACUXQAUDRXFGAUFJUCKRACUXQAUDRQWRFJXCAOFKCUXQAUDRQWR
+    FJJFFSCADZRAACUXQAUDRRNFYDFJERSCRJCUXQAUDRRNFYDFJCZYGROMSCUPCUXQAUDRA
+    RQAFZFJSCWDUCUXQAUDRARQAFZFJOQGTZRAACUXQAUDRANGCZWFJDFNRCUXQAUDRXCZUR
+    GFJORANQCGXRDQORLRGPUDCZWERJFGRMAXRDQOZFUDCZWERJFGRMAXRXRGRQSSWFCZWOC
+    GRYUUFDRQLRZXRXRGRQSSWFCZWOCGRYUUDRFUDRGXQPCZADFGUUDRNRGCFOXQAAFJQGSC
+    TRUDRNGRARZUNRGCFOUDQUAFKRFJCUAZFCACRAUQMUDFGCUCRACZACAUROFZCUAERCZWG
+    RYRCLROJFGWFFOFGJFGRLCSCZUDRAMNRGSQUCLRORWGRRFJYFKNQGCAFZFZSPUDRGRXRG
+    RQTCZWXCUDQSQGWRHQXQZOQIMRRZXCUDQNSQCZJQYRFZUDRUDGFZRFJRZWSQZOUDRGRXR
+    GRQTCZWXCUDQSQGWRHQXQZOQIMRRZXCUDQJQCGJQYRFZUDRUDGFZRFJJGQZYRCZEFUDYF
+    MZUGCRACUXQAYSRQGRGUDQZYGPAUQSUFUDRSFGOAFJUDRAUQURNGRARGLRAFJSFQLRAQZ
+    OJCADRAUDQUUDCZWACZWRZRGQSXRGRARUUSROJFGRLRGCUXQAUDRPRQGFJFMGSFGOFZ...\end{verbatim}
+Now, more importantly, suppose Eve already knows that the word \code{LONDON} occurs at least \emph{once} in the plaintext. How does the codebreaking process change? 
+
+\begin{enumerate}
+    \item Notice how, in the word \code{LONDON}, the first 4 letters are all distinct, the 5th letter is the same as the 2nd letter, and the 6th letter is the same as the 3rd letter. This pattern will be \textbf{preserved} by simple substitution, so somewhere in the ciphertext, we should find that same sequence. If we can find such a sequence, it suggests that the letters \code{L}, \code{O}, \code{N}, \code{D} should be matched.  
+    
+    \bigskip
+
+    There are 18 sequences in this ciphertext\footnote{Not all patterns may show up above in the ciphertext; most of the ciphertext has been omitted for brevity.} that fits this pattern
+    \begin{verbatim}
+        SCUPCU      GKROKR
+        RACZAC      MUFJUF
+        OFGJFG      SXQAXQ
+        ZUDRUD      SFZOFZ
+        ZUDRUD      UQZOQZ
+        SFZOFZ      SFZOFZ
+        ARZURZ      RZUCZU
+        UDCZDC      GCZWCZ
+        RAFJAF      QZWCZW\end{verbatim}
+
+    If we were just brute-forcing through all possible substitutions, the number of possibilities for matching the letters \code{L}, \code{O}, \code{N}, and \code{D} would be 
+    \[26 \cdot 26 \cdot 24 \cdot 23 = 358800,\]
+    which is already significantly less than if we didn't know about the pattern beforehand. 
+
+    \item The key observation is that the relative frequencies of the letters \code{L}, \code{O}, \code{N}, and \code{D} in some sample of plaintext English should match the relative frequencies of the corresponding ciphertext letters. We can measure the deviations between frequencies using $G$, so we can compute $G$ for each of the 15 possible matchings and use that to help guide our choices. How do we calculate $G$? Let's take a look at one of these calculations in detail. 
+    
+    \begin{itemize}
+        \item Start by looking at some sample English text (e.g., the Declaration of Independence) and throwing out all the letters \emph{except} \code{L}, \code{O}, \code{N}, and \code{D}. If we do so, we find the following distributions:
+        \begin{center}
+            \begin{tabular}{|c|c|c|c|c|c|}
+                \hline 
+                    & \code{L} & \code{O} & \code{N} & \code{D} & Total \\
+                \hline 
+                Count in Sample & 228 & 513 & 483 & 252 & 1476 \\ 
+                Percent in Sample & 15.4\% & 34.8\% & 32.7\% & 17.1\% & 100\% \\ 
+                \hline 
+            \end{tabular}
+        \end{center}
+        Let's suppose we think the first sequence (out of all possible sequences above), \code{SCUPCU}, corresponds to \code{LONDON}. This would mean that \code{S} is matched to \code{L}, \code{C} to \code{O}, \code{U} to \code{N}, and \code{P} to \code{D}. We can then go through our ciphertext and count the instances of \code{S}, \code{C}, \code{U}, and \code{P} (throwing out all other letters as usual) and then fill in the first row of the table below: 
+        \begin{center}
+            \begin{tabular}{|c|c|c|c|c|c|}
+                \hline 
+                    & \code{S} & \code{C} & \code{U} & \code{P} & Total \\
+                \hline 
+                Observed in Ciphertext & 146 & 293 & 429 & 83 & 951 \\ 
+                Expected in Ciphertext & 146.9 & 330.5 & 311.2 & 162.4 & 951 \\ 
+                \hline 
+            \end{tabular}
+        \end{center}
+    \end{itemize}
+    Here, the expected values were obtained by taking the percent in sample from the first table and then multiplying those percentages by the observed values in the ciphertext. To see why this is the case, note that 
+    \begin{itemize}
+        \item We saw that $15.4\%$ of the letters \code{L}, \code{O}, \code{N}, \code{D} should be \code{L}. 
+        \item If \code{L} corresponds to \code{S} in the ciphertext, then we would expect \[0.154 \cdot 951 \approx 146.9\] letters of the ciphertext to be \code{S}. 
+    \end{itemize}
+    In any case, we can now compute the $G$-value; 
+    \begin{equation*}
+        \begin{aligned}
+            G &= 2 \sum O\ln\left(\frac{O}{E}\right) \\ 
+                &\approx 2\left(146 \ln\left(\frac{146}{146.9}\right) + 293 \ln\left(\frac{293}{330.5}\right) + 429 \ln\left(\frac{429}{311.2}\right) + 83 \ln\left(\frac{83}{162.4}\right) \right) \\ 
+                &\approx 91.6.
+        \end{aligned}
+    \end{equation*}
+
+    \begin{mdframed}
+        (Exercise.) The values of $G$ are approximated by a chi-square distribution with $k$ degrees of freedom. What is $k$? What is the value of the integral \[\int_{91.6}^{\infty} f_{k}(x) dx,\] i.e., the $p$-value? Based on this, does it seem likely that \code{SCUPCU} is a correct match for London? 
+        \begin{mdframed}
+            We have four possible observations to make; either one for \code{S}, \code{C}, \code{U}, or \code{P}. Let $n = 4$ so that $k = n - 1 = 4 - 1 = 3$.
+            % TODO $p$-value.
+        \end{mdframed}
+    \end{mdframed}
+
+    We can then do analogous calculations of $G$ for the other 14 possibilities. The results are as follows: 
+    \begin{center}
+        \begin{tabular}{|c|c|}
+            \hline 
+            Ciphertext Match & $G$ \\ 
+            \hline 
+            SCUPCU & 91.6 \\ 
+            RACZAC & 602.9 \\ 
+            OFGJFG & 34.5 \\ 
+            ZUDRUD & 442.5 \\ 
+            SFZOFZ & 7.8 \\ 
+            ARZURZ & 160.5 \\ 
+            UDCZDC & 354.4 \\ 
+            RAFJAF & 597.0 \\ 
+            GKROKR & 490.8 \\ 
+            MUFJUF & 39.3 \\ 
+            SXQAXQ & 284.8 \\
+            UQZOQZ & 223.0 \\
+            RZUCZU & 444.8 \\ 
+            GCZWCZ & 162.4 \\ 
+            QZWCZW & 533.3 \\ 
+            \hline 
+        \end{tabular}
+    \end{center}
+    Recall that smaller values of $G$ mean that the distributions are closer together, so the most likely match for \code{LONDON} appears to be \code{SFZOFZ}. Of course, it's possible that \code{SFZOFZ} is not the correct match, but if we make that guess and then it seems like the decryption is turning out to be nonsense, we can just go back and try the one option with the next lowest value of $G$. 
+
+    \bigskip 
+
+    As we've seen, it's usually easy to guess which letters correspond to \code{E} and \code{T}. So, we now have a systematic way of identifying the letters \code{L}, \code{O}, \code{N}, and \code{D} as well. 
+\end{enumerate}
+
+
+\subsection{Perfect Secrecy}
+Let's now discuss cryptosystems in some generality. The point of this section is to show what it means when we say that the one-time pad achieves perfect secrecy.
+
+\bigskip 
+
+Let's introduce the general framework. 
+\begin{itemize}
+    \item From Eve's perspective, it makes sense to consider Alice's choice of a plaintext message as a \emph{random variable} $M$ whose set of values $\mathscr{M}$ represents all possible plaintext messages. By saying that $M$ is a random variable, we're introducing probabilities associated to every possible plaintext message, and we're assuming that Eve knows this probability distribution. 
+    \begin{itemize}
+        \item For example, $\mathscr{M}$ might be the set of all strings in the letters \code{A}-\code{Z}, and we might deem the plaintext \code{QUIZ} to be less probable than the plaintext \code{THEN} on the basis that the former uses much more infrequent letters than the latter. 
+        \item Alternatively, we could assign probabilities based on bigram frequencies instead of single-letter frequencies. 
+    \end{itemize}
+    It doesn't matter \emph{how} we assign probabilities; the point is just that any plaintext message has a probability assigned to it. 
+
+    \item We can model known-plaintext attacks in at least two ways. Suppose, for example, Eve knows that the plaintext must contain the word \code{LONDON}. 
+    \begin{enumerate}
+        \item The first way to model a known-plaintext attack is to assign a probability of 0 to every plaintext message that \emph{doesn't} contain the \code{LONDON} as a substring. 
+        \item The second way is to simply eliminate all strings that do not contain \code{LONDON} from our set of values $\mathscr{M}$. 
+    \end{enumerate}
+    It's more convenient to use the latter method of modeling known-plaintext attacks, since it allows us to assume that \[\PR[M = m] \neq 0\] for all $m \in \mathscr{M}$, and so we'll assume this from here on out.  
+\end{itemize}
+All of this brings us to the following definition of a cryptosystem. 
+\begin{definition}{Cryptosystem}{}
+    A \textbf{cryptosystem} (on $M$) consists of the following data: 
+    \begin{itemize}
+        \item A random variable $K$ whose set of values $\mathscr{K}$ represents the set of all possible keys. 
+        \item A set $\mathscr{C}$ of all possible ciphertext. 
+        \item An encryption function \[E: \mathscr{K} \times \mathscr{M} \mapsto \mathscr{C},\] which means that $E$ takes as input a key $k \in \mathscr{K}$ and a plaintext message $m \in \mathscr{M}$ and outputs a corresponding ciphertext $E(k, m) \in \mathscr{C}$. 
+        \item A decryption function \[D: \mathscr{K} \times \mathscr{C} \mapsto \mathscr{M},\] which means that $D$ takes as input a key $k \in \mathscr{K}$ and a ciphertext $c \in \mathscr{C}$ and outputs a corresponding plaintext message $D(k, c) \in \mathscr{M}$. 
+    \end{itemize}
+    In particular, we require that 
+    \[D(k, E(k, m)) = m\]
+    for any key $k \in \mathscr{K}$ and any plaintext message $m \in \mathscr{M}$, i.e., that a plaintext can be recovered from its encryption. Once we've specified the above data, we also define the random variable $C = E(K, M)$ to model an observation of the ciphertext. 
+\end{definition}
+
+\begin{mdframed}
+    (Example.) Consider the Caesar cipher. The sets $\mathscr{M}$ and $\mathscr{C}$ are both equal to the set of all possible strings in the capital letters \code{A} through \code{Z}, and the key string $\mathscr{K}$ is the set of all possible shifts, i.e. \[\mathscr{K} = \{0, 1, 2, \hdots, 24, 25\}.\] Given $k \in \mathscr{K}$ and $m \in \mathscr{M}$, the string $E(k, m)$ is the result of applying the Caesar cipher with shift $k$ to $m$, i.e., by adding $k$ mod 26 to the numbers 0-25 corresponding to each letter \code{A}-\code{Z} in $m$. To fully specify the cryptosystem, we should also assign probabilities to each of the keys; for example, we might assume that $\mathscr{K}$ is uniform. 
+
+    \bigskip 
+
+    This is not necessarily the only way to fit the Caesar cipher into the above framework. For example, if you like, you can fix an upper bound on the length of the strings involved so that $\mathscr{M}$ and $\mathscr{C}$ are finite. You could also decide that the key space is just $\{1, 2, \hdots, 25\}$, if you don't want to consider a shift of 0 to be a valid key. You could also choose a non-uniform distribution for the random variable $K$.  
+\end{mdframed}
+
+\begin{definition}{Perfect Secrecy}{}
+    A cryptosystem achieves \textbf{perfect secrecy} if $M$ and $C$ are independent random variables. 
+\end{definition}
+In other words, for any plaintext message $m$ and any encrypted message $c$, we should have 
+\[\PR[M = m | C = c] = \PR[M = m].\]
+Heuristically, this means that observing $C = c$ provides Eve with no additional information whatsoever about $M$; the best guesses that she might have made about the plaintext message before she intercepted the ciphertext do not change even after she intercepts the ciphertext. 
+
+\bigskip 
+
+Recall that the attacks on cryptosystems that we've seen so far exploit the fact that those cryptosystems fail to achieve perfect secrecy. When we conduct frequency analysis on simple substitution, for example, we are using the fact that certain plaintexts become more likely after observing  a given ciphertext, e.g., the plaintexts in which the letter \code{E} appears in the same positions in which the most frequenct letter of the ciphertext appears. 
+
+\bigskip 
+
+How do we achieve perfect secrecy? The first observation to make here is that achieving perfect secrecy requires having a lot of keys. More precisely, 
+
+\begin{lemma}{}{}
+    Suppose a cryptosystem achieves perfect secrecy. Then, the number of keys must be at least as large as the number of ``possible'' ciphertexts (i.e., ciphertexts $c \in \mathscr{C}$ such that $\PR[C = c] \neq 0$).
+\end{lemma}
+
+Having observed this, here is a result that gives us a way to achieve perfect secrecy.
+
+\begin{theorem}{Perfect Secrecy}{}
+    A cryptosystem achieves perfect secrecy if it satisfies all of the following conditions: 
+    \begin{itemize}
+        \item $K$ is uniform. 
+        \item $K$ and $M$ are independent.
+        \item For every plaintext message $m \in \mathscr{M}$ and every ciphertext $c \in \mathscr{C}$, there exists a unique $k \in \mathscr{K}$ such that $E(k, m) = c$. 
+    \end{itemize}
+\end{theorem}
+We now want to show that the ``one-time pad achieves perfect secrecy.'' Remember that the one-time pad is a special case of the Vigenere cipher. Fix a period $p$ and 
+\begin{itemize}
+    \item let $\mathscr{K}$ be the set of all sequences $\{a_1, \hdots, a_p\}$, where $a_1, \hdots, a_p \in [0, 1, 2, \hdots, 24, 25]$. Fix a message length $r$, and 
+    \item let $\mathscr{M}$ and $\mathscr{C}$ be the set of all strings in the letters \code{A}-\code{Z} of length $r$. 
+    \item Also note that if Eve intercepts a ciphertext of length $r$ that she knows to be encrypted using a Vigenere cipher, she also knows the plaintext must have length $r$, so she can assign probability 0 to all messages of other lengths. In other words, it's reasonable to eliminate all messages of other lengths from our message spaces. 
+\end{itemize}
+We then have the Vigenere encryption and decryption functions $E: \mathscr{K} \times \mathscr{M} \mapsto \mathscr{C}$ and $D: \mathscr{K} \times \mathscr{C} \mapsto \mathscr{M}$.  Applying Vigenere encryption to a message of length $r$ will always just use the first $\min\{r, p\}$ of the $p$ numbers in our key sequence, so might as well replace $p$ with $\min\{r, p\}$ in order to assume that $p \leq r$. 
+
+\begin{lemma}{}{}
+    Using the notation we've just introduced, we have $p = r$ if and only if, for every plaintext message $m \in \mathscr{M}$ and every ciphertext, there exists a unique $k \in \mathscr{K}$ such that $E(k, m) = c$. 
+\end{lemma}
+With this in mind, recal lsome of the assumptions we made when we were discussing the one-time pad when we first introduced it. 
+\begin{itemize}
+    \item The key sequence needs to be ``totally random.'' We can now formalize this by saying that we want our random variable $K$ to be uniform. 
+    \item The key sequence must be ``unrelated to the plaintext.'' We can now formalize this by saying that $K$ and $M$ be independent random variables. 
+    \item The key sequence must be as long as the plaintext. In the notation we just introduced, this is the requirement that $p \geq r$, but we already assumed that $p \leq r$ so in fact this is equivalent to saying $p = r$ and, in the lemma above, we saw that this is equivalent to saying that, for any $m \in \mathscr{M}$ and $c \in \mathscr{C}$, there exists a unique $k \in \mathscr{K}$ such that $E(k, m) = c$. 
+\end{itemize}
+In other words, these three assumptions we made coincide exactly with the conditions that appear in the Perfect Secrecy Theorem! We have now proved what we want to prove:
+\begin{corollary}{}{}
+    The one-time paid achieves perfect secrecy.
+\end{corollary}
+
+
+
+
+
+
+
+
+
+
+
+
+
+\newpage 
+\section{Modern Cryptography}
+Modern cryptography generally begins with two, related, desires 
+\begin{itemize}
+    \item In all the ciphers we've seen so far, we assume Alice and Bob have some way of sharing a key. We haven't said much about \emph{how} that happens, and we've also seen that the perfect secrecy requires very long keys. How can Alice and Bob share a long key with each other without Eve finding out about it? 
+    \item None of the ciphers we've seen so far is robust against chosen-plaintext attacks. If Eve has the ability to request the ciphertexts for any plaintexts she likes, she can gradually get more information about the key until she can break the code. Recall that the one-time pad is only safe if the key is only used once. 
+\end{itemize}
+We would like a cryptosystem where the \emph{decryption key} is only known to Bob. Alice and Eve and everyone else in the world has access to Bob's encryption key and can encrypt messages for Bob to see, but then only Bob can recover the plaintext. This allows us to avoid Alice and Bob having to share a common key, and would allow Eve to generate ciphertexts for any plaintext of her choosing while also making sure that the cryptosystem is safe against chosen-ciphertext attacks. 
+
+\bigskip 
+
+It turns out that there are a number of cryptosystems of this type, and they all fall under the heading of \textbf{public-key cryptography}, because the encryption key can be made public to the world. A recurring theme behind public-key cryptosystems is a ``one-way function,'' which is a function that's easy to compute but hard to invert. 
+
+\subsection{Interlude: Primes} 
+\begin{definition}{Prime}{}
+    A positive integer $p \geq 2$ is \textbf{prime} if its only positive divisors are 1 and itself. An integer $n \geq 2$ that is not prime is called \textbf{composite}.
+\end{definition}
+For example, 5 is prime because 1 and 5 are its only divisors. 4, on the other hand, is not prime, since 2 is a divisor of 4 (in addition to 1 and 4). 
+
+\begin{mdframed}
+    (Exercise.) The ``twin prime conjecture'' is a famous open problem which says that there are infinitely many “twin primes,” ie, pairs of primes that are 2 apart. For example, 3 and 5 are twin primes, as are 5 and 7, or 11 and 13. Give five more examples of twin primes.
+    
+    \begin{mdframed}
+        The following pairs are five other examples:
+        \[(17, 19), (29, 31), (41, 43), (59, 61), (71, 73).\]
+    \end{mdframed}
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) There is a version of the twin prime conjecture which says that every even integer can be written as the difference of consecutive primes in infinitely many ways. For example, we have: \[6 = 29 - 23 = 137 - 131 = 599 - 593 = \hdots.\]
+    Express the integer 10 as the difference of two consecutive primes in five different ways.
+    \begin{mdframed}
+        Five other ways include: 
+        \[10 = 13 - 3 = 17 - 7 = 29 - 19 = 41 - 31 = 71 - 61.\]
+    \end{mdframed}
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) Explain why, if an integer $n \geq 2$ is composite, it must be divisible by a prime $p$ such that $p \leq \sqrt{n}$. Use this fact to determine whether or not 701 is prime. 
+
+    \begin{mdframed}
+        \begin{proof}
+            Suppose $n$ is composite. Then, we can write \[n = ab\] such that $a, b$ are integers and $1 < a < n$, $1 < b < n$, and WLOG $a \leq b$.
+            
+            \bigskip 
+            
+            Further suppose that $a > \sqrt{n}$. Then, $b \geq a > \sqrt{n}$. However, if $b \geq a > \sqrt{n}$, then \[ab > \sqrt{n}\sqrt{n} = n,\] a contradiction (since we wrote that $n = ab$). Therefore, $a \leq \sqrt{n}.$ We know that there exists some prime $p$ which divides $a$, so it follows that $p \leq a$ and $p \leq \sqrt{n}$.  
+        \end{proof}
+    \end{mdframed}
+\end{mdframed}
+
+\subsubsection{Ubiquity of Primes}
+Every positive integer $n \geq 2$ can be written as a product of primes. For example, $18 = 2 \cdot 3^2$ and both 2 and 3 are primes. An expression of an integer $n \geq 2$ as a product of primes is called a \emph{prime factorization} of $n$.
+
+\begin{theorem}{Fundamental Theorem of Arithmetic}{}
+    Any positive integer $n \geq 2$ has a unique prime factorization. In other words, there exists an expression \[n = p_1^{e_1} p_2^{e_2} \hdots p_r^{e_r}\] such that $p_1, \hdots, p_r$ are primes and $e_1, \hdots, e_r$ are positive integers, and the expression is unique up to reordering the indices. 
+\end{theorem}
+For example, $60 = 2^2 \cdot 3^1 \cdot 5^1$ is a unique prime factorization of 60; the only other prime factorization involves reordering the factors around. 
+
+\begin{mdframed}
+    (Example.) Find the prime factorizations of 1231 and of 1232.
+
+    \begin{mdframed}
+        \begin{itemize}
+            \item For 1231, note that 
+            \[1231 = 1231 \cdot 1.\]
+
+            \item For 1232, note that 
+            \[1232 = 616 \cdot 2 = 308 \cdot 2^2 = 154 \cdot 2^3 = 77 \cdot 2^4 = 11 \cdot 7 \cdot 2^4.\]
+        \end{itemize}
+    \end{mdframed}
+\end{mdframed}
+
+
+\begin{mdframed}
+    (Exercise.) 
+    \begin{enumerate}
+        \item Find all prime factors of $50!$. (Just a list of the prime factors is sufficient; you don't need to find the exponents of the prime factorization for this part.)
+        \begin{mdframed}
+            Note that \[50! = 50 \cdot 49 \cdot 48 \cdot \hdots \cdot 3 \cdot 2 \cdot 1.\]
+            In particular, any composite number less than or equal to 50 can be decomposed into primes that are also less than or equal to 50. Thus, we have \[2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47.\] 
+        \end{mdframed}
+        \item Find the prime factorization of $10!$. 
+        \begin{mdframed}
+            We know that 
+            \[10! = 10 \cdot 9 \cdot 8 \cdot 7 \cdot 6 \cdot 5 \cdot 4 \cdot 3 \cdot 2,\]
+            where 
+            \[10 = 5 \cdot 2,\]
+            \[9 = 3^2,\]
+            \[8 = 2^3,\]
+            \[7 = 7 \cdot 1,\]
+            \[6 = 3 \cdot 2,\]
+            \[5 = 5 \cdot 1,\]
+            \[4 = 2 \cdot 2,\]
+            \[3 = 3 \cdot 1,\]
+            \[2 = 2 \cdot 1.\]
+            So, 
+            \[10! = 2^8 \cdot 3^4 \cdot 5^2 \cdot 7.\]
+        \end{mdframed}
+        \item Find the prime factorization of $11! / 2^8$. 
+        \begin{mdframed}
+            We know that
+            \begin{equation*}
+                \begin{aligned}
+                    \frac{11!}{2^8} &= \frac{11 \cdot 10 \cdot 9 \cdot 8 \cdot 7 \cdot 6 \cdot 5 \cdot 4 \cdot 3 \cdot 2}{2^8} \\ 
+                        &= \frac{11 \cdot (5 \cdot 2) \cdot (3^2) \cdot (2^3) \cdot 7 \cdot (2 \cdot 3) \cdot 5 \cdot (2^2) \cdot 3 \cdot 2}{2^8} \\ 
+                        &= 11 \cdot 5 \cdot (3^2) \cdot 7 \cdot 3 \cdot 5 \cdot 3 \\ 
+                        &= (3^2) \cdot 3 \cdot 3 \cdot 5 \cdot 5 \cdot 7 \cdot 11 \\ 
+                        &= 3^4 \cdot 5^2 \cdot 7 \cdot 11.
+                \end{aligned}
+            \end{equation*}
+            Alternatively, 
+            \begin{equation*}
+                \begin{aligned}
+                    \frac{11!}{2^8} &= \frac{11 \cdot 10!}{2^8} \\
+                        &= \frac{11 \cdot 2^8 \cdot 3^4 \cdot 5^2 \cdot 7}{2^8} \\ 
+                        &= 11 \cdot 3^4 \cdot 5^2 \cdot 7.
+                \end{aligned}
+            \end{equation*}
+        \end{mdframed}
+    \end{enumerate}
+\end{mdframed}
+
+\begin{lemma}{Euclid's Lemma}{}
+    Suppose $a$ and $b$ are integers and that $d$ is a divisor of $ab$ such that $\gcd(a, b) = 1$. Then, $d$ is a divisor of $b$. 
+\end{lemma}
+
+\begin{proof}
+    By Bezout's theorem, there exists $x$ and $y$ such that \[1 = \gcd(a, d) = ax + dy.\] Multiplying this by $b$ gives us \[b = abx + bdy.\] Observe that $d$ divides $bdy$, and it also divides $ab$. Thus, $d$ divides the sum $abx + bdy = b$. 
+\end{proof}
+
+\subsubsection{Scarcity of Primes \& Difficulty of Factoring}
+Having made the observation that primes are ``ubiquitous,'' we should also note that primes are ``scarce.'' The first sense is a literal sense: as a proportion of all integers, very few integers end up being prime. The second sense is that prime factorizations are difficult to actually calculate, even for moderately large numbers. 
+
+\bigskip 
+
+The naive way to find a prime factorization is to figure out what the factors are.
+\begin{mdframed}
+    (Example.) Suppose we want to find the prime factorization of 75. First, we note that 2 does not divide 75. We then see that 3 does divide 75, and so we're left with 25 ($75 / 3 = 25$). Now, 3 no longer divides 25, and neither does 4. However, 5 does divide 25, so we're left with 5 ($25 / 5 = 5$). Since 5 divides itself, we're left with 1 ($5 / 5 = 1$), so the prime factorizations are \[75 = 3^1 \cdot 5^2.\]
+\end{mdframed}
+This process is extremely slow as the number gets larger or, more specifically, as the prime factors of the number get larger. 
+
+\bigskip 
+
+There are a number of deep, sophisticated, and clever techniques to speed this process up\footnote{Which will not be covered in this course.}, but no one has yet found a factorization algorithm for classical computers that is substantially better than the naive method we just described. The difficulty of factoring can be leveraged to build modern cryptosystems that are in widespread use today. 
+
+\bigskip 
+
+Some things to further consider: 
+\begin{itemize}
+    \item Just because there are no substantially better algorithm for finding the prime factorizations doesn't mean one does exist. In other words, there could be an algorithm for finding prime factorizations in an efficient way, but we haven't found it. 
+    \item Efficient factorization algorithms exist for \emph{quantum computers}, but quantum computing hardware has not yet caught up to our theoretical knowledge, so our modern cryptosystems are still safe for now. That being said, this won't last for much longer and so we will soon need new cryptosystems that are secure against quantum computers.
+\end{itemize}
+
+\bigskip 
+
+The difficulty of factoring suggests that the function $\mu$, which takes as input two prime numbers $p$ and $q$ and outputs the product \[\mu(p, q) = pq\] is our first example of a \textbf{one-way} function. It's very easy to compute the product of two primes but, if the primes are large, it'll be very hard to invert this function (i.e., find the prime factors of some given number that has two large prime factors). This is the one-way function on which RSA is based, as we will soon see. 
+
+
+\subsection{Euler's Phi Function}
+\begin{definition}{Euler's Phi Function}{}
+    For a positive integer $n$, let $\phi(n)$ denote the number of integers $r$ with $0 \leq r < n$ and $\gcd(n, r) = 1$. The function $n \mapsto \phi(n)$ is called \emph{Euler's phi function} (or \emph{Euler's totient function}).
+\end{definition}
+
+For example, when we were counting that there are 312 affine encryption functions available in English, part of the process involved counting the number of numbers relatively prime to 26, and we found it was 12. Now, we can say this as \[\phi(26) = 12.\]
+
+\begin{mdframed}
+    (Exercise.) Compute $\phi(12)$, $\phi(13)$, $\phi(14)$, and $\phi(15)$. 
+    \begin{mdframed}
+        \begin{itemize}
+            \item For $\phi(12)$, we know that 
+            \[\gcd(1, 12) = \gcd(5, 12) = \gcd(7, 12) = \gcd(11, 12) = 4,\]
+            so $\phi(12) = 4$. 
+
+            \item Because $13$ is prime, $\phi(13) = 12$. 
+            
+            \item For $\phi(14)$, we know that 
+            \[\gcd(1, 14) = \gcd(3, 14) = \gcd(5, 14) = \gcd(9, 14) = \gcd(11, 14) = \gcd(13, 14) = 1,\]
+            so $\phi(14) = 6$.
+
+
+            \item By the same reasoning, $\phi(15) = 8$. 
+        \end{itemize}
+    \end{mdframed}
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) Explain why, in a language that uses an alphabet with $n$ letters, the number of distinct affine encryption functions is $n\phi(n)$. 
+
+    \begin{mdframed}
+        Recall that the affine encryption function is of the form \[E(x) = (ax + b) \Mod{n}.\] There are $n$ possible options for $b$, and $\phi(n)$ possible options for $a$ (otherwise, there's no inverse for $a$). This gives us $\phi(n) \cdot n$. 
+    \end{mdframed}
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) Suppose $p$ is prime. 
+    \begin{enumerate}
+        \item Explain why $\phi(p) = p - 1$. 
+        \begin{mdframed}
+            If $p$ is prime, then its only positive divisors are 1 and itself. So, in particular, 
+            \[\phi(1, p) = \phi(2, p) = \hdots = \phi(p - 1, p) = 1\]
+            and 
+            \[\phi(p, p) = p.\]
+        \end{mdframed}
+
+        \item Explain why $\phi(p^e) = p^e - p^{e - 1}$ for any $e \geq 1$. 
+        \begin{mdframed}
+            A number is relatively prime with $p^e$ if and only if it is not divisible by $p$, so there are $p^e$ numbers in total, \[\{1, 2, \hdots, p^e\}.\] From those, exactly $p^{e - 1}$ are divisible by $p$, \[\{1p, 2p, 3p, \hdots, p^{e - 1}p\}.\] Therefore, there are $p^e - p^{e - 1}$ numbers in the list not divisible by $p$.
+        \end{mdframed}
+    \end{enumerate}
+\end{mdframed}
+
+\begin{lemma}{}{}
+    If $\gcd(a, b) = 1$, then $\phi(ab) = \phi(a)\phi(b)$. 
+\end{lemma}
+This brings us to the following formula:
+\begin{theorem}{}{}
+    Suppose $n = p_1^{e_1} \hdots p_r^{e_r}$ is the prime factorization of $n$. Then, the formula for $\phi(n)$ is 
+    \[\phi(n) = p_{1}^{e_1 - 1}(p_1 - 1) \cdot \hdots \cdot p_{r}^{e_r - 1}(p_r - 1)\]
+\end{theorem}
+
+\begin{mdframed}
+    (Exercise.) Use the formula for Euler's phi function to calculate $\phi(n)$ for each of the following values of $n$. 
+    \begin{enumerate}[(a)]
+        \item $n = 20 = 2^2 \cdot 5$. 
+        \begin{mdframed}
+            \[\phi(20) = 2^{2 - 1}(2 - 1) \cdot 5^{1 - 1}(5 - 1) = 2 \cdot 4 = 8.\]
+        \end{mdframed}
+        \item $n = 25 = 5^2$. 
+        \begin{mdframed}
+            \[\phi(25) = 5^{2 - 1}(5 - 1) = 5 \cdot 4 = 20.\]
+        \end{mdframed}
+        \item $n = 30 = 2 \cdot 3 \cdot 5$. 
+        \begin{mdframed}
+            \[\phi(30) = 2^{1 - 1}(2 - 1) \cdot 3^{1 - 1}(3 - 1) \cdot 5^{1 - 1}(5 - 1) = 1 \cdot 2 \cdot 4 = 8.\]
+        \end{mdframed}
+        \item $n = 35 = 5 \cdot 7$. 
+        \begin{mdframed}
+            \[\phi(35) = 5^{1 - 1}(5 - 1) \cdot 7^{1 - 1}(7 - 1) = 4 \cdot 6 = 24.\]
+        \end{mdframed}
+        \item $n = 40 = 2^3 \cdot 5$. 
+        \begin{mdframed}
+            \[\phi(40) = 2^{3 - 1}(2 - 1) \cdot 5^{1 - 1}(5 - 1) = 2^2 \cdot 4 = 16.\]
+        \end{mdframed}
+    \end{enumerate}
+\end{mdframed}
+We should also note that \[\phi(n) = n \prod_{\substack{p | n \\ p \text{ prime}}} \left(1 - \frac{1}{p}\right).\]
+
+\begin{theorem}{Euler's Theorem}{}
+    Suppose $n$ is a positive integer and $a$ is another integer with $\gcd(a, n) = 1$. Then, \[a^{\phi(n)} \equiv 1 \Mod{n}.\]
+\end{theorem}
+
+\begin{mdframed}
+    (Example.) We know that $20 = 2^2 \cdot 5$ so $\phi(20) = 8$. This means that \[a^{\phi(20)} = a^8 \equiv 1 \Mod{20}\] for any $a$ that is relatively prime to 20. For example, when $a = 3$, we have $\gcd(3, 20) = 1$ and, using the Modular Arithmetic Theorem, we have 
+    \begin{equation*}
+        \begin{aligned}
+            &3^2 = 9 \\ 
+            &3^4 = (3^2)^2 \equiv 9^2 = 81 \equiv 1 \Mod{20} \\ 
+            &3^8 = (3^4)^2 \equiv 1^2 = 1 \Mod{20}.
+        \end{aligned}
+    \end{equation*}
+    We can use this theorem to compute very large powers of some number. For example, to compute $7^{20232023} \Mod{20}$, we notice that $20232020$ is divisible by 8 so 
+    \[20232023 = 20232000 + 23 \equiv 23 \equiv 7 \Mod{8}.\]
+    So, $20232023 = 8q + 7$ for some $q \geq 0$, so 
+    \[7^{20232023} = 7^{8q + 7} = (7^8)^q 7^7 = 1^q 7^7 = 7^7 \Mod{20}.\]
+    Then, to compute $7^7 \Mod{20}$, we can do 
+    \begin{equation*}
+        \begin{aligned}
+            &7^2 = 49 \equiv 9 \Mod{20} \\ 
+            &7^4 = (7^2)^2 \equiv 9^2 = 81 \equiv 1 \Mod{20} \\ 
+            &7^7 = 7^4 \cdot 7^2 \cdot 7 \equiv 1 \cdot 9 \cdot 7 = 63 \equiv 3 \Mod{20}.
+        \end{aligned}
+    \end{equation*}
+    So, $7^{20232023} \Mod{20} = 3$. 
+\end{mdframed}
+Notice how we could do this remainder calculation without having to compute $7^{20232023}$. This is important, since RSA will require us that to similar remainder calculations even when the numbers are so large that it is infeasible for computers to calculate the result of the exponentiation. 
+
+\begin{mdframed}
+    (Exercise.) Use Euler's Theorem to show that 51 divides $10^{32n + 9} - 7$ for any integer $n \geq 0$. 
+
+    \begin{mdframed}
+        Recall that \[\phi(51) = 32,\] so in particular \[a^{32} \equiv 1 \Mod{51}\] for any $a$ that is relatively prime to 51. Then, it follows that 
+        \[10^{32n + 9} - 7 = 10^{32n} 10^9 - 7 = (10^{32})^{n} 10^9 - 7 \equiv 10^9 - 7 \Mod{51}.\] Note here that $10^{32n}$ and 51 are relatively prime. In any case, it follows that 
+        \[10^9 - 7 \Mod{51} = 0.\]
+    \end{mdframed}
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) Find the units digit of $3^{100}$ using Euler's theorem.
+
+    \begin{mdframed}
+        We have $\phi(10) = 4$ so 
+        \[a^{4} \equiv 1 \Mod{10}\]
+        for some $a$ that is relatively prime to 10. Now, we note that 
+        \[3^{100} = 3^{4 \cdot 25} = (3^4)^{25}\]
+        and so 
+        \[(3^4)^{25} \equiv 1^{25} = 1 \Mod{10}.\]
+        Therefore, the unit digit of $3^{100}$ is 1.
+    \end{mdframed}
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) Fix a prime number $p$. There are two versions of ``Fermat's little theorem.''
+    \begin{enumerate}
+        \item If $a$ is an integer that is not divisible by $p$, then $a^{p - 1} \equiv 1 \Mod{p}$. 
+        
+        \begin{mdframed}
+            Recall that $\phi(p) = p - 1$, so 
+            \[a^{\phi(p)} \equiv 1 \Mod{p} \implies a^{p - 1} \equiv 1 \Mod{p}.\]
+        \end{mdframed}
+
+        \item For any integer $a$, we have $a^p \equiv a \Mod{p}$. 
+        
+        \begin{mdframed}
+            Note that 
+            \[a^{p - 1} = a^p \frac{1}{a} \equiv 1 \Mod{p}\]
+            by part (1), so multiplying both sides by $a$ gives us 
+            \[a^p \equiv a \Mod{p}.\]
+        \end{mdframed}
+    \end{enumerate}
+\end{mdframed}
+
+
+\subsection{Interlude: Binary Exponentiation}
+With Euler's theorem in mind, we can compute large powers in modular arithmetic very quickly. Let's now explain the process more systematically. Suppose we have a positive integer $n$ and an integer $a$ with $\gcd(a, n) = 1$, and that we want to compute $a^m \Mod{n}$ for some large number $n$.
+
+\bigskip 
+
+The first step is to calculate $r = m \Mod{\phi(n)}$. If we do this, we'll have $m = \phi(n)q + r$, so \begin{equation}
+    a^m = a^{\phi(n) q + r} = (a^{\phi(n)})^q a^r \equiv 1^q a^r = a^r \Mod{n}.
+\end{equation}
+from Euler's Theorem and the Modular Arithmetic Theorem. This immediately reduces the power we have the compute substantially. From there, we can compute $a^r \Mod{n}$ using a technique called \textbf{binary exponentation.} The idea is fairly straightforward in examples, so let's look at an example. 
+
+\begin{mdframed}
+    (Example.) Suppose we find that $r = 25$. How can we compute $a^r \Mod{n}$? One thing we could do is multiply $a$ by itself mod $n$ repeatedly, but this would require 25 multiplications mod $n$. Here's another thing we can try; we square repeatedly: 
+    \begin{itemize}
+        \item Find $a^2 \Mod{n}$. 
+        \item Find $a^4 = (a^2)^2 \Mod{n}$ by squaring the result of the previous step.
+        \item Find $a^8 = (a^4)^2 \Mod{n}$ by squaring the result of the previous step.
+        \item Find $a^{16} = (a^8)^2 \Mod{n}$ by squaring the result of the previous step.
+    \end{itemize}
+    Squaring this again would go past $r = 25$, so we stop at 16. We now want to figure out how to find $a^{25}$ using the powers of $a$ that we computed already. Notice that \[25 = 16 + 8 + 1\] so \[a^{25} = a^{16 + 8 + 1} = a^{16}a^{8}a^{1},\] and we already know $a^{16}, a^8, a^1 \Mod{n}$, so we can compute $a^{25} \Mod{n} n$ by multiplying these three values together mod $n$. This only requires 6 multiplication in total, much less than 25.
+\end{mdframed}
+
+\begin{mdframed}
+    (Example.) Suppose we want to compute $3^{4398391} \Mod{80}$. First, note that $\phi(80) = 32$ and $4398391 \equiv 23 \Mod{32}$, so $3^{4398391} \equiv 3^{23} \Mod{80}$ by Euler's Theorem. Now, using binary exponentation, we have 
+    \begin{equation*}
+        \begin{aligned}
+            &3^2 = 9 \\ 
+            &3^4 = (3^2)^2 = 9^2 = 81 \equiv 1 \Mod{80} \\ 
+            &3^8 = (3^4)^2 \equiv 1^2 = 1 \Mod{80} \\ 
+            &3^{16} = (3^8)^2 \equiv 1^2 = 1 \Mod{80} \\ 
+            &3^{23} = 3^{16 + 4 + 2 + 1} = 3^{16}3^4 3^2 3 \equiv 1 \cdot 1 \cdot 9 \cdot 3 = 27 \Mod{80}.
+        \end{aligned}
+    \end{equation*}
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) Compute $3^{293423948903859017} \Mod{50}$. 
+
+    \begin{mdframed}
+        Note that $\phi(50) = 20$ and $293423948903859017 \equiv 17 \Mod{20}$, so 
+        \[3^{293423948903859017} \equiv 3^{17} \Mod{50}.\]
+        Using binary exponentation, we have 
+        \begin{equation*}
+            \begin{aligned}
+                &3^2 = 9 \\ 
+                &3^4 = (3^2)^2 = 9^2 = 81 \equiv 31 \Mod{50} \\ 
+                &3^8 = (3^4)^2 = 31^2 \equiv 11 \Mod{50} \\ 
+                &3^{16} = (3^8)^2 = 11^2 = 121 \equiv 21 \Mod{50}.
+            \end{aligned}
+        \end{equation*}
+        From this, $17 = 16 + 1$ and so \[3^{17} = 3^{16 + 1} = 3^{16} 3^1 \equiv 21 \cdot 3 = 13 \Mod{50}.\]
+    \end{mdframed}
+\end{mdframed}
+
+The ``repeated squaring and then multiply together'' part of this process is very closely related to finding binary representations of integers. Here is the definition: 
+\begin{definition}{}{l14-1}
+    Let $r$ be a non-negative integer. The \textbf{binary representation} of $r$ is a string $b_{k} \hdots b_{1}b_{0}$ where each $b_i$ is either 0 or 1, and where 
+    \[r = b_0 + b_1 2 + b_2 2^2 + \hdots + b_k 2^k.\]
+    The number $b_i$ is called the $i$th bit of $r$. We call $b_0$ the rightmost bit and $b_k$ the leftmost bit. 
+\end{definition}
+For example, the binary representation of 25 is \code{11001} because \[1 + 0 \cdot 2 + 0 \cdot 2^2 + 1 \cdot 2^3 + 1 \cdot 2^4 = 1 + 8 + 16 = 25.\] To \emph{find} the binary representation, consider the following algorithm: 
+\begin{mdframed}
+    (Algorithm.) Let $r$ be a non-negative integer. To find the binary representation of $r$, divide $r$ by 2, then divide the quotient by 2, and then divide that quotient by 2, and so forth, until you hit a quotient of 0. The remainders of these divisions are the binary representation, with the last remainder corresponding to the leftmost bit. 
+\end{mdframed}
+\textbf{Remark:} This is an algorithm for humans, not for computers. Computers represent integers in binary form. 
+
+\begin{mdframed}
+    (Example.) To calculate the binary representation of 193, we divide 193 by 2, and then repeatedly divide the quotient by 2: 
+    \begin{equation*}
+        \begin{aligned}
+            193 &= 96 \cdot 2 + 1 \\ 
+            96 &= 48 \cdot 2 + 0 \\ 
+            48 &= 24 \cdot 2 + 0 \\ 
+            24 &= 12 \cdot 2 + 0 \\ 
+            12 &= 6 \cdot 2 + 0 \\ 
+            6 &= 3 \cdot 2 + 0 \\ 
+            3 &= 1 \cdot 2 + 1 \\ 
+            1 &= 0 \cdot 2 + 1
+        \end{aligned}
+    \end{equation*}
+    Since we hit a quotient of 0, we stop dividing. The binary representation is the sequence of remainders we found, with the leftmost bit being the last remainder we found and the rightmost bit being the first remainder we found. In other words, the binary representation of 193 is \code{11000001}.
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) Find binary representations of the following integers. 
+    \begin{enumerate}
+        \item 37 
+        \begin{mdframed}
+            \begin{equation*}
+                \begin{aligned}
+                    37 &= 18 \cdot 2 + 1 \\ 
+                    18 &= 9 \cdot 2 + 0 \\ 
+                    9 &= 4 \cdot 2 + 1 \\ 
+                    4 &= 2 \cdot 2 + 0 \\ 
+                    2 &= 1 \cdot 2 + 0 \\ 
+                    1 &= 0 \cdot 2 + 1.
+                \end{aligned}
+            \end{equation*}
+            The resulting binary string is \code{100101}.
+        \end{mdframed}
+        \item 123
+        \begin{mdframed}
+            \begin{equation*}
+                \begin{aligned}
+                    123 &= 61 \cdot 2 + 1 \\ 
+                    61 &= 30 \cdot 2 + 1 \\ 
+                    30 &= 15 \cdot 2 + 0 \\ 
+                    15 &= 7 \cdot 2 + 1 \\ 
+                    7 &= 3 \cdot 2 + 1 \\ 
+                    3 &= 1 \cdot 2 + 1 \\ 
+                    1 &= 0 \cdot 2 + 1.
+                \end{aligned}
+            \end{equation*}
+            The resulting binary string is \code{1111011}.
+        \end{mdframed}
+        \item 290 
+        \begin{mdframed}
+            \begin{equation*}
+                \begin{aligned}
+                    290 &= 145 \cdot 2 + 0 \\ 
+                    145 &= 72 \cdot 2 + 1 \\ 
+                    72 &= 36 \cdot 2 + 0 \\ 
+                    36 &= 18 \cdot 2 + 0 \\ 
+                    18 &= 9 \cdot 2 + 0 \\ 
+                    9 &= 4 \cdot 2 + 1 \\ 
+                    4 &= 2 \cdot 2 + 0 \\ 
+                    2 &= 1 \cdot 2 + 0 \\ 
+                    1 &= 0 \cdot 2 + 1.
+                \end{aligned}
+            \end{equation*}
+            The resulting binary string is \code{100100010}.
+        \end{mdframed}
+        \item 300 
+        \begin{mdframed}
+            \begin{equation*}
+                \begin{aligned}
+                    300 &= 150 \cdot 2 + 0 \\ 
+                    150 &= 75 \cdot 2 + 0 \\ 
+                    75 &= 37 \cdot 2 + 1 \\ 
+                    37 &= 18 \cdot 2 + 1 \\ 
+                    18 &= 9 \cdot 2 + 0 \\ 
+                    9 &= 4 \cdot 2 + 1 \\ 
+                    4 &= 2 \cdot 2 + 0 \\ 
+                    2 &= 1 \cdot 2 + 0 \\ 
+                    1 &= 0 \cdot 2 + 1.
+                \end{aligned}
+            \end{equation*}
+            The resulting binary string is \code{100101100}.
+        \end{mdframed}
+    \end{enumerate}
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) Why must the rightmost bit in the binary representation of an even number must be 0?
+
+    \begin{mdframed}
+        Note that $2^i$ is even if $i > 0$ and odd if $i = 0$. In particular, when $i = 0$, it follows that $2^0 = 1$. But, by using the above ``algorithm,'' we find that the binary representation of 1 is just \code{1} ($1 = 0 \cdot 2 + 1$). Also note that 
+        \begin{itemize}
+            \item adding two even numbers yields an even number,
+            \item adding an even and an odd number yields an odd number,
+            \item and multiplying a number by an even number yields an even number. 
+        \end{itemize}
+        Looking at the formula in (\ref{def:l14-1}), we notice that all the components aside from $b_0$ will be even (or 0). The only component that can be odd is $b_0$, and that's when $b_0 = 1$. So, if $b_0 = 1$, then we know that $r$ must be odd and hence the odd number must have rightmost bit 1. Conversely, when $r$ is even, the rightmost bit must be 0.
+    \end{mdframed}
+\end{mdframed}
+
+We can now state the general fact about binary exponentation below: 
+\begin{lemma}{}{}
+    Let $n$ be a positive integer, and let $b_k \hdots b_1 b_0$ be the binary representation of a non-negative integer $r$. To compute $a^r \Mod{n}$ for some integer $a$, first compute $a^{2^i} \Mod{n}$ for $i = 0, 1, \hdots, k$ by repeated squaring. Then, to get $a^r$, multiply together all of the $2^{a^i}$ where $b_i = 1$. In other words, 
+    \[a^r \equiv \prod_{b_i = 1} a^{2^i} \Mod{n}.\]
+\end{lemma}
+
+
+\subsection{Interlude: Primality Testing}
+How can we quickly figure out if a number is prime? Remember that factoring is computationally expensive, so it's not a good idea to try to figure out that a number is prime by factoring it! There are a number of tests we can do, although we'll focus on one called the \textbf{Miller-Rabin test}. Before we talk about the test, we should establish some important background results. 
+
+\begin{lemma}{}{}
+    If $n$ is prime, the only solutions to $x^2 \equiv 1 \Mod{n}$ are $x \equiv \pm 1 \Mod{n}$.
+\end{lemma}
+
+\begin{lemma}{Miller-Rabin}{}
+    Suppose $n$ is a positive \emph{odd} integer and write $n - 1 = 2^s d$ for some positive integer $s$ and some odd number $d$. Suppose $a$ is an integer between 1 and $n - 1$. If $n$ is prime, then one of the following congruence relations must hold true: 
+    \[a^d \equiv 1 \Mod{n}\]
+    \[a^d \equiv -1 \Mod{n}\]
+    \[a^{2d} \equiv -1 \Mod{n}\]
+    \[a^{2^2 d} \equiv -1 \Mod{n}\]
+    \[\vdots\]
+    \[a^{2^{s - 1}d} \equiv -1 \Mod{n}\]
+\end{lemma}
+
+\begin{mdframed}
+    (Example.) Consider $n = 41$, a prime number. We have 
+    \[n - 1 = 40 = 2^3 5.\]
+    In other words, we can take $s = 3$ and $d = 5$ in the above lemma. Fix some integer $a = 17$. Since $s = 3$, we have 4 congruences in our list, and one of them should then be true, so let's check which one. 
+    \[17^5 \equiv 27 \Mod{41} \neq \pm 1.\]
+    \[17^{2 \cdot 5} = (17^5)^2 \equiv 27^2 \equiv 32 \Mod{41} \neq -1.\]
+    \[17^{2^2 \cdot 5} = (17^{2 \cdot 5})^2 \equiv 32^2 \equiv 40 \equiv -1 \Mod{41}.\]
+    Here, the last congruence is true.
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) For each of the following integers $n$, find the integers $s$ and $d$ such that $n - 1 = 2^s d$, where $d$ is odd. 
+
+    \begin{enumerate}[(a)]
+        \item 43 
+        \begin{mdframed}
+            We have 
+            \[n - 1  = 43 - 1 = 42.\]
+            Trying different combinations of $d$, we note that 
+            \[42 = 2^1 \cdot 21.\]
+            So, $d = 21$ and $s = 1$. 
+        \end{mdframed}
+
+        \item 49 
+        \begin{mdframed}
+            For $n - 1 = 49 - 1 = 48$, we have \[48 = 2^4 \cdot 3\] so that $s = 4$ and $d = 3$.
+        \end{mdframed}
+        
+        \item 65 
+        \begin{mdframed}
+            For $n - 1 = 64$, we have \[64 = 2^6 \cdot 1\] so that $s = 6$ and $d = 1$. 
+        \end{mdframed}
+    \end{enumerate}
+\end{mdframed}
+
+\begin{definition}{}{}
+    Suppose $n$ is a positive odd integer and write $n - 1 = 2^s d$ for some positive integer $s$ and an odd number $d$. Suppose $a$ is an integer between 1 and $n - 1$. We say that $n$ is a strong probable prime to base $a$ if one of the following congruences is true: 
+    \[a^d \equiv 1 \Mod{n}\]
+    \[a^d \equiv -1 \Mod{n}\]
+    \[a^{2d} \equiv -1 \Mod{n}\]
+    \[a^{2^2 d} \equiv -1 \Mod{n}\]
+    \[\vdots\]
+    \[a^{2^{s - 1} d} \equiv -1 \Mod{n}\]
+    If $n$ is not a \emph{strong probable prime} to base $a$, then $a$ is called a \emph{witness for the compositness} of $a$, or a Miller-Rabin witness for $a$. 
+\end{definition}
+With this definition, the Miller-Rabin Lemma states that ``every prime number is a strong probable prime to any base.'' Equivalently, ``if $n$ is not a strong probable prime to some base $a$, then $n$ must be composite.''
+
+\begin{mdframed}
+    (Example.) For $n = 25$, we see that $n - 1 = 24 = 2^3 \cdot 3$, so we have $s = d = 3$. Suppose we choose a base of $a = 7$; then, 
+    \[7^3 \equiv 18 \Mod{25} \neq \pm 1\]
+    \[7^{2 \cdot 3} \equiv (7^3)^2 \equiv 18^2 \equiv 24 \equiv -1 \Mod{25} = -1,\]
+    so this says that 25 is a strong probable prime to base 7.
+
+    \bigskip 
+
+    Now, if we let $a = 2$, notice how 
+    \[2^3 = 8 \neq \pm 1.\]
+    \[2^{2 \cdot 3} = (2^3)^2 = 8^2 = 64 \equiv 14 \Mod{25} \neq -1.\]
+    \[2^{2^2 \cdot 3} = (2^{2 \cdot 3})^2 \equiv 14^2 \equiv 21 \Mod{25} \neq -1.\]
+    Thus, this $n$ is not a strong probable prime to base 2, and 2 is a witness to the compositness of 25. 
+\end{mdframed}
+If $n$ is composite, the most of the possible choices of base $2 \leq a \leq n - 2$ will in fact be witnesses for the compositness of $n$. So, if we try several such bases and none of them turn out to be a witness for compositness, then we can be quite sure that $n$ is in fact prime. 
+
+\begin{mdframed}
+    (Miller-Rabin Primality Test.) Suppose $n$ is a positive integer. If $n$ is 2, output \code{True}. Otherwise, if $n$ is even, output \code{False}. Otherwise, repeat the following step some fixed pre-determined number of times: 
+    \begin{itemize}
+        \item Choose a random base $2 \leq a \leq n - 2$. If $a$ is a witness for the compositness of $n$, output \code{False}. 
+    \end{itemize}
+    If we reach the end without having output \code{False}, then output \code{True}.
+\end{mdframed}
+If we do $k$ repetitions, the probability of a false positive is less than $4^{-k}$. This gets small very quickly; for example, if we do just 10 repetitions, the probability of a false positive is about one in a million.
+
+\bigskip 
+
+With this algorithm in mind, we can quickly check if a number is prime without having to factor it. This also gives us an algorithm for generating large prime numbers: basically, just keep generating random numbers until we find one that's prime!
+\begin{mdframed}
+    (Algorithm for Generating Large Primes.) Let $r$ be a positive integer. To generate an $r$-bit prime, run the following steps: 
+    \begin{itemize}
+        \item Pick a random odd integer $n$ between $2^{r - 1}$ and $2^{r} - 1$. 
+        \item Check if $n$ is prime. 
+        \begin{itemize}
+            \item If it is, return $n$. 
+            \item Otherwise, return to the first step. 
+        \end{itemize}
+    \end{itemize}
+\end{mdframed}
 
 
 \end{document}
