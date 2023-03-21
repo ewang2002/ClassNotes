@@ -70,3 +70,10 @@ Below, I'll very briefly list the notes contained in these folders.
 | Math 180A | Information                               | 
 | --------- | ----------------------------------------- |
 | Status    | Nearly Complete.                          |
+
+### Winter 2023
+- `Introduction to Numerical Analysis: Linear Algebra`: Notes for [**Math 170A**](https://mathweb.ucsd.edu/~shl083/Math170A_WI23_home.html) taught by Professor [Shuang Liu](https://mathweb.ucsd.edu/~shl083/).
+
+| Math 170A | Information                               | 
+| --------- | ----------------------------------------- |
+| Status    | Complete.                                 |
