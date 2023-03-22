@@ -5044,7 +5044,7 @@ Remember how we mentioned the (almost) unique ``other'' point? There are several
         \end{itemize}
     \end{definition}
 
-    \begin{theorem}{}{}
+    \begin{theorem}{}{3-10:2}
         Given any $P \in E$, where $E$ is an elliptic curve, we define $-P$ to be the reflection of $P$ across the $x$-axis. Given any two points $P, Q \in E$, there is a unique secant or tangent line passing through $P$ and $Q$, and this line has a unique third point of intersection with the curve; we define $P + Q$ to be the negative of this third point of intersection. Then, 
         \begin{itemize}
             \item Associativity: for any $P, Q, R \in E$, $(P + Q) + R = P + (Q + R)$.
@@ -5085,27 +5085,38 @@ Remember how we mentioned the (almost) unique ``other'' point? There are several
 
             \bigskip 
 
-            TODO 
+            Note that, using implicit differentiation on the Weierstrass equation given, we find that $\frac{dy}{dx} 2y = 3x^2 - 2 \implies \frac{dy}{dx} = \frac{3x^2 - 2}{2y}$. Then, \[\frac{dy}{dx}\bigg\rvert_{P} = \frac{3(0)^2 - 2}{2(0)}.\] However, this is \emph{undefined}. Therefore, it follows that $2P = O$. 
         \end{mdframed}
         \item Verify that $Q = (-1, 1)$ is on the curve. What is $2Q$?
         \begin{mdframed}
-            TODO 
+            By the same process we used in the previous step, we can verify that $Q \in E$. Using the same implicit differentation we did in the previous step, we find that 
+            \[\frac{dy}{dx}\bigg\rvert_{Q} = \frac{3(-1)^2 - 2}{2(1)} = \frac{3 - 2}{2} = \frac{1}{2}.\] While we can continue to find the secant line and whatnot, let's use (\ref{th:3-10:1}) to make this process a bit faster. We know that $Q = Q$, so
+            \[\lambda = \frac{3(-1)^2 + (-2)}{2(1)} = \frac{3 - 2}{2} = \frac{1}{2}.\] Then, \[\nu = y_1 - \lambda x_1 = 1 - \frac{1}{2}(-1) = 1 + \frac{1}{2} = \frac{3}{2}.\]
+            \[x_3 = \lambda^2 - x_1 - x_2 = \left(\frac{1}{2}\right)^2 - (-1) - (-1) = \frac{1}{4} + 2 = \frac{1}{4} + \frac{8}{4} = \frac{9}{4}.\]
+            \[y_3 = \lambda x_3 + \nu = \frac{1}{2}\frac{9}{4} + \frac{3}{2} = \frac{9}{8} + \frac{12}{8} = \frac{21}{8}.\]
+            Call this point $T$ so that $T = \left(\frac{9}{4}, \frac{21}{8}\right)$. Then, $2Q = -T = \left(\frac{9}{4}, -\frac{21}{8}\right)$.
         \end{mdframed}
         \item What is $P + Q$? 
         \begin{mdframed}
-            TODO 
+            With $P = (x_1, y_1) = (0, 0)$ and $Q = (x_2, y_2) = (-1, 1)$, we have 
+            \[\lambda = \frac{1 - 0}{-1 - 0} = \frac{1}{-1} = -1.\]
+            Then, 
+            \[\nu = 0 - (-1)(0) = 0,\]
+            \[x_3 = (-1)^2 - 0 - (-1) = 1 + 1 = 2,\]
+            \[y_3 = -1(2) + 0 = -2.\]
+            So, we know that $T = (2, -2) \in E$. Thus, $P + Q = -T = (2, 2)$.   
         \end{mdframed}
         \item What is $3Q$? 
         \begin{mdframed}
-            TODO 
+            We know that $3Q = Q + 2Q$. We can use the above theorem (elliptic curve addition) and our calculations from the previous part to compute this.
         \end{mdframed}
         \item What is $4Q$? 
         \begin{mdframed}
-            TODO 
+            We know that $4Q = 2Q + 2Q$. We can use the above theorem (elliptic curve addition) and our calculations from the previous part to compute this.
         \end{mdframed}
         \item What is $5Q$? 
         \begin{mdframed}
-            TODO 
+            We know that $5Q = 4Q + Q$.  We can use the above theorem (elliptic curve addition) and our calculations from the previous part to compute this.
         \end{mdframed}
     \end{enumerate}
 \end{mdframed}
@@ -5119,15 +5130,26 @@ Remember how we mentioned the (almost) unique ``other'' point? There are several
     \begin{enumerate}[(a)]
         \item $P = (-2, 0)$
         \begin{mdframed}
-            TODO 
+            Starting with $P$, we note that 
+            \[\frac{dy}{dx} 2y = 3x^2 - 4 \implies \frac{dy}{dx} = \frac{3x^2 - 4}{2y}.\] Because $y = 0$, it follows that, at the point $P$, there is a vertical tangent line and thus $1P = O$ and $n = 1$. 
         \end{mdframed}
         \item $Q = (0, 0)$
         \begin{mdframed}
-            TODO 
+            Note that $1Q = Q = (0, 0)$. Because this point has a vertical tangent line on the curve, it follows that $n = 1$.  
         \end{mdframed}
         \item $P + Q$
         \begin{mdframed}
-            TODO 
+            Let $P = (x_1, y_1) = (-2, 0)$ and $Q = (x_2, y_2) = (0, 0)$. Note that, using (\ref{th:3-10:1}), we find that $\lambda = \frac{0 - 0}{0 - (-2)} = \frac{0}{2} = 0$. Then, 
+            \[\nu = 0 - 0(-2) = 0.\]
+            \[x_3 = 0^2 - (-2) - 0 = 2.\]
+            \[y_3 = 0(2) + 0 = 0.\]
+            So, we find that $P + Q = (2, -0) = (2, 0)$. 
+            
+            \bigskip 
+
+            We now want to compute $2(P + Q) = (P + Q) + (P + Q)$. Note that these points are obviously equal, so 
+            \[\lambda = \frac{3(2)^2 - 4}{2(0)}.\]
+            However, $\lambda$ is undefined, so it follows that $2(P + Q) = O$ and thus $n = 2$. 
         \end{mdframed}
     \end{enumerate}
 \end{mdframed}
@@ -5149,15 +5171,20 @@ We now fix a prime $p$. For technical reasons that are not worth lingering on fo
     \begin{enumerate}
         \item $y^2 = x^3 - 2x$    
         \begin{mdframed}
-            TODO 
+            With $a = -2$ and $b = 0$, we have $\Delta = -16(4(-2)^3 + 27(0)^2) = -16 \cdot 4(-2)^3 = -16 \cdot 4(-8) = 512$. Computing the prime factorization of 512 gives us 
+            \[512 = 2^9.\]
+            So, it follows that this equation is singular mod $p = 2$. With the limitation that $p \geq 5$, no prime will cause the equation to be singular. 
         \end{mdframed}
         \item $y^2 = x^3 + x + 1$
         \begin{mdframed}
-            TODO 
+            With $a = 1$ and $b = 1$, we have $\Delta = -16(4(1)^3 + 27(1)^2) = -16(4 + 27) = -16(31)$. The prime factorization of $\Delta$ is 
+            \[-16(31) = -2^4 31^1,\]
+            so the equation is singular mod $p$ when $p = 2$ or $p = 31$. With the limitation that $p \geq 5$, only $p = 31$ applies.
         \end{mdframed}
-        \item $y^2 + x^3 - 1$
+        \item $y^2 = x^3 - 1$
         \begin{mdframed}
-            TODO 
+            With $a = 0$ and $b = -1$, we have $\Delta = -16(4(0)^3 + 27(-1)^2) = -16(27).$ The prime factorization would be \[-16(27) = -2^4 3^3,\]
+            so the equation is singular mod $p$ when $p = 2$ or $p = 3$. With the limitation that $p \geq 5$, no prime will cause the equation to be singular. 
         \end{mdframed}
     \end{enumerate}
 \end{mdframed}
@@ -5269,7 +5296,7 @@ Alice can choose a secret integer $0 \leq k_a < \ord_{E}(P)$ and send Bob $Q_a =
 Thus, Alice and Bob now share a secret point $R$ on the elliptic curve. 
 
 \begin{mdframed}
-    (Exercise.) Suppose Alice and Bob publicly agree to use the elliptic curve $y^2 = x^3 + 17 \Mod{p} = 7$ and the point $P = (1, 2)$. 
+    (Exercise.) Suppose Alice and Bob publicly agree to use the elliptic curve $y^2 = x^3 + 17 \Mod{p = 7}$ and the point $P = (1, 2)$. 
     \begin{enumerate}[(a)]
         \item Suppose Alice picks the number $k_a = 4$. What is the message $Q_a$ that she sends Bob? 
         \begin{mdframed}
