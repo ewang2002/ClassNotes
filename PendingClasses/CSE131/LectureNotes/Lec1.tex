@@ -1,0 +1,71 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{CSE 131}
+\chead{Monday, April 03, 2023}
+\lhead{Lecture 1}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\section{Introduction to Compilers}
+Some examples of compilers we've used in this class include 
+\begin{center}
+    \begin{tabular}{|c|c|}
+        \hline 
+        \code{gcc} & C to binary  \\ 
+        \code{g++} & C++ to binary  \\ 
+        \code{rustc} & Rust to binary \\ 
+        \code{javac} & Java to JVM bytecode \\ 
+        \code{ghc} & Haskell to Haskell magic \\ 
+        \code{tsc} & TypeScript to JavaScript \\ 
+        \hline 
+    \end{tabular}
+\end{center}
+Essentially, a compiler takes some program and produces an output program, one that is easier for us to run in some environment. In this course, we're going to create a compiler \code{ucsdc} that takes in \code{snek} files and will produce \code{x86\_64} binaries.
+
+\bigskip 
+
+To be more specific, our compiler should do the following: given a \code{.snek} text file, 
+\begin{itemize}
+    \item parse\footnote{Known to be very boring.} the text into an abstract syntax tree (AST), 
+    \begin{mdframed}
+        (Example.) For example, consider the following Java class. 
+\begin{verbatim}
+class Pt {
+    int x; 
+    int y; 
+}\end{verbatim}
+        Its AST representation might look like 
+        \begin{center}
+            \includegraphics[scale=0.8]{../assets/ast.png}
+        \end{center}
+    \end{mdframed}
+    \item and either 
+    \begin{itemize}
+        \item generates assembly (or some other output program), or 
+        \item generate an error message.
+    \end{itemize}
+\end{itemize}
+We are \underline{not} interested in generating the most optimized assembly, just that it works. Most of the time spent in this course will be on the code generating part (i.e., from AST to assembly). Towards the \emph{end} of the course, we'll work with libraries/runtime.
+
+\subsection{Course Syllabus}
+The course webpage can be found here: \href{https://ucsd-compilers-s23.github.io/index.html}{https://ucsd-compilers-s23.github.io/index.html}. 
+\begin{itemize}
+    \item Two exams during discussion (week 5, week 9).
+    \item The final exam is skippable. The final exam can be used to improve your scores on the two exams. If you did well on the two exams, you don't need to do the final exam. 
+    \item Engagement usually means weekly quiz on Gradescope and lecture handouts. They may help make the difference between an A and A+.
+    \item Graduate students may be asked to do some additional things for the later projects.
+\end{itemize}
+
+
+
+\end{document}
