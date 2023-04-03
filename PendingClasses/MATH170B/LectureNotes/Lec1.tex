@@ -1,0 +1,64 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Math 170B}
+\chead{Monday, April 03, 2023}
+\lhead{Lecture 1}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\section{Basic Concepts \& Taylor's Theorem (Section 1.1)}
+Let $f(x): \R \mapsto \R$ be a general function (typically nonlinear). We may also write $f([a, b]): [a, b] \mapsto \R$ to denote a general function over an interval $[a, b]$. We also write $C^n (\R)$ or $C^n ([a, b])$ to denote the \emph{classes} of $n$-times continuously differentiable functions. We write $C^0 (\R) = C(\R)$ to mean the class of only continuous functions. 
+
+\begin{mdframed}
+    (Example.) $f(x) = |x|$ is continuous but is not differentiable at $x = 0$. Thus, $f(x) = |x|$ is in $C^0 (\R)$. 
+
+    \bigskip 
+
+    $f(x) = e^x$ is in $C^\infty (\R)$.
+\end{mdframed}
+
+\subsection{Taylor Series}
+\begin{theorem}{Taylor Series with Lagrange Remainder}{}
+    Let $f \in C^m ([a, b])$, with the derivative $f^{(m + 1)}$ exists on the open interval $(a, b)$ and with values $x, c \in [a, b]$. Then, 
+    \[f(x) = \sum_{k = 0}^{m} \frac{f^{(k)} (c)}{k!} (x - c)^k + E_{m}(\psi),\] 
+    where $E_{m}(\psi)$ is the remainder (or error) term. We define 
+    \[E_{m}(\psi) = \frac{f^{(m + 1)}(\psi)}{(m + 1)!} (x - c)^{(m + 1)},\] 
+    where $c < \psi < x$ or $x < \psi < c$ depending on the values of $x$ and $c$. 
+\end{theorem}
+
+\begin{mdframed}
+    (Example.) Suppose $f(x) = \ln(x)$ with interval $[a, b] = [1, 10]$ and $c = e^1.$ Let $|x - c| < 1$ (i.e., $x$ is relatively close to $c$). Then, 
+    \[f^{(1)}(x) = f'(x) = \frac{1}{x}.\]
+    \[f^{(2)}(x) = f''(x) = -\frac{1}{x^2}.\]
+    \[f^{(3)}(x) = f'''(x) = \frac{2}{x^3}.\]
+    \[f^{(4)}(x) = -2 \cdot 3 \frac{1}{x^4}.\]
+    \[f^{(5)}(x) = 2 \cdot 3 \cdot 4 \frac{1}{x^5}.\]
+    \[\vdots\]
+    \[f^{(k)}(x) = (-1)^{k - 1} (k - 1)! \frac{1}{x^k}\]
+    for $k = 1, 2, \hdots$. Then, 
+    \[E_m (\psi) = \frac{1}{(m + 1)!} f^{(m + 1)}(\psi) (x - c)^{m + 1}.\] Using the value of $c = e^1$, \[f^{(k)}(c) = (-1)^{k - 1}(k - 1)! \frac{1}{e^k}.\] Combining everything, we end up with 
+    \begin{equation*}
+        \begin{aligned}
+            f(x) &= \sum_{k = 0}^{m} \frac{f^{(k)} (c)}{k!} (x - c)^k + E_{m}(\psi) \\ 
+                &= 1 + \sum_{k = 1}^{m} (-1)^{k - 1} \frac{(k - 1)!}{k!} \frac{1}{e^k} + E_{m}(\psi) \\ 
+                &= 1 + \sum_{k = 1}^{m} (-1)^{k - 1} \frac{1}{k} \frac{1}{e^x}(x - e)^k + \frac{1}{(m + 1)} f^{(m + 1)} (\psi) (x - e)^{m + 1}.
+        \end{aligned}
+    \end{equation*}
+    How many terms in this approximation do we need in order for the error to be below a certain amount? In other words, what is the minimum $m$ so that a Taylor expansion is accurate up to $\frac{1}{\alpha} \cdot 10^{-9}$? We have 
+    \[|E_m (\psi)| \leq \frac{1}{\alpha} \cdot 10^{-9}.\]
+    We already computed the remainder, so 
+    \[\left| \frac{1}{(m + 1)} f^{(m + 1)} (\psi) (x - e)^{m + 1}\right| \leq \frac{1}{\alpha} \cdot 10^{-9}.\] Using $|x - e| < 1$, we want to find $m$. Thus, $|\psi| < 1$. 
+\end{mdframed}
+
+
+\end{document}
