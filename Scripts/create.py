@@ -1,18 +1,23 @@
 import os 
 import sys
 import datetime
-from typing import List, Tuple
+from typing import Tuple
 
 CLASSES = {
-    'MATH187A': {
+    'MATH170B': {
         'full': True,
         'schedule': ['M', 'W', 'F'],
-        'class': 'Math 187A'
+        'class': 'Math 170B'
     },
-    'MATH170A': {
+    'CSE110': {
         'full': True,
         'schedule': ['M', 'W', 'F'],
-        'class': 'Math 170A'
+        'class': 'CSE 110'
+    },
+    'CSE131': {
+        'full': True,
+        'schedule': ['M', 'W', 'F'],
+        'class': 'CSE 131'
     }
 }
 
