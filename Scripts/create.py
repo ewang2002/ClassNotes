@@ -9,11 +9,6 @@ CLASSES = {
         'schedule': ['M', 'W', 'F'],
         'class': 'Math 170B'
     },
-    'CSE110': {
-        'full': True,
-        'schedule': ['M', 'W', 'F'],
-        'class': 'CSE 110'
-    },
     'CSE131': {
         'full': True,
         'schedule': ['M', 'W', 'F'],

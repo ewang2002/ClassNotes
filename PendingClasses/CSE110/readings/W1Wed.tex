@@ -1,0 +1,173 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{CSE 110}
+\lhead{Week 1 Wednesday}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+\section{Reading 1: HFSD Chapter 1, Page 1-26}
+\begin{itemize}
+    \item If your customer is unhappy, then everyone is unhappy. 
+    \begin{itemize}
+        \item Every great piece of software starts with a customer's big idea. 
+        \item As a software developer, you bring that idea to life.
+        \item A vague idea to working code -- one that satisfies your customer -- isn't easy. 
+        \item You need to learn how to deliver software that is \textbf{needed}, \textbf{on time}, and \textbf{on budget}.
+    \end{itemize}
+
+    \item Most projects have two major concerns. 
+    \begin{itemize}
+        \item How much will it cost? Most customers want to figure out how much money they'll have to spend. Money may be a limitation. 
+        \item How long will it take? Almost no customer ever says "Take as long as you want!" Also, in a lot of cases, there's a specific event or date (i.e., a deadline) the customer wants their software ready for.  
+    \end{itemize}
+
+    \item The Big Bang approach to development. 
+    \begin{itemize}
+        \item Work a lot, then \textbf{bang!} Something huge and \emph{complex} comes out of the work all at once. 
+        \item Known as ``going dark,'' as the customer sees you at the beginning of the project, and then you disappear until the software is delivered at the end. 
+        \item Usually ends up in a \textbf{big mess}. 
+        \begin{itemize}
+            \item The customer may not be happy with the resulting software. 
+            \item What the customer had in mind may be very different from what you had in mind, and because you never talked to the customer, you wouldn't know what the customer wanted (aside from some rough ideas at the beginning when you talk to the customer).
+            \item If your customer isn't happy, then you built the \underline{wrong software}.
+            \begin{itemize}
+                \item Essentially, big bang software usually means working a whole lot. It also means not showing the customer much until your work is done. The risk with that approach is that you think you're building what the customer wants with no real feedback until you think you're finished. 
+                \item No matter how great \emph{you} think your software is, it's the customer you have to make happy. 
+                \item How do you know what the customer really wants? 
+            \end{itemize}
+        \end{itemize}
+
+
+        \begin{mdframed}
+            For example, in the reading, Tom wanted a website to showcase the ``next evolution in hiking,'' as a website. Basically, take his business to the internet. The rough ideas he had in mind were 
+            \begin{itemize}
+                \item The customer should be able to search for trails. 
+                \item The customer should be able to order equipment. 
+                \item The customer should be able to book a trip. 
+            \end{itemize}
+            These are all very general. 
+        \end{mdframed}
+    \end{itemize}
+
+
+    \item If you aren't sure what the customer wants, or even if you think you're sure, \textbf{always} go back and ask.
+    \begin{itemize}
+        \item When it comes to what is needed, the customer is king. But, it's rare for the customer to know exactly what they want at the beginning of the project. 
+        \item Software should not be guesswork. You need to ensure that you develop great software even when what's needed is not clear up front. 
+        \item Ask! 
+        \begin{itemize}
+            \item Ask the customer what they mean. 
+            \item Ask them for more details. 
+            \item Ask them for options about how you might implement their big ideas.
+        \end{itemize}
+        \begin{mdframed}
+            Software development is not guesswork. You need to keep the customer in the loop to make sure you're on the right path. 
+        \end{mdframed}
+    \end{itemize}
+
+    \item What is great software development? Great sofware development delivers  
+    \begin{itemize}
+        \item what is needed (what the customer needs, otherwise called the \textbf{software requirements}),
+        \item on time (when we agreed with the customer that the software would be finished), and
+        \item on budget (not billing the customer for more money than was agreed upon).
+    \end{itemize}
+
+    \item Getting to the goal with \textbf{iteration}.
+    \begin{itemize}
+        \item The ideal development path is the one that the customer wants. That path will lead to your ultimate goal: a product that the customer wants. 
+        \item Without iteration, you may or may not follow that development path, and may -- as a result -- miss the goal (i.e., give the customer a product they didn't want).
+        \item With iteration, you're constantly checking up with the customer about their requirements, adjusting the development path you're taking as needed. At the end, you should hit the goal. 
+        \begin{mdframed}
+            Iteration is like a frequent checkup for your software. You'll always know how you're doing. 
+        \end{mdframed}
+        \item Iteration (and getting feedback) from your customer is important especially when you think you know it all up front. You \underline{always} want to make sure you're on the right track. 
+        \item Iteration is useful even on a short project. 
+        \item Getting to know what the customer really wants, and getting the requirements down at the very beginning, is still not ideal. The customer often doesn't understand what they want, or may change their mind. You still need to check with the customer from time to time. 
+        \item Everyone who has a say in whether your software meets its requirements, and everyone who is involved in meeting those requirements, should be involved in iteration. Usually, this is you, your customer, and other developers working on the same project. 
+        \item Iteration is still necessary even if you're a solo developer. 
+        \item As soon as you have a piece of software running, discuss it with your customer. Recommended time is usually around 20 work days (1 calendar month, per iteration)\footnote{This is usually a guideline}.
+    \end{itemize}
+
+    \item Iteration produces working software. 
+    \begin{itemize}
+        \item With iteration, you check every step of the way that you're going in the right direction. 
+        \item This means making sure your software builds from almost day one. You shouldn't have long periods where code doesn't work or compile, even if it's just small bits of functionality. More productivity, as you don't need to spend time fixing someone else's code before getting on with your own tasks. 
+        \begin{mdframed}
+            With iteration in mind, we can show Tom small portions of the website (breaking up each task into smaller chunks of functionality). Tom gets to see working software and can make some important comments that you can address right away. 
+        \end{mdframed}
+    \end{itemize}
+
+    \item Each iteration is a mini-project.
+    \begin{itemize}
+        \item With iteration, you take the steps you'd follow to build the entire project, and put those steps into each iteration. 
+        \item Each iteration is a mini-project, with its own requirement, design, coding, testing, etc. built right in. 
+        \item Your customer basically gets to ``sign off'' on what you've built. 
+    \end{itemize}
+
+    \item Each iteration is quality software.
+    \begin{itemize}
+        \item Think of iteration as little cycles, where you're gathering requirements, designing, writing code, and testing. Each cycle produces working, quality software. 
+        \item An iteration contains all the stages of a complete process. 
+        \item After multiple iterations, where each iteration builds a small piece of software, you should end up with the final software. 
+    \end{itemize}
+
+    \item Your iteration length should be at the right tempo for your project. 
+    \begin{itemize}
+        \item Remember, an iteration can be shorter or longer than 30 days. Try 30 calendar days first, and then tweak for project as needed. 
+        \item The key is to iterate often enough to catch yourself when you're deviating from the goal, but not so often that you're spending all your time preparing for the end of an iteration. 
+        \item It takes time to show the customer what you've done and then make course corrections, so make sure to factor this work in when you are deciding how long your iterations should be. 
+        \item Some other things to remember. 
+        \begin{itemize}
+            \item If the last feature scheduled for an iteration pushes the time needed to over a month, consider moving that feature to the next iteration. Going longer runs the risk of getting off course. 
+            \item Even if you order things by customer priority, if you have features that need to be completed before other features, try to group those features together. This can be done even if a lower-priority feature needs to be done before a high-priority feature (as long as it makes the high-priority feature possible). 
+            \item Adding more people to a project \emph{can} help you do more in each iteration, but doesn't necessarily \emph{halve} the time it takes to complete a feature. 
+        \end{itemize}
+    \end{itemize}
+
+    \item The customer will change things up. 
+    \begin{itemize}
+        \item You need to make the adjustments. 
+        \item But, what if you're a long way into development, you have other features to build, the deadline hasn't changed, but the goal has moved (e.g., new feature added)? Iteration soft of handles this automatically. 
+        \begin{enumerate}
+            \item Estimate new features. Estimate how long each of the new features will take. 
+            \item Have the customer prioritize the new features. 
+            \item Rework the iteration plan (remember that ordering is based on prioritization; you may need to push some stuff to a new iteration). 
+            \item Check the project deadline. Days of work left - Days left before deadline = Can you do it? 
+        \end{enumerate}
+    \end{itemize}
+
+    \item A process is really just a sequence of steps. 
+    \begin{itemize}
+        \item A process, particularly in software development, has gotten a bit of a bad name. It's just a sequence of steps that you follow in order to do something, like develop software. 
+        \item Iteration, prioritization, and estimation are part of the software development process.
+        \item Doesn't really matter what process you use, as long as it has the components that ensure you get great, quality softeare, at the end of your development cycle. 
+    \end{itemize}
+
+    \item Iteration is more than a process. 
+    \begin{itemize}
+        \item It's an approach that can be applied to any process. 
+        \item Gives you a better chance of delivering what is needed, on time, and on budget. 
+    \end{itemize}
+
+    \item Your software isn't complete until it's been released. 
+    \begin{itemize}
+        \item Once you deliver your software, then you get paid. 
+        \item Iteration helped you reach an achievable goal that captured what your customer needed. 
+        \item Some things to remember.
+        \begin{itemize}
+            \item When the customer comes up with new requirements and you can't fit all the extra work into your current iteration, the customer priority comes into play. Your customer needs to make a call as to what really needs to be done for this iteration of development. 
+            \item If you're at the last iteration and a top priority feature comes in from the customer, you need to explain to the customer why the feature won't fit. Show them your iteration plan and explain why, with the resources you have, the work threatens your ability to deliver what they need by the due date. Factor the new requirement into another iteration on end of project, extending the due date if the customer agrees.
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+\end{document}
