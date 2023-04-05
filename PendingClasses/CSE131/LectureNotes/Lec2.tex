@@ -1,0 +1,100 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{CSE 131}
+\chead{Wednesday, April 05, 2023}
+\lhead{Lecture 2}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\section{Introduction to Compilers (Continued)}
+We'll be using s-expressions to represent our program's source code. That is, each \code{snek} file will contain s-expressions. S-expressions are defined as either 
+\begin{itemize}
+    \item An \textbf{atom} of the form $x$, or 
+    \item An \textbf{expression} of the form $(x \quad y)$, where $x$ and $y$ are s-expressions. 
+\end{itemize}
+For example, \code{(sub1 2)} is an expression with two atoms, \code{sub1} and \code{2}. 
+
+\subsection{The \code{sexp} Crate}
+Most programming language will have a parser for s-expressions. In Rust, we have the \code{sexp} crate. This crate has the following \code{enum}s\footnote{In Rust, \code{enum}s are algebraic data types.}:
+\begin{itemize}
+    \item A \code{Sexp} enum, representing either an \code{Atom} or a vector of s-expressions. Vectors of s-expressions will contain two elements (since an expression has the form $(x \quad y)$, which has two expressions). 
+    \begin{verbatim}
+pub enum Sexp {
+    Atom(Atom),
+    List(Vec<Sexp>),
+}
+    \end{verbatim}
+
+    \item An \code{Atom} enum, representing one of three different types of atoms: a \code{String}, \code{i64} (64-bit signed integer), or \code{f64} (double-precision float). 
+    \begin{verbatim}
+pub enum Atom {
+    S(String),
+    I(i64),
+    F(f64)
+}\end{verbatim}
+\end{itemize}
+
+\begin{mdframed}
+    (Exercise.) Why is \code{Vec<Box<Sexp>>} or \code{Box<Vec<Sexp>>} not used in the \code{enum} definitions above? 
+
+    \begin{mdframed}
+        Remember that the reason why something like 
+        \begin{verbatim}
+enum Expr {
+    Num(i32),
+    Add1(Expr),
+    Sub1(Expr)
+}\end{verbatim}
+        wouldn't work is because \code{Expr}, as a recursive type, could have infinite size. That is, we could nest \emph{many} \code{Expr}s, and since this value could theoretically continue infinitely, so we don't know how much space this recursive type needs. However, \code{Box<T>} is a pointer type that allocates memory on the heap. \code{Box<T>} has a \emph{fixed} size, so Rust is fine if we have \code{Box<Expr>}. 
+
+        \bigskip
+
+        The reason why we \emph{don't} need \code{Vec<Box<Sexpr>>} or \code{Box<Vec<Sexpr>>} in the above \code{enum}s is because \code{Vec<T>} allocates to the heap (when you add any elements; a vector created initially with no elements does not allocate). In other words, think of \code{Vec<T>} as being a resizable \code{Box<T>}. 
+    \end{mdframed}
+\end{mdframed}
+
+
+\begin{mdframed}
+    (Exercise.) Represent the following s-expression in Rust: 
+    \begin{verbatim}
+        (sub1 (sub1 (add1 73)))\end{verbatim}
+    
+    \begin{mdframed}
+        First, the s-expression itself is roughly similar to a tree, where each \emph{atom} is a leaf node and each \emph{list} is another s-expression. In any case, we can roughly structure the above s-expression like so: 
+        \begin{verbatim}
+(               // List
+    sub1            // Atom 
+    (               // List 
+        sub1            // Atom 
+        (               // List 
+            add1            // Atom 
+            73              // Atom 
+        )
+    )
+) \end{verbatim}
+        In other words, we have a list whose elements are an \emph{atom} and another \emph{list}. With this in mind, the Rust form is
+        \begin{verbatim}
+List(vec![
+    Atom(S("sub1")),
+    List(vec![
+        Atom(S("sub1")),
+        List(vec![
+            Atom(S("add1")),
+            Atom(I(73))
+        ])
+    ])
+])\end{verbatim}
+    \end{mdframed}
+\end{mdframed}
+
+\end{document}
