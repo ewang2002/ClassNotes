@@ -1,0 +1,120 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Math 170B}
+\chead{Wednesday, April 05, 2023}
+\lhead{Lecture 2}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+\section{Order (Section 1.2)}
+Let's begin by looking at some different sequences. We'll be using \textbf{orders} to compare those sequences.
+\begin{definition}{Big-$\BigO$}{} 
+    Let $x_m$ and $\alpha_m$ be two sequences. We say that $x_m = \BigO(\alpha_m)$ if, for $m \mapsto \infty$, we have $\frac{x_m}{\alpha_m} \leq C$ for some constant $C$.
+\end{definition}
+
+%Let 
+% \[x_m = \frac{1}{m}, \qquad \alpha_m = \frac{1}{\ln(m)},\]
+% with $m \geq 2$. 
+
+\begin{mdframed}
+    (Example.) Suppose $x_m = \frac{1}{m} + \frac{1}{m^2}$ and $\alpha_m = \frac{1}{m}$. Then, \[\frac{x_m}{\alpha_m} = 1 + \frac{1}{m} \leq C\] for $m \mapsto \infty$ and $C \in \R$. Therefore, we say that \[x_m = \BigO\left(\frac{1}{m}\right) = \BigO(\alpha_m).\]
+\end{mdframed}
+
+\begin{definition}{Little-o}{}
+    Let $x_m$ and $\alpha_m$ be two sequences, both tending to 0 as $m \mapsto \infty$. We say that $x_m = o(\alpha_m)$ if, for $m \mapsto \infty$, we have $\frac{x_m}{\alpha_m} \mapsto 0$. 
+\end{definition}
+\textbf{Remarks:} 
+\begin{itemize}
+    \item If something is little-$o$, then it will also be Big-$\BigO$. 
+    \item If $x_n \mapsto 0$ and $\alpha_n \mapsto 0$ and $x_n = \BigO(\alpha_n)$, then $x_n$ converges to 0 at least as rapidly as $\alpha_n$ does. If $x_n = o(\alpha_n)$, then $x_n$ converges to 0 more rapidly than $\alpha_n$. 
+\end{itemize}
+
+\begin{mdframed}
+    (Example.) Let $x_m = \frac{1}{m}$ and $\alpha_m = \frac{1}{\ln(m)}$. Then, as $m \mapsto \infty$, we have \[\frac{x_m}{\alpha_m} = \frac{\ln(m)}{m} \mapsto 0.\]
+    Then, we can say \[x_m = o\left(\frac{1}{\ln(m)}\right) = o(\alpha_m).\]
+\end{mdframed}
+
+\begin{mdframed}
+    (Example.) 
+    \begin{itemize}
+        \item $\frac{m + 1}{m^2} = \frac{1}{m} + \frac{1}{m^2} = \BigO\left(\frac{1}{m}\right).$
+        \item $\frac{m + 1}{\sqrt{m}} = \BigO(\sqrt{m}).$
+        \item $\frac{1}{m\ln(m)} = o\left(\frac{1}{m}\right).$
+    \end{itemize}
+\end{mdframed}
+
+\subsection{Functions}
+There are analogous definitions of Big-$\BigO$ and little-$o$ for functions. 
+
+\begin{definition}{Big-$\BigO$ \& Little-o}{}
+    For functions $f(x)$, $g(x)$, 
+    \begin{itemize}
+        \item we say that $f(x) = \BigO(g(x))$ if $\frac{f(x)}{g(x)} \leq C$ as $x \mapsto x^*$ and for some constant $C$. 
+        \item we say that $f(x) = o(g(x))$ if $\frac{f(x)}{g(x)} \mapsto 0$ as $x \mapsto x^*$. 
+    \end{itemize}
+\end{definition}
+
+\begin{mdframed}
+    (Example.) We know that the Taylor Series \[\begin{aligned}
+        \frac{1}{1 - x} &= 1 + x + x^2 + x^3 + \hdots \\
+            &= 1 + x + \hdots + \BigO(x^2)
+    \end{aligned}\] for $|x| < 1$. Likewise, \[\frac{1}{1 - x} = 1 + x + o(x).\] Here, 
+    \begin{itemize}
+        \item In the first equation, the $\BigO(x^2)$ means that the remaining terms have order $x^2$. 
+        \item Likewise, $o(x^2)$ means that the remaining terms tend to 0 faster than $x^2$. 
+    \end{itemize}
+\end{mdframed}
+% TODO check
+
+\subsection{Polynomials}
+We know that polynomials can approximate functions (like we've seen through Taylor Series). That is, the polynomial \[p(x) = a_0 + a_1 x + a_2 x^2 + a_3 x^3 + \hdots + a_m x^m\] can be used to approximate functions. Note that
+\begin{equation*}
+    \begin{aligned}
+        p(x) &= a_0 + a_1 x + a_2 x^2 + a_3 x^3 + \hdots + a_m x^m \\ 
+            &= a_0 + x(a_1 + a_2 x + a_3 x^2 + \hdots + a_m x^{m - 1}) \\ 
+            &= a_0 + x(a_1 + x(a_2 + a_3 x + \hdots + a_m x^{m - 2}))
+    \end{aligned}
+\end{equation*}
+Suppose we want to evaluate this polynomial at some $x$. Using this process, known as \textbf{Horner's Method}, we can compute a polynomial at some $x$. 
+\begin{verbatim}
+    p = a_m 
+    for i = m - 1 : 0 
+        p = px + a_i
+    end\end{verbatim}
+This algorithm uses one loop, and does not store anything else (i.e., does not use any intermediate values). In terms of flop count, this is $\BigO(m)$ flops. 
+
+\subsection{Mean-Value Theorem}
+\begin{theorem}{Mean-Value Theorem}{}
+    For $\xi \in [a, b]$ and $f \in C^1$, \[f(b) - f(a) = f'(\xi)(b - a). \]
+\end{theorem}
+
+\subsection{Function Representation}
+Functions can be explicit or implicit. Generally, we'll consider functions in the explicit form, \[y = f(x).\]
+An implicit form may look like\footnote{If we have $G(x, y) = C$ for some constant $C$, then we can subtract $C$ on both sides to get $G(x, y) - C = 0$.} \[G(x, y) = 0.\]
+\begin{mdframed}
+    (Example.) 
+    \begin{itemize}
+        \item $y = x^2$ is a simple explicit function. 
+        \item $y^2 + x^2 = 0$ is a simple implicit function. 
+    \end{itemize}
+\end{mdframed}
+Essentially, an explicit function has one variable whereas an implicit function has two variables. 
+
+\begin{theorem}{Implicit Function Theorem}{}
+    Let $G$ be a function of two real variables defined and continuously differentiable in a neighborhood of $(x_0, y_0)$. If $G(x_0, y_0) = 0$ and $\frac{\delta G}{\delta y} \neq 0$ at $(x_0, y_0)$, then there is a continuously differentiable function $f$ defined such that $f(x_0) = y_0$ and $G(x, f(x)) = 0$. 
+\end{theorem}
+
+\begin{mdframed}
+    (Example.) Suppose $x^2 + y^2 = 2$. Then, $G = x^2 + y^2 - 2$ and we also know that, for example, $G(1, 1) = 0$. Then, $x_0 = y_0 = 1$ and \[\frac{\partial G}{\partial y}(x_0, y_0) = 2y_0 = 2 \neq 0.\] Then, there is an implicit function $y$ around $(1, 1)$. We know that $G = 0$ and $y^2 = 2 - x^2 \implies y_1, y_2 = \pm\sqrt{2 - x^2}$, which means $x_0 = 1$.
+\end{mdframed}
+
+\end{document}
