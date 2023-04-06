@@ -1,0 +1,231 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{CSE 110}
+\lhead{Week 1 Friday}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+\section{Reading 2: HFSD Chapter 2, Page 29-64, 66}
+Gathering requirements, knowing what the customer wants. Although you cannot always get what you want, the customer should. Great software development delivers what the customer wants.
+\begin{itemize}
+    \item Gathering requirements 
+    \begin{itemize}
+        \item When gathering requirements, write them down. 
+        \item A requirement is a single thing that the software has to do. 
+        \item There's no specific format for writing these requirements out.
+        \item Requirements are similar to user stories, but not exactly like them. 
+        \item Descriptions are probably going to be vague, talk to customer to clarify. 
+    \end{itemize}
+
+    \item Talk to your customer to get more information. 
+    \begin{itemize}
+        \item There will always be gaps in understanding of what your software is supposed to do, esp. early in project. 
+        \item When you have questions, or start to make assumptions, go back and talk with the customer to get answers to your questions. 
+        \item Try to gather additional requirements -- talking to the customer doesn't just give you a chance to get more details about existing requirements. You can also find out about additional requirements the customer didn't think to tell you about earlier. 
+    \end{itemize}
+
+    \item Bluesky with your customer. 
+    \begin{itemize}
+        \item When you iterate with the customer on their requirements, \underline{think big}. 
+        \item Brainstorm with other people (developers, other users, customers, etc.); don't rule out any ideas in the beginning, just try to capture everything. 
+        \item It's okay if you come up with some wild ideas as long as you're all focusing on the core needs that the software is trying to meet. 
+        \item This is called \textbf{blueskying} for requirements. 
+        \begin{mdframed}
+            Avoid office politics! Try as much as possible to leave job descriptions and other baggage at the door when blueskying requirements. Everyone should get an equal say to ensure you get the most out of each brainstorming session. 
+        \end{mdframed}
+
+        \item Sometimes, your bluesky session can be as muffled as a foggy day in winter. That is, some people will give you a lot of information and others will say nothing. 
+        
+        \begin{mdframed}
+            The key of capturing good requirements is to get as many of the stakeholders involved as possible. If getting everyone in the same room is just not working, have people brainstorm individually and then come together and put all their ideas on the board and brainstorm a bit more. 
+        \end{mdframed}
+    \end{itemize}
+
+    \item Find out what people really do. 
+    \begin{itemize}
+        \item Everything that's ethical and legal is pretty much fair game when you're trying to get into your customer's head to understand their requirements. 
+        \item Role playing and observation might be helpful. 
+        \begin{itemize}
+            \item Role playing: if customer is finding it hard to visualize how they need their software to work, act it out. You pretend to be the software and your customer attempts to instruct you in what they would like you to do. Write down each thing the software needs to do on one of your requirement cards. 
+            \item Observation: sometimes, the best way to understand how people will work with your software is to watch them, and figure out where your software will fit in. Try to observe the same interactions more than once with multiple observers so you don't just have one person's impression of an event. 
+        \end{itemize}
+    \end{itemize}
+
+    \item Your requirements must be \textbf{customer}-oriented.
+    \begin{itemize}
+        \item A great requirement is written from your \underline{customer's} perspective, describing what the software is going to do \underline{for the customer}. A requirement should be written in the customer's language and read like a \textbf{user story}: a story about how their users interact with the software you're building. 
+        \item When deciding if you have good requirements or not, judge each one against the following criteria; user stories should 
+        \begin{itemize}
+            \item describe \underline{one thing} that the software needs to do for the customer. 
+            \item be written using language that the customer understands. 
+            \item be written by the customer. 
+            \item be short (no more than three sentences).
+        \end{itemize}
+        User stories should not 
+        \begin{itemize}
+            \item be a long essay. 
+            \item use technical terms that are unfamiliar to the customer.
+            \item mention specific technologies. 
+        \end{itemize} 
+
+        \item If you're still unclear after creating more user stories, ask the customer. You're only ready to move on to the next stage when you have no more questions and your customer is also happy that the user stories capture everything they need the software to do for now. 
+        \item User stories usually have a title and description; the title is just a good way of referring to the story. 
+        
+        \begin{mdframed}
+            User stories are written from your customer's perspective, and includes information like who the user is, what they want, and why (what the software should do). 
+
+            \bigskip 
+
+            Requirements are usually more detailed and more technical (how the software should work). 
+        \end{mdframed}
+    \end{itemize}
+
+    \item Develop your requirements with customer feedback. 
+    \begin{itemize}
+        \item Process for getting customer ideas and refining those ideas into user stories (usually done at the beginning of each iteration): 
+        \begin{enumerate}
+            \item Capture basic ideas (customer ideas).
+            \item Bluesky brainstorming. 
+            \item Constructing user stories. 
+            \item Finding holes and clarity on details using customer's feedback (refining your initial set of user stories). 
+            \item Write clear, customer-focused user stories
+        \end{enumerate}
+    \end{itemize}
+
+    \item User stories define the \textbf{what} of your project, estimates define the \textbf{when}. 
+    \begin{itemize}
+        \item After your initial requirement-capture stage, you will have a set of clear, customer-focused user stories that you and the customer believe capture \textbf{what} it is you want to try to build (at least for the first iteration or so). 
+        \item What about \textbf{when}? The customer wants to know when those stories will be built. In other words, \emph{how long will it all take?}
+        \begin{itemize}
+            \item Your project estimate is the sum of the estimates for your user stories. 
+            \item To figure out how long it will take to complete all of the requirements captured in your user stories, you need to 
+            \begin{itemize}
+                \item add an estimate to each user story for how long you think it will take to develop (design, code, test, deliver) that functionality. 
+                \item add up all the estimates to get a total estimate for how long your project will take to deliver the required software. 
+            \end{itemize}
+            Hardest part is figuring out the estimates to each user story. 
+
+            \begin{mdframed}
+                Getting rid of assumptions is the most important activity for coming up with estimates you believe in.
+            \end{mdframed}
+        \end{itemize}
+    \end{itemize}
+
+    \item Playing planning poker. 
+    \begin{itemize}
+        \item To come up with accurate estimates, you need to get rid of all the assumptions that put your estimates at risk of being wrong. 
+        \item Want a set of estimates that \textbf{everyone} (just the people directly involved in the development, so not customers) believes in and are confident that they can deliver, or at the very least you want a set of estimates that let you know what assumptions everyone is making before you sign on the dotted line. 
+        \item Planning poker is one way to estimate user stories. How to play?  
+        \begin{enumerate}
+            \item Place a user story in the middle of the table. Remember, we want a solid estimate for how long it will take to develop the story. Don't forget that development should include designing, coding, testing, and delivering the user story. 
+            \item Everyone is given a deck of 13 cards. Each card has an estimate written on one side. Decks may include 
+            \begin{itemize}
+                \item 0 days (i.e., already done.)
+                \item 1/2 day 
+                \item 1 day 
+                \item 2 days 
+                \item 3 days 
+                \item 5 days 
+                \item 8 days 
+                \item 13 days 
+                \item 20 days 
+                \item 40 days 
+                \item 100 days 
+                \item ? (use this card if you don't have enough information to estimate)
+                \item Coffee (use this card if you think everyone should take a break from estimating for a bit.)
+            \end{itemize}
+
+            \item Everyone picks an estimate for the user story and places the corresponding card face down on the table. You pick the card that you think is a reasonable estimate for the \underline{whole} user story. Don't discuss the estimate with anyone else, though. 
+            \item Everyone then turns over their cards at the exact same time. It's okay if the cards never match up. 
+            \item The dealer marks down the spread across each of the estimates. \textbf{The larger the difference between estimates, the less confidence you are in the estimate, and the more assumptions you need to root out.}
+        \end{enumerate}
+
+        \item Large spreads can be a misunderstanding. 
+        \begin{itemize}
+            \item Several reasons why, including: some of your team misunderstood the user story; or, some members of the team are unsure of something that another part of your team is happy with. 
+            \item Look at assumptions that your team is making and decide if you need to go back and speak to the customer to get more feedback and clarification on your user stories, along with any assumptions you're making about them. 
+            \item Even if everyone's estimates is within  the same narrow range, it's worth asking for everyone's assumptions to make sure that everyone is not making the same wrong assumption. 
+        \end{itemize}
+        \item Put assumptions on trial for their lives. 
+        \begin{itemize}
+            \item No assumption is a good assumption when it comes to requirements. 
+            \item Try to aim for as few assumptions as possible when making your estimates. When an assumption shows up in planning poker, even if your entire team shares the same assumption, expect the assumption to be wrong until it's clarified by the customer. 
+            \item At least you know what you don't know. 
+            \begin{itemize}
+                \item Sometimes, your assumptions will survive clarification with the customer. Write this down as a risk for the user story (back of your user story card, for example). You may even choose to delay the development of a user story that has a number of surviving assumptions until they can be clarified. 
+                \begin{mdframed}
+                    While you can't always get rid of assumptions, the goal during estimation is to eliminate as many assumptions as possible by clarifying those assumptions with the customer. Any surviving assumptions then become risks. 
+                \end{mdframed}
+            \end{itemize}
+            \item Value your customer's time. Some customers may not have a lot of time to talk to you, so you may need to be efficient. 
+            \begin{itemize}
+                \item Try gathering a collection of assumptions together and then clarifying them all at once with the customer. 
+                \item Schedule an assumption-busting session when you take in the collected assumptions and try to blast as many of them away as possible. 
+            \end{itemize}
+            When you have your answers, head back for a final round of planning poker. 
+        \end{itemize}
+        \item Generally, do not think about who implements a user story when coming up with estimates. 
+        \begin{mdframed}
+            Don't make assumptions about your assumptions! Talk about everything. 
+        \end{mdframed}
+    \end{itemize}
+
+    \item A big user story estimate is a bad user story estimate. 
+    \begin{itemize}
+        \item An entire iteration should ideally be around 1 calendar month in duration (approx. 20 working days). 
+        \item Generally, estimates taht are longer tha n15 days are much less likely to be accurate than estimates below 15 days. Estimates greater than 15 days per user story allow too much room for error.
+        \item When an estimate is too long\dots
+        \begin{itemize}
+            \item Break your stories into smaller, more easily estimated stories: apply the AND rule to break the user story into smaller pieces. Any story that has an ``and'' in its title or descriptio ncan probably be split into two or more smaller user stories. 
+            \item Talk to your customer again to see if there are any assumptions that are pushing your estimates out.
+        \end{itemize}
+    \end{itemize}
+
+    \item The goal is convergence. 
+    \begin{itemize}
+        \item After a solid round of planning poker, the goal is to not only have estimates for each user story, but be confident in those estimates. 
+        \item Goal is to get rid of as many assumptions as possible, and to converge all of the points on each user story's spread of estimates. 
+        \item e.g. if you have similar estimates like 8, 10, 15 days, a reasonable estimate that a team could agree on is 13 days. 
+        \item Run through this cycle of steps until you reach of consensus. 
+        \begin{enumerate}
+            \item Talk to the customer: get as much info as possible, remove as many assumptions and misunderstandings as possible, all by talking to the customer. 
+            \item Play planning poker. 
+            \item Clarify your assumptions. 
+            \item Come to a consensues: note the low, converged, and high estimates to get an idea of the best/worst case scenarios. 
+        \end{enumerate}
+        \begin{mdframed}
+            Your estimates are your promise to your customer about how long it will take you and your team to deliver.
+        \end{mdframed}
+    \end{itemize}
+
+    \item Requirements to estimate iteration cycle (usually done at beginning of iteration):
+    \begin{enumerate}
+        \item Capture basic ideas (customer ideas).
+        \item Bluesky brainstorming. 
+        \item Constructing user stories. 
+        \item Finding holes and clarity on details using customer's feedback (refining your initial set of user stories). 
+        \item Write clear, customer-focused user stories
+        \item Play planning poker 
+        \item Get any missing inforamtion from customer, try to break up large user stories. 
+        \item Estimate how long all of customer's requirements will take. 
+    \end{enumerate}
+
+    \item Estimating the whole project. 
+    \begin{itemize}
+        \item Now that we have an estimate for each story, we can ge ta total estimate for how long your project will take to deliver the required software. 
+        \begin{itemize}
+            \item Just add each of the converged estimates for your user stories. The total duration for your project is the sum of those converged estimates. 
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+\end{document}
