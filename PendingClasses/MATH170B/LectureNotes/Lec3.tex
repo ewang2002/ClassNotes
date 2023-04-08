@@ -1,0 +1,85 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Math 170B}
+\chead{Friday, April 07, 2023}
+\lhead{Lecture 3}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\section{Machine (Floating-Point) Numbers (Section 1.3)}
+Consider the decimal number \code{24.625}. We can decompose this into a sum of its components as 
+\[24.625 = 2 \cdot 10^1 + 4 \cdot 10^0 + 6 \cdot 10^{-1} + 2 \cdot 10^{-2} + 5 \cdot 10^{-5}.\]
+We don't normally decompose numbers like this, but it's useful to know this regardless. To see why, let's consider binary numbers, or numbers in base 2. These numbers consist of 0's and 1's. For example, $(11000.101)_2$ is a binary number (base 2). So,  
+\[\begin{aligned}
+    (11000.101)_2 &= 1 \cdot 2^4 + 1 \cdot 2^3 + 0 \cdot 2^2 + 0 \cdot 2^1 + 0 \cdot 2^0 + 1 \cdot 2^{-1} + 0 \cdot 2^{-2} + 1 \cdot 2^{-3} \\ 
+        &= 16 + 8 + 0.5 + 0.125 \\ 
+        &= 24.625.
+\end{aligned}\]
+Here, we're able to convert this binary number into its decimal representation (base 10). Note that it's possible to get a conversion error: if we cannot represent infinitely many digits in a different base, we end up with a slight conversion error. In other words, the conversion between number systems may result in round-off errors. 
+
+\subsection{A Model Computer}
+Suppose we have a 32 bits model computer (Marc-32). We also have a floating-point standard. There are some components to this standard:  
+\[x^* = (-1)^s \cdot q \cdot 2^m,\]
+where 
+\begin{itemize}
+    \item $(-1)^s$ is the sign bit, and $s \in \{0, 1\}$. 
+    \item $1 \leq q < 2$ in binary, which looks like $(1.f)_2$, known as the mantissa.
+    \item $m = e - 127$, where $e$ is an integer in binary form. This is known as the exponent. 
+\end{itemize}
+The storage of these components is divided up into the three parts: 
+\begin{center}
+    \begin{tabular}{|c|c|c|}
+        \hline 
+        \code{s} & \code{exp} \qquad\qquad & \code{frac} \qquad\qquad\qquad\qquad\qquad \\  
+        \hline 
+    \end{tabular}
+\end{center}
+More specifically, given 32 bits, 
+\begin{itemize}
+    \item 1 bit is for the sign $s$, 
+    \item 8 bits are for the exponent $e$,
+    \item 23 bits are for the mantissa $f$.  
+\end{itemize}
+We also have special conventions for the largest representable number in this standard. Note that \[0 < e < (11111111)_2 = 255.\] This also means that 
+\begin{itemize}
+    \item The largest representable number is $q_{\text{max}} \cdot 2^{m_{\text{max}}} = (2 - 2^{-23}) \cdot 2^{127}$.
+    \item The smallest representable number is $q_{\text{min}} \cdot 2^{m_{\text{min}}} = 1 \cdot 2^{-126}$. 
+\end{itemize}
+
+\subsection{Finding the Closest Floating Point Number}
+Let \[x = q \cdot 2^m\] such that $1 \leq q < 2$ and $-126 \leq m \leq 127$. How do we find the closest floating-point number to the real number $x$? How do we find the binary representation of $x$? 
+\begin{enumerate}
+    \item Let $x = (1.a_1 a_2 \hdots a_{23} a_{24} a_{25} \hdots)_{2} \cdot 2^{m}$, where each $a_i \in \{0, 1\}$ is a digit.
+    
+    \item We begin by chopping off some of the digits to get 
+    \[x_{\_} = (1.a_{1} a_{2} \hdots a_{23})_2 \cdot 2^m.\]
+    This is because we want to find the nearby floating-point number, which we can obtain by discarding the excess bits $a_{24}a_{25}$. 
+
+    \item Next, we round up. 
+    \[x_{+} = ((1.a_1 a_2 \hdots a_{23})_2 + 2^{-23}) \cdot 2^m.\]
+
+    \item Select the closest of $x_{+}, x_{\_}$, to $x$ as the machine number $x^*$.
+    \begin{verbatim}
+        |-----------x---------------------------------------------------|
+        x_                                                              x+\end{verbatim}
+    \begin{verbatim}
+        |--------------------------------------------------x------------|
+        x_                                                              x+\end{verbatim}
+    In the first case (the top one), we pick $x_\_$. For the second case (bottom one), we pick $x_+$. 
+
+    \item We now want to determine the relative error (e.g., for the first case),
+    \[\frac{|x - x_\_|}{|x|} \leq \frac{1}{2} \frac{|x_+ - x_\_|}{|x|} = \frac{1}{2} \frac{2^{m - 23}}{q \cdot 2^m} = \frac{2^{m - 24}}{q \cdot 2^m} \leq \frac{2^{m - 24}}{2^m} = 2^{-24}.\]
+    The second case is similar.
+\end{enumerate}
+
+\end{document}
