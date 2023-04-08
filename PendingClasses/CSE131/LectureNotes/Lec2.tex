@@ -97,4 +97,77 @@ List(vec![
     \end{mdframed}
 \end{mdframed}
 
+
+\subsection{From S-Expressions to Rust Code}
+Given some s-expression string, we can use the above crate to convert the s-expression into a Rust object. However, this Rust object itself doesn't give us much information aside from how the s-expression is structured. We want to turn this Rust object into another Rust object representing the actual expressions (i.e., an abstract syntax tree). We can use the Rust structure to represent our code: 
+\begin{verbatim}
+enum Expr {
+    Num(i32),
+    Add1(Box<Expr>),
+    Sub1(Box<Expr>),
+}\end{verbatim}
+So, given the \code{Sexp}, our s-expression representation in Rust, we can use the following function to parse this representation into an abstract syntax tree: 
+\begin{verbatim}
+fn parse_expr(s : &Sexp) -> Expr {
+    match s {
+        Sexp::Atom(I(n)) =>
+            Expr::Num(i32::try_from(*n).unwrap()),
+            Sexp::List(vec) =>
+                match &vec[..] {
+                    [Sexp::Atom(S(op)), e] if op == "add1" =>
+                        Expr::Add1(Box::new(parse_expr(e))),
+                    [Sexp::Atom(S(op)), e] if op == "sub1" =>
+                        Expr::Sub1(Box::new(parse_expr(e))),
+                    _ => panic!("parse error")
+	            },
+        _ => panic!("parse error")
+    }
+}\end{verbatim}
+
+\begin{mdframed}
+    (Exercise.) Convert the s-expression representation in Rust of \code(sub1 (sub1 (add1 73))) to an \code{Expr} object. 
+
+    \begin{mdframed}
+        From the code above, our object might look like: 
+        \begin{verbatim}
+Expr::Sub1(
+    Box::new(Expr::Sub1(
+        Box::new(Expr::Add1(
+            Box::new(
+                Expr::Num(73)
+            )
+        ))
+    ))
+)\end{verbatim}
+    \end{mdframed}
+\end{mdframed}
+
+
+\subsection{From AST to Assembly}
+How do we convert our AST to assembly? We can use the following code to do this. 
+\begin{verbatim}
+fn compile_expr(e : &Expr) -> String {
+    match e {
+    	Expr::Num(n) => format!("mov rax, {}", *n),
+    	Expr::Add1(subexpr) =>
+            compile_expr(subexpr) + "\nadd rax, 1",
+    	Expr::Sub1(subexpr) =>
+            compile_expr(subexpr) + "\nsub rax, 1"
+    }
+}
+\end{verbatim}
+
+\begin{mdframed}
+    (Exercise.) Convert \code(sub1 (sub1 (add1 73))) into assembly. 
+
+    \begin{mdframed}
+        The above code would produce the following assembly. 
+        \begin{verbatim}
+    mov rax, 73
+    add rax, 1 
+    sub rax, 1
+    sub rax, 1\end{verbatim}
+    \end{mdframed}
+\end{mdframed}
+
 \end{document}
