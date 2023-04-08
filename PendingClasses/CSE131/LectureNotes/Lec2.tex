@@ -59,7 +59,7 @@ enum Expr {
 
         \bigskip
 
-        The reason why we \emph{don't} need \code{Vec<Box<Sexpr>>} or \code{Box<Vec<Sexpr>>} in the above \code{enum}s is because \code{Vec<T>} allocates to the heap (when you add any elements; a vector created initially with no elements does not allocate). In other words, think of \code{Vec<T>} as being a resizable \code{Box<T>}. 
+        The reason why we \emph{don't} need \code{Vec<Box<Sexpr>>} or \code{Box<Vec<Sexpr>>} in the above \code{enum}s is because \code{Vec<T>} allocates to the heap (when you add any elements; a vector created initially with no elements does not allocate). In other words, think of \code{Vec<T>} as being a resizable \code{Box<T>}. More accurately, a \code{Vec<T>} is a fixed-size type with a reference to variable-sized heap data.
     \end{mdframed}
 \end{mdframed}
 
