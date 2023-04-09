@@ -1,0 +1,183 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{CSE 110}
+\lhead{Week 2 Monday}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+\section{Reading 3: HFSD Chapter 3 Page 69-99, 103}
+Every great piece of software starts with a great plan. 
+
+\begin{itemize}
+    \item Customers want their software now. 
+    \begin{itemize}
+        \item Customers want their software when they need it, and not a moment later. 
+        \item What if the problem is that developing everything the customer said they needed will take too long? 
+        \begin{itemize}
+            \item You can pick the stories you think are important, but \textbf{the customer sets the priorities}. 
+            \item When user stories are being prioritized, you need to stay customer-focused. Only the customer knows that is really needed. So, when it comes to deciding what's in and what's out, you might be able to provide some expert help, \textbf{but it's a choice that the customer has to make}. 
+        \end{itemize}
+    \end{itemize}
+
+    \item Prioritize with the customer. 
+    \begin{itemize}
+        \item It's your customer's call as to what user stories take priority. 
+        \item To help the customer make the decision, shuffle and lay out all your user story cards on the table. 
+        \item Ask the customer to order the user stories by priority (the story most important to them first) and then to select the set of featurs that need to be delivered in Milestone 1.0 of their software. 
+    \end{itemize}
+    
+    \item What is ``Milestone 1.0?''
+    \begin{itemize}
+        \item Your first major release of the software to the customer. 
+        \item Unlike smaller iterations where you'll show the customer your software for feedback, this will be the first time you actually \textbf{deliver your software} (and expect to get paid for the delivery).
+        \item Some Do's and Don'ts when planning Milestone 1.0: 
+        \begin{itemize}
+            \item Do 
+            \begin{itemize}
+                \item balance functionality with customer impatience: help customer understand what can be done in the time available. Any user stories that don't make it into Milestone 1.0 are not ignored, just postponed until Milestone 2 or 3 or \dots
+            \end{itemize}
+            \item Don't 
+            \begin{itemize}
+                \item Get caught planning nice-to-haves: Milestone 1.0 is about delivering what's needed, and that means a set of functionality that meets the most important needs of the customer. 
+                \item Worry about length (yet). At this point, you're just asking your customer which are the most important user stories. Don't get caught up on how long those user stories will take to develop. You're just trying to understand the customer's priorities.
+            \end{itemize}
+        \end{itemize}
+
+
+        \item We know what's in Milestone 1.0
+        \begin{itemize}
+            \item Collect together all the features of your software that your customer needs developed for Milestone 1.0.
+        \end{itemize}
+
+        \item Sanity-check your Milestone 1.0 estimate
+        \begin{itemize}
+            \item Now that you know what features the customer wants in Milestone 1.0, time to find out if you now have a reasonable length of project if you develop and deliver all of the most important features. 
+        \end{itemize}
+
+        \item If the features don't fit, re-prioritize 
+        \begin{itemize}
+            \item Suppose you have significantly more days of work for Milestone 1.0 than what the customer wants. This is pretty common since customers usually want more than what you can deliver. It's your job to go back to them and reprioritize until you come up with a workable feature set. 
+            \item To reprioritize your user stories for Milestone 1.0 with the customer\dots
+            \begin{enumerate}
+                \item Cut out more functionality: the very first thing you can look at doing to shorten the time to delivering Milestone 1.0 is to cut out some features by removing user stories that are not \textbf{absolutely crucial} to the software working. Once you explain the schedule, most customers will admit they don't really need everything they originally said they did. 
+                \item Ship a milestone build as early as possible: aim to deliver a significant milestone build of your software as early as possible. Don't let your customers talk you into longer development cycles than you're comfortable with. The sooner your deadline, the more focused you and your team can be on it. 
+                \item Focus on the baseline functionality: milestone 1 is all about delivering JUST the functionality that is needed for a working version of the software. Any features beyond that can be scheduled for later milestones. 
+            \end{enumerate}
+        \end{itemize}
+
+        \item Difference between milestone and version: not much. Milestone marks point in which you deliver significant software and get paid by your customer, whereas version more of simple descriptive term that is used to identify particular release of your software. 
+        \begin{itemize}
+            \item Version = label, doesn't mean anything more. 
+            \item Milestone = you deliver significant functionality and you get paid. 
+        \end{itemize}
+
+        \item Software's baseline functionality: smallest set of features that your software needs to have in order for it to be useful to your customer and their users. 
+        \item If, after no matter how much you cut the stories up, you can't deliver what your customer wants when they want you to, confess to your customer. If your customer refuses to budge, you may need to walk away. You can also try to beef up the team with new people, although this may not get you any significant advantages.
+    \end{itemize}
+
+    \item It's about more than just development time. 
+    \begin{itemize}
+        \item When adding more people can look attractive at first, it's not as simple as ``double the people, halve the estimate.''
+        \begin{itemize}
+            \item Every new team member needs to get up to speed on project. 
+            \item They need to understand the software, technical decisions, and how everything fits together. 
+            \item While they're doing that, they cannot be 100\% productive. 
+            \item After  that, you still need to get the new person set up with the right tools and equipment to work with the team. This all takes time. 
+            \item Finally, every new person you add to the team makes the job of keeping everyone focused and knowing what they are doing harder. 
+            \item In fact, there's a maximum number of people that your team can contain and still be productive, but this depends on your project, team, and who you're adding. 
+            \begin{itemize}
+                \item Monitor the team. If you see your team is getting less productive, even though you have more people, time to re-evaluate the amount of work you have to do or the amount of time in which you have to do it. 
+            \end{itemize}
+        \end{itemize}
+    \end{itemize}
+
+    \item More people sometimes means diminishing returns! 
+    
+    \item Work your way to a reasonable Milestone 1.0 
+    \begin{itemize}
+        \item Steps 
+        \begin{itemize}
+            \item First, try to add new people to your team.
+            \item Then, re-prioritize with customer.  
+        \end{itemize}
+
+        \item Priorities are usually in multiples of 10s (10, 20, 30, 40, 50). This gets the brain thinking about groupings of features, instead of ordering each and every feature separately with numbers like 8 or 26 or 42. 
+        \item Customer should be making the priorities, not you. 
+    \end{itemize}
+
+    \begin{mdframed}
+        Keep your software continuously building and your software always runnable so you can always get feedback fro mthe customer at the end of an iteration.     
+    \end{mdframed}
+
+    \item Iterations should be short and sweet. 
+    \begin{itemize}
+        \item Keep iterations short: the shorter your iterations are, the more chances you get to find and deal with changes and unexpected details as they arise. 
+        \item Keep iterations balanced: each iteration should be a balance between dealing with change, adding new features, beating out bugs, and accounting for real people working. 30-day iterations are basically 30 calendar days, which you can assume turn into about 20 working days of productive development.
+        \item Short iterations help you deal with change and keep you and your team motivated and focused. 
+    \end{itemize}
+
+    \item Velocity accounts for overhead in your estimates. 
+    \begin{itemize}
+        \item \textbf{Velocity} is a percentage: given $X$ number of days, how much of that time is productive work? 
+        \item Start with a velocity of 0.7. 
+        \begin{itemize}
+            \item On first iteration with a new team, it's fair to assume that your team's working time will be about 70\% of their available time. 
+            \item This means taht your team has a velocity value of 0.7. 
+            \item That is, for every 10 days of work time, about 3 of those days will be taken up by holidays, software installation, paperwork, phone calls, and other nondevelopment tasks. 
+        \end{itemize}
+        \item This is a conservative estimate and you may find that, over time, your team's actual velocity is higher. 
+        \item If that's the case, then at the end of ucrrent iteration, adjust velocity and use that new figure to determine how many days of work can go into the next iteration. 
+        \item You can also apply velocity to your amount of work and get a realistic estimate of how much that work will actually take. 
+        \[\frac{\text{Days of work}}{\text{Velocity}} = \text{Days required to get work done.}\]
+        Here, 
+        \begin{itemize}
+            \item Days of work = days of work it takes you to develop user story, or iteration, or even entire milestone. 
+            \item Velocity = between 0 and 1. Start with 0.7 on a new project as a good conservative estimate. 
+            \item Days required to get work done = should always be bigger than the origianl days of work, to account for days of administration, holidays, etc. 
+        \end{itemize}
+        Alternatively,
+        \[\text{Workable Days} * \text{Velocity} = \text{Actual Working Days}\]
+    \end{itemize}
+
+    \item Programmers think in utopian days. Programmers will always give you a better-than-best-case estimate. Developers think of real world days. 
+    \begin{itemize}
+        \item To be a software developer, you need to deal with reality. You probably got a team of programmers and you got a customer who won't pay you if you're late. Your estimates should always be more conservative and take into account real life. 
+        \[\text{1 Calendar Month} \xrightarrow{\text{Remove weekends/holidays}} \text{20 Workable Days} \xrightarrow{\text{Apply velocity}} \text{14 days of real work.}\]
+    \end{itemize}
+
+    \item Deal with your velocity before you break into iterations. 
+    \begin{itemize}
+        \item By applying velocity up front, you can calculate how many days of work you and your team can produce in each iteration. 
+        \item Then, you know exactly what you can really deliver in MS 1. 
+        \item Steps 
+        \begin{itemize}
+            \item First, apply team velocity to each iteration. You can calculate how many days of actual work your team can produce in one iteration. 
+            \[\text{Num. Ppl.} \cdot \text{Working Days/Iteration} \cdot \text{Team's First-Pass Velocity} = \text{Work Days}\]
+            \[\text{Work Days} \cdot \text{Num. Iterations in MS 1} = \text{Amt. Work Days in MS 1}\]
+        \end{itemize}
+    \end{itemize}
+
+    \item Making an evaluation 
+    \item Deliver bad news to customer. 
+    \item Managing pissed off customers. 
+    \begin{itemize}
+        \item What do you do when this happens? 
+        \begin{enumerate}
+            \item Add an iteration to milestone 1.0. Extra work can be done if an additonal iteration is added to a plan. Longer development time will be required but at least they get what they want. 
+            \item Explain that the overflow work is not lost, just postponed. 
+            \item Be transparent about how you came up with your figures. 
+        \end{enumerate}
+    \end{itemize}
+\end{itemize}
+
+
+\end{document}
