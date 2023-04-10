@@ -1,0 +1,96 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Math 170B}
+\chead{Monday, April 10, 2023}
+\lhead{Lecture 4}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\section{Machine (Floating-Point) Numbers (Section 1.3, Continued)}
+\begin{mdframed}
+    (Example.) Let $x = \frac{2}{3}$. 
+    
+    \begin{enumerate}[(1)]
+        \item What is the binary form of $x$?
+        \begin{mdframed}
+            The algorithm for finding the binary form of the decimal is as follows: 
+            \begin{itemize}
+                \item Given $x$, multiply it by 2. If the integer part of the result is 1, set the $i$th bit to 1. Otherwise, set it to 0. 
+                \item If the $i$th bit is 1, subtract $x \times 2$ by 1. 
+                \item Repeat the above until one of the following occurs: 
+                \begin{itemize}
+                    \item You hit exactly 1, or 
+                    \item You hit 23 bits after the binary point (most likely, you'll see that the bits repeat in some way). 
+                \end{itemize}
+            \end{itemize}
+            \[\begin{aligned}
+                \frac{2}{3} \cdot 2 &= \frac{4}{3} \geq 1 &\implies 1 \\ 
+                \frac{1}{3} \cdot 2 &= \frac{2}{3} < 0 &\implies 0 \\
+                \frac{2}{3} \cdot 2 &= \frac{4}{3} \geq 1 &\implies 1 \\ 
+                \frac{1}{3} \cdot 2 &= \frac{2}{3} < 0 &\implies 0 \\
+                \frac{2}{3} \cdot 2 &= \frac{4}{3} \geq 1 &\implies 1 \\ 
+                \frac{1}{3} \cdot 2 &= \frac{2}{3} < 0 &\implies 0 \\
+                \frac{2}{3} \cdot 2 &= \frac{4}{3} \geq 1 &\implies 1 \\ 
+                \frac{1}{3} \cdot 2 &= \frac{2}{3} < 0 &\implies 0 \\
+                &\vdots
+            \end{aligned}\]
+            This gives us the binary representation \code{0.1010101010...}. Normalizing this gives us 
+            \[(1.01010101010101010101010101010101010\hdots)_2 \times 2^{-1}.\]
+        \end{mdframed}
+        \item Find $x_\_$ and $x_+$.
+        \begin{mdframed}
+            Note that $x_\_$ is just what we found in the previous step, but with 23 bits to the right of the binary point,
+            \[(1.01010101010101010101010)_2 \times 2^{-1}.\]
+            Then, $x_+$ is 
+            \[(1.01010101010101010101011)_2 \times 2^{-1}.\] 
+        \end{mdframed}
+        \item What is $\text{fl}(x)$?
+        \begin{mdframed}
+            We now consider $x - x_\_$ and $x - x_+$. Here, 
+            \begin{itemize}
+                \item For $x - x_\_$, 
+                \begin{verbatim}
+                   1111111111222222222233333333...
+          1234567890123456789012345678901234567...
+
+x       1.0101010101010101010101010101010101010 x 10^-1
+- x_    1.01010101010101010101010               x 10^-1
+        ===============================================
+        0.0000000000000000000000010101010101010 x 10^-1\end{verbatim}
+                This gives us \[0.101\hdots \times 2^{-24} = \frac{2}{3} \times 2^{-24}.\]
+                    
+                \item For $x - x_+$, we know this will be negative since $x_+ > x$ (since we're rounding \emph{up}). So, generally, we'll consider $x_+ - x$: 
+                \[x_+ - x = (x_+ - x_\_) - (x - x_\_) = \left(2^{-23} \times 2^{-1}\right) - \left(\frac{2}{3} \times 2^{-24}\right) = \frac{1}{3} \times 2^{-24}.\]
+                Note that $(x_+ - x_\_) = \left(2^{-23} \times 2^{-1}\right)$ came from 
+                \begin{verbatim}
+x+      1.01010101010101010101011               x 10^-1
+- x_    1.01010101010101010101010               x 10^-1
+        ===============================================
+        0.00000000000000000000001               x 10^-1\end{verbatim}
+                so, we have $2^{-23} \times 10^{-1}$. 
+            \end{itemize}
+            Notice that $x_{+}$ has the smaller error, so $\text{fl}(x) = x^* = x_{+}$. 
+        \end{mdframed}
+        \item What is the relative round-off error?  
+        \begin{mdframed}
+            This is 
+            \[\frac{|\text{fl}(x) - x|}{|x|} = \frac{|x_+ - x|}{|x|} = \frac{\frac{1}{3} \times 2^{-24}}{\frac{2}{3}} = 2^{-25}.\]
+
+            Notice that \[\frac{|x^* - x|}{|x|} \leq 2^{-24}.\]
+        \end{mdframed}
+    \end{enumerate}
+    
+\end{mdframed}
+
+
+\end{document}

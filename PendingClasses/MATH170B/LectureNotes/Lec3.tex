@@ -28,7 +28,7 @@ We don't normally decompose numbers like this, but it's useful to know this rega
 Here, we're able to convert this binary number into its decimal representation (base 10). Note that it's possible to get a conversion error: if we cannot represent infinitely many digits in a different base, we end up with a slight conversion error. In other words, the conversion between number systems may result in round-off errors. 
 
 \subsection{A Model Computer}
-Suppose we have a 32 bits model computer (Marc-32). We also have a floating-point standard. There are some components to this standard:  
+Suppose we have a hypothetical 32-bit model computer (Marc-32). We also have a floating-point standard. There are some components to this standard:  
 \[x^* = (-1)^s \cdot q \cdot 2^m,\]
 where 
 \begin{itemize}
@@ -68,7 +68,7 @@ Let \[x = q \cdot 2^m\] such that $1 \leq q < 2$ and $-126 \leq m \leq 127$. How
     \item Next, we round up. 
     \[x_{+} = ((1.a_1 a_2 \hdots a_{23})_2 + 2^{-23}) \cdot 2^m.\]
 
-    \item Select the closest of $x_{+}, x_{\_}$, to $x$ as the machine number $x^*$.
+    \item Select the closest of $x_{+}, x_{\_}$, to $x$ as the closest machine number $x^*$.
     \begin{verbatim}
         |-----------x---------------------------------------------------|
         x_                                                              x+\end{verbatim}
@@ -80,6 +80,16 @@ Let \[x = q \cdot 2^m\] such that $1 \leq q < 2$ and $-126 \leq m \leq 127$. How
     \item We now want to determine the relative error (e.g., for the first case),
     \[\frac{|x - x_\_|}{|x|} \leq \frac{1}{2} \frac{|x_+ - x_\_|}{|x|} = \frac{1}{2} \frac{2^{m - 23}}{q \cdot 2^m} = \frac{2^{m - 24}}{q \cdot 2^m} \leq \frac{2^{m - 24}}{2^m} = 2^{-24}.\]
     The second case is similar.
+
+    \item We can now define 
+    \[\delta = \frac{x^* - x}{x}, \qquad |\delta| = \left|\frac{x^* - x}{x}\right| \leq 2^{-24}.\]
+    From there, we have 
+    \[\begin{aligned}
+        \text{fl}(x) &= x^* \\ 
+            &= x + x\delta \\ 
+            &= x(1 + \delta).
+    \end{aligned}\]
+    Essentially, $\text{fl}(x)$ is the closest floating point number to the actual number. The unit round-off error is $\epsilon \in 2^{-24}$.  
 \end{enumerate}
 
 \end{document}
