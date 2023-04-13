@@ -53,6 +53,14 @@ There are several things we want to consider here.
     \item How do we store the identifiers and their stack offsets? 
 \end{itemize}
 
+\subsection{Reviewing Assembly Instructions}
+There are three assembly instructions you should know.
+\begin{itemize}
+    \item \code{mov <reg>, <value>}: moves \code{<value>} into \code{<reg>}. Note that \code{<value>} can either be a constant, another \code{reg}, or a memory location (e.g., \code{[rsp - X]}).
+    \item \code{mov [<reg> + <offset>], <value>}: moves \code{<value>} into memory at address \code{<reg> + <offset>}. The \code{<value>} can be a constant or \code{reg}, but cannot be another memory location. 
+    \item \code{add <reg>, <value>}: adds \code{<value>} to the value in \code{<reg>}, and stores the result in \code{<reg>}. The \code{<value>} can either be a constant, register, or memory location.  
+\end{itemize}
+
 \subsection{Grammar and AST}
 Our expression now takes on two new forms:
 \begin{itemize}
