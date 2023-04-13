@@ -154,6 +154,7 @@ There are some things we need to consider.
     \item We need to store all the identifiers and their stack offsets (where in the stack their values are stored in). For this, we can make use of a \code{HashMap<String, i32>}, which we'll call our \textbf{environment} (\code{env}). 
     \item Like with the parsing, we need to create two new branches for the \code{Let} case and the \code{Id} case.  
 \end{itemize}
+In this course, we'll make use of the \code{HashMap} implementation from the \code{im} crate (i.e., \code{im::HashMap}). The difference between this \code{HashMap} implementation and the one in the standard library is that \code{im::HashMap} will create a brand new \code{HashMap} object when you update the map, whereas the standard library version will update the original map. The reason why we're using \code{im::HashMap} is because we don't need to worry about removing the identifier from the map once we're done recursively calling the \code{compile\_expr} function.
 
 \subsubsection{The Identifier Case}
 The identifier is relatively straightforward. Notice how, in the exercise at the beginning of this section, whenever we refer to an identifier, we simply \emph{move} the value (stored in the stack) corresponding to the identifier to \code{rax}. 
