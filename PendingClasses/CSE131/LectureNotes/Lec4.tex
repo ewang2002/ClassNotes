@@ -71,7 +71,7 @@ Suppose we update the \code{compile\_expr} function so it looks like
             Expr::Plus(e1, e2) => {
                 let e1_instrs = compile_expr(e1);
                 let e2_instrs = compile_expr(e2);
-                e1_instrs + "\n mov rbx, rax" + e2_instrs + "\n add rax, rbx"
+                e1_instrs + "\n mov rbx, rax" + &e2_instrs + "\n add rax, rbx"
             }
         }
     }\end{verbatim}
