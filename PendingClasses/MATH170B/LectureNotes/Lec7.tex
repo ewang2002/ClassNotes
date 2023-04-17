@@ -1,0 +1,112 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Math 170B}
+\chead{Monday, April 17, 2023}
+\lhead{Lecture 7}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\section{Newton's Method (Section 3.2)}
+Newton's Method is an efficient iterative method for solving nonlinear equations, assuming it works. Let $r$ be a root of some function, and let $x$ be an approximation to $r$. Then, our goal is to find an estimate of $r$, or $r = x_{m + 1} = x_m + h$, where $x_{m + 1}, x_m, h \in \R$. If $f''$ exists and is continuous, then by the Taylor series, we have 
+\[0 = f(r) = f(x_{m + 1}) = f(x_m) + hf'(x_m) + \BigO(h^2).\]
+Then, $h = \frac{f(x_m)}{f'(x_m)}$ will be part of an updating scheme. For a sufficiently small $h$ (i.e., $x$ is near $r$), then we can reasonably ignore the $\BigO(h^2)$ term. 
+
+\subsection{Newton Iteration in 1-Dimension}
+For $m = 0, 1, 2, \hdots$, we have 
+\[x_{m + 1} = x_m - \frac{f(x_m)}{f'(x_m)}.\]
+In other words, Newton's method begins with an estimate $x_0$ of $r$, and then defines inductively. If we let $x_{m + 1} = x$, then the linearization at $x_m$ is 
+\[f(x_{m + 1}) = f(x) \approx f(x_m) + (x - x_m) f'(x_m) = \ell(x) = 0.\]
+\begin{center}
+    \includegraphics[scale=0.6]{../assets/geometric_newton.png}
+\end{center}
+
+\subsection{The Algorithm}
+Let
+\begin{itemize}
+    \item $M$: the maximum number of iterations. 
+    \item $\delta$: the step tolerance such that $|x_{m + 1} - x_m| < \delta$. 
+    \item $\epsilon$: the convergence tolerance $|f(x_{m + 1})| < \epsilon$.
+\end{itemize}
+With a suitable $x_0$ being the starting point, the algorithm is as follows.
+
+\begin{algorithm}[H]
+    \caption{Newton's Algorithm}
+    \label{alg:two}
+    \begin{algorithmic}[1]
+        \Function{Newton}{$x_0, M, \delta, \epsilon$}
+            \State $v \gets f(x_0)$
+            \If{$|v| < \epsilon$}
+                \State \Return 
+            \EndIf
+
+            \For{$k \gets 1$ to $M$}
+                \State $x_1 \gets x_0 - \frac{v}{f'(x_0)}$
+                \State $v \gets f(x_1)$
+                \If{$|x_1 - x_0| < \delta$ or $|f(x_1)| < \epsilon$}
+                    \State \textbf{break}
+                \EndIf
+
+                \State $x_0 \gets x_1$
+            \EndFor 
+            \State \Return $v$
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
+
+\subsection{Requirements}
+    % TODO look at this
+Defining the correct starting point $x_0$ is important. A bad starting point can result in nonconvergence.
+
+\bigskip 
+
+The function itself also matters. Other problems include when $f'(x_0) = 0$ or $f'(x_0)$ is infinite.
+
+\begin{mdframed}
+    (Example.) Consider the following function, 
+
+    \begin{center}
+        \includegraphics[scale=0.6]{../assets/newton_bad.png}
+    \end{center}
+    For this function, if $|x_0 - r| < |x_n - r|$, then $|x_m - r| < |x_{m - 1} - r|$ and nonconvergence happens. In particular, the shape of the curve is such that for certain starting values, the sequence $[x_n]$ diverges.
+\end{mdframed}
+
+\subsection{Error Analysis}
+Let the error be defined by $e_m = x_m - r$. Assume that $f(r) = 0 \neq f'(r)$ and $f''$ is continuous. Then, 
+\[\begin{aligned}
+    e_{m + 1} &= x_{m + 1} - r \\ 
+        &= \left(x_m - \frac{f(x_m)}{f'(x_m)}\right) - r \\
+        &= e_m - \frac{f(x_m)}{f'(x_m)} \\ 
+        &= \frac{e_m f'(x_m) - f(x_m)}{f'(x_m)}.
+\end{aligned}\]
+We can now incorporate a Taylor expansion, 
+\[0 = f(r) = f(x_m - e_m) = f(x_m) - e_m f'(x_m) + \frac{1}{2}e_m^2 f''(\xi)\]
+for some aribitrary $\xi$ between $x_m$ and $r$ that makes the equation equal. Then, 
+\begin{equation*}
+    \begin{aligned}
+        -(f(x_m) - e_m f'(x_m)) &= \frac{1}{2}e_m^2 f''(\xi) \\ 
+            &\implies e_{m + 1} = \frac{\frac{1}{2} e_m^2 f''(\xi_m)}{f'(x_m)} \\ 
+            &\implies e_{m + 1} \approx Ce_m^2,
+    \end{aligned}
+\end{equation*}
+where $C$ is a bound of $\frac{\frac{1}{2} f''(\xi_m)}{f'(x_m)}$. So, in Newton's method, we have a quadratic convergence so that $e_{m + 1} \leq Ce_m^2$ or $|x_{m + 1} - r| \leq C |x_m - r|^2.$ 
+
+\bigskip 
+
+\textbf{Remark:} If $f$ is $C^2 (\R)$ is increasing, is convex (i.e., $f''(x) > 0$ for all $x$), and has a zero, then Newton's Method converges to it from any starting point.
+
+\begin{mdframed}
+    (Example.) Let $R > 0$ and $x = \sqrt{R}$. Then, 
+    \[f(x) = x^2 - R = 0\] and \[f'(x) = 2x.\] Then, the iteration corresponds to \[x_{m + 1} = x_m - \frac{f(x_m)}{f'(x_m)} = x_m - \frac{x_m^2 - R}{2x_m} = \frac{1}{2}\left(x_m + \frac{R}{x_m}\right).\] 
+\end{mdframed}
+
+\end{document}
