@@ -16,8 +16,8 @@
 
 \begin{document}
 
-\section{Introduction to \code{if}-Statements and Loops}
-In this section, we'll discuss \code{if}-statements and loops, including how we plan on implementing them in this course. Our concrete syntax for this extension will look like 
+\section{Introduction to \code{if}-Expressions}
+In this section, we'll discuss how to implement \code{if}-expressions. Our concrete syntax for this extension will look like 
 \begin{verbatim}
 (*
     expr :=
@@ -30,12 +30,11 @@ In this section, we'll discuss \code{if}-statements and loops, including how we 
         | (+ <expr> <expr>)
         | (let (<name> <expr>) <expr>)
         | (if <expr> <expr> <expr>)         // New!
-        | (loop <expr>)                     // New!
         | ... 
 *)\end{verbatim}
 
-\subsection{Structure of \code{if}-Statements}
-An \code{if}-statement looks like 
+\subsection{Structure of \code{if}-Expressions}
+An \code{if}-expression looks like 
 \begin{verbatim}
     (if <expr> <expr> <expr>)\end{verbatim}
 
@@ -44,9 +43,9 @@ An \code{if}-statement looks like
     \item The second \code{<expr>} represents the ``then'' expression; this expression should be executed if the condition expression resolves to \code{true}.
     \item The third and last \code{<expr>} represents the ``else'' expression; this expression should be executed if the condition expression resolves to \code{false}.
 \end{itemize}
-Before we talk more about how \code{if}-statements should be evaluated, we need to figure out how \code{if}-statements should work in the first place in terms of what is allowed and what isn't. 
+Before we talk more about how \code{if}-expressions should be evaluated, we need to figure out how \code{if}-expressions should work in the first place in terms of what is allowed and what isn't. 
 
-\subsubsection{Boolean Values}
+\subsection{Boolean Values}
 Let's begin by figuring out what some sample programs should resolve to.
 \begin{mdframed}
     (Exercise.) What should the following programs evaluate to? 
@@ -56,7 +55,7 @@ Let's begin by figuring out what some sample programs should resolve to.
     (if (= x 10) (+ x 2) x))\end{verbatim}
 
         \begin{mdframed}
-            This should evaluate to \code{5}. We first defined $x = 5$ and then used that in our \code{if}-statement to see if $x = 10$; since it doesn't, we just return \code{x}, which is 5.  
+            This should evaluate to \code{5}. We first defined $x = 5$ and then used that in our \code{if}-expression to see if $x = 10$; since it doesn't, we just return \code{x}, which is 5.  
         \end{mdframed}
 
 
@@ -101,11 +100,11 @@ Let's begin by figuring out what some sample programs should resolve to.
 \end{mdframed}
 Based on our discussion above, in this class, 
 \begin{itemize}
-    \item We'll allow truthy and falsy values to be resolved to boolean types (\code{true} and \code{false}, respectively) when used as conditions in \code{if}-statements.
+    \item We'll allow truthy and falsy values to be resolved to boolean types (\code{true} and \code{false}, respectively) when used as conditions in \code{if}-expressions.
     \item We won't allow the mixing of types when doing comparison (e.g., \code{=}, \code{<}, etc.) or arithmetic (e.g., \code{+}, \code{-}) operations. These should throw an error during runtime\footnote{In our class, we won't be working on a type checker. However, if we did work on a type checker, then we could make mixing of types when doing these operations a compile-time (parse) error.}.
 \end{itemize}
 
-\subsubsection{Boolean Representation}
+\subsection{Boolean Representation}
 With the above discussion in mind, how should we best represent boolean values in assembly?
 
 \begin{mdframed}
@@ -150,7 +149,7 @@ With the above discussion in mind, how should we best represent boolean values i
 \end{mdframed}
 Remember that we didn't want the mixing of types when doing any comparison or arithmetic operations, e.g., \code{(+ 5 true)} should throw an error. However, with our answers above, how do we know that the \code{1} in \code{RAX} isn't actually a \code{true} value? 
 
-\subsubsection{A New Representation of Numbers: Tagging}
+\subsection{A New Representation of Numbers: Tagging}
 We will now represent numbers as \textbf{64-bits} instead of 32-bits like in previous sections. With this in mind, this is 64 bits:
 \begin{verbatim}
     0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000\end{verbatim}
@@ -180,7 +179,7 @@ We can represent the number \code{0} as
 \begin{verbatim}
     0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000\end{verbatim}
     
-\subsubsection{Consequences of Tagging}
+\subsection{Consequences of Tagging}
 Because we effectively have to shift everything one to the left to introduce tagging, we need to think about a few things.
 \begin{itemize}
     \item \underline{\textbf{Addition}}
@@ -229,7 +228,7 @@ Because we effectively have to shift everything one to the left to introduce tag
 \end{itemize}
 
 
-\subsubsection{Assembly Review}
+\subsection{Assembly Review}
 There are some new assembly commands to know.
 \begin{itemize}
     \item \code{cmp <reg>, <val>}: computes \code{<reg> - <val>} and sets the appropriate condition codes\footnote{The only ones that matter to us are Overflow, Sign, and Zero}. This does not modify \code{<reg>}.
