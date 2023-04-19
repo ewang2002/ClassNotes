@@ -23,7 +23,7 @@ Let's consider the problem of finding zeros.
 \end{mdframed}
 
 \subsection{Bisection Method}
-The bisection method makes the assumption that $f: \R \mapsto \R$ is \underline{continuous}. We want to consider the interval $[a, b]$ so that \[f(a) \cdot f(b) < 0.\] This implies that either $f(x)$ or $f(b)$, but not both, are negative (i.e., $\sgn(f(a)) \neq \sgn(f(b))$).
+The bisection method makes the assumption that $f: \R \mapsto \R$ is \underline{continuous} on an interval $[a, b]$. We want to consider the interval $[a, b]$ so that \[f(a) \cdot f(b) < 0.\] This implies that either $f(x)$ or $f(b)$, but not both, are negative (i.e., $\sgn(f(a)) \neq \sgn(f(b))$).
 
 \begin{center}
     \includegraphics[scale=0.6]{../assets/bisect.png}
@@ -88,11 +88,14 @@ We introduces the tolerances, $\delta$ and $\epsilon$, for robustness.
     \begin{center}
         \includegraphics[scale=0.8]{../assets/case1.png}
     \end{center}
+    Notice how the graph is flat near the zero. This corresponds to a multiple root, which means the bisection method could have difficulty determining this zero to a high precision.
     \item We also have $|b - a| < \delta$ and $|f(c)| > \epsilon$.
     \begin{center}
         \includegraphics[scale=0.8]{../assets/case2.png}
     \end{center}
+    The curve here, which is in the interval $[a, b]$, is not continuous.
 \end{itemize}
+\textbf{Remark:} From the first point, if we have a function with a double root, then approximation may become less precise or outright impossible. For example, consider $f(x) = (x - 1)^2$, which has a double root of $x = 1$. Because $\forall x \in \R, f(x) \geq 0$, the bisection method cannot be used here.
 
 \subsection{Error Analysis}
 Let $I_i = [a_i, b_i]$ be an interval. Then, we essentially have a sequence of intervals, $I_0, I_1, I_2, I_3, \hdots$, where $a_0 \leq a_1 \leq a_2 \leq \hdots \leq b_0$ and $b_0 \geq b_1 \geq b_2 \geq \hdots \geq a_0$.
