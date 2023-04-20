@@ -1,0 +1,37 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Math 170B}
+\chead{Wednesday, April 19, 2023}
+\lhead{Lecture 8}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\textbf{Note:} Most of lecture 8 is in lecture 7's notes.
+\section{Secant Method (Section 3.3)}
+The secant method was motivated by Newton's method.
+
+\subsection{One-Variable Version}
+Recall from Newton's that \[x_{m + 1} = x_m - \frac{f(x_m)}{f'(x_m)}, \qquad m \geq 0.\]
+Instead, we'll approximate $f'(x_m)$ by a difference quotient:
+\[f'(x_m) \approx \frac{f(x_m) - f(x_{m - 1})}{x_m - x_{m - 1}}.\]
+The secant method makes use of this; that is, 
+\[x_{m + 1} = x_{m} - \frac{f(x_m)}{\frac{f(x_m) - f(x_{m - 1})}{x_m - x_{m - 1}}} = x_{m} - f(x_m) \frac{x_m - x_{m - 1}}{f(x_m) - f(x_{m - 1})}.\]
+for $m \geq 1$.
+
+\textbf{Remarks:}
+\begin{itemize}
+    \item Method starts with $x_0, x_1$
+    \item Only one function call used, $f(x_{m - 1})$ stored from before. 
+\end{itemize}
+
+\end{document}

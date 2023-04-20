@@ -30,7 +30,7 @@ In other words, Newton's method begins with an estimate $x_0$ of $r$, and then d
     \includegraphics[scale=0.6]{../assets/geometric_newton.png}
 \end{center}
 
-\subsection{The Algorithm}
+\subsubsection{The Algorithm}
 Let
 \begin{itemize}
     \item $M$: the maximum number of iterations. 
@@ -62,9 +62,9 @@ With a suitable $x_0$ being the starting point, the algorithm is as follows.
         \EndFunction
     \end{algorithmic}
 \end{algorithm}
+One thing to note: the algorithm will fail if $f'(x_0) = 0$ due to the division in line 7. 
 
-\subsection{Requirements}
-    % TODO look at this
+\subsubsection{Requirements}
 Defining the correct starting point $x_0$ is important. A bad starting point can result in nonconvergence.
 
 \bigskip 
@@ -77,10 +77,10 @@ The function itself also matters. Other problems include when $f'(x_0) = 0$ or $
     \begin{center}
         \includegraphics[scale=0.6]{../assets/newton_bad.png}
     \end{center}
-    For this function, if $|x_0 - r| < |x_n - r|$, then $|x_m - r| < |x_{m - 1} - r|$ and nonconvergence happens. In particular, the shape of the curve is such that for certain starting values, the sequence $[x_n]$ diverges.
+    For this function, if $|x_0 - r| < |x_1 - r|$, then $|x_m - r| < |x_{m + 1} - r|$ and nonconvergence happens. In particular, the shape of the curve is such that for certain starting values, the sequence $[x_n]$ diverges.
 \end{mdframed}
 
-\subsection{Error Analysis}
+\subsubsection{Error Analysis}
 Let the error be defined by $e_m = x_m - r$. Assume that $f(r) = 0 \neq f'(r)$ and $f''$ is continuous. Then, 
 \[\begin{aligned}
     e_{m + 1} &= x_{m + 1} - r \\ 
@@ -108,5 +108,127 @@ where $C$ is a bound of $\frac{\frac{1}{2} f''(\xi_m)}{f'(x_m)}$. So, in Newton'
     (Example.) Let $R > 0$ and $x = \sqrt{R}$. Then, 
     \[f(x) = x^2 - R = 0\] and \[f'(x) = 2x.\] Then, the iteration corresponds to \[x_{m + 1} = x_m - \frac{f(x_m)}{f'(x_m)} = x_m - \frac{x_m^2 - R}{2x_m} = \frac{1}{2}\left(x_m + \frac{R}{x_m}\right).\] 
 \end{mdframed}
+
+\subsection{Newton Iteration in 2-Dimensions}
+Suppose $f_{1}(x_1^*, x_2^*) = 0$ and $f_{2}(x_1^*, x_2^*) = 0$. In other words, we have two variables and two functions. The goal is to linearize $x_1^* = x_i + h_i$, where $h_i$ is some small pertubation (error) and $1 \leq i \leq 2$. Then,
+\[0 = f_{1}(x_1^*, x_2^*) = f_{1}(x_1 + h_1, x_2 + h_2) \approx f_{1}(x_1, x_2) + h_1 \frac{\partial f_1}{\partial x_1} + h_2 \frac{\partial f_1}{\partial x_2}\]
+
+\[0 = f_{2}(x_1^*, x_2^*) = f_{2}(x_1 + h_1, x_2 + h_2) \approx f_{2}(x_1, x_2) + h_1 \frac{\partial f_2}{\partial x_1} + h_2 \frac{\partial f_2}{\partial x_2}.\]
+From there, we can create a system 
+\[\begin{bmatrix}
+    0 \\ 0
+\end{bmatrix} = \begin{bmatrix}
+    f_{1}(x_1, x_2) \\ 
+    f_{2}(x_1, x_2)
+\end{bmatrix} + \underbrace{\begin{bmatrix}
+    \frac{\partial f_1}{\partial x_1} & \frac{\partial f_1}{\partial x_2} \\ 
+    \frac{\partial f_2}{\partial x_1} & \frac{\partial f_2}{\partial x_2}
+\end{bmatrix}}_{J} \begin{bmatrix}
+    h_1 \\ h_2
+\end{bmatrix}.\]
+Here, the $J$ is the Jacobian matrix. The goal is to solve for $\begin{bmatrix}
+    h_1 \\ h_2
+\end{bmatrix}$. By subtracting a term from the above equation, we have 
+\[\begin{bmatrix}
+    f_{1}(x_1, x_2) \\ 
+    f_{2}(x_1, x_2)
+\end{bmatrix} = -J\begin{bmatrix}
+    h_1 \\ h_2
+\end{bmatrix} \implies (-J)^{-1}\begin{bmatrix}
+    f_{1}(x_1, x_2) \\ 
+    f_{2}(x_1, x_2)
+\end{bmatrix} = \begin{bmatrix}
+    h_1 \\ h_2
+\end{bmatrix}.\]
+The iteration, then, is 
+\[\begin{bmatrix}
+    x_{1}^{(k + 1)} \\ 
+    x_{2}^{(k + 1)}
+\end{bmatrix} = \begin{bmatrix}
+    x_{1}^{(k)} \\ 
+    x_{2}^{(k)}
+\end{bmatrix} + \begin{bmatrix}
+    h_1^{(k)} \\ 
+    h_2^{(k)}
+\end{bmatrix} \qquad k \geq 0.\]
+\textbf{Remarks:}
+\begin{itemize}
+    \item Just like in the one-dimensional case where $f'(x_0) \neq 0$, for this iterative formula to be well-defined, the Jacobian matrix must be nonsingular.
+    \item The vector, $\begin{bmatrix}
+        h_1 \\ h_2
+    \end{bmatrix}$, is computed by solving a system (e.g., using Gaussian elimination).
+\end{itemize}
+
+\subsection{Generalization to Many Dimensions}
+Given $m$ variables and $m$ equations, then 
+\[f_{i}(x_1, x_2, \hdots, x_m) = 0 \qquad 1 \leq i \leq m.\]
+Then, 
+\[F = \begin{bmatrix}
+    f_1 \\ f_2 \\ \vdots \\ f_m
+\end{bmatrix}, \quad X = \begin{bmatrix}
+    x_1 \\ x_2 \\ \vdots \\ x_m 
+\end{bmatrix}, \quad H = \begin{bmatrix}
+    h_1 \\ h_2 \\ \vdots \\ h_m
+\end{bmatrix}.\]
+Then, we can linearize the vector function, 
+\[0 = F(X + H) \approx F(X) + F'(X)H,\]
+where 
+\[F'(x) = J(x) = \begin{bmatrix}
+    \frac{\partial f_1}{\partial x_1} & \frac{\partial f_1}{\partial x_2} & \hdots & \frac{\partial f_1}{\partial x_m} \\ 
+    \frac{\partial f_2}{\partial x_1} & \frac{\partial f_2}{\partial x_2} & \hdots & \frac{\partial f_2}{\partial x_m} \\ 
+    \vdots & \vdots & \ddots & \vdots \\ 
+    \frac{\partial f_m}{\partial x_1} & \frac{\partial f_m}{\partial x_2} & \hdots & \frac{\partial f_m}{\partial x_m}
+\end{bmatrix} \in \R^{m \times m}.\]
+So, Newton's method for $m$ nonlinear equations in $m$ variables is given by \[X^{(k + 1)} = X^{(k)} + H^{(k)},\]
+where the Jacobian system is 
+\[\underbrace{F'(X^{(k)})}_{J(X^{(k)})} H^{(k)} = -F(X^{(k)}).\]
+
+\subsubsection{The Algorithm}
+So, in the iterative algorithm, we have 
+\[J(X^{(k)}) H^{(k)} = -F(X^{(k)}).\] 
+Recall that $X^{(k + 1)} = X^{(k)} + H^{(k)}$. With this in mind, our algorithm takes in the following: 
+\begin{itemize}
+    \item $M$: the maximum number of iterations. 
+    \item $\epsilon$: the tolerance, $||F(x^{(k)})||_2 \leq \epsilon$
+    \item $\delta$: the step, $||x^{(k + 1)} - x^{(k)}||_2 \leq \delta$. 
+\end{itemize}
+
+\begin{algorithm}[H]
+    \caption{Newton's Algorithm in Multiple Dimensions}
+    \label{alg:three}
+    \begin{algorithmic}[1]
+        \Function{Newton}{$X^{(0)}, M, \epsilon, \delta$}
+            \State $X^{(k)} \gets X^{(0)}$
+            \State $F^{(k)} = F(X^{(k)})$
+            \For{$k \gets 1$ to $M$}
+                \State $J^{(k)} \gets F'(X^{(k)})$
+                \State $H^{(k)} \gets -J^{(k)} \backslash F^{(k)}$ \Comment{Solve the system.}
+                \State $X^{(k)} \gets X^{(k)} + H^{(k)}$
+                \State $F^{(k)} \gets F(X^{(k)})$
+                \If{$||F^{(k)}||_2 \leq \epsilon$ or $||H^{(k)}||_2 \leq \delta$}
+                    \State \textbf{break} 
+                \EndIf
+            \EndFor 
+            \State \Return $X^{(k)}$
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
+
+\begin{mdframed}
+    (Example.) Suppose we have \[F(x) = \begin{bmatrix}
+        x_1 x_2 - x_3^2 - 1 \\ 
+        x_1 x_2 x_3 - x_1^2 + x_2^2 - 2 \\ 
+        e^{x_1} - e^{x_2} + x_3 - 3
+    \end{bmatrix} = 0\]
+    and $X^{(0)} = \begin{bmatrix}
+        1\\1\\1
+    \end{bmatrix}.$ Then, 
+    \[F'(x) = J(x) = \begin{bmatrix}
+        x_2 & x_1 & -2x_3 \\ 
+        x_2 x_3 - 2x_1 & x_1 x_3 + 2x_2 & x_1 x_2 \\
+        e^{x_1} & -e^{x_2} & 1
+    \end{bmatrix}.\]
+\end{mdframed}
+
 
 \end{document}
