@@ -1,0 +1,157 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{CSE 131}
+\chead{Wednesday, April 19, 2023}
+\lhead{Lecture 8}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+\section{An Overview of Loops, Set, Break, Input, Blocks, and Errors}
+In this section, we'll go over a high-level overview of some additional features. 
+
+\subsection{Loops \& Break}
+Loop and break expressions are relatively simple; they look something like 
+\begin{verbatim}
+    (loop <expr>)
+    (break <expr>)\end{verbatim}
+At its core, a \code{loop} will repeat an expression over and over again until it encounters a \code{break}, in which case the loop terminates.
+
+\subsubsection{Assembly Representation} 
+The assembly representation of loops is straightforward:
+\begin{verbatim}
+    loop: 
+                    ; body of loop 
+        jmp loop 
+    done:\end{verbatim}
+Here, we defined two labels: 
+\begin{itemize}
+    \item \code{loop}, indicating the beginning of the loop. 
+    \item \code{done}, indicating the end of the loop (where we should ``break'' out).
+\end{itemize}
+The idea is that, as long as we aren't breaking out, we will unconditionally jump back to \code{loop}. If we do want to incorporate a \code{break} statement, we can add a jump to that label.
+
+\subsubsection{Labeling}
+As is the case with \code{if}-statements, we can have many loops! So, we need to create a unique label for each loop. We can use the \code{new\_label} function from the last section to do this for us. 
+
+\subsubsection{Implementing Break}
+To implement \code{break}, the idea is for the compiler to include an additional argument. We can call this argument \code{loop\_label}, which will be an \code{Option<String>} (recall that an \code{Option<T>} will either be a \code{Some(T)} or \code{None}, indicating some or no value, respectively).
+
+\bigskip 
+
+Before we compile the expression associated with the loop, we need to create a unique label. Once we create this label, we can compile the expression, passing that label as our argument for \code{loop\_label}. Because of the recursive nature of the compile function, if we end up inside another loop, compiling its associated expression will result in another label for \emph{that} function call, but not for the current function call. In that sense, we don't need to worry about the possibility of overwriting the break labels.
+
+\subsection{Set}
+Set is relatively straightforward: it's analogous to reassignment in most other programming languages. Its syntax looks like 
+\begin{verbatim}
+    (set! <name> <expr>)\end{verbatim}
+Here, we're assigning the result of evaluating \code{<expr>} to the identifier, \code{<name>}. If the identifier doesn't exist, an error should be thrown. 
+
+\subsection{Blocks}
+Blocks are just a way of writing more than one statement for an expression. Syntactically, they look like 
+\begin{verbatim}
+    (block <expr>+)\end{verbatim}
+In other words, it takes one or more expressions, and then runs each expression in the order that they appear.
+
+\begin{center}
+    \begin{tabular}{p{3in}|p{3in}}
+        Rust & Our Language \\ 
+        \hline 
+        \begin{verbatim}
+if x > 10 {
+    x = x + y + z;
+    y = x - z;
+    z = z + 5;
+} else {
+    x += 10;
+}\end{verbatim} 
+            & \begin{verbatim}
+(if (> x 10) 
+    (block 
+        (set! x (+ x (+ y z)))
+        (set! y (- x z))
+        (set! z (+ z 5))
+    ) 
+    (set! x (+ x 10)))\end{verbatim}
+    \end{tabular}
+\end{center}
+
+\subsection{Handling Inputs}
+Our programming language is now expected to take a single input, which can either be a number or boolean value. Syntactically, the command is just 
+\begin{verbatim}
+    input \end{verbatim}
+In order to handle any input, we need to think about the runtime and, more importantly, the role that \code{start.rs} plays (recall that \code{start.rs} is how we call into our assembly code.)
+\begin{verbatim}
+    fn parse_input(input: &str) -> i64 {
+        if input == "true" {
+            0b11
+        } else if input == "false" {
+            0b01
+        } else if let Ok(val) = input.parse::<i64>() {
+            (val << 1) as u64
+        } else {
+            panic!("unsupported input: `{}`", input);
+        }
+    }
+
+    fn main() {
+        let args: Vec<String> = env::args().collect();
+        // This is our single input, which by default will be 
+        // "false" if none are provided
+        let input = if args.len() == 2 { &args[1] } else { "false" };
+        // Call our assembly code with the given input.
+        let i: i64 = unsafe { our_code_starts_here(parse_input(&input)) };
+        // Finally, determine what was returned to us.
+        if i & 1 == 0 {
+            // Number
+            println!("{}", i >> 1);
+        } else {
+            // Boolean
+            println!("{}", i >> 1 == 1);
+        }
+    }\end{verbatim}
+Note that our input will be in the register \code{rdi}. So, we can modify the compiler to simply move \code{rdi} into \code{rax} before using it. 
+\begin{verbatim}
+    match e {
+        ... 
+        Expr::Id(s) if s == "input" => "mov rax, rdi"
+    }\end{verbatim}
+That's it!
+
+\subsection{Errors}
+Recall that, in the previous sections, we didn't want things like \code{(+ true 1)} to work. This should cause a \emph{runtime error}. So, how do we invoke a runtime error from our assembly code? 
+\begin{itemize}
+    \item First, we want to create a function in Rust that our assembly code will call. 
+    \begin{verbatim}
+    #[export_name = "\x01snek_error"]
+    pub extern "C" fn snek_error(errcode: i64) {
+        eprintln!("error code {errcode} received.");
+        std::process::exit(1);
+    }\end{verbatim}
+    
+    \item Next, in our assembly header, we want to define this function as an external function. 
+    \begin{verbatim}
+        section .text 
+        global our_code_starts_here 
+        extern snek_error               ; right here!\end{verbatim}
+
+    \item From there, we can define a \code{throw\_error} label which will handle calling the Rust code. It will look like 
+    \begin{verbatim}
+        throw_error: 
+            mov rdi, 7          ; rdi is the register representing the first arg 
+                                ; 7 is some error code we made up 
+            push rsp    
+            call snek_error     ; calls the snek_error rust function 
+            pop rsp \end{verbatim}
+    We'll worry about the \code{push} and \code{pop} instruction later. 
+\end{itemize}
+
+\end{document}
