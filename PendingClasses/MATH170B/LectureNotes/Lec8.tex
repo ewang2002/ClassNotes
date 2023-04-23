@@ -16,7 +16,6 @@
 
 \begin{document}
 
-\textbf{Note:} Most of lecture 8 is in lecture 7's notes.
 \section{Secant Method (Section 3.3)}
 The secant method was motivated by Newton's method.
 
@@ -28,10 +27,47 @@ The secant method makes use of this; that is,
 \[x_{m + 1} = x_{m} - \frac{f(x_m)}{\frac{f(x_m) - f(x_{m - 1})}{x_m - x_{m - 1}}} = x_{m} - f(x_m) \frac{x_m - x_{m - 1}}{f(x_m) - f(x_{m - 1})}.\]
 for $m \geq 1$.
 
+\bigskip 
+
 \textbf{Remarks:}
 \begin{itemize}
     \item Method starts with $x_0, x_1$
     \item Only one function call used, $f(x_{m - 1})$ stored from before. 
 \end{itemize}
+
+\subsection{Algorithm}
+This algorithm takes in the following 
+\begin{itemize}
+    \item $M$: the maximum number of iterations. 
+    \item $\delta$: the tolerance interval, $|a - b| < \delta$.
+    \item $\epsilon$: the difference.
+\end{itemize}
+\begin{algorithm}[H]
+    \caption{Secant Method}
+    \label{alg:two}
+    \begin{algorithmic}[1]
+        \Function{Secant}{$a, b, M, \delta, \epsilon$}
+            \State $f_a \gets f(a)$
+            \State $f_b \gets f(b)$
+            \For{$k \gets 2$ to $M$}
+                \If{$|f_a| > |f_b|$}
+                    \State $f_a \leftrightarrow f_b$ \Comment{Swap $f_a$ and $f_b$}
+                    \State $a \leftrightarrow b$ \Comment{Swap $a$ and $b$}
+                \EndIf 
+                
+                \State $s \gets \frac{a - b}{f_a - f_b}$
+                \State $b \gets a$ 
+                \State $f_b \gets f_a$ 
+                \State $a \gets a - s \cdot f_a$ 
+                \State $f_a \gets f(a)$
+                \If{$|f_a| < \epsilon$ or $|a - b| < \delta$}
+                    \State \textbf{break}
+                \EndIf 
+            \EndFor 
+
+            \State \textbf{return} $a$
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
 
 \end{document}
