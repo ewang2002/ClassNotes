@@ -150,7 +150,7 @@ Recall that, in the previous sections, we didn't want things like \code{(+ true 
                                 ; 7 is some error code we made up 
             push rsp    
             call snek_error     ; calls the snek_error rust function 
-            pop rsp \end{verbatim}
+            ret \end{verbatim}
     We'll worry about the \code{push} and \code{pop} instruction later. 
 \end{itemize}
 
