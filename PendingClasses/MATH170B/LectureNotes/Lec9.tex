@@ -60,7 +60,7 @@ The interval between $x$ and $y$ is larger than the interval between $F(x)$ and 
 
         \item[Uniqueness:] Suppose we have two fixed points $s_1$ and $s_2$, and $0 < \lambda < 1$. Then, \[|F(s_1) - F(s_2)| \leq \lambda |s_1 - s_2|.\]
         But, if $s_1$ and $s_2$ are two fixed points, then we have $F(s_1) = s_1$ and $F(s_2) = s_2$. So, 
-        \[|s_1 - s-2| \leq \lambda |s_1 - s_2|.\]
+        \[|s_1 - s_2| \leq \lambda |s_1 - s_2|.\]
         Note that this can only hold if $s_1 = s_2$, as $\lambda = 1$ but remember that $\lambda < 1$. 
     \end{description}
     Then, we're done. 
@@ -98,8 +98,8 @@ The interval between $x$ and $y$ is larger than the interval between $F(x)$ and 
     (Example.) Suppose we have \[F(x) = 4 + \frac{1}{3}\sin(2x),\] and let $C = \left[\frac{11}{3}, \frac{13}{3}\right].$ To consider the contraction property for this function, we can apply the Mean-Value Theorem. Let $x, y \in C$. Then, 
     \[\begin{aligned}
         |F(x) - F(y)| &= \left|\left(4 + \frac{1}{3}\sin(2x)\right) - \left(4 + \frac{1}{3}\sin(2y)\right)\right| \\ 
-            &= \frac{1}{3}|\sin(2x) - \sin(2y)| && \text{Mean-Value Theorem}
-            &= \frac{1}{3}|2\cos(2\xi)(x - y)| \\ 
+            &= \frac{1}{3}|\sin(2x) - \sin(2y)| \\ 
+            &= \frac{1}{3}|2\cos(2\xi)(x - y)| && \text{Mean-Value Theorem, See Remark} \\ 
             &\leq \frac{2}{3}\left|x - y\right|.
     \end{aligned}\]
     From there, it's clear that $\lambda = \frac{2}{3} < 1$. 
@@ -121,6 +121,9 @@ The interval between $x$ and $y$ is larger than the interval between $F(x)$ and 
     \end{algorithm}
     Here, $x$ will contain the approximate fixed point.
 \end{mdframed}
-
+\textbf{Remark:} Recall that the Mean Value Theorm is defined by  
+\[f(b) - f(a) = f'(\xi)(b - a).\]
+Notice how, in particular, $f(x) = \sin(2x)$ in our example above. Then, when we look at $f'(\xi) = 2\cos(2\xi)$, we find that the maximum possible value this function can return is 2, thus how we were able to conclude that 
+\[\frac{1}{3}|2\cos(2\xi)(x - y)| \leq \frac{2}{3}\left|x - y\right|.\]
 
 \end{document}
