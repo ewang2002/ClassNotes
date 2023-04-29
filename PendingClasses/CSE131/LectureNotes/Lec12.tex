@@ -1,0 +1,128 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{CSE 131}
+\chead{Friday, April 28, 2023}
+\lhead{Lecture 12}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\section{Introduction to Recursion}
+In this section, we'll talk about recursion. Note that, in our examples, we'll assume that the callee manages (i.e., moves) the stack pointer. In particular, this means everything will have a positive offset from \code{rsp}.
+
+\subsection{Recursive Sum Example}
+Let's consider the following code:
+\begin{verbatim}
+(fun (sumrec num)
+    (if (= num 0)
+        0
+        (+ num (sumrec (+ num -1)))
+    )
+)\end{verbatim}
+This program simply performs $1 + 2 + 3 + \hdots + \code{num}$. The generated assembly would look something like what is shown below. 
+\begin{verbatim}
+sumrec:
+    sub rsp, 16
+    mov rax, [rsp + 24]
+    ... if (= num 0)
+    cmp rax, 1
+    je ifelse_1
+         mov rax, 0
+         jmp ifend_0
+    ifelse_1:
+         ... put temp num on stack for LHS
+         mov [rsp + 0], rax
+         mov rax, [rsp + 24]
+         ... (+ num -1) stored in rax
+         ... now do 1-arg calling conv
+         sub rsp, 16
+         mov [rsp], rax
+         mov [rsp+8], rdi
+         call sumrec
+         mov rdi, [rsp+8]
+         add rsp, 16
+         ... do addition on the waiting num ...
+         add rax, [rsp + 0]
+    ifend_0:
+    
+    add rsp, 16
+    ret\end{verbatim}
+Note that only relevant assembly is shown. Some things to point out: 
+\begin{itemize}
+    \item In the second assembly line, \code{sub rsp, 16}, the \code{16} is the \emph{depth} that we calculated. 
+    \item In the lines before the recursive call, i.e., 
+    \begin{verbatim}
+        sub rsp, 16
+        mov [rsp], rax
+        mov [rsp+8], rdi
+        call sumrec\end{verbatim}
+    we're moving the arguments into the correct position in memory so the recursive call can make use of them. 
+    \item When we run a \code{call} instruction, \code{rsp} is moved up one word and the return pointer to the next line of instruction (program counter) is put in that location in memory (where \code{rsp} is pointing to). 
+\end{itemize}
+To see how the memory looks when each line of assembly is executed, see \code{Lec12Trace.pdf}.
+
+
+
+
+\subsection{Second Recursive Sum Example}
+Let's rewrite the recursive sum example a bit.  
+\begin{verbatim}
+(fun (sumrec num sofar)
+    (if (= num 0)
+        sofar 
+        (sumrec (+ num -1) (+ sofar num))
+    )
+)\end{verbatim}
+The generated assembly might look like 
+\begin{verbatim}
+sumrec:
+    sub rsp, 16
+    
+    mov rax, [rsp + 24]
+    mov [rsp + 0], rax
+    ... if (= num 0)  
+    cmp rax, 1
+    je ifelse_1
+        mov rax, [rsp + 32]
+        jmp ifend_0
+    ifelse_1:
+        mov rax, [rsp + 24]
+        ... add -1 to num, store on stack as tmp ...
+        mov [rsp + 0], rax
+
+        mov rax, [rsp + 32]
+        ... add sofar to num, store in rax ...
+        add rax, [rsp + 8]
+  
+        ... 2-arg calling convention from class ...
+        sub rsp, 24
+        mov rbx, [rsp+24]
+        mov [rsp], rbx
+        mov [rsp+8], rax
+        mov [rsp+16], rdi
+        call sumrec             ; (A)
+        mov rdi, [rsp+16]       ; (B)
+        add rsp, 24             ; (C)
+    
+    ifend_0:
+    add rsp, 16                 ; (C)
+    ret                         ; (D)\end{verbatim}
+An interesting thing to note is that, after reaching the base case, there's no additional calculation that needs to be made. In particular, the steps after returning is 
+\begin{enumerate}[(a)]
+    \item Move \code{rsp} back. Remember that, after \code{call} is done (i.e., when \code{ret} is executed), \code{rsp} is moved back one word.
+    \item Restore \code{rdi}.
+    \item Move \code{rsp} back more. 
+    \item Return!
+\end{enumerate}
+No local variables or arguments were accessed.
+
+\end{document}
