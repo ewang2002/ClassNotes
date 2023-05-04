@@ -1,0 +1,138 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{CSE 131}
+\chead{Wednesday, May 03, 2023}
+\lhead{Lecture 14}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\section{Structured Data: Pairs}
+In this section, we'll introduce \textbf{structured data} to our programming language. In particular, we'll introduce \textbf{pairs}, which is essentially a two-element tuple where both elements can be anything -- numbers or pairs.
+
+\subsection{Pair Expressions}
+Our language now has the following syntax: 
+\begin{verbatim}
+    expr := ... | (pair <expr> <expr>) | (fst <expr>) | (snd <expr>) | nil\end{verbatim}
+Here, \code{pair} defines a pair of expressions. \code{fst} and \code{snd} returns the first and second element of a pair\footnote{Although \code{fst} and \code{snd} takes any expressions, it expects a pair expression.}, respectively.
+
+\begin{mdframed}
+    (Exercise.) What will the following program evaluate to? 
+    \begin{verbatim}
+        (fun (inc lst)
+            (if (= lst nil)
+                nil
+                (pair (+ (fst lst) 1) (inc (snd lst)))
+            )
+        )
+    
+    (inc (pair 70 (pair 800 nil)))\end{verbatim}
+
+    \begin{mdframed}
+        The answer is \code{(71, (801, nil))}. In this function, we first check if the given pair is \code{nil}; if it is, return \code{nil}. Otherwise, we create a new pair where the first expression is just the first element of the original pair incremented by 1, and the second element is the result of recursively calling \code{inc} on the second element of the original pair.
+
+        \bigskip 
+
+        We can think of the \code{(snd lst)} as the \emph{rest of the list}. 
+    \end{mdframed}
+\end{mdframed}
+
+\begin{mdframed}
+    (Exercise.) What will the following program evaluate to? 
+    \begin{verbatim}
+        (fun (sum lst)
+            (let (total 0)
+                (loop 
+                    (if (= lst nil) 
+                        (break total) 
+                        (block
+                            (set! total (+ total (fst lst)))
+                            (set! lst (snd lst)) 
+                        )
+                    )
+                )
+            )
+        )
+    
+        (sum (pair 70 (pair 800 nil)))\end{verbatim}
+    
+    \begin{mdframed}
+        The answer is 870. This program iterates through each element of the pair, getting its value and adding it to \code{total}. In particular, if we ran the program, we see that 
+        \begin{verbatim}        
+    Expression                          (fst lst)       Total
+    (pair 70 (pair 800 nil))            70              70
+    (pair 800 nil)                      800             870 
+    nil                                 -               -\end{verbatim}
+    \end{mdframed}
+\end{mdframed}
+
+\subsection{Representing Pairs}
+Recall that we used a tagging system, where we dedicated one bit, to differentiate numbers and booleans. However, with a new type, we need to rethink the tagging system. 
+
+\bigskip 
+
+Our tagging system will now consist of the following:
+\begin{itemize}
+    \item \textbf{Numbers} will still use \code{0} as its tag value.
+    \item \textbf{Booleans} will use \code{11} as its tag value. 
+    \begin{itemize}
+        \item \code{true} will be represented in binary as \code{111} (7).
+        \item \code{false} will be represented in binary as \code{011} (3).
+    \end{itemize}
+    \item \textbf{Pairs} will use \code{01} as its tag value. 
+    \item \textbf{Nil} will use \code{1} as its tag value.
+\end{itemize}
+With a tagging system in hand, how do we represent pairs themselves? One approach is as follows: 
+\begin{itemize}
+    \item An idea is to store each of the pair's value as 31-bits. For example, to represent 2 numbers, we would represent the first number as 31 bits, and the next number as another 31 bits, with the tag value being 2 bits. 
+    \item \textbf{However}, this won't really work if we have nested pairs. For example, if we have a pair with pairs as its element, then how do we represent this? 
+\end{itemize}
+Another thing we can think about is heap allocation. 
+
+\subsection{Heap Allocation and Compiler Design}
+As implied, we'll have to allocate pair element on the \textbf{heap} (we'll need to work with the Rust runtime for this). So, our representation is that the pair's value will be a 62-bit address on the heap. 
+
+\bigskip 
+
+How do we know \emph{where} to allocate pair elements on the heap? An idea is to dedicate a register that just keeps track of the current heap location. In our class, we'll use \code{r15} for our purposes. With this in mind, here are a few assumptions we will be making:
+\begin{itemize}
+    \item \code{r15} is expected to keep growing for now; it's not like \code{rsp} where it can increase or decrease depending on how stack space is used. 
+    \item \code{r15} only refers to available memory, never used memory. 
+    \item \code{r15} will be 16-byte aligned (it will end with \code{0000})
+\end{itemize}
+With this in mind, how do we modify our compiler to support pairs? A sketch of an implementation we'll use is as follows: 
+\begin{verbatim}
+    Pair(e1, e2) => {
+        let fst = compile_expr(e1, ...);
+        let snd = compile_expr(e2 ...);
+        // e1 will be somewhere in [rsp], e2 in rax 
+        format!("
+            {fst}
+            {snd}
+            mov [r15 + 8], rax 
+            mov rbx, [rsp + offset]
+            mov [r15], r15
+            mov rax, r15 
+            add rax, 1 
+            add r15, 16
+        ")
+    }\end{verbatim}
+\textbf{Remarks:} 
+\begin{itemize}
+    \item We should probably first check and see if we have space left before allocating. We didn't do this part yet.  
+    \item Note that we move \code{rax} into \code{[r15 + 8]} (and not \code{[r15]}) because \code{rax} has the value of the \emph{second} element of the pair, not the first. 
+    \item \code{mov rax, r15} and \code{add rax, 1} is designed to put the location in heap of the pair's values into \code{rax} and then add 1 to \code{rax} for tagging purposes. Note that we can add \code{1} to \code{rax} like this because we know that \code{r15} will end with \code{0000} (this is one of the assumptions we made). 
+    \item \code{add r15, 16} moves \code{r15} by 2 words, thus ensuring that it's always pointing to free memory in the heap. 
+\end{itemize}
+As one might have suspected, once we execute a pair, it should return the memory location to that pair. 
+
+\end{document}
