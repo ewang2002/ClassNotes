@@ -159,7 +159,12 @@ come from. To see how this works, let's visualize each line.
 
 \textbf{Remarks:} 
 \begin{itemize}
-    \item Remember that the above only works for 2 arguments. For arbitrary arguments, the same idea still holds, but you need to generalize it. In particular, the first argument might be at \code{[rsp + 16]}, the second argument might be at \code{[rsp + 24]}, and so on. The last argument, then, would be in \code{rax}. Thus, you'll need to move these arguments into the correct places before you can call the function.
+    \item Remember that the above only works for 2 arguments. For arbitrary arguments, the same idea still holds, but you need to generalize it.
+    \begin{mdframed}
+        \underline{Recall:} \emph{Before} we executed \code{sub rsp, ...}, we can imagine that \code{arg1} is at \code{[rsp - si * 8]}, \code{arg2} is at \code{[rsp - si * 8 - 8]}, \code{arg3} is at \code{[rsp - si * 8 - 16]}, and so on until \code{argN-1} is at \code{[rsp - si * 8 - 8(N - 1)]}. As usual, \code{rax} will hold \code{argN}.
+    \end{mdframed}
+    After we move \code{[rsp]}, we can expect \code{argN-1} to be at \code{[rsp + 16]}, \code{argN-2} to be at \code{[rsp + 24]}, and so on, with \code{arg1} being at \code{[rsp + 8(N + 1)]}. As usual, \code{rax} holds \code{argN}.
+    
     \item \code{rdi} is a caller-saved register, hence why we're purposely saving it. 
     \item In this calling convention, as one might have guessed, we're putting everything on the stack. 
     \item While function arguments need positive offsets from \code{rsp}, \textbf{local variables} (temporaries) still use negative offsets from \code{rsp}. 
@@ -221,6 +226,7 @@ With this in mind, we have
             }
             Fun2(name, arg1, arg2, body) => {
                 let depth = depth(body);
+                let offset = depth * 8;
                 let body_env = hashmap! {
                     arg1.to_string() => depth + 1,
                     arg2.to_string() => depth + 2
@@ -242,6 +248,10 @@ We also need to do the same thing with the main expression (the main program):
     sub rsp, {offset}
     {main}
     add rsp, {offset}\end{verbatim}
+where \code{offset} is defined by: 
+\begin{verbatim}
+    let depth = depth(&p.main); // p.main -> main program
+    let offset = depth * 8;\end{verbatim}
 
 \subsubsection{Changing Offsets in Code}
 Recall how, before this section, any offsets we used were negative offsets (e.g., \verb|mov [rsp - {offset}], rax|). With this change, we now can use \textbf{positive offsets} (e.g., \verb|mov [rsp + {offset}], rax|). This scheme is similar to what most compilers like Rust, \code{g++}, and so on use. 
