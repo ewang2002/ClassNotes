@@ -20,7 +20,7 @@
 A \textbf{spline function} consists of polynomial pieces on subintervals joined together with certain continuity conditions. Formally, suppose we have $m + 1$ \textbf{ordered} points, called \textbf{knots}, $t_0, t_1, \hdots, t_m$ (i.e., we know the values of each $t_i$ and $t_i < t_{i + 1}$). Thus, a \textbf{spline function of degree} $k$ having knots $t_0, t_1, \hdots, t_m$ is a function $S$ such that 
 \begin{enumerate}
     \item On each interval $[t_{i - 1}, t_i)$, $S$ is a polynomial of degree $\leq k$.
-    \item On $[t_0, t_n]$, $S$ has a continuous $(k - 1)$th derivative.
+    \item On $[t_0, t_n]$, $S$ has a continuous $(k - 1)$th derivative\footnote{The wording here confused me. So, as a note to myself, here's an example: if we have $k = 1$ (i.e., a linear spline function), then will $S$ have a continuous 0th derivative? This is just the real function $f(x)$. So, essentially, if we have a linear spline function, we expect $f(x)$ to be continuous.}.
 \end{enumerate}
 Basically, $S$ is a piecewise polynomial of degree at most $k$ having continuous derivatives of all orders up to $k - 1$. 
 
