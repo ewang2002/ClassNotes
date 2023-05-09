@@ -46,7 +46,6 @@ From the second property, $S(x)$ is continuous, so the piecewise polynomials mat
 We can write some code to evaluate a \textbf{degree 1 spline}. The inputs are the coefficients $\{a_i\}$, $\{b_i\}$, the knot values $\{t_j\}$, and $x$ such that $0 \leq i \leq m - 1$ and $0 \leq j \leq m$. 
 \begin{algorithm}[H]
     \caption{Degree 1 Spline}
-    \label{alg:one}
     \begin{algorithmic}[1]
         \Function{DegOneSpline}{$\{a_i\}, \{b_i\}, \{t_j\}, x$}
             \State $s \gets a_{m - 1} x + b_{m - 1}$
@@ -100,17 +99,86 @@ Define the coefficients as $z_i = S_{i}''(t_i)$ for $1 \leq i \leq m - 1$. We kn
 \[S_{i}''(x) = z_i \frac{(x - t_{i + 1})}{(t_i - t_{i + 1})} + z_{i + 1}\frac{(x - t_i)}{(t_{i + 1} - t_i)}.\]
 Then, 
 \[S_{i}''(t_i) = z_i \frac{(t_i - t_{i + 1})}{(t_i - t_{i + 1})} + z_{i + 1}\frac{(t_i - t_i)}{(t_{i + 1} - t_i)} = z_i.\]
-Let $h_i = t_{i + 1} - t_i$. Then,
+Likewise, we have 
+\[S_{i}''(t_{i + 1}) = z_{i + 1}.\]
+We now want to think about integrating to obtain $S(x)$. For this, let $h_i = t_{i + 1} - t_i$. Then,
 \[S_{i}''(x) = -\frac{z_i}{h_i}(x - t_{i + 1}) + \frac{z_{i + 1}}{h_i}(x - t_i)\]
 Integrating yields
-\[S_{i}'(x) = -\frac{z_i}{2z_i}(x - t_{i + 1})^2 + \frac{z_{i + 1}}{2h_i}(x - t_i)^2 + C,\]
-where $C$ is an arbitrary constants. Integrating again yields  
-\[S_i (x) = -\frac{z_i}{6h_i}(x - t_{i + 1})^3 + \frac{z_{i + 1}}{6h_i} (x - t_i)^3 + Cx + D\]
-for some arbitrary $D$. For easier computation, we can write 
-\[A_1 x + A_2 = C(x - t_i) + D(t_{i + 1} - x)\]
+\[S_{i}'(x) = -\frac{z_i}{2h_i}(x - t_{i + 1})^2 + \frac{z_{i + 1}}{2h_i}(x - t_i)^2 + A_1,\]
+where $A_1$ is an arbitrary constant. Integrating again yields  
+\[S_i (x) = -\frac{z_i}{6h_i}(x - t_{i + 1})^3 + \frac{z_{i + 1}}{6h_i} (x - t_i)^3 + A_1 x + A_2\]
+for some arbitrary $A_2$. For easier computation, we can write 
+\[A_1 x + A_2 = C (x - t_i) + D (t_{i + 1} - x)\]
 for some arbitrary $A_1, A_2, C, D$. Then, 
-\[S_{i}(x) = -\frac{z_i}{6h_i}(x - t_{i + 1})^3 + \frac{z_{i + 1}}{6h_i} (x - t_i)^3 + C(x - t_i) + D(t_{i + 1} - x).\]
+\[\boxed{S_{i}(x) = -\frac{z_i}{6h_i}(x - t_{i + 1})^3 + \frac{z_{i + 1}}{6h_i} (x - t_i)^3 + C_i (x - t_i) + D_i (t_{i + 1} - x)},\]
+where the first term can be rewritten as $-\frac{z_i}{6h_i}(x - t_{i + 1})^3 = \frac{z_i}{6h_i}(t_{i + 1} - x)^3$. We know that, from the interpolation condition, 
+\[S_{i}(t_i) = y_i = -\frac{z_i}{6h_i} (t_i - t_{i + 1})^3 + D_i(t_{i + 1} - t_i),\]
+\[S_{i}(t_{i + 1}) = y_{i + 1} = \frac{z_{i + 1}}{6h_i} \underbrace{(t_{i + 1} - t_i)}_{h_i} + C_i(t_{i + 1} - t_i),\]
+where $C_i = \frac{y_{i + 1}}{h_i} - \frac{z_{i + 1} h_i}{6}$ and $D_i = \frac{y_i}{h_i} - \frac{z_i h_i}{6}$. Recall, from one of the conditions, that $S_{i - 1}'(t_i) = S_{i}'(t_i) = z_i$ for $1 \leq i \leq m - 1$ and $S_{i}(t_i) = y_i$.
 
+\subsubsection{Finding \texorpdfstring{$z_i$}{z-Coefficients}}
+We now want to determine the values of $z_i$ for these $k = 3$ polynomials. To do so, we note that 
+\[S_{i}'(x) = -\frac{z_i}{2h_i}(t_{i + 1} - x)^2 + \frac{z_{i + 1}}{2h_i}(x - t_i)^2 + C_i - D_i.\]
+\[\begin{aligned}
+    S_{i - 1}'(t_i) &= -\frac{z_{i - 1}}{2h_{i - 1}}(t_{i} - t_i)^2 + \frac{z_{i}}{2h_{i - 1}}(t_i - t_{i - 1})^2 + C_{i - 1} - D_{i - 1} \\ 
+        &= 0 + \frac{z_{i}}{2}h_{i - 1} + C_{i - 1} - D_{i - 1} \\
+        &= -\frac{z_i}{2} h_i + C_i - D_i \\ 
+        &= S_{i}'(t_i)
+\end{aligned}\]
+and
+\[\frac{z_{i}}{2} h_{i - 1} + \left(\frac{y_i}{h_{i - 1}} - \frac{z_i h_{i - 1}}{6} - \frac{y_{i - 1}}{h_{i - 1}} + \frac{z_{i - 1} h_{i - 1}}{6}\right) = -\frac{z_i}{2}h_i + \left(\frac{y_{i + 1}}{h_i} -\frac{z_{i + 1}h_i}{6} - \frac{y_i}{h_i} + \frac{z_i h_i}{6}\right).\]
+We want to now solve for the $z_i$'s on the left and then group. This gives us 
+\[\frac{z_{i - 1}h_{i - 1}}{6} + \frac{1}{6}\left(2(h_{i - 1} + h_i)\right)z_i + \frac{h_i z_{i + 1}}{6} = \left(\frac{y_{i + 1}}{h_i} - \frac{y_i}{h_i}\right) - \left(\frac{y_i}{h_{i - 1}} - \frac{y_{i - 1}}{h_{i - 1}}\right).\]
+This represents a linear system with $m + 1$ unknowns and $m - 1$ equations. With $z_0 = z_m = 0$, we have 
+\[b_i = 6\left(\frac{y_{i + 1}}{h_i} - \frac{y_i}{h_i}\right), \quad v_i = b_i - b_{i - 1}.\]
+\[u_i = 2(h_{i - 1} + h_i), \quad h_i = t_{i + 1} - t_i.\]
+This defines the natural cubic spline. Rewriting yields 
+\[z_{i - 1}h_{i - 1} + z_i u_i + z_{i + 1} h_{i + 1} = v_i, \quad 1 \leq i \leq m - 1,\]
+and thus the system looks like 
+\[\begin{bmatrix}
+    u_1 & h_1 & 0 & \hdots & 0 \\ 
+    h_1 & u_2 & h_2 & \hdots & 0 \\ 
+    0 & h_2 & u_3 & \hdots & 0 \\ 
+    \vdots & \vdots & \vdots & \ddots & \vdots \\ 
+    0 & 0 & 0 & \hdots & u_{m - 1}
+\end{bmatrix} \begin{bmatrix}
+    z_1 \\ z_2 \\ z_3 \\ \vdots \\ z_{m - 1}
+\end{bmatrix} = \begin{bmatrix}
+    v_1 \\ v_2 \\ v_3 \\ \vdots \\ v_{m - 1}
+\end{bmatrix}.\]
+
+We can use Gauss elimination to solve for this system, specifically by reducing the tridiagonal matrix to a bidiagonal matrix. Then, we can back substitute to find the solutions. 
+
+\subsubsection{Algorithm}
+We can write an algorithm to do this process for us. For $0 \leq i \leq m$, the algorithm takes in $\{t_i\}$ and $\{y_i\}$ and outputs $\{z_i\}$. 
+\begin{algorithm}[H]
+    \caption{Cubic Spline}
+    \begin{algorithmic}[1]
+        \Function{CubicSpline}{$\{t_i\}, \{y_i\}$}
+            \For{$i \gets 0$ to $m - 1$}
+                \State $h_i \gets t_{i + 1} - t_i$ \Comment{Coefficients in system.}
+                \State $b_i \gets 6(y_{i + 1} - y_i) / h_i$
+            \EndFor 
+
+            \State $u_1 \gets 2(h_1 + h_0)$
+            \State $v_1 \gets b_1 - b_0$
+            \For{$i \gets 2$ to $m - 1$}
+                \State $u_i = 2(h_i + h_{i - 1}) - h_{i - 1}^2 / u_{i - 1}$ \Comment{Reduce to bidiagonal.}
+                \State $v_i = b_i - b_{i - 1} - h_{i - 1} v_{i - 1} / u_{i - 1}$
+            \EndFor 
+
+            \State $z_m \gets 0$
+            \For{$i \gets m - 1$ to $1$ step $-1$}
+                \State $z_i \gets (v_i - h_i z_{i + 1}) / u_i$ \Comment{Back substitution.}
+            \EndFor 
+        \EndFunction 
+    \end{algorithmic}
+\end{algorithm}
+Once the coefficients $z$ are computed, then the spline $S_i (x)$ can be evaluated. That is, given an input $x$,
+\begin{itemize}
+    \item we need to find the interval $i$ such that $x \in [t_i, t_{i + 1})$. 
+    \item we can use this index $i$ to evaluate $S_{i}(x)$  for the coefficients $z_{i - 1}, z_i, z_{i + 1}$.
+\end{itemize}
 
 
 \end{document}
