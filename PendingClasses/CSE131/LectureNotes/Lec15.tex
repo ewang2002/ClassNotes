@@ -83,26 +83,23 @@ Finally, we need to adjust the \code{snek\_print} function. In particular, our f
 \end{itemize}
 With this in mind, we have 
 \begin{verbatim}
-    fn snek_print(val: i64) -> i64 {
-        if val == 7 {
-            println!("true");
-        } else if val == 3 {
-            println!("false");
-        } else if val % 2 == 0 {
-            println!("{}", val >> 1);
-        } else if val & 3 == 3 {
-            if val == 1 {
-                println!("nil");
-            } else {
-                let addr: *const u64 = (val - 1) as *const u64; 
-                snek_print(unsafe { *addr });
-                snek_print(unsafe {*addr.offset(1) });
-            }
-        } else {
-            println!("Unknown value: {val}");
-        }
+    fn snek_str(val: i64) -> String {
+        if val == 7 { "true".to_owned()} 
+        else if val == 3 { "false".to_owned() } 
+        else if val % 2 == 0 { format!("{}", val >> 1) } 
+        else if val == 1 { "nil".to_owned() } 
+        else if val & 1 == 1 {
+            let addr = (val - 1) as *const i64; 
+            let fst = unsafe { *addr };
+            let snd = unsafe { *addr.offset(1) };
+            format!("(pair {} {})", snek_str(fst), snek_str(snd))
+        } else { format!("unknown value: {val}") }
+    }
 
-        return val;
+    #[export_name = "\x01snek_print"]
+    fn snek_print(val: i64) -> i64 {
+        println!("{}", snek_str(val));
+        val 
     }\end{verbatim}
 Note that \code{offset} is used so we don't need to do direct pointer arithmetic\footnote{We're looking at the memory location directly next to the current memory location since pairs are contiguous.}. Note that we'll need to do some work printing parentheses and whatnot.
 
