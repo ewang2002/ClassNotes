@@ -1,0 +1,87 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Math 170B}
+\chead{Monday, May 15, 2023}
+\lhead{Lecture 19}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\section{Trigonometric Interpolation (Section 6.12)}
+Recall, for one-dimensional interpolation, there is a unique $P(x_j) = f(x_j)$ for $0 \leq j \leq m - 1$. However, when $f$ is periodic, trigonometric functions for interpolation are appropriate.
+
+\subsection{Connection to Complex Variables}
+If $f$ has a period of $2\pi$ and a continuous first derivative, then the \textbf{Fourier series/analysis}, 
+\[ f \sim \frac{a_0}{2} + \sum_{k = 1}^{\infty} (a_{k} \cos(kx) + b_k \sin(kx)), \]
+where \[a_k = \frac{1}{\pi} \int_{-\pi}^{\pi} f(t)\cos(kt) dt,\]
+\[b_k = \frac{1}{\pi} \int_{-\pi}^{\pi} f(t) \sin(kt) dt.\]
+A connection to complex variables is \textbf{Euler's formula}, which is 
+\[e^{i\theta} = \cos(\theta) + i\sin(\theta),\] where $i = \sqrt{-1}$. The complex conjugate of Euler's formula is 
+\[\overline{e^{i\theta}} = \cos(\theta) - i\sin(\theta).\]
+
+\subsubsection{Special Exponential Functions}
+We can also define the function, 
+\[E_{k}(x) = e^{ikx}, \qquad k = 0, \pm 1, \pm 2, \pm 3, \hdots.\]
+These are special because they form a ``basis'' of linearly independent functions.
+
+\subsubsection{Some Notation}
+Some notation to keep in mind: 
+\begin{itemize}
+    \item The inner product of two functions is defined by
+    \[\cyclic{f, g} = \frac{1}{2\pi} \int_{-\pi}^{\pi} f(x) \overline{g(x)} dx.\]
+
+    \item The ``discrete inner product'' is defined by
+    \[\cyclic{f, g}_{N} = \frac{1}{N} \sum_{j = 0}^{N - 1} f\left(\frac{2\pi j}{N}\right) \overline{g\left(\frac{2\pi j}{N}\right)},\]
+    with $N$ being the number of points being used.
+\end{itemize}
+
+Using the special exponential function, we note that, for $k \neq m$, 
+\[\begin{aligned}
+    \cyclic{E_k, E_m} &= \frac{1}{2\pi} \int_{-\pi}^{\pi} e^{ikx} \overline{e^{imx}} dx \\ 
+        &= \frac{1}{2\pi} \int_{-\pi}^{\pi} e^{ikx} e^{-imx} dx \\ 
+        &= \frac{1}{2\pi} \int_{-\pi}^{\pi} e^{ix(k - m)} dx \\ 
+        &= \frac{1}{2\pi(k - m)} e^{ix(k - m)} \rvert_{-\pi}^{\pi} \\ 
+        &= \frac{e^{i\pi (k - m)} - e^{-i\pi(k - m)}}{2\pi i (k - m)} \\ 
+        &= \hdots \\ 
+        &= 0. 
+\end{aligned}\]
+However, if $k = m$, we have 
+\[\begin{aligned}
+    \cyclic{E_{k}, E_{m}} &= \cyclic{E_{k}, E_{k}} \\ 
+        &= \frac{1}{2\pi} \int_{-\pi}^{\pi} 1 dx \\ 
+        &= 1.
+\end{aligned}\]
+So, $E_{k}(x)$ is a basis for trigonometric functions. 
+
+\subsubsection{Exponential Polynomial \& Interpolation}
+We can define $P(x)$ to be 
+\[P(x) = \sum_{k = 0}^{m} c_{k} E_{k}(x) = \sum_{k = 0}^{m} c_{k} e^{ikx} = \sum_{k = 0}^{m} c_{k} \left(e^{ix}\right)^k.\]
+Suppose now we want to interpolate a Polynomial at equally spaced points, $x_{j} = \frac{2\pi j}{N}.$ Then, we can use the discrete inner product, 
+\[P(x) = \sum_{k = 0}^{N - 1} c_{k} E_{k}, \quad c_{k} = \cyclic{f, E_{k}}_{N} = \frac{1}{N} \sum_{j = 0}^{N - 1} f\left(\frac{2\pi j}{N}\right) \overline{E_{k}\left(\frac{2\pi j}{N}\right)}.\]
+
+\begin{mdframed}
+    (Example.) Suppose $N = 2$. We want to find an explicit formula of $P$ given $f$. So, $x_{0} = 0$ and $x_{1} = \frac{2\pi}{2} = \pi$ and
+    \[c_{0} = \frac{1}{2} \sum_{j = 0}^{2 - 1} f\left(\frac{2\pi j}{2}\right) e^{-i \cdot 0 \cdot j\pi} = \frac{1}{2} (f(0) + f(\pi)).\]
+    \[c_{1} = \frac{1}{2} \sum_{j = 0}^{2 - 1} f\left(\frac{2\pi j}{2}\right) e^{-i \cdot 2\pi} = \frac{1}{2}\left(f(0) + f(\pi)e^{-i\pi}\right) = \frac{1}{2} (f(0) - f(\pi)),\]
+    where $e^{-i\pi} = \cos(\pi) - i\sin(\pi) = -1 - i(0) = -1$. Then, combining this yields 
+    \[P(x) = c_{0}E_{0}(x) + c_{1}E_{1}(x) = \frac{1}{2}(f(0) + f(\pi)) + \frac{1}{2}(f(0) - f(\pi)) e^{ix}.\]
+\end{mdframed}
+
+\subsection{Complex Fourier Series}
+Let \[f(x) \sim \sum_{k = -\infty}^{\infty} \hat{f}(x) e^{ikx},\]
+where \[\hat{f}(x) = \frac{1}{2\pi} \int_{-\pi}^{\pi} f(t) e^{-ikt} dt = \frac{1}{2\pi} \int_{-\infty}^{\infty} f(t) (\cos(kt) - i\sin(kt)) dt = \frac{1}{2}(a_k - i b_k).\]
+If $f(t)$ is real, then it corresponds to the ``real'' Fourier series. Let $a_{k} = a_{-k}$ (i.e., even proeprty), $b_{k} = -b_{-k}$, $c_{k} = \frac{1}{2}(a_{k} - ib_{k})$, $b_{0} = 0$. Then, 
+\[f \sim \sum_{k = -\infty}^{\infty} \hat{f}(k) e^{ikx} = \sum_{k = -\infty}^{\infty} \frac{1}{2} (a_{k} - ib_{k})(\cos(kt) + i\sin(kt)).\]
+Here, the imaginary part is 0 (represented by the summation). In this sense, 
+\[\sum_{k = -\infty}^{\infty} \frac{1}{2}(a_{k} \sin(kx) - b_{k}\cos(kx))\] is the imaginary part.
+
+\end{document}
