@@ -1,0 +1,112 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{CSE 131}
+\chead{Wednesday, May 17, 2023}
+\lhead{Lecture 20}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\section{Optimization}
+In this section, we'll talk more about optimization. 
+
+\begin{definition}{Optimization}{}
+    An \textbf{optimization} (for a compiler) is a version that produces programs that evaluate the same answer as the prior version, but are ``better'' on some cost metric.
+\end{definition}
+
+\subsection{Examples of Cost Metrics}
+Some examples of cost metrics that we might want to improve on include 
+\begin{itemize}
+    \item \textbf{Time:} How long does it take for the program to run? 
+    \item \textbf{Space:} How much process memory does the program use? 
+    \item \textbf{Binary Size:} The size of the compiled binary, and the number of instructions.
+    \item \textbf{Executed Instructions:} The overall number of instructions executed (compared to the total number of instructions). This is also similar to the number of jumps in the resulting assembly.  
+\end{itemize}
+\textbf{Remarks:}
+\begin{itemize}
+    \item The first two metrics -- time and space -- are generally the most important ones. 
+    \item We might also care about properties like compile time, extensibility, debuggability, and platform independence, although these are harder to measure.
+\end{itemize}
+
+\subsection{High-Level Optimization Suggestions}
+Some suggestions for optimizations include 
+\begin{itemize}
+    \item \textbf{Register Allocation:} Storing values in registers rather than in memory, since access to registers are generaly faster than access to memory. 
+    \item \textbf{Dead Code Elimination:} Remove code that the compiler can prove will never run.
+    \begin{mdframed}
+        (Example.) Consider the following code: 
+        \begin{verbatim}
+            if false 3 4 \end{verbatim}
+        Here, we know for sure the \code{3} will never execute.
+    \end{mdframed}
+    This also includes things like removing unused variables from compilation. 
+
+    \item \textbf{Constant Folding:} Evaluate ``what you can solve'' in the compiler. 
+    \begin{mdframed}
+        (Example.) Consider the following code:
+        \begin{verbatim}
+            (+ (* 2 3) input)\end{verbatim}
+        Here, we know that \code{(* 2 3)} should be \code{6}, so this is basically equivalent to 
+        \begin{verbatim}
+            (+ 6 input)\end{verbatim}
+    \end{mdframed}
+
+    \item \textbf{Common Subexpression Elimination:} Eliminate repeated code in favor of a single instance of it. 
+    \item \textbf{Memory Packing:} Eliminate unused memory due to alignment (e.g., struct alignment).
+    \item \textbf{Loop Unrolling:} We can unroll a loop if we know that it has a constant bound. In other words, essentially hardcode all iterations.
+    \begin{mdframed}
+        (Example.) Consider the following code: 
+        \begin{verbatim}
+            (let (x 0) (loop (if (< x 3) (set! x (add1 x)) (break x))))\end{verbatim}
+        This is equivalent to  
+        \begin{verbatim}
+            (let (x 0) (block 
+                (set! x (add1 x))
+                (set! x (add1 x))
+                (set! x (add1 x))
+            ))\end{verbatim}
+    \end{mdframed}
+
+    \item \textbf{Type-Directed Compilation:} We can remove some code that involves type checking if we know for sure that we're working with the correct types. 
+    \begin{mdframed}
+        (Example.) Consider the code 
+        \begin{verbatim}
+            (+ 1 (* input 2))\end{verbatim}
+        While type checking is necessary for \code{(* input 2)}, it's probably not necessary for the plus expression since we can assume that both sides are numbers.
+    \end{mdframed}
+
+    \item \textbf{Peephole Optimization:} We can remove redundent move operations in the resulting assembly. 
+    
+    \item \textbf{Inlining Functions:} We can inline function calls, especially if we have a small one. 
+    \begin{mdframed}
+        (Example.) Consider the following function and resulting code: 
+        \begin{verbatim}
+            (fun (f x)
+                <body>)
+            (f 10)\end{verbatim}
+        This could be functionally equivalent to  
+        \begin{verbatim}
+            (let (x 10) <body>)\end{verbatim}
+    \end{mdframed}
+    Note that we might need to consider things like recursion or other function calls in the function body, since that might prevent us for optimizing. 
+
+    \item \textbf{Instruction Selection:} We can also possibly exploit the structure of our code. 
+    \begin{mdframed}
+        (Example.) Consider the following code: 
+        \begin{verbatim}
+            (if (< x 10) ... ...)\end{verbatim}
+        Generally, our compiler would put either \code{true} or \code{false} into \code{rax}, and then evaluate \code{rax} when deciding where to jump. However, in this particular code, we can probably just conditionally jump on the spot.  
+    \end{mdframed}
+\end{itemize}
+
+
+\end{document}
