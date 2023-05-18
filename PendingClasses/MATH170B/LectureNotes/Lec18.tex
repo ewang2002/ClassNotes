@@ -16,11 +16,12 @@
 
 \begin{document}
 
-\section{Multivariable Interpolation}
+\section{Multivariable Interpolation (Section 6.10)}
 In this section, we'll focus on interpolation in multiple variables, in particular two variables. Our data is represented by 
 \begin{itemize}
-    \item the nodes, 
+    \item the points (i.e., nodes), 
     \[\mathcal{N} = \{(x_1, y_1), (x_2, y_2), \hdots, (x_m, y_m)\}.\]
+    Note that each node is unique.
 
     \item the values associated with each node, 
     \[f(x_{1}, y_{1}), f(x_{2}, y_{2}), \hdots, f(x_{m}, y_{m}).\]
@@ -51,28 +52,40 @@ Additionally, we only want to consider ``cardinal'' functions, i.e., functions $
     0 & j \neq i
 \end{cases}\]
 for $1 \leq i, j \leq p$ and $1 \leq i, j \leq q$, respectively. We can construct such a cardinal function by 
-\[u_{i}(x) = \prod_{\substack{j = 1 \\ j \neq i}}^{p} \frac{x - x_j}{x_i - x_j}\]
-\[v_{j}(y) = \prod_{\substack{i = 1 \\ i \neq j}}^{q} \frac{y - y_i}{y_j - y_i}.\]
-Let us define the set of vertical lines, 
-\[L_{i} = \{(x_i, y) : -\infty < y < \infty\}.\]
-Then, we can define the function \[(\bar{P}f)(x, y) = \sum_{i = 1}^{p} f(x, y) u_{i}(x) = P_{i}(x, y), \qquad P_{i}(x_{i}, y) = f(x_{i}, y).\]
-Likewise, we have 
-\[(\bar{Q}f)(x, y) = \sum_{j = 1}^{q} f(x, y_{j}) v_{j}(y).\]
+\begin{equation}\label{lec18u}
+    u_{i}(x) = \prod_{\substack{j = 1 \\ j \neq i}}^{p} \frac{x - x_j}{x_i - x_j}
+\end{equation}
+\begin{equation}\label{lec18v}
+    v_{j}(y) = \prod_{\substack{i = 1 \\ i \neq j}}^{q} \frac{y - y_i}{y_j - y_i}
+\end{equation}
+We can define the function \[(\overline{P}f)(x, y) = \sum_{i = 1}^{p} f(x, y) u_{i}(x) = P_{i}(x, y), \qquad P_{i}(x_{i}, y) = f(x_{i}, y),\]
+which interpolates $f$ on the \emph{vertical} lines, $L_{i} = \{(x_i, y) : -\infty < y < \infty\}.$ Likewise, we have 
+\[(\overline{Q}f)(x, y) = \sum_{j = 1}^{q} f(x, y_{j}) v_{j}(y),\]
+which interpolates $f$ on all the \emph{horizontal} lines, $L^i = \{(x, y_i) : -\infty < x < \infty\}.$
+
+\subsubsection{Constructing Interpolating Functions}
 There are two options for evaluating this: 
 \begin{itemize}
-    \item \underline{Option 1:} Consider the tensor product\footnote{Another way of writing this is $\bar{P} \otimes \bar{Q}$.}, 
-    \[\bar{P}\bar{Q} = (\hat{P} (\bar{Q} f))(x, y) = \sum_{i = 1}^{p} \left( \sum_{j = 1}^{q} f(x_{i}, y_{j}) v_{j}(y) \right) u_{i}(x) = \sum_{i = 1}^{p} \sum_{j = 1}^{q} f(x_{i}, y_{i}) v_{j}(y) u_{i}(x) = F(x, y).\]
-    This interpolates $f(x_{i}, y_{j}).$
+    \item \underline{Option 1:} Consider the tensor product. Then,
+    \begin{equation*}
+        \begin{aligned}
+            \overline{P} \otimes \overline{Q} &= (\overline{P} (\overline{Q} f))(x, y) \\
+                &= \sum_{i = 1}^{p} \left( \sum_{j = 1}^{q} f(x_{i}, y_{j}) v_{j}(y) \right) u_{i}(x) \\
+                &= \sum_{i = 1}^{p} \sum_{j = 1}^{q} f(x_{i}, y_{i}) v_{j}(y) u_{i}(x) \\
+                &= F(x, y).
+        \end{aligned}
+    \end{equation*}
+    where the $u$ and $v$ functions can be derived from (\ref{lec18u}) and (\ref{lec18v}), respectively. This interpolates $f(x_{i}, y_{j}).$
 
     \item \underline{Option 2:} Consider the boolean sum. Then,  
     \begin{equation*}
         \begin{aligned}
-            \bar{P} \oplus \bar{Q} &= \bar{P} + \bar{Q} - \bar{P}\bar{Q} \\
+            \overline{P} \oplus \overline{Q} &= \overline{P} + \overline{Q} - \overline{P}\overline{Q} \\
                 &= \sum_{i = 1}^{p} f(x_{i}, y) u_{i}(x) + \sum_{j = 1}^{q} f(x, y_{j}) v_{j}(y) - \sum_{i = 1}^{p} \sum_{j = 1}^{q} f(x_{i}, y_{j}) v_{j}(y) u_{i}(x) \\ 
                     &= F(x, y).
         \end{aligned}
     \end{equation*}
-    This is also an interpolation. 
+    where the $u$ and $v$ functions can be derived from (\ref{lec18u}) and (\ref{lec18v}), respectively. This is also an interpolation. 
 \end{itemize}
 
 \end{document}

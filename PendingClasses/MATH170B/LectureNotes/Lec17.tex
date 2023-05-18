@@ -57,8 +57,9 @@ For given knots, $B_{i}^0$ is a basis for all degree zero splines.
 \subsection{Higher Degree B-Splines}
 We can make use of the following recursion to construct higher degree B-splines: 
 \[B_{i}^{k}(x) = \left(\frac{x - t_i}{t_{i + k} - t_{i}}\right)B_{i}^{k - 1}(x) + \left(\frac{t_{i + k + 1} - x}{t_{i + k + 1} - t_{i + 1}}\right) B_{i + 1}^{k - 1}(x)\]
+Additionally, if we write the constant term as 
 \[V_{i}^{k}(x) = \frac{x - t_{i}}{t_{i + k} - t_i},\]
-meaning we can rewrite the above $B_{i}^{k}$ as
+then we can rewrite $B_{i}^{k}(x)$ as
 \[B_{i}^{k} = V_{i}^{k} B_{i}^{k - 1} + (1 - V_{i + 1}^{k}) B_{i + 1}^{k - 1}.\]
 
 
@@ -69,6 +70,9 @@ meaning we can rewrite the above $B_{i}^{k}$ as
         V_{i}^{1} & t_i \leq x < t_{i + 1} \\ 
         (1 - V_{i + 1}^{1}) & t_{i + 1} \leq x < t_{i + 2} \\ 
     \end{cases}.\]
+    \begin{center}
+        \includegraphics[scale=0.6]{../assets/bspline_3.png}
+    \end{center}
 \end{mdframed}
 What are some properties of the degree 1 B-spline? 
 \begin{itemize}
