@@ -20,7 +20,7 @@
 Recall, for one-dimensional interpolation, there is a unique $P(x_j) = f(x_j)$ for $0 \leq j \leq m - 1$. However, when $f$ is periodic, trigonometric functions for interpolation are appropriate.
 
 \subsection{Connection to Complex Variables}
-If $f$ has a period of $2\pi$ and a continuous first derivative, then the \textbf{Fourier series/analysis}, 
+If $f$ has a period of $2\pi$ and a continuous first derivative, then the \textbf{Fourier series/analysis} is defined by\footnote{The tilde means that this converges for functions that satisfies several properties.}
 \[ f \sim \frac{a_0}{2} + \sum_{k = 1}^{\infty} (a_{k} \cos(kx) + b_k \sin(kx)), \]
 where \[a_k = \frac{1}{\pi} \int_{-\pi}^{\pi} f(t)\cos(kt) dt,\]
 \[b_k = \frac{1}{\pi} \int_{-\pi}^{\pi} f(t) \sin(kt) dt.\]
@@ -28,10 +28,10 @@ A connection to complex variables is \textbf{Euler's formula}, which is
 \[e^{i\theta} = \cos(\theta) + i\sin(\theta),\] where $i = \sqrt{-1}$. The complex conjugate of Euler's formula is 
 \[\overline{e^{i\theta}} = \cos(\theta) - i\sin(\theta).\]
 
-\subsubsection{Special Exponential Functions}
+\subsection{Special Exponential Functions}
 We can also define the function, 
 \[E_{k}(x) = e^{ikx}, \qquad k = 0, \pm 1, \pm 2, \pm 3, \hdots.\]
-These are special because they form a ``basis'' of linearly independent functions.
+$E_{k}$ is special because it forms a ``basis'' of linearly independent functions.
 
 \subsubsection{Some Notation}
 Some notation to keep in mind: 
@@ -41,10 +41,10 @@ Some notation to keep in mind:
 
     \item The ``discrete inner product'' is defined by
     \[\cyclic{f, g}_{N} = \frac{1}{N} \sum_{j = 0}^{N - 1} f\left(\frac{2\pi j}{N}\right) \overline{g\left(\frac{2\pi j}{N}\right)},\]
-    with $N$ being the number of points being used.
+    with $N$ is the number of points being used.
 \end{itemize}
 
-Using the special exponential function, we note that, for $k \neq m$, 
+Using the special exponential function, along with Euler's formula, we note that, for $k \neq m$, 
 \[\begin{aligned}
     \cyclic{E_k, E_m} &= \frac{1}{2\pi} \int_{-\pi}^{\pi} e^{ikx} \overline{e^{imx}} dx \\ 
         &= \frac{1}{2\pi} \int_{-\pi}^{\pi} e^{ikx} e^{-imx} dx \\ 
@@ -62,11 +62,13 @@ However, if $k = m$, we have
 \end{aligned}\]
 So, $E_{k}(x)$ is a basis for trigonometric functions. 
 
-\subsubsection{Exponential Polynomial \& Interpolation}
+\subsection{Exponential Polynomial \& Interpolation}
 We can define $P(x)$ to be 
-\[P(x) = \sum_{k = 0}^{m} c_{k} E_{k}(x) = \sum_{k = 0}^{m} c_{k} e^{ikx} = \sum_{k = 0}^{m} c_{k} \left(e^{ix}\right)^k.\]
-Suppose now we want to interpolate a Polynomial at equally spaced points, $x_{j} = \frac{2\pi j}{N}.$ Then, we can use the discrete inner product, 
-\[P(x) = \sum_{k = 0}^{N - 1} c_{k} E_{k}, \quad c_{k} = \cyclic{f, E_{k}}_{N} = \frac{1}{N} \sum_{j = 0}^{N - 1} f\left(\frac{2\pi j}{N}\right) \overline{E_{k}\left(\frac{2\pi j}{N}\right)}.\]
+\begin{equation}
+    P(x) = \sum_{k = 0}^{m} c_{k} E_{k}(x) = \sum_{k = 0}^{m} c_{k} e^{ikx} = \sum_{k = 0}^{m} c_{k} \left(e^{ix}\right)^k.
+\end{equation}
+Suppose now we want to interpolate a polynomial at equally spaced points, $x_{j} = \frac{2\pi j}{N}.$ Then, we can use the discrete inner product, 
+\[P(x) = \sum_{k = 0}^{N - 1} c_{k} E_{k}(x), \qquad c_{k} = \cyclic{f, E_{k}}_{N} = \frac{1}{N} \sum_{j = 0}^{N - 1} f\left(\frac{2\pi j}{N}\right) \overline{E_{k}\left(\frac{2\pi j}{N}\right)}.\]
 
 \begin{mdframed}
     (Example.) Suppose $N = 2$. We want to find an explicit formula of $P$ given $f$. So, $x_{0} = 0$ and $x_{1} = \frac{2\pi}{2} = \pi$ and
