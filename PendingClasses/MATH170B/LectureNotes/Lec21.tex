@@ -75,6 +75,44 @@ The search continues based on the values of $u$ and $v$. In particular,
     \item if $v < u$, then we want to update the right bracket.
     \item if $v \geq u$, then we want to update the left bracket.
 \end{itemize}
-% TODO algorithm
+This can be modeled into an algorithm which takes the following inputs: 
+\begin{itemize}
+    \item \code{a}: the first endpoint. 
+    \item \code{b}: the second endpoint. 
+    \item $f$: the function. 
+    \item $\epsilon$: the tolerance.
+    \item $M$: The maximum number of iterations.
+\end{itemize}
+
+\begin{algorithm}[H]
+    \caption{Golden Section Search}
+    \begin{algorithmic}[1]
+        \Function{GoldenSectionSearch}{$a, b, f, \epsilon, M$}
+            \State $x \gets a + r(b - a)$
+            \State $y \gets a + r^2 (b - a)$
+            \State $u \gets f(x)$
+            \State $v \gets f(y)$
+            \For{$k \gets 1$ to $M$}
+                \If{$v < u$}
+                    \State $b \gets x$
+                    \State $x \gets y$
+                    \State $u \gets v$
+                    \State $y \gets a + r^2 (b - a)$
+                    \State $v \gets f(y)$
+                \Else 
+                    \State $a \gets y$
+                    \State $y \gets x$
+                    \State $v \gets u$
+                    \State $x \gets a + r (b - a)$
+                    \State $u \gets f(x)$
+                \EndIf 
+
+                \If{$|b - a| < \epsilon$}
+                    \State break
+                \EndIf 
+            \EndFor 
+        \EndFunction
+    \end{algorithmic}
+\end{algorithm}
 
 \end{document}
