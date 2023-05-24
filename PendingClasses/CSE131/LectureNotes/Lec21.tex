@@ -110,35 +110,11 @@ There are two questions we should now consider.
 \end{enumerate}
 \textbf{Remark:} The register allocation algorithm we're talking about, which uses an idea similar to \code{depth}, is similar to the \emph{Sethi-Ullman algorithm}.
 
-\subsubsection{The Minimal Number of Locations}
-Consider the following program: 
-\begin{verbatim}
-    (let (b 4)
-        (let (x 10)
-            (let (i (if input 
-                        (let (z 11) (+ z b))
-                        (let (y 9) (+ y 1))))
-                (let (a (+ i 5))
-                    (+ a x)))))\end{verbatim}
-How many memory locations are needed? We'll look at the program from the \emph{end} to the beginning.
+\subsubsection{High Level Steps}
+At a high level, we aim to answer the following questions:
 \begin{itemize}
-    \item We first begin by looking at what variables are in use at the end. In this case, \code{a} and \code{x} are in use. The set of all variables in use is \[\{a, x\}.\]
-    \item We're going to go back ``up'' the program. When we get to a \code{let}-bindings, we're going to remove it from the set of variables that are in use right now. In the next level, we're \emph{using} \code{i} and \code{x}, but we aren't using \code{a} here since \code{a} is being created. The set of all variables in use is \[\{i, x\}.\]
-    \item The \code{if}-expression is more interesting. We need to consider both branches of the \code{if}-expression and do some unioning with the set of all variables in use. 
-    \begin{itemize}
-        \item Looking at the end of the ``else'' branch, at the body of the \code{let} binding, notice how \code{y} is being used. \code{x} and \code{i} are still around. The set of all variables in use is \[\{y, i, x\}.\]
-        \item Looking at the end of the ``then'' branch, at the body of the \code{let} binding, notice how \code{z} and \code{b}\footnote{Even though \code{b} is defined at the top, this is the first time we're seeing \code{b} in use.} are in use. As usual, \code{x} and \code{i} are still around. The set of all variables in use is \[\{z, b, i, x\}.\]
-        \item Here, we need to union the two branches. So, this gives us the variables in use
-        \[\{z, b, i, x, y\}.\]
-    \end{itemize}
-    \item At the \code{let}-binding for \code{i} (\emph{not} in the body), we no longer have \code{z} or \code{y}, and \code{i} is being initialized here (so we aren't using \code{i} here). Thus, this gives us the variables in use \[\{x, b\}.\] 
-    \item Moving ``up'' the program to the \code{let}-binding for \code{x}, we now only have the variables in use $\{x\}$. 
-    \item Finally, moving ``up'' the program to the \code{let}-binding for \code{b}, we have the variables in use $\emptyset$. 
+    \item The first step is to find the minimal number of locations needed to store all the working variables in an expression.
+    \item What pairs of variables must be stored (or must be ``live'') at the same time? 
 \end{itemize}
-This information is telling us what variables need to be stored at the same time. Something we can do with this information is turn this into a \textbf{graph} where there's an edge between two variables \emph{if} they're in use at the same time. 
-\begin{center}
-    \includegraphics[scale=0.6]{../assets/loc_use1.png}
-\end{center}
-This is a graph where if there are two variables that had to be live at the same time, then there is an edge. How do we make it so we can have a set of locations where each variable can be assigned to a register that's different from all the things it conflicts with? This is known as \textbf{graph coloring}.
 
 \end{document}
