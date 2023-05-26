@@ -1,0 +1,151 @@
+\documentclass[letterpaper]{article}
+\input{../../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{CSE 131}
+\chead{Wednesday, May 24, 2023}
+\lhead{Lecture 23}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\section{Optimization (Continued)}
+
+\subsection{Optimization: Register Allocation}
+
+\subsubsection{Restrictions}
+One of the main restrictions of the algorithm for register allocation is simply temporary values: what do we do with register allocation for temporary values that don't have any names?
+
+\subsection{Intermediate Representation}
+Let's consider the following program:
+\begin{verbatim}
+    (+ (- 5 input) (* input (if (> 0 input) 1 -1)))\end{verbatim}
+Below is a transformed version of the program where every nested expression that would have introduced a temporary is now a \code{let}-bound variable. 
+\begin{verbatim}
+    (let (tmp 1 (- t input))
+        (let (tmp 2 (> 0 input))
+            (let (tmp3 (if tmp2 1 -1))
+                (let (tmp4 (* input tmp3))
+                    (+ tmp1 tmp4)
+                )
+            )
+        )
+    )\end{verbatim}
+This makes the order of operations very explicit. Notice that it's very clear that we're doing left-to-right operation. This process also makes code generation for operations a lot easier, since everything is already stored on the stack or in a register. 
+
+\begin{mdframed}
+    (Example.) Perform the transformation on the function 
+    \begin{verbatim}
+    (fun (sumsquares x y)
+        (+ (* x x) (* y y)))\end{verbatim}
+
+    \begin{mdframed}
+        As mentioned, we want to break our complex expression into much simpler types. We can accomplish this by defining any computations into \code{let}-bindings. This gives us 
+        \begin{verbatim}
+    (fun (sumsquares x y)
+        (let (val (* x x))
+            (let (val2 (* y y))
+                (+ val val2)
+            )
+        )
+    )\end{verbatim}
+    \end{mdframed}
+\end{mdframed}
+This transformation is fairly common, and there is a fairly standard algorithm for this transformation that takes every non-trivial or non-atomic (basically, everything that's not a literal value) and puts them in a \code{let}-binding. 
+
+\subsubsection{Different Grammar Forms}
+There are two types of grammars we want to consider. 
+\begin{itemize}
+    \item \textbf{A-Normal Form:} This is essentially our grammar as is. This cares about scope, binding, order or evaluations, and so on. 
+    
+    \begin{verbatim}
+        <expr> := <number> | <id> | true | false | nil 
+            | (+ <expr> <expr>)
+            | (- <expr> <expr>)
+            | (if <expr> <expr> <expr>)
+            | (break <expr>)
+            | ... 
+            | (let (<id> <expr>) <expr>)
+            | ... \end{verbatim}
+    \item \textbf{ANF-Restricted Grammar:} This grammar is effectively the transformed grammar; that is, given our A-Normal Form, we can transform it into a more restricted version. We'll denote this as \code{AExpr}.
+    \begin{verbatim}
+        <val> := <number> | <id> | true | false | nil 
+        <expr> := (+ <val> <val>) 
+            | (pair <val> <val>) 
+            | (if <val> <block> <block>)
+            | (break <val>)
+        <block> := (let (<id> <expr>) <block>)
+            | (loop <block>)
+            | (break <block>+)
+            | ... 
+            | <expr>
+            | <val>\end{verbatim}
+        This is restricted in the sense that the grammar is broken up into three different groups (productions). You have expressions (\code{<expr>}) that form blocks (\code{<block>}). Blocks have expressions in them that can perform calculations; so, we can think of \code{<expr>} as something that performs a calculation of some type (e.g., binary operations, creating a new pair, and so on). All the arguments to these expressions that do calculations must be primitive values or identifiers.  
+\end{itemize}
+\textbf{Remark:} Loops are an interesting case to think about here. 
+
+\subsubsection{Going from Normal to Restricted}
+How do we create an algorithm that transforms code written under one grammar to code written in the restricted grammar? Note that this is a very standard algorithm, so we'll mainly gain some intuition. One choice to make is whether we want to introduce a new \code{enum} for ANF expressions. For example, is it worth it to introduce a bunch of new \code{enum}s like shown below?
+\begin{verbatim}
+    enum Val {
+        VNum,
+        VId(String),
+        ...
+    }
+
+    enum AExpr {
+        APlus(...),
+        APair(...),
+        ... 
+    }
+
+    enum Block {
+        BLet(...),
+        ...
+    }\end{verbatim}
+
+In any case, we can write a few functions to facilitate the conversion process.
+\begin{itemize}
+    \item \verb|anf_to_val(e: &Expr) -> Val|: Converts an A-Normal Expression Form to a literal value under the ANF-Restricted Expression Form.
+    \item \verb|anf_to_expr(e: &Expr) -> AExpr|: Converts an A-Normal Expression Form to a computation expression under the ANF-Restricted Expression Form.
+    \item \verb|anf_to_block(e: &Expr) -> Block|: Converts an A-Normal Expression Form to a block expression under the ANF-Restricted Expression Form. 
+\end{itemize}
+
+\subsubsection{ANF to Value}
+Let's suppose we want to implement 
+\begin{verbatim}
+    fn anf_to_val(e: &Expr) -> Val {
+        match e {
+            ...
+        }
+    }\end{verbatim}
+
+\begin{itemize}
+    \item For an expression \code{e} like \code{Number(n)}, we can trivially return \code{VNum(n)}.
+    \item For an expression \code{e} like \code{Plus(e1, e2)}, this becomes more complicated. This will involve a nested plus expression, and we should return an identifier that we can use later. Note that \code{e1} and \code{e2} may be complicated expressions, but we want them to be \code{Val}s as well. So, we'll probably need to do some recursive calls to ideally break \code{e1} and \code{e2} down into \code{let}-bindings. 
+    \begin{verbatim}
+        Plus(e1, e2) => {
+            let (v1, b1) = anf_to_val(e1);
+            let (v2, b2) = anf_to_val(e2);
+            // Assume new_label() is a function that returns a new identifier.
+            let new_name = new_label(); 
+            // This isn't Rust syntax, but basically we want all the bindings from 
+            // b1, all the bindings from b2, and our new binding in this vector.
+            (VId(new_name), vec![...b1, ...b2, (new_name, APlus(v1, v2))])
+        }\end{verbatim}
+    Notice how we're returning a tuple. The first element is the identifier that will store the result of the evaluation of this expression. However, we also need to return list of \code{let}-bindings we need to eventually stick in front of \emph{this} identifier in order for it to work (otherwise, the identifier won't be bound). So, we should modify the function return type: 
+    \begin{verbatim}
+    fn anf_to_val(e: &Expr) -> (Val, Vec<(String, AExpr)>) { ... }\end{verbatim}
+\end{itemize}
+
+
+% it's about scope, binding, order of evaluation
+
+\end{document}
