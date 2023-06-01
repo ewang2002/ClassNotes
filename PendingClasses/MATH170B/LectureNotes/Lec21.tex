@@ -34,12 +34,12 @@ We're interested in the local minimum. More specifically, the goal is to find th
 1D optimization is also relevant for $\R^m$. If $F: \R^m \to \R$, then we can define a line to be $\{u + tv : t \in \R\}$, where $u, v \in \R$. Then, for a fixed $\vec{u}$ and $\vec{v}$, we can find $F(u + tv) = f(t)$. The search to find the minimum depends on what information of $f$ is available. In particular, whether we have access to $f'$ or not. 
 
 \subsection{Illustrative Strategy (Refining Search)}
-Suppose we have a bound $|f'(x)| \leq M$. The idea is that we have $x^{(k)} = hk$, with $h$ equally spaced intervals (step size) and for $k = 0, 1, 2, \hdots$. This gives us something like 
+Suppose we have a bound $|f'(x)| \leq M$, where $M$ can be any value greater than or equal to the maximum of $f'(x)$ in the given bounds. The idea is that we have $x^{(k)} = hk$, with $h$ equally spaced intervals (step size) and for $k = 0, 1, 2, \hdots$. This gives us something like 
 \begin{center}
     \includegraphics[scale=0.5]{../assets/1varopt_ex2.png}
 \end{center}
 Suppose we consider a particular interval $[a, b]$ with $a < b$. Then, 
-\[f(x) \geq \min\{f(x), f(b)\} - \frac{1}{2} (b - a) M,\]
+\[f(x) \geq \min\{f(a), f(b)\} - \frac{1}{2} (b - a) M,\]
 where we derived the latter part from the Mean Value Theorem. To see why this works, suppose $x$ is to the left of the midpoint between $[a, b]$. Then, 
 \begin{center}
     \includegraphics[scale=0.5]{../assets/interval_left.png}

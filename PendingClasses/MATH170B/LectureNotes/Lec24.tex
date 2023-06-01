@@ -15,14 +15,14 @@
 \setlength{\parindent}{0pt}
 
 \begin{document}
-\section{Helder-Mead Simplex Method (Section 11.5)}
+\section{Nelder-Mead Simplex Method (Section 11.5)}
 As usual, our goal is to minimize a function $f(x): \R^n \to \R$. This method is a direct search method, but does not require a derivative of the function $f$ and doesn't make use of any line searches. This method is versatile, but may be restricted to smaller problems\footnote{In other words, for a small $n$.}. 
 
 \bigskip 
 
 Before beginning the calculations, we assign values to three parameters, $\alpha = 1$, $\beta = \frac{1}{2}$, and $\gamma = 1$. The values described here are the default values. In each step of this method, we'll have a set of $n + 1$ points $x^{(i)} \in \R^n$,  
 \[\{x^{(0)}, x^{(1)}, \hdots, x^{(n)}\}.\]
-Note that the set should be in general position in $\R^n$; that is, the set of $n$ points $x^{(i)} - x^{(0)}$ for $1 \leq i \leq n$ is linearly independent.
+Note that the set of vectors should be in general position in $\R^n$; that is, \textbf{the set of $n$ points $x^{(i)} - x^{(0)}$ for $1 \leq i \leq n$ is linearly independent}.
 
 \begin{mdframed}
     (Example.) Suppose we're in $\R^2$. We have three points in our set, $x^{(0)} \in \R^2$, $x^{(1)} \in \R^2$, and $x^{(2)} \in \R^2$. This gives us 
@@ -81,9 +81,9 @@ The implementation we'll use does not reorder all the functions, as this is an e
     \item $\alpha, \beta, \gamma$, the three parameters mentioned earlier.
 \end{itemize} 
 \begin{algorithm}[H]
-    \caption{Helder-Mead Simplex Method}
+    \caption{Nelder-Mead Simplex Method}
     \begin{algorithmic}[1]
-        \Function{HelderMeadSimplex}{$f, \{x^{(i)}\}, \epsilon, M, \alpha, \beta, \gamma$}
+        \Function{NelderMeadSimplex}{$f, \{x^{(i)}\}, \epsilon, M, \alpha, \beta, \gamma$}
             \For{$i \gets 1$ to $n + 1$} \Comment{Corresponds to constructing simplex by defining values at each vertex.}
                 \State $F(i) = f(x^{(i - 1)})$ \Comment{$F$ is the vector of all function values.}
                 \State $X(:, i) = x^{(i - 1)}$ \Comment{Storing the points into the matrix.}
