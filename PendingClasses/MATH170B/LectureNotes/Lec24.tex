@@ -92,7 +92,7 @@ The implementation we'll use does not reorder all the functions, as this is an e
             \State $(f_0, f_1, i_0, i_1) = \max_{2}(F)$ % L2
             \State $o \gets [1]_{n \times 1}$ \Comment{$n \times 1$ vector of 1's.}
             \State $k \gets 0$
-            \While{$(f_{0} - f_{n}) / (\max\{|f_{0}| + |f_{1}|\}) \geq \epsilon$ and $k < M$}
+            \While{$(f_{0} - f_{n}) / (\max\{|f_{0}| + |f_{1}|, 1\}) \geq \epsilon$ and $k < M$}
                 \State $u \gets \frac{1}{n}\sum_{\ell = 1}^{n} x^{(\ell)}$
                 \State $v \gets (1 + \alpha) u - \alpha X(:, i_0)$
                 \State $f_v = f(v)$
