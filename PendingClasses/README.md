@@ -3,6 +3,5 @@ These are notes for classes that I will be taking. The notes will most certainly
 
 ## Directories
 Below, I'll very briefly list the notes contained in these folders.
-- `CSE110`: Software Engineering
 - `CSE131`: Compilers
 - `MATH170B`: Numerical Analysis (Nonlinear)
