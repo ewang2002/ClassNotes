@@ -1,0 +1,86 @@
+\documentclass[letterpaper]{article}
+\input{../../preamble.tex}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{fancyhdr}
+\usepackage[hidelinks]{hyperref}
+
+\fancypagestyle{noheader}{
+  \fancyhf{}% Clear header/footer
+  \renewcommand{\headrulewidth}{0pt}% No header rule
+  \rfoot{\thepage}
+} 
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{CSE 131}
+\chead{June 9th, 2023}
+\lhead{Course Notes}
+\rfoot{\thepage}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\begin{titlepage}
+    \begin{center}
+        \vspace*{1cm}
+            
+        \Huge
+        \textbf{CSE 131 Notes}
+            
+        \vspace{0.5cm}
+        \LARGE
+        Compiler Construction
+            
+        \vspace{1.5cm}
+            
+        \vfill
+            
+        Spring 2023\\
+        Taught by Professor Joe Politz
+    \end{center}
+\end{titlepage}
+
+\pagenumbering{gobble}
+
+\newpage 
+
+\pagenumbering{gobble}
+\begingroup
+    \renewcommand\contentsname{Table of Contents}
+    \tableofcontents
+\endgroup
+
+\newpage
+\pagenumbering{arabic}
+
+
+\input{pages/1-intro.tex}
+\newpage
+\input{pages/2-binaryOps.tex}
+\newpage
+\input{pages/3-locals.tex}
+\newpage
+\input{pages/4-if.tex}
+\newpage
+\input{pages/5-others.tex}
+\newpage
+\input{pages/6-calling1.tex}
+\newpage
+\input{pages/7-calling2.tex}
+\newpage
+\input{pages/8-ourcalling.tex}
+\newpage
+\input{pages/9-recursion.tex}
+\newpage
+\input{pages/10-tail.tex}
+\newpage
+\input{pages/11-pairs.tex}
+\newpage
+\input{pages/12-garbage.tex}
+\newpage
+\input{pages/13-opt.tex}
+
+
+\end{document}

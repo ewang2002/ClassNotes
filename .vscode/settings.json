@@ -8,5 +8,9 @@
         "**/*.synctex.gz": true,
         "**/*.toc": true
     },
-    "workbench.tree.indent": 32
+    "workbench.tree.indent": 32,
+    "cSpell.words": [
+        "Sexp",
+        "subexpr"
+    ]
 }
